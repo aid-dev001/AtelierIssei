@@ -136,12 +136,17 @@ const Home = () => {
       <section className="container mx-auto px-4 py-20">
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">LATEST WORKS</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {["/12648.jpg", "/12649.jpg", "/12650.jpg"].map((img, index) => (
+          {["12648.jpg", "12649.jpg", "12650.jpg"].map((img, index) => (
             <div key={index} className="group relative aspect-square overflow-hidden rounded-lg shadow-xl">
               <img
-                src={img}
+                src={`/${img}`}
                 alt={`Latest Work ${index + 1}`}
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                onError={(e) => {
+                  const img = e.target as HTMLImageElement;
+                  img.onerror = null;
+                  img.src = '/placeholder.png';
+                }}
               />
               <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity group-hover:opacity-100" />
             </div>
@@ -149,27 +154,27 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Artist Style */}
+      {/* Artistic Vision */}
       <section className="bg-gray-50/80 py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">ARTISTIC STYLE</h2>
+          <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">ARTISTIC VISION</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <div className="text-center space-y-4">
-              <div className="text-2xl font-medium mb-4">Color Harmony</div>
+              <div className="text-2xl font-medium mb-4">La Lumière</div>
               <p className="text-gray-600 leading-relaxed">
-                鮮やかな色彩と繊細なグラデーションが織りなす、独特の世界観を表現します。
+                光と影の調和から生まれる静謐な空間。色彩の深みが織りなす繊細な世界は、見る者の感性に深く響き渡ります。
               </p>
             </div>
             <div className="text-center space-y-4">
-              <div className="text-2xl font-medium mb-4">Modern Expression</div>
+              <div className="text-2xl font-medium mb-4">L'essence</div>
               <p className="text-gray-600 leading-relaxed">
-                伝統と革新が融合した、現代的な表現技法で新しい価値を創造します。
+                時を超えて受け継がれる美の本質を追求し、現代的な解釈で新たな芸術の地平を切り開きます。
               </p>
             </div>
             <div className="text-center space-y-4">
-              <div className="text-2xl font-medium mb-4">Emotional Depth</div>
+              <div className="text-2xl font-medium mb-4">L'émotion</div>
               <p className="text-gray-600 leading-relaxed">
-                深い感性と洞察力から生まれる、心に響く芸術作品を提供します。
+                魂の深淵から湧き上がる感動を、洗練された技法と独自の美意識で表現します。
               </p>
             </div>
           </div>
@@ -200,9 +205,14 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div className="relative group aspect-[4/3] overflow-hidden rounded-xl shadow-xl">
               <img
-                src="/artworks/image.png"
+                src="/12651.jpg"
                 alt="Workshop"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                onError={(e) => {
+                  const img = e.target as HTMLImageElement;
+                  img.onerror = null;
+                  img.src = '/placeholder.png';
+                }}
               />
               <div className="absolute inset-0 bg-black/50 p-8 text-white opacity-0 group-hover:opacity-100 transition-opacity">
                 <div className="text-2xl font-medium mb-4">アーティストワークショップ</div>
@@ -211,9 +221,14 @@ const Home = () => {
             </div>
             <div className="relative group aspect-[4/3] overflow-hidden rounded-xl shadow-xl">
               <img
-                src="/artworks/スクリーンショット 2024-12-07 12.26.30.png"
+                src="/12652.jpg"
                 alt="Exhibition"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                onError={(e) => {
+                  const img = e.target as HTMLImageElement;
+                  img.onerror = null;
+                  img.src = '/placeholder.png';
+                }}
               />
               <div className="absolute inset-0 bg-black/50 p-8 text-white opacity-0 group-hover:opacity-100 transition-opacity">
                 <div className="text-2xl font-medium mb-4">プライベート展示会</div>
@@ -231,12 +246,17 @@ const Home = () => {
           <div className="space-y-8">
             <h3 className="text-2xl font-medium text-center">Abstract Collection 2024</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {["/12651.jpg", "/12652.jpg", "/12653.jpg", "/12654.jpg"].map((img, index) => (
+              {["12653.jpg", "12654.jpg", "12655.jpg", "12656.jpg"].map((img, index) => (
                 <div key={index} className="aspect-square overflow-hidden rounded-lg shadow-lg">
                   <img
-                    src={img}
+                    src={`/${img}`}
                     alt={`Collection ${index + 1}`}
                     className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                    onError={(e) => {
+                      const img = e.target as HTMLImageElement;
+                      img.onerror = null;
+                      img.src = '/placeholder.png';
+                    }}
                   />
                 </div>
               ))}
