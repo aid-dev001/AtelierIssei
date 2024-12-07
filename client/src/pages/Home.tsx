@@ -53,13 +53,13 @@ const Home = () => {
         <div className="absolute inset-0 grid grid-cols-12 gap-0.5">
           {[
             // Top row
-            "12648.jpg", "12649.jpg", "12650.jpg", "12651.jpg", "12652.jpg", "12653.jpg", "12654.jpg", "12655.jpg", "12656.jpg", "12657.jpg", "12658.jpg", "12659.jpg",
+            "23313_0.jpg", "23317.jpg", "23677.jpg", "1912_0.jpg", "2266.jpg", "2914.jpg", "3316.jpg", "3446.jpg", "3525.jpg", "3730.jpg", "6715.jpg", "7853.jpg",
             // Left side
-            "12660.jpg", ...Array(10).fill(null), "12661.jpg",
-            "12662.jpg", ...Array(10).fill(null), "12663.jpg",
-            "12664.jpg", ...Array(10).fill(null), "12665.jpg",
+            "7855.jpg", ...Array(10).fill(null), "8594.jpg",
+            "10819.jpg", ...Array(10).fill(null), "10820.jpg",
+            "10821.jpg", ...Array(10).fill(null), "10822.jpg",
             // Bottom row
-            "12666.jpg", "12667.jpg", "12668.jpg", "12669.jpg", "12670.jpg", "12671.jpg", "12672.jpg", "12673.jpg", "12674.jpg", "12675.jpg", "12676.jpg", "12677.jpg",
+            "10823.jpg", "14996.jpg", "1602605995.jpg", "02-scaled.jpg", "IMG_6937.jpg", "IMG_6964.JPG", "image-2.jpg", "image.png", "スクリーンショット 2024-12-07 12.26.30.png", "23313_0.jpg", "23317.jpg", "23677.jpg",
           ].map((img, index) => img ? (
             <div key={index} className="aspect-square overflow-hidden bg-white/5">
               <img
@@ -161,7 +161,7 @@ const Home = () => {
       <section className="container mx-auto px-4 py-20">
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">LATEST WORKS</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {["12678.jpg", "12679.jpg", "12680.jpg"].map((img, index) => (
+          {["23313_0.jpg", "23317.jpg", "23677.jpg"].map((img, index) => (
             <div key={index} className="group relative aspect-square overflow-hidden rounded-lg shadow-xl">
               <img
                 src={`/${img}`}

@@ -108,7 +108,7 @@ const ArtworkDetail = () => {
                 <div className="grid grid-cols-2 gap-6">
                   <div className="relative group">
                     <img
-                      src="/IsseiCat_in_the_Courtain_1.jpeg"
+                      src="/3316.jpg"
                       alt="Interior View 1"
                       className="w-full aspect-[4/3] object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105"
                     />
@@ -116,7 +116,7 @@ const ArtworkDetail = () => {
                   </div>
                   <div className="relative group">
                     <img
-                      src="/IsseiPrinciple_1.jpeg"
+                      src="/3446.jpg"
                       alt="Interior View 2"
                       className="w-full aspect-[4/3] object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105"
                     />
