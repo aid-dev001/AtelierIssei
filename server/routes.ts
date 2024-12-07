@@ -15,6 +15,22 @@ export function registerRoutes(app: Express) {
     }
   });
 
+  app.get("/api/artworks/:id", async (req, res) => {
+    try {
+      const artwork = await db.query.artworks.findFirst({
+        where: eq(artworks.id, parseInt(req.params.id)),
+      });
+      
+      if (!artwork) {
+        return res.status(404).json({ error: "Artwork not found" });
+      }
+      
+      res.json(artwork);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch artwork" });
+    }
+  });
+
   app.get("/api/news", async (req, res) => {
     try {
       const allNews = await db.query.news.findMany({
