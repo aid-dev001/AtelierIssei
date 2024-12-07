@@ -48,26 +48,45 @@ const Home = () => {
 
   return (
     <div className="space-y-20">
-      <section className="min-h-[90vh] flex items-center relative overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-90"
-          style={{ 
-            backgroundImage: "url('/hero.jpg')",
-            filter: "brightness(0.9) contrast(1.1)"
-          }}
-        />
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center px-4">
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 reveal-text tracking-wider text-gray-800">
-              ATELIER ISSEI
-            </h1>
-            <p className="text-xl md:text-2xl font-light mb-16 reveal-text tracking-widest text-gray-700">
-              洗練された美の世界へ、心を解き放つ旅
-            </p>
-            <div className="max-w-3xl mx-auto bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-8">
-              <p className="text-lg tracking-wider leading-relaxed font-medium text-gray-800">
-                洗練された美の世界で、新たな芸術体験をお届けします。
+      <section className="min-h-screen relative overflow-hidden">
+        {/* 背景のグリッドギャラリー */}
+        <div className="absolute inset-0 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1">
+          {[
+            "12648.jpg", "12649.jpg", "12650.jpg", "12651.jpg",
+            "12652.jpg", "12653.jpg", "12654.jpg", "12655.jpg",
+            "12656.jpg", "12657.jpg", "12658.jpg", "12659.jpg",
+            "12660.jpg", "12661.jpg", "12662.jpg", "12663.jpg"
+          ].map((img, index) => (
+            <div key={index} className="aspect-square overflow-hidden">
+              <img
+                src={`/${img}`}
+                alt={`Gallery ${index + 1}`}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  const img = e.target as HTMLImageElement;
+                  img.onerror = null;
+                  img.src = '/placeholder.png';
+                }}
+              />
+            </div>
+          ))}
+        </div>
+        {/* オーバーレイとコンテンツ */}
+        <div className="absolute inset-0 bg-white/30 backdrop-blur-sm" />
+        <div className="relative z-10 min-h-screen flex items-center">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center px-4">
+              <h1 className="text-5xl md:text-7xl font-bold mb-8 reveal-text tracking-wider text-gray-800">
+                ATELIER ISSEI
+              </h1>
+              <p className="text-xl md:text-2xl font-light mb-16 reveal-text tracking-widest text-gray-700">
+                洗練された美の世界へ、心を解き放つ旅
               </p>
+              <div className="max-w-3xl mx-auto bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-8">
+                <p className="text-lg tracking-wider leading-relaxed font-medium text-gray-800">
+                  洗練された美の世界で、新たな芸術体験をお届けします。
+                </p>
+              </div>
             </div>
           </div>
         </div>
