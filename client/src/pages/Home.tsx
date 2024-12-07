@@ -49,32 +49,85 @@ const Home = () => {
   return (
     <div className="space-y-20">
       <section className="min-h-screen relative overflow-hidden">
-        {/* 背景のグリッドギャラリー */}
-        <div className="absolute inset-0 grid grid-cols-12 gap-0.5">
-          {[
-            // Top row
-            "artworks/23313_0.jpg", "artworks/23317.jpg", "artworks/23677.jpg", "artworks/1912_0.jpg", "artworks/2266.jpg", "artworks/2914.jpg", "artworks/3316.jpg", "artworks/3446.jpg", "artworks/3525.jpg", "artworks/3730.jpg", "artworks/6715.jpg", "artworks/7853.jpg",
-            // Left side
-            "artworks/7855.jpg", "artworks/8594.jpg", "artworks/10819.jpg", "artworks/10820.jpg", "artworks/10821.jpg", "artworks/10822.jpg", "artworks/10823.jpg", "artworks/14996.jpg", "artworks/1602605995.jpg", "artworks/02-scaled.jpg", "artworks/IMG_6937.jpg", "artworks/IMG_6964.JPG",
-            // Middle rows
-            "artworks/image-2.jpg", "artworks/7855.jpg", "artworks/8594.jpg", "artworks/10819.jpg", "artworks/10820.jpg", "artworks/10821.jpg", "artworks/10822.jpg", "artworks/10823.jpg", "artworks/14996.jpg", "artworks/1602605995.jpg", "artworks/02-scaled.jpg", "artworks/IMG_6937.jpg",
-            "artworks/IMG_6964.JPG", "artworks/image-2.jpg", "artworks/7855.jpg", "artworks/8594.jpg", "artworks/10819.jpg", "artworks/10820.jpg", "artworks/10821.jpg", "artworks/10822.jpg", "artworks/10823.jpg", "artworks/14996.jpg", "artworks/1602605995.jpg", "artworks/02-scaled.jpg",
-            // Bottom row
-            "artworks/IMG_6937.jpg", "artworks/IMG_6964.JPG", "artworks/image-2.jpg", "artworks/image.png", "artworks/23313_0.jpg", "artworks/23317.jpg", "artworks/23677.jpg", "artworks/1912_0.jpg", "artworks/2266.jpg", "artworks/2914.jpg", "artworks/3316.jpg", "artworks/3446.jpg",
-          ].map((img, index) => img ? (
-            <div key={index} className="aspect-square overflow-hidden bg-white/5">
-              <img
-                src={`/${img}`}
-                alt={`Gallery ${index + 1}`}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                onError={(e) => {
-                  const img = e.target as HTMLImageElement;
-                  img.onerror = null;
-                  img.src = '/placeholder.png';
-                }}
-              />
+        {/* 背景の画像ギャラリー */}
+        <div className="absolute inset-0 flex flex-col">
+          {/* 上部の画像列 */}
+          <div className="flex w-full gap-0.5 h-24">
+            {["artworks/23313_0.jpg", "artworks/23317.jpg", "artworks/23677.jpg", "artworks/1912_0.jpg", "artworks/2266.jpg", "artworks/2914.jpg", "artworks/3316.jpg", "artworks/3446.jpg"].map((img, index) => (
+              <div key={`top-${index}`} className="flex-1 overflow-hidden">
+                <img
+                  src={`/${img}`}
+                  alt={`Gallery ${index + 1}`}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const img = e.target as HTMLImageElement;
+                    img.onerror = null;
+                    img.src = '/placeholder.png';
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+          
+          {/* 中央部分（左右の画像と中央コンテンツ） */}
+          <div className="flex flex-1 gap-0.5">
+            {/* 左側の画像列 */}
+            <div className="w-24 flex flex-col gap-0.5">
+              {["artworks/3525.jpg", "artworks/3730.jpg", "artworks/6715.jpg", "artworks/7853.jpg", "artworks/7855.jpg"].map((img, index) => (
+                <div key={`left-${index}`} className="flex-1 overflow-hidden">
+                  <img
+                    src={`/${img}`}
+                    alt={`Gallery ${index + 1}`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const img = e.target as HTMLImageElement;
+                      img.onerror = null;
+                      img.src = '/placeholder.png';
+                    }}
+                  />
+                </div>
+              ))}
             </div>
-          ) : <div key={index} className="aspect-square bg-transparent" />)}
+            
+            {/* 中央の空白スペース（コンテンツ用） */}
+            <div className="flex-1" />
+            
+            {/* 右側の画像列 */}
+            <div className="w-24 flex flex-col gap-0.5">
+              {["artworks/8594.jpg", "artworks/10819.jpg", "artworks/10820.jpg", "artworks/10821.jpg", "artworks/10822.jpg"].map((img, index) => (
+                <div key={`right-${index}`} className="flex-1 overflow-hidden">
+                  <img
+                    src={`/${img}`}
+                    alt={`Gallery ${index + 1}`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const img = e.target as HTMLImageElement;
+                      img.onerror = null;
+                      img.src = '/placeholder.png';
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* 下部の画像列 */}
+          <div className="flex w-full gap-0.5 h-24">
+            {["artworks/10823.jpg", "artworks/14996.jpg", "artworks/1602605995.jpg", "artworks/02-scaled.jpg", "artworks/IMG_6937.jpg", "artworks/IMG_6964.JPG", "artworks/image-2.jpg", "artworks/image.png"].map((img, index) => (
+              <div key={`bottom-${index}`} className="flex-1 overflow-hidden">
+                <img
+                  src={`/${img}`}
+                  alt={`Gallery ${index + 1}`}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const img = e.target as HTMLImageElement;
+                    img.onerror = null;
+                    img.src = '/placeholder.png';
+                  }}
+                />
+              </div>
+            ))}
+          </div>
         </div>
         {/* メインコンテンツ */}
         <div className="relative z-10 min-h-screen flex items-center">
