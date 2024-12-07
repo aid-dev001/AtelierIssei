@@ -62,11 +62,11 @@ const ArtworkDetail = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div className="space-y-8">
-              <div className="aspect-square relative overflow-hidden rounded-2xl shadow-2xl bg-white group">
+              <div className="relative overflow-hidden shadow-2xl bg-white group">
                 <img
                   src={artwork.imageUrl}
                   alt={artwork.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full object-contain transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
