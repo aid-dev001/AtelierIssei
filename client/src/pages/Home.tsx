@@ -73,9 +73,8 @@ const Home = () => {
             <p className="text-xl md:text-2xl font-light mb-16 reveal-text tracking-widest text-gray-700">
               洗練された美の世界へ、心を解き放つ旅
             </p>
-            <div className="relative max-w-3xl mx-auto">
-              <div className="absolute inset-0 bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl transform -skew-y-1"></div>
-              <div className="relative space-y-8 p-16 rounded-2xl">
+            <div className="max-w-3xl mx-auto bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {poem.map((line, index) => (
                   <p 
                     key={index} 

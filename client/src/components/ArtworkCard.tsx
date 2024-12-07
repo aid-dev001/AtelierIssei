@@ -50,7 +50,7 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
         <h3 className="text-lg font-medium text-gray-800">{artwork.title}</h3>
         <p className="text-sm text-gray-600 line-clamp-2">{artwork.description}</p>
         <Button asChild className="w-full mt-2">
-          <Link href="/contact">お問い合わせ</Link>
+          <Link href={`/artwork/${artwork.id}`}>詳細を見る</Link>
         </Button>
       </CardFooter>
     </Card>
