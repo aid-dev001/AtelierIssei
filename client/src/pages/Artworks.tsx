@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Artwork } from "@db/schema";
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 12;
 
 const Artworks = () => {
   const [page, setPage] = useState(1);
@@ -19,7 +19,7 @@ const Artworks = () => {
   const paginatedArtworks = artworks?.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const LoadingSkeleton = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
       {[...Array(PAGE_SIZE)].map((_, i) => (
         <div key={i} className="space-y-4">
           <Skeleton className="w-full aspect-square" />
@@ -31,7 +31,7 @@ const Artworks = () => {
   );
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-12 container mx-auto px-4 py-8">
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4 tracking-wider">ARTWORKS</h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
@@ -44,7 +44,7 @@ const Artworks = () => {
         <LoadingSkeleton />
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {paginatedArtworks?.map((artwork) => (
               <ArtworkCard key={artwork.id} artwork={artwork} />
             ))}
