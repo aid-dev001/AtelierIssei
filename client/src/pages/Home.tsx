@@ -54,7 +54,7 @@ const Home = () => {
           {/* 上部の画像列 */}
           <div className="flex w-full gap-0.5">
             {["artworks/23313_0.jpg", "artworks/23317.jpg", "artworks/23677.jpg", "artworks/1912_0.jpg", "artworks/2266.jpg", "artworks/2914.jpg", "artworks/3316.jpg", "artworks/3446.jpg"].map((img, index) => (
-              <div key={`top-${index}`} className="w-16 h-16 overflow-hidden">
+              <div key={`top-${index}`} className="w-12 h-12 overflow-hidden">
                 <img
                   src={`/${img}`}
                   alt={`Gallery ${index + 1}`}
@@ -73,8 +73,8 @@ const Home = () => {
           <div className="flex flex-1 gap-0.5">
             {/* 左側の画像列 */}
             <div className="flex flex-col gap-0.5">
-              {["artworks/3525.jpg", "artworks/3730.jpg", "artworks/6715.jpg", "artworks/7853.jpg", "artworks/7855.jpg"].map((img, index) => (
-                <div key={`left-${index}`} className="w-16 h-16 overflow-hidden">
+              {["artworks/3525.jpg", "artworks/3730.jpg", "artworks/6715.jpg", "artworks/7853.jpg", "artworks/7855.jpg", "artworks/8594.jpg", "artworks/10819.jpg", "artworks/10820.jpg", "artworks/10821.jpg", "artworks/10822.jpg"].map((img, index) => (
+                <div key={`left-${index}`} className="w-12 h-12 overflow-hidden">
                   <img
                     src={`/${img}`}
                     alt={`Gallery ${index + 1}`}
@@ -94,8 +94,8 @@ const Home = () => {
             
             {/* 右側の画像列 */}
             <div className="flex flex-col gap-0.5">
-              {["artworks/8594.jpg", "artworks/10819.jpg", "artworks/10820.jpg", "artworks/10821.jpg", "artworks/10822.jpg"].map((img, index) => (
-                <div key={`right-${index}`} className="w-16 h-16 overflow-hidden">
+              {["artworks/10823.jpg", "artworks/14996.jpg", "artworks/1602605995.jpg", "artworks/02-scaled.jpg", "artworks/IMG_6937.jpg", "artworks/IMG_6964.JPG", "artworks/image-2.jpg", "artworks/image.png", "artworks/23313_0.jpg", "artworks/23317.jpg"].map((img, index) => (
+                <div key={`right-${index}`} className="w-12 h-12 overflow-hidden">
                   <img
                     src={`/${img}`}
                     alt={`Gallery ${index + 1}`}
@@ -114,7 +114,7 @@ const Home = () => {
           {/* 下部の画像列 */}
           <div className="flex w-full gap-0.5">
             {["artworks/10823.jpg", "artworks/14996.jpg", "artworks/1602605995.jpg", "artworks/02-scaled.jpg", "artworks/IMG_6937.jpg", "artworks/IMG_6964.JPG", "artworks/image-2.jpg", "artworks/image.png"].map((img, index) => (
-              <div key={`bottom-${index}`} className="w-16 h-16 overflow-hidden">
+              <div key={`bottom-${index}`} className="w-12 h-12 overflow-hidden">
                 <img
                   src={`/${img}`}
                   alt={`Gallery ${index + 1}`}
