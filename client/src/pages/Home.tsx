@@ -53,7 +53,7 @@ const Home = () => {
         <div className="absolute inset-0 grid grid-cols-12 gap-0.5">
           {[
             // Top row
-            "23313_0.jpg", "23317.jpg", "23677.jpg", "1912_0.jpg", "2266.jpg", "2914.jpg", "3316.jpg", "3446.jpg", "3525.jpg", "3730.jpg", "6715.jpg", "7853.jpg",
+            "artworks/23313_0.jpg", "artworks/23317.jpg", "artworks/23677.jpg", "artworks/1912_0.jpg", "artworks/2266.jpg", "artworks/2914.jpg", "artworks/3316.jpg", "artworks/3446.jpg", "artworks/3525.jpg", "artworks/3730.jpg", "artworks/6715.jpg", "artworks/7853.jpg",
             // Left side
             "7855.jpg", ...Array(10).fill(null), "8594.jpg",
             "10819.jpg", ...Array(10).fill(null), "10820.jpg",

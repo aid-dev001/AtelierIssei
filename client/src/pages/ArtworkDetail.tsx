@@ -13,10 +13,13 @@ const ArtworkDetail = () => {
   const { data: artwork, isLoading } = useQuery<Artwork>({
     queryKey: ["artwork", artworkId],
     queryFn: () => fetch(`/api/artworks/${artworkId}`).then(res => res.json()),
-    onSuccess: () => {
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    },
   });
+
+  useEffect(() => {
+    if (artwork) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [artwork]);
 
   if (isLoading) {
     return (
@@ -108,7 +111,7 @@ const ArtworkDetail = () => {
                 <div className="grid grid-cols-2 gap-6">
                   <div className="relative group">
                     <img
-                      src="/3316.jpg"
+                      src="/artworks/3316.jpg"
                       alt="Interior View 1"
                       className="w-full aspect-[4/3] object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105"
                     />
@@ -116,7 +119,7 @@ const ArtworkDetail = () => {
                   </div>
                   <div className="relative group">
                     <img
-                      src="/3446.jpg"
+                      src="/artworks/3446.jpg"
                       alt="Interior View 2"
                       className="w-full aspect-[4/3] object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105"
                     />
