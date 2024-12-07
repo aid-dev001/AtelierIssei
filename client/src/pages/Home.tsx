@@ -24,24 +24,28 @@ const Home = () => {
 
   return (
     <div className="space-y-20">
-      <section className="hero-section min-h-[90vh] flex items-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-white/60 backdrop-blur-sm"></div>
+      <section className="min-h-[90vh] flex items-center relative overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-90"
+          style={{ 
+            backgroundImage: "url('/hero.jpg')",
+            filter: "brightness(1.1) contrast(0.95)"
+          }}
+        />
         <div className="container mx-auto px-4 relative z-10">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 reveal-text">
-                ATELIER ISSEI
-              </h1>
-              <p className="text-xl md:text-2xl font-light mb-12 reveal-text">
-                見る人の心を豊かにする、幸せを呼ぶアート
-              </p>
-              <div className="space-y-6 bg-white/80 p-8 rounded-lg shadow-sm">
-                {poem.map((line, index) => (
-                  <p key={index} className="text-lg reveal-text tracking-wider leading-relaxed">
-                    {line}
-                  </p>
-                ))}
-              </div>
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 reveal-text">
+              ATELIER ISSEI
+            </h1>
+            <p className="text-xl md:text-2xl font-light mb-12 reveal-text">
+              見る人の心を豊かにする、幸せを呼ぶアート
+            </p>
+            <div className="space-y-6 bg-white/90 backdrop-blur-sm p-8 rounded-lg shadow-lg">
+              {poem.map((line, index) => (
+                <p key={index} className="text-lg reveal-text tracking-wider leading-relaxed">
+                  {line}
+                </p>
+              ))}
             </div>
           </div>
         </div>
