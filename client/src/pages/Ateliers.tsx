@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { MapPin, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useQuery } from "@tanstack/react-query";
+import type { Artwork } from "@db/schema";
 
 const ATELIER_LOCATIONS = ['池袋', '赤坂', '東新宿'] as const;
 type AtelierLocation = typeof ATELIER_LOCATIONS[number];

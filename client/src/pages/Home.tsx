@@ -216,8 +216,10 @@ const Home = () => {
                 <div className="p-6">
                   <h3 className="text-xl font-bold mb-2">{location}</h3>
                   <p className="text-gray-600 text-sm">{AtelierInfo[location].description}</p>
-                  <div className="mt-4 inline-block px-3 py-1 bg-primary/10 text-primary/80 rounded-full text-sm font-medium">
-                    {AtelierInfo[location].period}
+                  <div className="mt-4 flex items-center gap-2">
+                    <span className="px-3 py-1 bg-primary/10 text-primary/80 rounded-full text-sm font-medium">
+                      {AtelierInfo[location].period}
+                    </span>
                   </div>
                 </div>
               </div>
