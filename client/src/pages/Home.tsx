@@ -110,7 +110,7 @@ const Home = () => {
             <h2 className="text-3xl font-bold tracking-wider">Latest Exhibition</h2>
             <div className="relative group">
               <img
-                src="/artworks/images/image.png"
+                src="/1602605995.jpg"
                 alt="Latest Exhibition"
                 className="w-full h-[500px] object-cover rounded-xl shadow-xl"
               />
@@ -124,7 +124,7 @@ const Home = () => {
             <h2 className="text-3xl font-bold tracking-wider">Featured Collection</h2>
             <div className="relative group">
               <img
-                src="/artworks/images/3446.jpg"
+                src="/3446.jpg"
                 alt="Featured Collection"
                 className="w-full h-[500px] object-cover rounded-xl shadow-xl"
               />
