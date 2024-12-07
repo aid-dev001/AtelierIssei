@@ -37,21 +37,32 @@ const Artworks = () => {
 
   return (
     <div className="space-y-12 container mx-auto px-4 py-8">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 tracking-wider">ARTWORKS</h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          心の深淵から生まれる、希望のアート。
-          一枚一枚に込められた想いが、あなたの心に響きますように。
-        </p>
+      <div className="space-y-8 max-w-3xl mx-auto text-center">
+        <h1 className="text-5xl font-bold tracking-wider bg-gradient-to-r from-primary/80 to-primary bg-clip-text text-transparent">
+          ARTWORKS
+        </h1>
+        <div className="space-y-4">
+          <p className="text-xl text-gray-600 leading-relaxed">
+            心の深淵から生まれる、希望のアート
+          </p>
+          <p className="text-lg text-gray-500 leading-relaxed">
+            一枚一枚に込められた想いが、
+          </p>
+          <p className="text-lg text-gray-500 leading-relaxed">
+            あなたの心に響きますように
+          </p>
+        </div>
       </div>
 
       {isLoading ? (
         <LoadingSkeleton />
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12">
             {paginatedArtworks?.map((artwork) => (
-              <ArtworkCard key={artwork.id} artwork={artwork} />
+              <div key={artwork.id} className="flex flex-col">
+                <ArtworkCard artwork={artwork} />
+              </div>
             ))}
           </div>
 

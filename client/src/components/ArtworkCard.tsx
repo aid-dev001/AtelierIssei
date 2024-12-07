@@ -10,19 +10,21 @@ interface ArtworkCardProps {
 
 const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
   return (
-    <Card className="overflow-hidden group">
+    <Card className="overflow-hidden group hover:shadow-lg transition-all duration-300">
       <CardContent className="p-0 relative">
-        <img
-          src={artwork.imageUrl}
-          alt={artwork.title}
-          className="w-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105"
-          onError={(e) => {
-            const img = e.target as HTMLImageElement;
-            img.onerror = null;
-            console.error(`Failed to load image: ${artwork.imageUrl}`);
-            img.src = '/placeholder.png';
-          }}
-        />
+        <Link href={`/artwork/${artwork.id}`}>
+          <img
+            src={artwork.imageUrl}
+            alt={artwork.title}
+            className="w-full aspect-[4/5] object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
+            onError={(e) => {
+              const img = e.target as HTMLImageElement;
+              img.onerror = null;
+              console.error(`Failed to load image: ${artwork.imageUrl}`);
+              img.src = '/placeholder.png';
+            }}
+          />
+        </Link>
         <div className="absolute top-4 right-4 flex flex-col gap-2">
           <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium">
             {artwork.status === 'sold' ? 'SOLD' : 
