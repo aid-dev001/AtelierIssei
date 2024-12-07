@@ -65,51 +65,44 @@ const Testimonials = () => {
         <div className="container mx-auto px-4 py-20">
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-4xl font-bold mb-12 tracking-wider text-gray-700">VOICES</h1>
-            <div className="max-w-xl mx-auto space-y-8">
-              <p className="text-xl text-gray-700/90 leading-relaxed font-medium">
-                芸術を愛する方々からいただいた温かい言葉の数々。
-              </p>
-              <p className="text-xl text-gray-700/90 leading-relaxed font-medium">
-                それは私たちの創造への情熱を支える大切な励みとなっています。
-              </p>
-            </div>
+            <p className="text-xl text-gray-700/90 leading-relaxed font-medium max-w-2xl mx-auto">
+              芸術を愛する方々からいただいた言葉の数々が、私たちの創造への情熱を支えています。
+            </p>
           </div>
         </div>
       </section>
 
       <section className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div className="flex flex-col gap-12 max-w-4xl mx-auto">
           {testimonials.map((testimonial, index) => (
             <Card 
               key={index}
-              className="testimonial-card opacity-0 translate-y-4 transition-all duration-700 ease-out hover:shadow-lg"
+              className="testimonial-card opacity-0 translate-y-4 transition-all duration-700 ease-out hover:shadow-lg overflow-hidden"
             >
-              <CardContent className="p-6">
-                <div className="grid grid-cols-3 gap-6">
-                  <div className="col-span-1">
-                    <div className="relative aspect-square w-full overflow-hidden rounded-lg shadow-md bg-gray-100">
-                      <img 
-                        src={testimonial.imageUrl}
-                        alt={`Artwork appreciated by ${testimonial.name}`}
-                        className="absolute inset-0 w-full h-full object-cover"
-                        onError={(e) => {
-                          const img = e.target as HTMLImageElement;
-                          img.onerror = null;
-                          console.error(`Failed to load image: ${testimonial.imageUrl}`);
-                          img.src = '/placeholder.png';
-                        }}
-                      />
-                    </div>
+              <CardContent className="p-0">
+                <div className={`grid md:grid-cols-2 ${index % 2 === 0 ? 'md:grid-flow-col' : 'md:grid-flow-col-dense'}`}>
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <img 
+                      src={testimonial.imageUrl}
+                      alt={`Artwork appreciated by ${testimonial.name}`}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      onError={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        img.onerror = null;
+                        console.error(`Failed to load image: ${testimonial.imageUrl}`);
+                        img.src = '/placeholder.png';
+                      }}
+                    />
                   </div>
-                  <div className="col-span-2 space-y-4">
+                  <div className="p-8 space-y-6 flex flex-col justify-center">
                     <Quote className="w-8 h-8 text-gray-300" />
-                    <p className="text-base leading-relaxed text-gray-700 italic">
+                    <p className="text-lg leading-relaxed text-gray-700">
                       "{testimonial.content}"
                     </p>
-                    <div className="flex flex-col gap-1">
-                      <div className="font-semibold text-gray-700">{testimonial.name}</div>
-                      <div className="text-sm text-gray-700">{testimonial.title}</div>
-                      <div className="text-sm text-gray-700">{testimonial.location}</div>
+                    <div className="space-y-2">
+                      <div className="font-semibold text-gray-700 text-lg">{testimonial.name}</div>
+                      <div className="text-gray-600">{testimonial.title}</div>
+                      <div className="text-gray-600">{testimonial.location}</div>
                     </div>
                   </div>
                 </div>

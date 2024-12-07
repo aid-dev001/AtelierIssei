@@ -42,17 +42,9 @@ const Artworks = () => {
           <div className="container mx-auto px-4 py-20">
             <div className="text-center max-w-3xl mx-auto">
               <h1 className="text-4xl font-bold mb-12 tracking-wider text-gray-700">ARTWORKS</h1>
-              <div className="max-w-xl mx-auto space-y-8">
-                <p className="text-xl text-gray-700/90 leading-relaxed font-medium">
-                  アーティストisseiが、心が沈み、孤独を感じる瞬間、自らを励ますために描く希望のアート。
-                </p>
-                <p className="text-xl text-gray-700/90 leading-relaxed font-medium">
-                  華やかさの中に漂うほのかな儚さが、心の深淵を映し出しています。
-                </p>
-                <p className="text-xl text-gray-700/90 leading-relaxed font-medium">
-                  その一枚一枚が、見る人の心にそっと寄り添い、優雅で鮮やかな色彩と力強い形は、温かな幸福感と希望の光をもたらします。
-                </p>
-              </div>
+              <p className="text-xl text-gray-700/90 leading-relaxed font-medium max-w-2xl mx-auto">
+                アーティストisseiが、時に感じる孤独な心に寄り添い描く希望のアート。優雅で鮮やかな色彩と力強い形が、温かな幸福感と光をもたらします。
+              </p>
             </div>
           </div>
         </section>
