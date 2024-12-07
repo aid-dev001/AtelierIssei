@@ -16,7 +16,7 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
           <img
             src={artwork.imageUrl}
             alt={artwork.title}
-            className="w-full aspect-[4/5] object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
+            className="w-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
             onError={(e) => {
               const img = e.target as HTMLImageElement;
               img.onerror = null;

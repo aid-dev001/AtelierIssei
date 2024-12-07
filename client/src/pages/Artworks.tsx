@@ -17,7 +17,7 @@ const Artworks = () => {
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0 });
   };
 
   const totalPages = artworks ? Math.ceil(artworks.length / PAGE_SIZE) : 0;
