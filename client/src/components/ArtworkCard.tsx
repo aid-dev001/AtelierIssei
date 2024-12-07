@@ -11,9 +11,14 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
     <Card className="overflow-hidden group">
       <CardContent className="p-0 relative">
         <img
-          src={artwork.imageUrl}
+          src={artwork.imageUrl.startsWith('http') ? artwork.imageUrl : `${artwork.imageUrl}`}
           alt={artwork.title}
           className="w-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105"
+          onError={(e) => {
+            const img = e.target as HTMLImageElement;
+            img.onerror = null;
+            img.src = '/placeholder.jpg';
+          }}
         />
         {artwork.isAvailable && artwork.price && (
           <div className="absolute top-4 right-4 bg-white/90 px-3 py-1 rounded text-sm">
