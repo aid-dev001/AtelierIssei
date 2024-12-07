@@ -13,6 +13,9 @@ const ArtworkDetail = () => {
   const { data: artwork, isLoading } = useQuery<Artwork>({
     queryKey: ["artwork", artworkId],
     queryFn: () => fetch(`/api/artworks/${artworkId}`).then(res => res.json()),
+    onSuccess: () => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    },
   });
 
   if (isLoading) {
@@ -105,7 +108,7 @@ const ArtworkDetail = () => {
                 <div className="grid grid-cols-2 gap-6">
                   <div className="relative group">
                     <img
-                      src="/interior1.jpg"
+                      src="/12651.jpg"
                       alt="Interior View 1"
                       className="w-full aspect-[4/3] object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105"
                     />
@@ -113,7 +116,7 @@ const ArtworkDetail = () => {
                   </div>
                   <div className="relative group">
                     <img
-                      src="/interior2.jpg"
+                      src="/12652.jpg"
                       alt="Interior View 2"
                       className="w-full aspect-[4/3] object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105"
                     />

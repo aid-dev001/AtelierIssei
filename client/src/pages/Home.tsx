@@ -53,13 +53,13 @@ const Home = () => {
         <div className="absolute inset-0 grid grid-cols-12 gap-0.5">
           {[
             // Top row
-            ...Array(12).fill(null).map((_, i) => `1268${i}.jpg`),
+            "IMG_7161.jpg", "IMG_7162.jpg", "IMG_7163.jpg", "IMG_7164.jpg", "IMG_7165.jpg", "IMG_7166.jpg", "IMG_7167.jpg", "IMG_7168.jpg", "IMG_7169.jpg", "IMG_7170.jpg", "IMG_7171.jpg", "IMG_7172.jpg",
             // Left side
-            "12692.jpg", ...Array(10).fill(null), "12693.jpg",
-            "12694.jpg", ...Array(10).fill(null), "12695.jpg",
-            "12696.jpg", ...Array(10).fill(null), "12697.jpg",
+            "IMG_7173.jpg", ...Array(10).fill(null), "IMG_7174.jpg",
+            "IMG_7175.jpg", ...Array(10).fill(null), "IMG_7176.jpg",
+            "IMG_7177.jpg", ...Array(10).fill(null), "IMG_7178.jpg",
             // Bottom row
-            ...Array(12).fill(null).map((_, i) => `1269${i}.jpg`),
+            "IMG_7179.jpg", "IMG_7180.jpg", "IMG_7181.jpg", "IMG_7182.jpg", "IMG_7183.jpg", "IMG_7184.jpg", "IMG_7185.jpg", "IMG_7186.jpg", "IMG_7187.jpg", "IMG_7188.jpg", "IMG_7189.jpg", "IMG_7190.jpg",
           ].map((img, index) => img ? (
             <div key={index} className="aspect-square overflow-hidden bg-white/5">
               <img
