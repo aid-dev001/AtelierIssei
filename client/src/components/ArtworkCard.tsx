@@ -1,6 +1,6 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin } from "lucide-react";
+import { Palette, Building2 } from "lucide-react";
 import { type Artwork } from "@db/schema";
 import { Link } from "wouter";
 
@@ -26,13 +26,13 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
         <div className="absolute top-4 right-4 bg-white/90 px-3 py-1 rounded-md text-sm font-medium">
           ASK
         </div>
-        <div className="absolute bottom-4 left-4 space-y-2">
+        <div className="absolute bottom-4 left-4 flex gap-2">
           <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium flex items-center gap-1.5">
-            <MapPin className="w-4 h-4" />
+            <Palette className="w-4 h-4" />
             作成: {artwork.createdLocation || '銀座'}
           </div>
           <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium flex items-center gap-1.5">
-            <MapPin className="w-4 h-4" />
+            <Building2 className="w-4 h-4" />
             展示: {artwork.storedLocation || '銀座'}
           </div>
         </div>
