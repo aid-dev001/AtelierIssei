@@ -10,6 +10,7 @@ const Navbar = () => {
   const links = [
     { href: "/", label: "TOP" },
     { href: "/artworks", label: "ARTWORKS" },
+    { href: "/ateliers", label: "ATELIER" },
     { href: "/profile", label: "PROFILE" },
     { href: "/news", label: "NEWS" },
     { href: "/voices", label: "VOICES" },

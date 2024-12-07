@@ -11,6 +11,7 @@ import ArtworkDetail from "./pages/ArtworkDetail";
 import Profile from "./pages/Profile";
 import News from "./pages/News";
 import Contact from "./pages/Contact";
+import Ateliers from "./pages/Ateliers";
 import Testimonials from "./pages/Testimonials";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -28,6 +29,7 @@ function Router() {
           <Route path="/news" component={News} />
           <Route path="/voices" component={Testimonials} />
           <Route path="/contact" component={Contact} />
+          <Route path="/ateliers" component={Ateliers} />
           <Route>404 Page Not Found</Route>
         </Switch>
       </main>
