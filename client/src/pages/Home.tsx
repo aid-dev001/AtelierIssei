@@ -70,8 +70,8 @@ const Home = () => {
   return (
     <div className="space-y-20">
       <section className="min-h-screen relative">
-        <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-1 absolute inset-0">
-          {[...Array(48)].map((_, index) => (
+        <div className="grid grid-cols-8 md:grid-cols-12 lg:grid-cols-16 gap-0.5 absolute inset-0">
+          {[...Array(192)].map((_, index) => (
             <div key={index} className="aspect-square overflow-hidden">
               <img
                 src={`/artworks/${[

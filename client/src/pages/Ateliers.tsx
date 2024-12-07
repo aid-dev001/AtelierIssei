@@ -95,13 +95,15 @@ const Ateliers = () => {
                 }`}
                 onClick={() => setSelectedLocation(location)}
               >
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <div className="flex items-center gap-3">
                     <MapPin className="w-5 h-5" />
                     <span className="font-bold tracking-wide">{location}</span>
                   </div>
-                  <div className="text-sm font-medium pl-8">
-                    {AtelierInfo[location].period}
+                  <div className="pl-8">
+                    <span className="inline-block bg-primary/10 text-primary/90 px-3 py-1 rounded-full text-sm font-medium tracking-wide">
+                      {AtelierInfo[location].period}
+                    </span>
                   </div>
                 </div>
               </div>
