@@ -245,6 +245,36 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Art Concept */}
+      <section className="container mx-auto px-4 py-20">
+        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">ART CONCEPT</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-1">
+          {[...Array(32)].map((_, index) => (
+            <div
+              key={index}
+              className={`aspect-square overflow-hidden transition-transform hover:scale-105 cursor-pointer
+                ${index % 8 === 0 ? 'bg-red-400' : ''}
+                ${index % 8 === 1 ? 'bg-orange-400' : ''}
+                ${index % 8 === 2 ? 'bg-yellow-400' : ''}
+                ${index % 8 === 3 ? 'bg-green-400' : ''}
+                ${index % 8 === 4 ? 'bg-blue-400' : ''}
+                ${index % 8 === 5 ? 'bg-indigo-400' : ''}
+                ${index % 8 === 6 ? 'bg-purple-400' : ''}
+                ${index % 8 === 7 ? 'bg-pink-400' : ''}`}
+            >
+              <div className="w-full h-full opacity-80 hover:opacity-100 transition-opacity" />
+            </div>
+          ))}
+        </div>
+        <div className="max-w-2xl mx-auto mt-16 text-center">
+          <p className="text-xl text-gray-700 leading-relaxed">
+            色彩と感情が織りなす独自の世界観。
+            一つ一つの作品に込められた想いが、
+            見る人の心に深く響き渡ります。
+          </p>
+        </div>
+      </section>
+
       {/* Collections */}
       <section className="container mx-auto px-4 py-20">
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">COLLECTIONS</h2>
