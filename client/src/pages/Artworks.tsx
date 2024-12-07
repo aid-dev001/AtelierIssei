@@ -37,20 +37,25 @@ const Artworks = () => {
 
   return (
     <div className="space-y-12 container mx-auto px-4 py-8">
-      <div className="space-y-8 max-w-3xl mx-auto text-center">
-        <h1 className="text-5xl font-bold tracking-wider bg-gradient-to-r from-primary/80 to-primary bg-clip-text text-transparent">
+      <div className="max-w-2xl mx-auto text-center">
+        <h1 className="text-5xl font-bold tracking-[0.2em] text-gray-800/90 mb-16">
           ARTWORKS
         </h1>
-        <div className="space-y-4">
-          <p className="text-xl text-gray-600 leading-relaxed">
-            心の深淵から生まれる、希望のアート
-          </p>
-          <p className="text-lg text-gray-500 leading-relaxed">
-            一枚一枚に込められた想いが、
-          </p>
-          <p className="text-lg text-gray-500 leading-relaxed">
-            あなたの心に響きますように
-          </p>
+        <div className="relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white pointer-events-none" />
+          <div className="space-y-8 py-8">
+            <p className="text-2xl font-light tracking-[0.15em] text-gray-700/90 leading-relaxed">
+              心の深淵から生まれる、
+              <br />
+              希望のアート
+            </p>
+            <div className="h-px w-12 bg-gray-300 mx-auto" />
+            <p className="text-lg font-light tracking-wider text-gray-600/90 leading-loose">
+              一枚一枚に込められた想いが、
+              <br />
+              あなたの心に響きますように
+            </p>
+          </div>
         </div>
       </div>
 

@@ -49,8 +49,8 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
         </div>
       </CardContent>
       <CardFooter className="flex flex-col items-start gap-2 p-4">
-        <h3 className="text-lg font-medium text-gray-800">{artwork.title}</h3>
-        <p className="text-sm text-gray-600 line-clamp-2">{artwork.description}</p>
+        <h3 className="text-lg font-medium text-gray-700/90 tracking-wide">{artwork.title}</h3>
+        <p className="text-sm text-gray-600/80 line-clamp-2 leading-relaxed">{artwork.description}</p>
         <Button asChild className="w-full mt-2">
           <Link href={`/artwork/${artwork.id}`}>詳細を見る</Link>
         </Button>
