@@ -26,15 +26,13 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
         <div className="absolute top-4 right-4 bg-white/90 px-3 py-1 rounded-md text-sm font-medium">
           ASK
         </div>
-        {artwork.location && (
-          <div className="absolute bottom-4 left-4 bg-white/90 px-3 py-1 rounded-md text-sm font-medium flex items-center gap-1.5">
-            <MapPin className="w-4 h-4" />
-            {artwork.location}
-          </div>
-        )}
+        <div className="absolute bottom-4 left-4 bg-white/90 px-3 py-1 rounded-md text-sm font-medium flex items-center gap-1.5">
+          <MapPin className="w-4 h-4" />
+          {artwork.location || '東京都中央区銀座 ATELIER ISSEI本店'}
+        </div>
       </CardContent>
       <CardFooter className="flex flex-col items-start gap-2 p-4">
-        <h3 className="text-lg font-medium">{artwork.title}</h3>
+        <h3 className="text-lg font-medium text-gray-800">{artwork.title}</h3>
         <p className="text-sm text-gray-600 line-clamp-2">{artwork.description}</p>
         <Button asChild className="w-full mt-2">
           <Link href="/contact">お問い合わせ</Link>

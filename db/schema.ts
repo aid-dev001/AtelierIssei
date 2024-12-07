@@ -8,6 +8,7 @@ export const artworks = pgTable("artworks", {
   description: text("description").notNull(),
   imageUrl: text("image_url").notNull(),
   price: numeric("price"),
+  location: text("location"),
   isAvailable: boolean("is_available").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
