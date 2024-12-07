@@ -41,10 +41,14 @@ const Testimonials = () => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('animate-in');
+          entry.target.classList.add('opacity-100', 'translate-y-0');
+          entry.target.classList.remove('opacity-0', 'translate-y-4');
         }
       });
-    }, { threshold: 0.1 });
+    }, { 
+      threshold: 0.2,
+      rootMargin: '50px'
+    });
 
     cards.forEach(card => observer.observe(card));
     return () => observer.disconnect();
@@ -71,7 +75,7 @@ const Testimonials = () => {
           {testimonials.map((testimonial, index) => (
             <Card 
               key={index}
-              className={`testimonial-card opacity-0 transition-all duration-700 delay-${index * 100} hover:shadow-lg`}
+              className={`testimonial-card opacity-100 translate-y-4 transition-all duration-700 ease-out delay-${index * 100} hover:shadow-lg`}
             >
               <CardContent className="p-8 relative">
                 <Quote className="absolute top-6 left-6 w-8 h-8 text-primary/10" />
