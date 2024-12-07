@@ -15,6 +15,11 @@ const Artworks = () => {
     queryFn: () => fetch("/api/artworks").then(res => res.json()),
   });
 
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const totalPages = artworks ? Math.ceil(artworks.length / PAGE_SIZE) : 0;
   const paginatedArtworks = artworks?.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
@@ -55,7 +60,7 @@ const Artworks = () => {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => setPage(p => Math.max(1, p - 1))}
+                onClick={() => handlePageChange(Math.max(1, page - 1))}
                 disabled={page === 1}
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -66,7 +71,7 @@ const Artworks = () => {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
                 disabled={page === totalPages}
               >
                 <ChevronRight className="h-4 w-4" />
