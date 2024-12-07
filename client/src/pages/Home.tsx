@@ -1,7 +1,30 @@
 import { useEffect } from "react";
-import CustomMap from "@/components/Map";
-import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { Button } from "@/components/ui/button";
+import CustomMap from "@/components/Map";
+
+const ATELIER_LOCATIONS = ['池袋', '赤坂', '東新宿'] as const;
+
+const AtelierInfo = {
+  '池袋': {
+    description: "都会の喧騒の中で見つけた静寂を表現するアトリエ",
+    address: "東京都豊島区池袋",
+    period: "2020-2022",
+    mainImage: "/artworks/12648.jpg",
+  },
+  '赤坂': {
+    description: "伝統と革新が交差する街で生まれる新しい表現",
+    address: "東京都港区赤坂",
+    period: "2022-2023",
+    mainImage: "/artworks/12653.jpg",
+  },
+  '東新宿': {
+    description: "多様な文化が混ざり合う場所からインスピレーションを得る",
+    address: "東京都新宿区新宿",
+    period: "2023-現在",
+    mainImage: "/artworks/12658.jpg",
+  }
+} as const;
 
 const Home = () => {
   useEffect(() => {
@@ -10,8 +33,6 @@ const Home = () => {
       (el as HTMLElement).style.animationDelay = `${i * 0.2}s`;
     });
   }, []);
-
-  // Hero section content
 
   const locations = [
     {
@@ -171,41 +192,34 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-          <div className="space-y-8">
-            <h2 className="text-3xl font-bold tracking-wider">Latest Exhibition</h2>
-            <div className="space-y-4">
-              <div className="relative group">
-                <img
-                  src="/1602605995.jpg"
-                  alt="Latest Exhibition"
-                  className="w-full h-[500px] object-cover rounded-xl shadow-xl"
-                />
-                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+      {/* Ateliers Summary */}
+      <section className="bg-gray-50/80 py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">ATELIER</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {ATELIER_LOCATIONS.map((location) => (
+              <div key={location} className="bg-white rounded-xl shadow-lg overflow-hidden group">
+                <Link href={`/ateliers/${location}`}> {/* Added Link here */}
+                  <div className="aspect-[4/3] relative overflow-hidden cursor-pointer">
+                    <img
+                      src={AtelierInfo[location].mainImage}
+                      alt={`${location}アトリエ`}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button variant="outline" className="text-white border-white hover:bg-white/20">
+                        View More
+                      </Button>
+                    </div>
+                  </div>
+                </Link>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold mb-2">{location}</h3>
+                  <p className="text-gray-600 text-sm">{AtelierInfo[location].description}</p>
+                  <p className="text-gray-500 text-sm mt-4">{AtelierInfo[location].period}</p>
+                </div>
               </div>
-              <div className="text-left space-y-2">
-                <p className="text-lg font-medium text-gray-800">Gallery Art.C</p>
-                <p className="text-gray-600">東京都中央区銀座</p>
-              </div>
-            </div>
-            <Button asChild className="w-full h-12 text-lg">
-              <Link href="/artworks">View Gallery</Link>
-            </Button>
-          </div>
-          <div className="space-y-8">
-            <h2 className="text-3xl font-bold tracking-wider">Featured Collection</h2>
-            <div className="relative group">
-              <img
-                src="/3446.jpg"
-                alt="Featured Collection"
-                className="w-full h-[500px] object-cover rounded-xl shadow-xl"
-              />
-              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
-            </div>
-            <Button asChild variant="outline" className="w-full h-12 text-lg">
-              <Link href="/news">Latest News</Link>
-            </Button>
+            ))}
           </div>
         </div>
       </section>
@@ -226,92 +240,8 @@ const Home = () => {
                   img.src = '/placeholder.png';
                 }}
               />
-              
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* Concept */}
-      <section className="py-32">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto space-y-16">
-            <h2 className="text-4xl font-bold text-center tracking-[0.2em] text-gray-800">
-              CONCEPT
-            </h2>
-            <div className="space-y-12">
-              <div className="space-y-6 text-center">
-                <p className="text-xl tracking-[0.15em] leading-relaxed text-gray-700">
-                  優しさと力強さが共存する独自の表現世界。
-                  シンプルな形態と鮮やかな色彩で、
-                  見る人の心に寄り添う作品を制作しています。
-                </p>
-                <p className="text-lg tracking-[0.15em] leading-relaxed text-gray-600">
-                  時に感じる孤独な心に、
-                  温かな光をもたらすような作品を。
-                  それが、私たちの目指すアートです。
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Media Coverage */}
-      <section className="container mx-auto px-4 py-20">
-        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">MEDIA</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div className="bg-white rounded-xl shadow-lg p-8 space-y-4">
-            <div className="text-xl font-medium">Art Journal Magazine</div>
-            <p className="text-gray-600">"現代アートシーンに新風を吹き込む注目のアーティスト"</p>
-            <div className="text-sm text-gray-500">2024年1月号</div>
-          </div>
-          <div className="bg-white rounded-xl shadow-lg p-8 space-y-4">
-            <div className="text-xl font-medium">Contemporary Art Review</div>
-            <p className="text-gray-600">"伝統と革新の融合：ISSEI's Vision"</p>
-            <div className="text-sm text-gray-500">2023年12月特集</div>
-          </div>
-        </div>
-      </section>
-
-      {/* Special Events */}
-      <section className="bg-gray-50/80 py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">SPECIAL EVENTS</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="relative group aspect-[4/3] overflow-hidden rounded-xl shadow-xl">
-              <img
-                src="/12651.jpg"
-                alt="Workshop"
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                onError={(e) => {
-                  const img = e.target as HTMLImageElement;
-                  img.onerror = null;
-                  img.src = '/placeholder.png';
-                }}
-              />
-              <div className="absolute inset-0 p-8 text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="text-2xl font-medium mb-4">アーティストワークショップ</div>
-                <p>ISSEIと共に創造性を探求する特別なワークショップを開催</p>
-              </div>
-            </div>
-            <div className="relative group aspect-[4/3] overflow-hidden rounded-xl shadow-xl">
-              <img
-                src="/12652.jpg"
-                alt="Exhibition"
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                onError={(e) => {
-                  const img = e.target as HTMLImageElement;
-                  img.onerror = null;
-                  img.src = '/placeholder.png';
-                }}
-              />
-              <div className="absolute inset-0 p-8 text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="text-2xl font-medium mb-4">プライベート展示会</div>
-                <p>限定公開の特別展示会。新作のプレビューと対話の機会を提供</p>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 

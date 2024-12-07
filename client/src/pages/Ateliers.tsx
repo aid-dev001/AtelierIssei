@@ -1,9 +1,6 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import ArtworkCard from "@/components/ArtworkCard";
-import { Skeleton } from "@/components/ui/skeleton";
-import type { Artwork } from "@db/schema";
-import { MapPin } from "lucide-react";
+import { MapPin, Camera } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const ATELIER_LOCATIONS = ['池袋', '赤坂', '東新宿'] as const;
 type AtelierLocation = typeof ATELIER_LOCATIONS[number];
@@ -12,17 +9,38 @@ const AtelierInfo = {
   '池袋': {
     description: "都会の喧騒の中で見つけた静寂を表現するアトリエ",
     address: "東京都豊島区池袋",
-    period: "2020-2022"
+    period: "2020-2022",
+    mainImage: "/artworks/12648.jpg",
+    galleryImages: [
+      "/artworks/12649.jpg",
+      "/artworks/12650.jpg",
+      "/artworks/12651.jpg",
+      "/artworks/12652.jpg"
+    ]
   },
   '赤坂': {
     description: "伝統と革新が交差する街で生まれる新しい表現",
     address: "東京都港区赤坂",
-    period: "2022-2023"
+    period: "2022-2023",
+    mainImage: "/artworks/12653.jpg",
+    galleryImages: [
+      "/artworks/12654.jpg",
+      "/artworks/12655.jpg",
+      "/artworks/12656.jpg",
+      "/artworks/12657.jpg"
+    ]
   },
   '東新宿': {
     description: "多様な文化が混ざり合う場所からインスピレーションを得る",
     address: "東京都新宿区新宿",
-    period: "2023-現在"
+    period: "2023-現在",
+    mainImage: "/artworks/12658.jpg",
+    galleryImages: [
+      "/artworks/12659.jpg",
+      "/artworks/12660.jpg",
+      "/artworks/12661.jpg",
+      "/artworks/12662.jpg"
+    ]
   }
 } as const;
 
@@ -84,24 +102,43 @@ const Ateliers = () => {
 
           {/* メインコンテンツ */}
           <div className="flex-1 space-y-8">
-            <div className="bg-white p-6 rounded-xl shadow-sm">
+            {/* アトリエ情報 */}
+            <div className="bg-white p-6 rounded-xl shadow-lg">
               <h2 className="text-2xl font-bold mb-4">{selectedLocation}</h2>
               <p className="text-gray-600 mb-4">{AtelierInfo[selectedLocation].description}</p>
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-gray-500 mb-6">
                 <p>住所：{AtelierInfo[selectedLocation].address}</p>
                 <p>制作期間：{AtelierInfo[selectedLocation].period}</p>
               </div>
             </div>
 
-            {isLoading ? (
-              <LoadingSkeleton />
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {artworks?.map((artwork) => (
-                  <ArtworkCard key={artwork.id} artwork={artwork} />
+            {/* メイン画像 */}
+            <div className="aspect-[16/9] relative overflow-hidden rounded-xl shadow-xl">
+              <img
+                src={AtelierInfo[selectedLocation].mainImage}
+                alt={`${selectedLocation}アトリエ メイン写真`}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* ギャラリー */}
+            <div className="space-y-4">
+              <h3 className="text-xl font-medium flex items-center gap-2">
+                <Camera className="w-5 h-5" />
+                ギャラリー
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {AtelierInfo[selectedLocation].galleryImages.map((image, index) => (
+                  <div key={index} className="aspect-square relative overflow-hidden rounded-lg shadow-md group">
+                    <img
+                      src={image}
+                      alt={`${selectedLocation}アトリエ ギャラリー${index + 1}`}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
                 ))}
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
