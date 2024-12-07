@@ -61,8 +61,8 @@ const Testimonials = () => {
 
   return (
     <div className="space-y-20">
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-background to-background/50 pointer-events-none" />
+      <section className="relative overflow-hidden bg-gray-50/80">
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-white/95 to-white/90 pointer-events-none" />
         <div className="container mx-auto px-4 py-20">
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-4xl font-bold mb-6 tracking-wider text-gray-700">VOICES</h1>
