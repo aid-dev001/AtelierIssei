@@ -8,35 +8,35 @@ const testimonials = [
     title: "美術館キュレーター",
     content: "ISSEIの作品には魂が宿っています。観る者の心に直接語りかけてくるような力強さと繊細さを持ち合わせており、多くの来館者から感動の声をいただいています。",
     location: "東京都現代美術館",
-    imageUrl: "/23313_0.jpg"
+    imageUrl: "/artworks/3446.jpg"
   },
   {
     name: "Jean-Pierre Dubois",
     title: "アートコレクター",
     content: "日本の伝統と現代アートの融合が見事です。彼の作品は私のコレクションの中でも特別な存在となっています。",
     location: "パリ",
-    imageUrl: "/23317.jpg"
+    imageUrl: "/artworks/3525.jpg"
   },
   {
     name: "山田 誠",
     title: "建築家",
     content: "空間に調和をもたらす稀有な才能を持つアーティストです。彼の作品は、建築空間に新たな生命を吹き込んでくれます。",
     location: "大阪",
-    imageUrl: "/23313_0.jpg"
+    imageUrl: "/artworks/3316.jpg"
   },
   {
     name: "Sarah Thompson",
     title: "ギャラリーオーナー",
     content: "ISSEIの作品は、グローバルなアート市場で高い評価を受けています。その独特な視点と表現力は、世界中のコレクターを魅了しています。",
     location: "ニューヨーク",
-    imageUrl: "/23317.jpg"
+    imageUrl: "/artworks/2914.jpg"
   },
   {
     name: "中村 洋子",
     title: "美術評論家",
     content: "現代アートシーンにおいて、ISSEIは特筆すべき存在です。その作品は時代を超えて語り継がれていくでしょう。",
     location: "京都",
-    imageUrl: "/23313_0.jpg"
+    imageUrl: "/artworks/2266.jpg"
   }
 ];
 
@@ -84,11 +84,16 @@ const Testimonials = () => {
               <CardContent className="p-6">
                 <div className="grid grid-cols-3 gap-6">
                   <div className="col-span-1">
-                    <div className="relative h-32 w-full overflow-hidden rounded-lg shadow-md">
+                    <div className="relative h-32 w-full overflow-hidden rounded-lg shadow-md bg-gray-100">
                       <img 
                         src={testimonial.imageUrl} 
                         alt={`Artwork appreciated by ${testimonial.name}`}
                         className="absolute inset-0 w-full h-full object-cover"
+                        onError={(e) => {
+                          const img = e.target as HTMLImageElement;
+                          img.onerror = null;
+                          img.src = '/artworks/3446.jpg';
+                        }}
                       />
                     </div>
                   </div>

@@ -73,12 +73,22 @@ const Home = () => {
             <p className="text-xl md:text-2xl font-light mb-16 reveal-text tracking-widest text-gray-700">
               洗練された美の世界へ、心を解き放つ旅
             </p>
-            <div className="space-y-6 bg-white/95 backdrop-blur-sm p-12 rounded-xl shadow-2xl">
-              {poem.map((line, index) => (
-                <p key={index} className="text-lg reveal-text tracking-wider leading-relaxed font-medium">
-                  {line}
-                </p>
-              ))}
+            <div className="relative max-w-3xl mx-auto">
+              <div className="absolute inset-0 bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl transform -skew-y-1"></div>
+              <div className="relative space-y-8 p-16 rounded-2xl">
+                {poem.map((line, index) => (
+                  <p 
+                    key={index} 
+                    className="text-lg reveal-text tracking-wider leading-relaxed font-medium text-gray-800"
+                    style={{
+                      animationDelay: `${index * 0.15}s`,
+                      textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                    }}
+                  >
+                    {line}
+                  </p>
+                ))}
+              </div>
             </div>
           </div>
         </div>
