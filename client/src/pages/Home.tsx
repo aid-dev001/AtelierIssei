@@ -75,8 +75,7 @@ const Home = () => {
             </div>
           ) : <div key={index} className="aspect-square bg-transparent" />)}
         </div>
-        {/* オーバーレイとコンテンツ */}
-        <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px]" />
+        {/* メインコンテンツ */}
         <div className="relative z-10 min-h-screen flex items-center">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
@@ -173,7 +172,7 @@ const Home = () => {
                   img.src = '/placeholder.png';
                 }}
               />
-              <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity group-hover:opacity-100" />
+              
             </div>
           ))}
         </div>
@@ -237,7 +236,7 @@ const Home = () => {
                   img.src = '/placeholder.png';
                 }}
               />
-              <div className="absolute inset-0 bg-black/50 p-8 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute inset-0 p-8 text-white opacity-0 group-hover:opacity-100 transition-opacity">
                 <div className="text-2xl font-medium mb-4">アーティストワークショップ</div>
                 <p>ISSEIと共に創造性を探求する特別なワークショップを開催</p>
               </div>
@@ -253,7 +252,7 @@ const Home = () => {
                   img.src = '/placeholder.png';
                 }}
               />
-              <div className="absolute inset-0 bg-black/50 p-8 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute inset-0 p-8 text-white opacity-0 group-hover:opacity-100 transition-opacity">
                 <div className="text-2xl font-medium mb-4">プライベート展示会</div>
                 <p>限定公開の特別展示会。新作のプレビューと対話の機会を提供</p>
               </div>

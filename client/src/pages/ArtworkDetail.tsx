@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -71,7 +72,7 @@ const ArtworkDetail = () => {
                   alt={artwork.title}
                   className="w-full object-contain transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                
               </div>
               <div className="flex gap-4">
                 <div className="bg-white/90 backdrop-blur px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
@@ -115,15 +116,13 @@ const ArtworkDetail = () => {
                       alt="Interior View 1"
                       className="w-full aspect-[4/3] object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
-                  </div>
+                    </div>
                   <div className="relative group">
                     <img
                       src="/artworks/3446.jpg"
                       alt="Interior View 2"
                       className="w-full aspect-[4/3] object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
                   </div>
                 </div>
                 <p className="text-sm text-gray-500/80 text-center">
