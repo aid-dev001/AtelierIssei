@@ -17,11 +17,33 @@ const ArtworkDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8 space-y-8">
-        <Skeleton className="h-[600px] w-full" />
-        <div className="space-y-4">
-          <Skeleton className="h-8 w-1/3" />
-          <Skeleton className="h-4 w-2/3" />
+      <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div className="space-y-8">
+                <Skeleton className="aspect-square rounded-2xl" />
+                <div className="flex gap-4">
+                  <Skeleton className="h-9 w-32 rounded-lg" />
+                  <Skeleton className="h-9 w-32 rounded-lg" />
+                </div>
+              </div>
+              <div className="space-y-8">
+                <div className="space-y-4">
+                  <Skeleton className="h-10 w-2/3" />
+                  <Skeleton className="h-24 w-full" />
+                </div>
+                <Skeleton className="h-24 rounded-xl" />
+                <div className="space-y-6">
+                  <Skeleton className="h-8 w-48" />
+                  <div className="grid grid-cols-2 gap-6">
+                    <Skeleton className="aspect-[4/3] rounded-lg" />
+                    <Skeleton className="aspect-[4/3] rounded-lg" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -37,37 +59,38 @@ const ArtworkDetail = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div className="space-y-8">
-              <div className="aspect-[4/5] relative overflow-hidden rounded-2xl shadow-2xl bg-white">
+              <div className="aspect-square relative overflow-hidden rounded-2xl shadow-2xl bg-white group">
                 <img
                   src={artwork.imageUrl}
                   alt={artwork.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
+                <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <div className="flex gap-4">
-                <div className="bg-white/90 px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2">
-                  <Palette className="w-4 h-4" />
+                <div className="bg-white/90 backdrop-blur px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
+                  <Palette className="w-4 h-4 text-primary/80" />
                   作成: {artwork.createdLocation || '銀座'}
                 </div>
-                <div className="bg-white/90 px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2">
-                  <Building2 className="w-4 h-4" />
+                <div className="bg-white/90 backdrop-blur px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
+                  <Building2 className="w-4 h-4 text-primary/80" />
                   展示: {artwork.storedLocation || '銀座'}
                 </div>
               </div>
             </div>
             
             <div className="space-y-8">
-              <div>
-                <h1 className="text-3xl font-bold mb-4">{artwork.title}</h1>
-                <p className="text-gray-600 text-lg leading-relaxed whitespace-pre-wrap">
+              <div className="space-y-4">
+                <h1 className="text-3xl font-bold tracking-wide text-gray-800/90">{artwork.title}</h1>
+                <p className="text-gray-600/90 text-lg leading-relaxed whitespace-pre-wrap">
                   {artwork.description}
                 </p>
               </div>
               
-              <div className="bg-white/90 px-6 py-4 rounded-xl">
-                <div className="text-2xl font-bold mb-2">
-                  {artwork.status === 'sold' ? 'SOLD' : 
-                   artwork.status === 'reserved' ? '予約済' :
+              <div className="bg-white/90 backdrop-blur px-8 py-6 rounded-xl shadow-sm">
+                <div className="text-2xl font-bold mb-3 tracking-wide text-gray-800/90">
+                  {artwork.status === 'sold' ? 'SOLD OUT' : 
+                   artwork.status === 'reserved' ? '予約済み' :
                    `¥${Number(artwork.price).toLocaleString()}`}
                 </div>
                 {artwork.status === 'available' && (
@@ -76,20 +99,30 @@ const ArtworkDetail = () => {
                   </Button>
                 )}
               </div>
-              <div className="space-y-4">
-                <h2 className="text-xl font-bold">インテリアイメージ</h2>
-                <div className="grid grid-cols-2 gap-4">
-                  <img
-                    src="/interior1.jpg"
-                    alt="Interior View 1"
-                    className="w-full aspect-[4/3] object-cover rounded-lg shadow-md"
-                  />
-                  <img
-                    src="/interior2.jpg"
-                    alt="Interior View 2"
-                    className="w-full aspect-[4/3] object-cover rounded-lg shadow-md"
-                  />
+
+              <div className="space-y-6">
+                <h2 className="text-2xl font-bold tracking-wide text-gray-800/90">インテリアイメージ</h2>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="relative group">
+                    <img
+                      src="/interior1.jpg"
+                      alt="Interior View 1"
+                      className="w-full aspect-[4/3] object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
+                  </div>
+                  <div className="relative group">
+                    <img
+                      src="/interior2.jpg"
+                      alt="Interior View 2"
+                      className="w-full aspect-[4/3] object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
+                  </div>
                 </div>
+                <p className="text-sm text-gray-500/80 text-center">
+                  ※ インテリアイメージは参考例です
+                </p>
               </div>
             </div>
           </div>
