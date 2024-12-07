@@ -10,6 +10,7 @@ import Artworks from "./pages/Artworks";
 import Profile from "./pages/Profile";
 import News from "./pages/News";
 import Contact from "./pages/Contact";
+import Testimonials from "./pages/Testimonials";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -23,6 +24,7 @@ function Router() {
           <Route path="/artworks" component={Artworks} />
           <Route path="/profile" component={Profile} />
           <Route path="/news" component={News} />
+          <Route path="/voices" component={Testimonials} />
           <Route path="/contact" component={Contact} />
           <Route>404 Page Not Found</Route>
         </Switch>

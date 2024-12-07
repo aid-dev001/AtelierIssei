@@ -6,7 +6,7 @@ const Profile = () => {
           <h1 className="text-4xl font-bold mb-12 text-center">PROFILE</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <img
-              src="https://pixabay.com/get/g2b953054c0cf9c2d8ccf360c4f7830f19c9cb00f342c1ea58fdd60b711f570cb59013cbfdc029ad121234708b943f45d0409a0ec5f73302345fcc65b4b33fde2_1280.jpg"
+              src="/artworks/image.png"
               alt="Artist Profile"
               className="rounded-lg shadow-lg"
             />
