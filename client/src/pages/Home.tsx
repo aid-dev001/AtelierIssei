@@ -270,6 +270,64 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Recruitment Section */}
+      <section className="relative min-h-[70vh] overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="/artworks/12648.jpg"
+            alt="Recruitment Background"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="relative z-10 flex items-center min-h-[70vh]">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl">
+              <h2 className="text-6xl font-bold mb-12 tracking-[0.2em] text-gray-800">
+                RECRUITMENT
+              </h2>
+              <div className="space-y-8">
+                <p className="text-xl leading-relaxed text-gray-800 max-w-3xl">
+                  カイカイキキではアートの制作スタッフを始め、新規事業立ち上げやデジタル事業等の様々な職種で、新卒・中途問わず、クリエイティブな人材を求めています。私たちは、アートを愛し、どんなことにでも熱意を持って取り組む仲間を待っています。
+                </p>
+                <Button asChild className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-6 text-lg">
+                  <Link href="/contact">採用情報はこちら</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Art Concept Section */}
+      <section className="relative min-h-[70vh] overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="/artworks/12653.jpg"
+            alt="Art Concept Background"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="relative z-10 flex items-center min-h-[70vh]">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl">
+              <h2 className="text-6xl font-bold mb-12 tracking-[0.2em] text-gray-800">
+                ART CONCEPT
+              </h2>
+              <div className="space-y-8">
+                <p className="text-xl leading-relaxed text-gray-800 max-w-3xl">
+                  私たちは、アートを通じて人々の心に響く体験を創造します。
+                  伝統と革新を融合させ、見る人の心に深く刻まれる作品を生み出すことを目指しています。
+                  それぞれの作品には、独自の物語と感動が込められています。
+                </p>
+                <Button asChild className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-6 text-lg">
+                  <Link href="/artworks">作品を見る</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
