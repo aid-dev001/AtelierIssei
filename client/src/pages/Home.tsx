@@ -66,7 +66,7 @@ const Home = () => {
           }}
         />
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="max-w-4xl mx-auto text-center px-4">
             <h1 className="text-5xl md:text-7xl font-bold mb-8 reveal-text tracking-wider">
               ATELIER ISSEI
             </h1>
@@ -95,7 +95,13 @@ const Home = () => {
             </div>
           ))}
         </div>
-        <CustomMap />
+        <div className="aspect-[16/9] w-full overflow-hidden rounded-xl shadow-xl">
+          <img
+            src="/artworks/image.png"
+            alt="Gallery Map"
+            className="w-full h-full object-cover"
+          />
+        </div>
       </section>
 
       <section className="container mx-auto px-4">
@@ -104,7 +110,7 @@ const Home = () => {
             <h2 className="text-3xl font-bold tracking-wider">Latest Exhibition</h2>
             <div className="relative group">
               <img
-                src="/artworks/image.png"
+                src="/artworks/images/image.png"
                 alt="Latest Exhibition"
                 className="w-full h-[500px] object-cover rounded-xl shadow-xl"
               />
