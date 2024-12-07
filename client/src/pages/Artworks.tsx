@@ -37,27 +37,18 @@ const Artworks = () => {
 
   return (
     <div className="space-y-12 container mx-auto px-4 py-8">
-      <div className="max-w-2xl mx-auto text-center">
-        <h1 className="text-5xl font-bold tracking-[0.2em] text-gray-800/90 mb-16">
-          ARTWORKS
-        </h1>
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white pointer-events-none" />
-          <div className="space-y-8 py-8">
-            <p className="text-2xl font-light tracking-[0.15em] text-gray-700/90 leading-relaxed">
-              心の深淵から生まれる、
+      <section className="bg-gray-50/80">
+        <div className="container mx-auto px-4 py-20">
+          <div className="text-center max-w-3xl mx-auto">
+            <h1 className="text-4xl font-bold mb-6 tracking-wider text-gray-700">ARTWORKS</h1>
+            <p className="text-xl text-gray-700 leading-relaxed font-medium">
+              心の深淵から生まれる、希望のアート
               <br />
-              希望のアート
-            </p>
-            <div className="h-px w-12 bg-gray-300 mx-auto" />
-            <p className="text-lg font-light tracking-wider text-gray-600/90 leading-loose">
-              一枚一枚に込められた想いが、
-              <br />
-              あなたの心に響きますように
+              一枚一枚に込められた想いが、あなたの心に響きますように
             </p>
           </div>
         </div>
-      </div>
+      </section>
 
       {isLoading ? (
         <LoadingSkeleton />
