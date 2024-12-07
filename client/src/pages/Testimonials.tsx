@@ -61,57 +61,70 @@ const Testimonials = () => {
 
   return (
     <div className="space-y-20">
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-50/90 to-white/30 backdrop-blur-sm"></div>
-        <div className="container relative mx-auto px-4 py-32">
-          <div className="text-center">
-            <h1 className="inline-block text-5xl font-bold tracking-tight text-gray-900/90 mb-8">
-              <span className="block transform transition-all duration-500 hover:translate-y-[-2px]">VOICES</span>
-            </h1>
-            <div className="max-w-2xl mx-auto space-y-6">
-              <p className="text-2xl font-light tracking-wide text-gray-800/90 leading-relaxed">
-                芸術を愛する方々からいただいた
-                <span className="font-medium">温かい言葉</span>
-                の数々
-              </p>
-              <div className="w-16 h-px bg-primary/30 mx-auto transform transition-all duration-500 hover:w-24 hover:bg-primary/50"></div>
-              <p className="text-lg text-gray-700/80 leading-loose tracking-wide">
-                それは私たちの創造への情熱を支える
-                <br className="hidden sm:block" />
-                かけがえのない励みとなっています
-              </p>
+      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-gray-50 via-white to-gray-50">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-100/50 via-transparent to-transparent"></div>
+        <div className="container relative mx-auto px-6 py-24">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center space-y-16">
+              <h1 className="relative inline-block">
+                <span className="text-6xl font-light tracking-[0.2em] text-gray-900/90">
+                  VOICES
+                </span>
+                <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-12 h-px bg-primary/30"></div>
+              </h1>
+              
+              <div className="space-y-12 px-4">
+                <p className="text-3xl font-extralight tracking-wide text-gray-800/90 leading-relaxed">
+                  芸術を愛する方々から
+                  <br className="hidden sm:block" />
+                  いただいた
+                  <span className="font-normal">温かい言葉</span>
+                  の数々
+                </p>
+                
+                <div className="max-w-xl mx-auto">
+                  <p className="text-lg font-light text-gray-600/90 leading-loose tracking-wider">
+                    それは私たちの創造への情熱を支える
+                    <br className="hidden sm:block" />
+                    かけがえのない励みとなっています
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+        
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 w-1/3 h-1/3 bg-primary/[0.02] rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-0 w-1/3 h-1/3 bg-primary/[0.02] rounded-full blur-3xl"></div>
+        </div>
       </section>
 
-      <section className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+      <section className="container mx-auto px-6 mb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
           {testimonials.map((testimonial, index) => (
             <Card 
               key={index}
-              className="testimonial-card opacity-0 translate-y-4 transition-all duration-700 ease-out hover:shadow-lg"
+              className="testimonial-card opacity-0 translate-y-4 transition-all duration-700 ease-out hover:shadow-xl bg-white/50 backdrop-blur-sm border-gray-100/80"
             >
-              <CardContent className="p-6">
-                <div className="grid grid-cols-3 gap-6">
-                  <div className="col-span-2">
-                    <div className="relative aspect-square w-full overflow-hidden rounded-xl shadow-lg bg-gray-100">
-                      <img 
-                        src={testimonial.imageUrl}
-                        alt={`Artwork appreciated by ${testimonial.name}`}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                    </div>
+              <CardContent className="p-8">
+                <div className="space-y-8">
+                  <div className="relative aspect-square w-full overflow-hidden rounded-xl shadow-lg">
+                    <img 
+                      src={testimonial.imageUrl}
+                      alt={`Artwork appreciated by ${testimonial.name}`}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                    />
                   </div>
-                  <div className="col-span-1 space-y-4">
-                    <Quote className="w-8 h-8 text-gray-300" />
-                    <p className="text-base leading-relaxed text-gray-700 italic">
+                  <div className="space-y-6">
+                    <Quote className="w-10 h-10 text-primary/20" />
+                    <p className="text-lg leading-relaxed text-gray-700/90 tracking-wide font-light">
                       "{testimonial.content}"
                     </p>
-                    <div className="flex flex-col gap-1">
-                      <div className="font-semibold text-gray-700">{testimonial.name}</div>
-                      <div className="text-sm text-gray-700">{testimonial.title}</div>
-                      <div className="text-sm text-gray-700">{testimonial.location}</div>
+                    <div className="pt-4 border-t border-gray-100">
+                      <div className="font-medium text-lg text-gray-800/90 mb-2">{testimonial.name}</div>
+                      <div className="text-base text-gray-600/90">{testimonial.title}</div>
+                      <div className="text-base text-gray-600/90">{testimonial.location}</div>
                     </div>
                   </div>
                 </div>
