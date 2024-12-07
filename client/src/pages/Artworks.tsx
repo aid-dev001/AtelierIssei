@@ -37,35 +37,37 @@ const Artworks = () => {
 
   return (
     <div className="space-y-12 container mx-auto px-4 py-8">
-      <section className="bg-gray-50/80">
-        <div className="container mx-auto px-4 py-20">
-          <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-4xl font-bold mb-12 tracking-wider text-gray-800/90">ARTWORKS</h1>
-            <div className="space-y-6 max-w-2xl mx-auto">
-              <p className="text-xl tracking-wider text-gray-700/90 leading-relaxed">
-                アーティストisseiが、
-                <br />
-                心が沈み、孤独を感じる瞬間
-                <br />
-                自らを励ますために描く希望のアート
-              </p>
-              <div className="h-px w-12 bg-gray-300 mx-auto"></div>
-              <p className="text-lg tracking-wide text-gray-600/90 leading-relaxed">
-                華やかさの中に漂うほのかな儚さが、
-                <br />
-                心の深淵を映し出しています
-              </p>
-              <p className="text-lg tracking-wide text-gray-600/90 leading-relaxed">
-                その一枚一枚が、見る人の心にそっと寄り添い
-                <br />
-                優雅で鮮やかな色彩と力強い形は
-                <br />
-                温かな幸福感と希望の光をもたらします
-              </p>
+      {page === 1 && (
+        <section className="bg-gray-50/80">
+          <div className="container mx-auto px-4 py-20">
+            <div className="text-center max-w-3xl mx-auto">
+              <h1 className="text-4xl font-bold mb-12 tracking-wider text-gray-800/90">ARTWORKS</h1>
+              <div className="space-y-6 max-w-2xl mx-auto">
+                <p className="text-xl tracking-wider text-gray-700/90 leading-relaxed">
+                  アーティストisseiが、
+                  <br />
+                  心が沈み、孤独を感じる瞬間
+                  <br />
+                  自らを励ますために描く希望のアート
+                </p>
+                <div className="h-px w-12 bg-gray-300 mx-auto"></div>
+                <p className="text-lg tracking-wide text-gray-600/90 leading-relaxed">
+                  華やかさの中に漂うほのかな儚さが、
+                  <br />
+                  心の深淵を映し出しています
+                </p>
+                <p className="text-lg tracking-wide text-gray-600/90 leading-relaxed">
+                  その一枚一枚が、見る人の心にそっと寄り添い
+                  <br />
+                  優雅で鮮やかな色彩と力強い形は
+                  <br />
+                  温かな幸福感と希望の光をもたらします
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {isLoading ? (
         <LoadingSkeleton />
