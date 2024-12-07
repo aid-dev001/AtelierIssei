@@ -50,23 +50,22 @@ const Home = () => {
     <div className="space-y-20">
       <section className="min-h-screen relative overflow-hidden">
         {/* 背景のグリッドギャラリー */}
-        <div className="absolute inset-0 grid grid-cols-6 gap-0.5">
+        <div className="absolute inset-0 grid grid-cols-12 gap-0.5">
           {[
             // Top row
-            "12648.jpg", "12649.jpg", "12650.jpg", "12651.jpg", "12652.jpg", "12653.jpg",
+            ...Array(12).fill(null).map((_, i) => `1268${i}.jpg`),
             // Left side
-            "12654.jpg", null, null, null, null, "12655.jpg",
-            "12656.jpg", null, null, null, null, "12657.jpg",
-            "12658.jpg", null, null, null, null, "12659.jpg",
-            "12660.jpg", null, null, null, null, "12661.jpg",
+            "12692.jpg", ...Array(10).fill(null), "12693.jpg",
+            "12694.jpg", ...Array(10).fill(null), "12695.jpg",
+            "12696.jpg", ...Array(10).fill(null), "12697.jpg",
             // Bottom row
-            "12662.jpg", "12663.jpg", "12664.jpg", "12665.jpg", "12666.jpg", "12667.jpg",
+            ...Array(12).fill(null).map((_, i) => `1269${i}.jpg`),
           ].map((img, index) => img ? (
             <div key={index} className="aspect-square overflow-hidden bg-white/5">
               <img
                 src={`/${img}`}
                 alt={`Gallery ${index + 1}`}
-                className="w-full h-full object-cover transition-all duration-500 hover:scale-110"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 onError={(e) => {
                   const img = e.target as HTMLImageElement;
                   img.onerror = null;
@@ -74,21 +73,24 @@ const Home = () => {
                 }}
               />
             </div>
-          ) : <div key={index} className="aspect-square bg-transparent" />)}</div>
+          ) : <div key={index} className="aspect-square bg-transparent" />)}
+        </div>
         {/* オーバーレイとコンテンツ */}
-        <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px]" />
         <div className="relative z-10 min-h-screen flex items-center">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center px-4">
-              <h1 className="text-6xl md:text-8xl font-bold mb-8 reveal-text tracking-[0.2em] text-gray-800 transition-all duration-700">
+            <div className="max-w-4xl mx-auto text-center">
+              <h1 className="text-6xl md:text-8xl font-bold mb-12 reveal-text tracking-[0.2em] text-gray-800">
                 ATELIER ISSEI
               </h1>
               <p className="text-xl md:text-3xl font-light mb-16 reveal-text tracking-[0.3em] text-gray-700">
-                洗練された美の世界へ、心を解き放つ旅
+                心に寄り添うアートを
               </p>
-              <div className="max-w-3xl mx-auto bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl p-10 transform transition-all duration-700 hover:shadow-3xl">
-                <p className="text-lg tracking-[0.15em] leading-relaxed font-medium text-gray-800">
-                  洗練された美の世界で、新たな芸術体験をお届けします。
+              <div className="max-w-2xl mx-auto space-y-8">
+                <p className="text-lg tracking-[0.15em] leading-relaxed font-medium text-gray-700">
+                  私たちは、日常の中に特別な瞬間を創造します。
+                  温かみのある色彩と大胆な構図で、
+                  見る人の心に寄り添う作品を生み出しています。
                 </p>
               </div>
             </div>
@@ -177,38 +179,24 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Artistic Vision */}
-      <section className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-50/90 to-white/95" />
-        <div className="container relative mx-auto px-4">
-          <h2 className="text-5xl font-bold mb-24 text-center tracking-[0.2em] text-gray-800">
-            ARTISTIC VISION
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-            <div className="group relative">
-              <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-primary/20 to-primary/10 opacity-75 blur transition duration-500 group-hover:opacity-100" />
-              <div className="relative space-y-6 bg-white/80 backdrop-blur-sm p-8 rounded-lg">
-                <div className="text-3xl font-light mb-6 tracking-wider text-gray-800">La Lumière</div>
-                <p className="text-gray-600 leading-relaxed tracking-wide">
-                  光と影の調和から生まれる静謐な空間。色彩の深みが織りなす繊細な世界は、見る者の感性に深く響き渡ります。
+      {/* Concept */}
+      <section className="py-32">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto space-y-16">
+            <h2 className="text-4xl font-bold text-center tracking-[0.2em] text-gray-800">
+              CONCEPT
+            </h2>
+            <div className="space-y-12">
+              <div className="space-y-6 text-center">
+                <p className="text-xl tracking-[0.15em] leading-relaxed text-gray-700">
+                  優しさと力強さが共存する独自の表現世界。
+                  シンプルな形態と鮮やかな色彩で、
+                  見る人の心に寄り添う作品を制作しています。
                 </p>
-              </div>
-            </div>
-            <div className="group relative">
-              <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-primary/20 to-primary/10 opacity-75 blur transition duration-500 group-hover:opacity-100" />
-              <div className="relative space-y-6 bg-white/80 backdrop-blur-sm p-8 rounded-lg">
-                <div className="text-3xl font-light mb-6 tracking-wider text-gray-800">L'essence</div>
-                <p className="text-gray-600 leading-relaxed tracking-wide">
-                  時を超えて受け継がれる美の本質を追求し、現代的な解釈で新たな芸術の地平を切り開きます。
-                </p>
-              </div>
-            </div>
-            <div className="group relative">
-              <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-primary/20 to-primary/10 opacity-75 blur transition duration-500 group-hover:opacity-100" />
-              <div className="relative space-y-6 bg-white/80 backdrop-blur-sm p-8 rounded-lg">
-                <div className="text-3xl font-light mb-6 tracking-wider text-gray-800">L'émotion</div>
-                <p className="text-gray-600 leading-relaxed tracking-wide">
-                  魂の深淵から湧き上がる感動を、洗練された技法と独自の美意識で表現します。
+                <p className="text-lg tracking-[0.15em] leading-relaxed text-gray-600">
+                  時に感じる孤独な心に、
+                  温かな光をもたらすような作品を。
+                  それが、私たちの目指すアートです。
                 </p>
               </div>
             </div>
