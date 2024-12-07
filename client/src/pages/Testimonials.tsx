@@ -83,23 +83,25 @@ const Testimonials = () => {
               className="testimonial-card opacity-0 translate-y-4 transition-all duration-700 ease-out hover:shadow-lg"
             >
               <CardContent className="p-6">
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-6">
                   <div className="col-span-1">
-                    <img 
-                      src={testimonial.imageUrl} 
-                      alt={`Artwork appreciated by ${testimonial.name}`}
-                      className="w-full h-32 object-cover rounded-lg shadow-md"
-                    />
+                    <div className="relative h-32 w-full overflow-hidden rounded-lg shadow-md">
+                      <img 
+                        src={testimonial.imageUrl} 
+                        alt={`Artwork appreciated by ${testimonial.name}`}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    </div>
                   </div>
                   <div className="col-span-2 space-y-4">
-                    <Quote className="w-8 h-8 text-primary/10" />
-                    <p className="text-base leading-relaxed text-muted-foreground italic">
+                    <Quote className="w-8 h-8 text-gray-300" />
+                    <p className="text-base leading-relaxed text-gray-600 italic">
                       "{testimonial.content}"
                     </p>
                     <div className="flex flex-col gap-1">
-                      <div className="font-semibold">{testimonial.name}</div>
-                      <div className="text-sm text-muted-foreground">{testimonial.title}</div>
-                      <div className="text-sm text-primary">{testimonial.location}</div>
+                      <div className="font-semibold text-gray-800">{testimonial.name}</div>
+                      <div className="text-sm text-gray-600">{testimonial.title}</div>
+                      <div className="text-sm text-primary/90">{testimonial.location}</div>
                     </div>
                   </div>
                 </div>

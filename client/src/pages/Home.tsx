@@ -67,10 +67,10 @@ const Home = () => {
         />
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center px-4">
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 reveal-text tracking-wider">
+            <h1 className="text-5xl md:text-7xl font-bold mb-8 reveal-text tracking-wider text-gray-800">
               ATELIER ISSEI
             </h1>
-            <p className="text-xl md:text-2xl font-light mb-16 reveal-text tracking-widest">
+            <p className="text-xl md:text-2xl font-light mb-16 reveal-text tracking-widest text-gray-700">
               洗練された美の世界へ、心を解き放つ旅
             </p>
             <div className="space-y-6 bg-white/95 backdrop-blur-sm p-12 rounded-xl shadow-2xl">
@@ -108,13 +108,19 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
           <div className="space-y-8">
             <h2 className="text-3xl font-bold tracking-wider">Latest Exhibition</h2>
-            <div className="relative group">
-              <img
-                src="/1602605995.jpg"
-                alt="Latest Exhibition"
-                className="w-full h-[500px] object-cover rounded-xl shadow-xl"
-              />
-              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+            <div className="space-y-4">
+              <div className="relative group">
+                <img
+                  src="/1602605995.jpg"
+                  alt="Latest Exhibition"
+                  className="w-full h-[500px] object-cover rounded-xl shadow-xl"
+                />
+                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+              </div>
+              <div className="text-left space-y-2">
+                <p className="text-lg font-medium text-gray-800">Gallery Art.C</p>
+                <p className="text-gray-600">東京都中央区銀座</p>
+              </div>
             </div>
             <Button asChild className="w-full h-12 text-lg">
               <Link href="/artworks">View Gallery</Link>
