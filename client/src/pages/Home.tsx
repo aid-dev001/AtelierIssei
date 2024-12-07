@@ -67,26 +67,19 @@ const Home = () => {
     }
   ];
 
-  const artworks = [
-    "23313_0.jpg", "23317.jpg", "23677.jpg", "1912_0.jpg", 
-    "2266.jpg", "2914.jpg", "3316.jpg", "3446.jpg",
-    "3525.jpg", "3730.jpg", "6715.jpg", "7853.jpg",
-    "7855.jpg", "8594.jpg", "10819.jpg", "10820.jpg"
-  ];
-
   return (
     <div className="space-y-20">
-      <section className="min-h-screen relative overflow-hidden bg-white">
-        {/* 外側の画像フレーム */}
-        <div className="absolute inset-0 p-12">
+      <section className="min-h-screen relative overflow-hidden">
+        {/* 背景の画像ギャラリー */}
+        <div className="absolute inset-0 flex flex-col">
           {/* 上部の画像列 */}
-          <div className="flex w-full gap-3 mb-3">
-            {[...Array(8)].map((_, index) => (
-              <div key={`top-${index}`} className="w-12 h-12 overflow-hidden rounded-sm">
+          <div className="flex w-full gap-0.5">
+            {["artworks/23313_0.jpg", "artworks/23317.jpg", "artworks/23677.jpg", "artworks/1912_0.jpg", "artworks/2266.jpg", "artworks/2914.jpg", "artworks/3316.jpg", "artworks/3446.jpg"].map((img, index) => (
+              <div key={`top-${index}`} className="w-12 h-12 overflow-hidden">
                 <img
-                  src={`/artworks/${artworks[index % artworks.length]}`}
+                  src={`/${img}`}
                   alt={`Gallery ${index + 1}`}
-                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                  className="w-full h-full object-cover"
                   onError={(e) => {
                     const img = e.target as HTMLImageElement;
                     img.onerror = null;
@@ -96,17 +89,17 @@ const Home = () => {
               </div>
             ))}
           </div>
-
-          {/* 中央部分（左右の画像） */}
-          <div className="flex justify-between h-[calc(100%-96px)]">
+          
+          {/* 中央部分（左右の画像と中央コンテンツ） */}
+          <div className="flex flex-1 gap-0.5">
             {/* 左側の画像列 */}
-            <div className="flex flex-col gap-3">
-              {[...Array(6)].map((_, index) => (
-                <div key={`left-${index}`} className="w-12 h-12 overflow-hidden rounded-sm">
+            <div className="flex flex-col gap-0.5">
+              {["artworks/3525.jpg", "artworks/3730.jpg", "artworks/6715.jpg", "artworks/7853.jpg", "artworks/7855.jpg", "artworks/8594.jpg", "artworks/10819.jpg", "artworks/10820.jpg", "artworks/10821.jpg", "artworks/10822.jpg"].map((img, index) => (
+                <div key={`left-${index}`} className="w-12 h-12 overflow-hidden">
                   <img
-                    src={`/artworks/${artworks[(index + 8) % artworks.length]}`}
-                    alt={`Gallery ${index + 9}`}
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                    src={`/${img}`}
+                    alt={`Gallery ${index + 1}`}
+                    className="w-full h-full object-cover"
                     onError={(e) => {
                       const img = e.target as HTMLImageElement;
                       img.onerror = null;
@@ -116,15 +109,18 @@ const Home = () => {
                 </div>
               ))}
             </div>
-
+            
+            {/* 中央の空白スペース（コンテンツ用） */}
+            <div className="flex-1" />
+            
             {/* 右側の画像列 */}
-            <div className="flex flex-col gap-3">
-              {[...Array(6)].map((_, index) => (
-                <div key={`right-${index}`} className="w-12 h-12 overflow-hidden rounded-sm">
+            <div className="flex flex-col gap-0.5">
+              {["artworks/10823.jpg", "artworks/14996.jpg", "artworks/1602605995.jpg", "artworks/02-scaled.jpg", "artworks/IMG_6937.jpg", "artworks/IMG_6964.JPG", "artworks/image-2.jpg", "artworks/image.png", "artworks/23313_0.jpg", "artworks/23317.jpg"].map((img, index) => (
+                <div key={`right-${index}`} className="w-12 h-12 overflow-hidden">
                   <img
-                    src={`/artworks/${artworks[(index + 14) % artworks.length]}`}
-                    alt={`Gallery ${index + 15}`}
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                    src={`/${img}`}
+                    alt={`Gallery ${index + 1}`}
+                    className="w-full h-full object-cover"
                     onError={(e) => {
                       const img = e.target as HTMLImageElement;
                       img.onerror = null;
@@ -135,15 +131,15 @@ const Home = () => {
               ))}
             </div>
           </div>
-
+          
           {/* 下部の画像列 */}
-          <div className="flex w-full gap-3 mt-3">
-            {[...Array(8)].map((_, index) => (
-              <div key={`bottom-${index}`} className="w-12 h-12 overflow-hidden rounded-sm">
+          <div className="flex w-full gap-0.5">
+            {["artworks/10823.jpg", "artworks/14996.jpg", "artworks/1602605995.jpg", "artworks/02-scaled.jpg", "artworks/IMG_6937.jpg", "artworks/IMG_6964.JPG", "artworks/image-2.jpg", "artworks/image.png"].map((img, index) => (
+              <div key={`bottom-${index}`} className="w-12 h-12 overflow-hidden">
                 <img
-                  src={`/artworks/${artworks[(index + 20) % artworks.length]}`}
-                  alt={`Gallery ${index + 21}`}
-                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                  src={`/${img}`}
+                  alt={`Gallery ${index + 1}`}
+                  className="w-full h-full object-cover"
                   onError={(e) => {
                     const img = e.target as HTMLImageElement;
                     img.onerror = null;
@@ -155,27 +151,22 @@ const Home = () => {
           </div>
         </div>
 
-        {/* 中央の透過カバーとコンテンツ */}
-        <div className="absolute inset-24 bg-white/95 backdrop-blur-sm rounded-xl"></div>
-
         {/* メインコンテンツ */}
         <div className="relative z-10 min-h-screen flex items-center">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center">
-                <h1 className="text-6xl md:text-8xl font-bold mb-12 reveal-text tracking-[0.2em] text-gray-800">
-                  ATELIER ISSEI
-                </h1>
-                <p className="text-xl md:text-3xl font-light mb-16 reveal-text tracking-[0.3em] text-gray-700">
-                  心に寄り添うアートを
+            <div className="max-w-4xl mx-auto text-center">
+              <h1 className="text-6xl md:text-8xl font-bold mb-12 reveal-text tracking-[0.2em] text-gray-800">
+                ATELIER ISSEI
+              </h1>
+              <p className="text-xl md:text-3xl font-light mb-16 reveal-text tracking-[0.3em] text-gray-700">
+                心に寄り添うアートを
+              </p>
+              <div className="max-w-2xl mx-auto space-y-8">
+                <p className="text-lg tracking-[0.15em] leading-relaxed font-medium text-gray-700">
+                  私たちは、日常の中に特別な瞬間を創造します。
+                  温かみのある色彩と大胆な構図で、
+                  見る人の心に寄り添う作品を生み出しています。
                 </p>
-                <div className="max-w-2xl mx-auto space-y-8">
-                  <p className="text-lg tracking-[0.15em] leading-relaxed font-medium text-gray-700">
-                    私たちは、日常の中に特別な瞬間を創造します。
-                    温かみのある色彩と大胆な構図で、
-                    見る人の心に寄り添う作品を生み出しています。
-                  </p>
-                </div>
               </div>
             </div>
           </div>
@@ -186,7 +177,7 @@ const Home = () => {
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">GALLERY LOCATION</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {locations.map((location, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-8">
+            <div key={index} className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-8">
               <h3 className="text-2xl font-bold mb-3">{location.city}</h3>
               <p className="text-lg mb-2 text-gray-700">{location.address}</p>
               <p className="text-sm text-gray-600">{location.description}</p>
@@ -208,7 +199,7 @@ const Home = () => {
           <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">ATELIER</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {ATELIER_LOCATIONS.map((location) => (
-              <div key={location} className="bg-white rounded-xl shadow-lg overflow-hidden group transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+              <div key={location} className="bg-white rounded-xl shadow-md overflow-hidden group transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <Link href={`/ateliers/${location}`}>
                   <div className="aspect-[4/3] relative overflow-hidden cursor-pointer">
                     <img
@@ -222,7 +213,7 @@ const Home = () => {
                   <h3 className="text-2xl font-bold mb-3 tracking-wide">{location}</h3>
                   <p className="text-gray-600 leading-relaxed">{AtelierInfo[location].description}</p>
                   <div className="mt-6">
-                    <span className="inline-block bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-sm font-bold tracking-wide">
+                    <span className="inline-block bg-gray-100 text-gray-800 px-4 py-2 rounded-md text-sm font-bold tracking-wide">
                       {AtelierInfo[location].period}
                     </span>
                   </div>
