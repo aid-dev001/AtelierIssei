@@ -27,30 +27,46 @@ const Profile = () => {
         </div>
       </section>
 
-      <section className="bg-gray-50 py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-12 text-center">EXHIBITIONS</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section className="container mx-auto px-4">
+        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">EXHIBITIONS</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          <div className="bg-white/95 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+            <h3 className="text-2xl font-bold mb-3">2023</h3>
             <div className="space-y-4">
-              <h3 className="text-xl font-bold">2023</h3>
-              <ul className="space-y-2 text-gray-600">
-                <li>「光と影の境界線」個展 - Tokyo Gallery</li>
-                <li>「現代アートの潮流」グループ展 - Art Space NY</li>
-              </ul>
+              <div>
+                <p className="text-lg mb-2 text-gray-700">「光と影の境界線」個展</p>
+                <p className="text-sm text-gray-600">Tokyo Gallery</p>
+              </div>
+              <div>
+                <p className="text-lg mb-2 text-gray-700">「現代アートの潮流」グループ展</p>
+                <p className="text-sm text-gray-600">Art Space NY</p>
+              </div>
             </div>
+          </div>
+          <div className="bg-white/95 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+            <h3 className="text-2xl font-bold mb-3">2022</h3>
             <div className="space-y-4">
-              <h3 className="text-xl font-bold">2022</h3>
-              <ul className="space-y-2 text-gray-600">
-                <li>「内なる風景」個展 - Kyoto Museum</li>
-                <li>「デジタルアートの未来」展 - Digital Art Festival</li>
-              </ul>
+              <div>
+                <p className="text-lg mb-2 text-gray-700">「内なる風景」個展</p>
+                <p className="text-sm text-gray-600">Kyoto Museum</p>
+              </div>
+              <div>
+                <p className="text-lg mb-2 text-gray-700">「デジタルアートの未来」展</p>
+                <p className="text-sm text-gray-600">Digital Art Festival</p>
+              </div>
             </div>
+          </div>
+          <div className="bg-white/95 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+            <h3 className="text-2xl font-bold mb-3">2021</h3>
             <div className="space-y-4">
-              <h3 className="text-xl font-bold">2021</h3>
-              <ul className="space-y-2 text-gray-600">
-                <li>「記憶の断片」個展 - Gallery Modern</li>
-                <li>「アートとテクノロジー」展 - Tech Art Space</li>
-              </ul>
+              <div>
+                <p className="text-lg mb-2 text-gray-700">「記憶の断片」個展</p>
+                <p className="text-sm text-gray-600">Gallery Modern</p>
+              </div>
+              <div>
+                <p className="text-lg mb-2 text-gray-700">「アートとテクノロジー」展</p>
+                <p className="text-sm text-gray-600">Tech Art Space</p>
+              </div>
             </div>
           </div>
         </div>
