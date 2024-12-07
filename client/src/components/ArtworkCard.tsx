@@ -23,8 +23,17 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
             img.src = '/placeholder.png';
           }}
         />
-        <div className="absolute top-4 right-4 bg-white/90 px-3 py-1 rounded-md text-sm font-medium">
-          ASK
+        <div className="absolute top-4 right-4 flex flex-col gap-2">
+          <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium">
+            {artwork.status === 'sold' ? 'SOLD' : 
+             artwork.status === 'reserved' ? '予約済' :
+             `¥${Number(artwork.price).toLocaleString()}`}
+          </div>
+          {artwork.status === 'available' && (
+            <div className="bg-primary/90 text-white px-3 py-1 rounded-md text-sm font-medium cursor-pointer hover:bg-primary transition-colors">
+              予約する
+            </div>
+          )}
         </div>
         <div className="absolute bottom-4 left-4 flex gap-2">
           <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium flex items-center gap-1.5">

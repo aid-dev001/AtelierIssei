@@ -7,7 +7,8 @@ export const artworks = pgTable("artworks", {
   title: text("title").notNull(),
   description: text("description").notNull(),
   imageUrl: text("image_url").notNull(),
-  price: numeric("price"),
+  price: numeric("price").notNull(),
+  status: text("status").notNull().default('available'),  // 'available', 'reserved', 'sold'
   createdLocation: text("created_location"),
   storedLocation: text("stored_location"),
   isAvailable: boolean("is_available").default(true).notNull(),
