@@ -55,11 +55,12 @@ const Home = () => {
             // Top row
             "artworks/23313_0.jpg", "artworks/23317.jpg", "artworks/23677.jpg", "artworks/1912_0.jpg", "artworks/2266.jpg", "artworks/2914.jpg", "artworks/3316.jpg", "artworks/3446.jpg", "artworks/3525.jpg", "artworks/3730.jpg", "artworks/6715.jpg", "artworks/7853.jpg",
             // Left side
-            "7855.jpg", ...Array(10).fill(null), "8594.jpg",
-            "10819.jpg", ...Array(10).fill(null), "10820.jpg",
-            "10821.jpg", ...Array(10).fill(null), "10822.jpg",
+            "artworks/7855.jpg", "artworks/8594.jpg", "artworks/10819.jpg", "artworks/10820.jpg", "artworks/10821.jpg", "artworks/10822.jpg", "artworks/10823.jpg", "artworks/14996.jpg", "artworks/1602605995.jpg", "artworks/02-scaled.jpg", "artworks/IMG_6937.jpg", "artworks/IMG_6964.JPG",
+            // Middle rows
+            "artworks/image-2.jpg", "artworks/7855.jpg", "artworks/8594.jpg", "artworks/10819.jpg", "artworks/10820.jpg", "artworks/10821.jpg", "artworks/10822.jpg", "artworks/10823.jpg", "artworks/14996.jpg", "artworks/1602605995.jpg", "artworks/02-scaled.jpg", "artworks/IMG_6937.jpg",
+            "artworks/IMG_6964.JPG", "artworks/image-2.jpg", "artworks/7855.jpg", "artworks/8594.jpg", "artworks/10819.jpg", "artworks/10820.jpg", "artworks/10821.jpg", "artworks/10822.jpg", "artworks/10823.jpg", "artworks/14996.jpg", "artworks/1602605995.jpg", "artworks/02-scaled.jpg",
             // Bottom row
-            "10823.jpg", "14996.jpg", "1602605995.jpg", "02-scaled.jpg", "IMG_6937.jpg", "IMG_6964.JPG", "image-2.jpg", "image.png", "スクリーンショット 2024-12-07 12.26.30.png", "23313_0.jpg", "23317.jpg", "23677.jpg",
+            "artworks/IMG_6937.jpg", "artworks/IMG_6964.JPG", "artworks/image-2.jpg", "artworks/image.png", "artworks/23313_0.jpg", "artworks/23317.jpg", "artworks/23677.jpg", "artworks/1912_0.jpg", "artworks/2266.jpg", "artworks/2914.jpg", "artworks/3316.jpg", "artworks/3446.jpg",
           ].map((img, index) => img ? (
             <div key={index} className="aspect-square overflow-hidden bg-white/5">
               <img
