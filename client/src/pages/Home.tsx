@@ -15,34 +15,22 @@ const Home = () => {
 
   const locations = [
     {
-      city: "東京",
-      address: "銀座 ATELIER ISSEI本店",
-      description: "洗練された空間で新たな芸術体験を"
+      city: "池袋",
+      address: "池袋アトリエ",
+      description: "都会の喧騒の中で生まれた作品たち",
+      link: "/artworks/location/ikebukuro"
     },
     {
-      city: "広島",
-      address: "平和記念公園 アートギャラリー",
-      description: "心安らぐ空間での芸術との出会い"
+      city: "赤坂",
+      address: "赤坂アトリエ",
+      description: "伝統と現代が交差する街で描かれた作品",
+      link: "/artworks/location/akasaka"
     },
     {
-      city: "パリ",
-      address: "Galerie ISSEI Paris",
-      description: "芸術の都で味わう日本の美意識"
-    },
-    {
-      city: "ニース",
-      address: "ISSEI Art Space Nice",
-      description: "地中海の光に包まれた展示空間"
-    },
-    {
-      city: "ドバイ",
-      address: "ISSEI Gallery Dubai",
-      description: "伝統と革新が融合する芸術空間"
-    },
-    {
-      city: "ロンドン",
-      address: "ISSEI London Gallery",
-      description: "歴史ある街並みに佇む現代アート"
+      city: "東新宿",
+      address: "東新宿アトリエ",
+      description: "新しい文化の発信地から生まれた作品",
+      link: "/artworks/location/higashi-shinjuku"
     }
   ];
 
@@ -52,7 +40,7 @@ const Home = () => {
         {/* 背景の画像ギャラリー */}
         <div className="absolute inset-0 flex flex-col">
           {/* 上部の画像列 */}
-          <div className="flex w-full gap-0.5">
+          <div className="flex w-full gap-0.5 justify-between">
             {["artworks/23313_0.jpg", "artworks/23317.jpg", "artworks/23677.jpg", "artworks/1912_0.jpg", "artworks/2266.jpg", "artworks/2914.jpg", "artworks/3316.jpg", "artworks/3446.jpg"].map((img, index) => (
               <div key={`top-${index}`} className="w-12 h-12 overflow-hidden">
                 <img
@@ -112,7 +100,7 @@ const Home = () => {
           </div>
           
           {/* 下部の画像列 */}
-          <div className="flex w-full gap-0.5">
+          <div className="flex w-full gap-0.5 justify-between">
             {["artworks/10823.jpg", "artworks/14996.jpg", "artworks/1602605995.jpg", "artworks/02-scaled.jpg", "artworks/IMG_6937.jpg", "artworks/IMG_6964.JPG", "artworks/image-2.jpg", "artworks/image.png"].map((img, index) => (
               <div key={`bottom-${index}`} className="w-12 h-12 overflow-hidden">
                 <img
@@ -152,14 +140,16 @@ const Home = () => {
       </section>
 
       <section className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">GALLERY LOCATION</h2>
+        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">ATELIER LOCATION</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {locations.map((location, index) => (
-            <div key={index} className="bg-white/95 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-              <h3 className="text-2xl font-bold mb-3">{location.city}</h3>
-              <p className="text-lg mb-2 text-gray-700">{location.address}</p>
-              <p className="text-sm text-gray-600">{location.description}</p>
-            </div>
+            <Link key={index} href={location.link}>
+              <div className="bg-white/95 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
+                <h3 className="text-2xl font-bold mb-3">{location.city}</h3>
+                <p className="text-lg mb-2 text-gray-700">{location.address}</p>
+                <p className="text-sm text-gray-600">{location.description}</p>
+              </div>
+            </Link>
           ))}
         </div>
         <div className="aspect-[16/9] w-full overflow-hidden rounded-xl shadow-xl">
