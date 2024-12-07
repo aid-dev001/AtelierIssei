@@ -24,7 +24,7 @@ const Home = () => {
 
   return (
     <div className="space-y-20">
-      <section className="min-h-[90vh] flex items-center relative overflow-hidden">
+      <section className="min-h-[90vh] flex items-center relative overflow-hidden pt-20">
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-90"
           style={{ 
