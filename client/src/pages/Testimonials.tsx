@@ -61,15 +61,26 @@ const Testimonials = () => {
 
   return (
     <div className="space-y-20">
-      <section className="bg-gray-50/80">
-        <div className="container mx-auto px-4 py-20">
-          <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-4xl font-bold mb-6 tracking-wider text-gray-700">VOICES</h1>
-            <p className="text-xl text-gray-700 leading-relaxed font-medium">
-              芸術を愛する方々からいただいた温かい言葉の数々。
-              <br />
-              それは私たちの創造への情熱を支える大切な励みとなっています。
-            </p>
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-50/90 to-white/30 backdrop-blur-sm"></div>
+        <div className="container relative mx-auto px-4 py-32">
+          <div className="text-center">
+            <h1 className="inline-block text-5xl font-bold tracking-tight text-gray-900/90 mb-8">
+              <span className="block transform transition-all duration-500 hover:translate-y-[-2px]">VOICES</span>
+            </h1>
+            <div className="max-w-2xl mx-auto space-y-6">
+              <p className="text-2xl font-light tracking-wide text-gray-800/90 leading-relaxed">
+                芸術を愛する方々からいただいた
+                <span className="font-medium">温かい言葉</span>
+                の数々
+              </p>
+              <div className="w-16 h-px bg-primary/30 mx-auto transform transition-all duration-500 hover:w-24 hover:bg-primary/50"></div>
+              <p className="text-lg text-gray-700/80 leading-loose tracking-wide">
+                それは私たちの創造への情熱を支える
+                <br className="hidden sm:block" />
+                かけがえのない励みとなっています
+              </p>
+            </div>
           </div>
         </div>
       </section>
