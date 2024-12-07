@@ -108,7 +108,7 @@ const Ateliers = () => {
               <p className="text-gray-600 mb-4">{AtelierInfo[selectedLocation].description}</p>
               <div className="text-sm text-gray-500 mb-6">
                 <p>住所：{AtelierInfo[selectedLocation].address}</p>
-                <p>制作期間：{AtelierInfo[selectedLocation].period}</p>
+                <p className="text-primary/80 font-medium mt-2">{AtelierInfo[selectedLocation].period}</p>
               </div>
             </div>
 
