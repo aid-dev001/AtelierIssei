@@ -53,13 +53,13 @@ const Home = () => {
         <div className="absolute inset-0 grid grid-cols-12 gap-0.5">
           {[
             // Top row
-            "IMG_7161.jpg", "IMG_7162.jpg", "IMG_7163.jpg", "IMG_7164.jpg", "IMG_7165.jpg", "IMG_7166.jpg", "IMG_7167.jpg", "IMG_7168.jpg", "IMG_7169.jpg", "IMG_7170.jpg", "IMG_7171.jpg", "IMG_7172.jpg",
+            "12648.jpg", "12649.jpg", "12650.jpg", "12651.jpg", "12652.jpg", "12653.jpg", "12654.jpg", "12655.jpg", "12656.jpg", "12657.jpg", "12658.jpg", "12659.jpg",
             // Left side
-            "IMG_7173.jpg", ...Array(10).fill(null), "IMG_7174.jpg",
-            "IMG_7175.jpg", ...Array(10).fill(null), "IMG_7176.jpg",
-            "IMG_7177.jpg", ...Array(10).fill(null), "IMG_7178.jpg",
+            "12660.jpg", ...Array(10).fill(null), "12661.jpg",
+            "12662.jpg", ...Array(10).fill(null), "12663.jpg",
+            "12664.jpg", ...Array(10).fill(null), "12665.jpg",
             // Bottom row
-            "IMG_7179.jpg", "IMG_7180.jpg", "IMG_7181.jpg", "IMG_7182.jpg", "IMG_7183.jpg", "IMG_7184.jpg", "IMG_7185.jpg", "IMG_7186.jpg", "IMG_7187.jpg", "IMG_7188.jpg", "IMG_7189.jpg", "IMG_7190.jpg",
+            "12666.jpg", "12667.jpg", "12668.jpg", "12669.jpg", "12670.jpg", "12671.jpg", "12672.jpg", "12673.jpg", "12674.jpg", "12675.jpg", "12676.jpg", "12677.jpg",
           ].map((img, index) => img ? (
             <div key={index} className="aspect-square overflow-hidden bg-white/5">
               <img
@@ -161,7 +161,7 @@ const Home = () => {
       <section className="container mx-auto px-4 py-20">
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">LATEST WORKS</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {["12648.jpg", "12649.jpg", "12650.jpg"].map((img, index) => (
+          {["12678.jpg", "12679.jpg", "12680.jpg"].map((img, index) => (
             <div key={index} className="group relative aspect-square overflow-hidden rounded-lg shadow-xl">
               <img
                 src={`/${img}`}
