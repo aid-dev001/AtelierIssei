@@ -69,11 +69,11 @@ const Ateliers = () => {
 
   return (
     <div className="space-y-12">
-      <section className="bg-gray-50/80">
+      <section className="bg-gray-50">
         <div className="container mx-auto px-4 py-20">
           <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-4xl font-bold mb-12 tracking-wider text-gray-700">ATELIER</h1>
-            <p className="text-xl text-gray-700/90 leading-relaxed font-medium max-w-2xl mx-auto">
+            <h1 className="text-4xl font-bold mb-12 tracking-wider text-gray-800">ATELIER</h1>
+            <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-2xl mx-auto">
               それぞれの場所で感じた空気感や想いを、
               作品を通して表現しています。
             </p>
@@ -88,30 +88,34 @@ const Ateliers = () => {
             {ATELIER_LOCATIONS.map((location) => (
               <div
                 key={location}
-                className={`p-4 rounded-lg cursor-pointer transition-colors ${
+                className={`p-6 rounded-lg cursor-pointer transition-all duration-300 ${
                   selectedLocation === location
-                    ? "bg-primary text-white"
-                    : "bg-white hover:bg-gray-50"
+                    ? "bg-gray-900 text-white shadow-lg transform -translate-y-0.5"
+                    : "bg-white hover:bg-gray-50 hover:shadow-md"
                 }`}
                 onClick={() => setSelectedLocation(location)}
               >
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4" />
-                  <span className="font-medium">{location}</span>
+                <div className="flex items-center gap-3">
+                  <MapPin className="w-5 h-5" />
+                  <span className="font-bold tracking-wide">{location}</span>
                 </div>
               </div>
             ))}
           </div>
 
           {/* メインコンテンツ */}
-          <div className="flex-1 space-y-8">
+          <div className="flex-1 space-y-12">
             {/* アトリエ情報 */}
-            <div className="bg-white p-6 rounded-xl shadow-lg">
-              <h2 className="text-2xl font-bold mb-4">{selectedLocation}</h2>
-              <p className="text-gray-600 mb-4">{AtelierInfo[selectedLocation].description}</p>
-              <div className="text-sm text-gray-500 mb-6">
-                <p>住所：{AtelierInfo[selectedLocation].address}</p>
-                <p className="text-primary/80 font-medium mt-2">{AtelierInfo[selectedLocation].period}</p>
+            <div className="bg-white rounded-xl shadow-md p-8 space-y-6">
+              <div className="space-y-4">
+                <h2 className="text-3xl font-bold tracking-wide">{selectedLocation}</h2>
+                <p className="text-gray-700 text-lg leading-relaxed">{AtelierInfo[selectedLocation].description}</p>
+              </div>
+              <div className="space-y-3">
+                <p className="text-gray-600 font-medium">{AtelierInfo[selectedLocation].address}</p>
+                <div className="inline-block bg-gray-100 text-gray-800 px-4 py-2 rounded-md text-base font-bold tracking-wide">
+                  {AtelierInfo[selectedLocation].period}
+                </div>
               </div>
             </div>
 
@@ -125,18 +129,18 @@ const Ateliers = () => {
             </div>
 
             {/* ギャラリー */}
-            <div className="space-y-4">
-              <h3 className="text-xl font-medium flex items-center gap-2">
-                <Camera className="w-5 h-5" />
+            <div className="space-y-6">
+              <h3 className="text-2xl font-bold tracking-wide flex items-center gap-3">
+                <Camera className="w-6 h-6" />
                 ギャラリー
               </h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {AtelierInfo[selectedLocation].galleryImages.map((image, index) => (
-                  <div key={index} className="aspect-square relative overflow-hidden rounded-lg shadow-md group">
+                  <div key={index} className="aspect-square relative overflow-hidden rounded-lg shadow-md group transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                     <img
                       src={image}
                       alt={`${selectedLocation}アトリエ ギャラリー${index + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
                 ))}
