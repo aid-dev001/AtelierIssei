@@ -64,12 +64,15 @@ const Testimonials = () => {
       <section className="bg-gray-50/80">
         <div className="container mx-auto px-4 py-20">
           <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-4xl font-bold mb-6 tracking-wider text-gray-700">VOICES</h1>
-            <p className="text-xl text-gray-700 leading-relaxed font-medium">
-              芸術を愛する方々からいただいた温かい言葉の数々。
-              <br />
-              それは私たちの創造への情熱を支える大切な励みとなっています。
-            </p>
+            <h1 className="text-4xl font-bold mb-12 tracking-wider text-gray-700">VOICES</h1>
+            <div className="max-w-xl mx-auto space-y-8">
+              <p className="text-xl text-gray-700/90 leading-relaxed font-medium">
+                芸術を愛する方々からいただいた温かい言葉の数々。
+              </p>
+              <p className="text-xl text-gray-700/90 leading-relaxed font-medium">
+                それは私たちの創造への情熱を支える大切な励みとなっています。
+              </p>
+            </div>
           </div>
         </div>
       </section>
