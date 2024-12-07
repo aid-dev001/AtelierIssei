@@ -8,35 +8,35 @@ const testimonials = [
     title: "美術館キュレーター",
     content: "ISSEIの作品には魂が宿っています。観る者の心に直接語りかけてくるような力強さと繊細さを持ち合わせており、多くの来館者から感動の声をいただいています。",
     location: "東京都現代美術館",
-    imageUrl: "/IMG_7195.jpg"
+    imageUrl: "23313_0.jpg"
   },
   {
     name: "Jean-Pierre Dubois",
     title: "アートコレクター",
     content: "日本の伝統と現代アートの融合が見事です。彼の作品は私のコレクションの中でも特別な存在となっています。",
     location: "パリ",
-    imageUrl: "/IMG_7196.jpg"
+    imageUrl: "23317.jpg"
   },
   {
     name: "山田 誠",
     title: "建築家",
     content: "空間に調和をもたらす稀有な才能を持つアーティストです。彼の作品は、建築空間に新たな生命を吹き込んでくれます。",
     location: "大阪",
-    imageUrl: "/IMG_7195.jpg"
+    imageUrl: "23677.jpg"
   },
   {
     name: "Sarah Thompson",
     title: "ギャラリーオーナー",
     content: "ISSEIの作品は、グローバルなアート市場で高い評価を受けています。その独特な視点と表現力は、世界中のコレクターを魅了しています。",
     location: "ニューヨーク",
-    imageUrl: "/IMG_7196.jpg"
+    imageUrl: "23313_0.jpg"
   },
   {
     name: "中村 洋子",
     title: "美術評論家",
     content: "現代アートシーンにおいて、ISSEIは特筆すべき存在です。その作品は時代を超えて語り継がれていくでしょう。",
     location: "京都",
-    imageUrl: "/IMG_7195.jpg"
+    imageUrl: "23317.jpg"
   }
 ];
 
@@ -84,9 +84,9 @@ const Testimonials = () => {
               <CardContent className="p-6">
                 <div className="grid grid-cols-3 gap-6">
                   <div className="col-span-2">
-                    <div className="relative h-[400px] w-full overflow-hidden rounded-xl shadow-lg bg-gray-100">
+                    <div className="relative aspect-square w-full overflow-hidden rounded-xl shadow-lg bg-gray-100">
                       <img 
-                        src="/IMG_7195.jpg"
+                        src={testimonial.imageUrl}
                         alt={`Artwork appreciated by ${testimonial.name}`}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                       />
