@@ -67,24 +67,24 @@ const Home = () => {
     }
   ];
 
+  const artworks = [
+    "23313_0.jpg", "23317.jpg", "23677.jpg", "1912_0.jpg", 
+    "2266.jpg", "2914.jpg", "3316.jpg", "3446.jpg",
+    "3525.jpg", "3730.jpg", "6715.jpg", "7853.jpg",
+    "7855.jpg", "8594.jpg", "10819.jpg", "10820.jpg"
+  ];
+
   return (
     <div className="space-y-20">
       <section className="min-h-screen relative overflow-hidden bg-white">
-        {/* アートワークグリッド */}
-        <div className="absolute inset-0 grid grid-cols-8 grid-rows-6 gap-1">
-          {[...Array(48)].map((_, index) => {
-            const artworks = [
-              "23313_0.jpg", "23317.jpg", "23677.jpg", "1912_0.jpg", 
-              "2266.jpg", "2914.jpg", "3316.jpg", "3446.jpg",
-              "3525.jpg", "3730.jpg", "6715.jpg", "7853.jpg",
-              "7855.jpg", "8594.jpg", "10819.jpg", "10820.jpg"
-            ];
-            const imageUrl = `/artworks/${artworks[index % artworks.length]}`;
-            
-            return (
-              <div key={index} className="relative overflow-hidden bg-gray-100">
+        {/* 外側の画像フレーム */}
+        <div className="absolute inset-0 p-12">
+          {/* 上部の画像列 */}
+          <div className="flex w-full gap-3 mb-3">
+            {[...Array(8)].map((_, index) => (
+              <div key={`top-${index}`} className="w-12 h-12 overflow-hidden rounded-sm">
                 <img
-                  src={imageUrl}
+                  src={`/artworks/${artworks[index % artworks.length]}`}
                   alt={`Gallery ${index + 1}`}
                   className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                   onError={(e) => {
@@ -94,29 +94,87 @@ const Home = () => {
                   }}
                 />
               </div>
-            );
-          })}
+            ))}
+          </div>
+
+          {/* 中央部分（左右の画像） */}
+          <div className="flex justify-between h-[calc(100%-96px)]">
+            {/* 左側の画像列 */}
+            <div className="flex flex-col gap-3">
+              {[...Array(6)].map((_, index) => (
+                <div key={`left-${index}`} className="w-12 h-12 overflow-hidden rounded-sm">
+                  <img
+                    src={`/artworks/${artworks[(index + 8) % artworks.length]}`}
+                    alt={`Gallery ${index + 9}`}
+                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                    onError={(e) => {
+                      const img = e.target as HTMLImageElement;
+                      img.onerror = null;
+                      img.src = '/placeholder.png';
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* 右側の画像列 */}
+            <div className="flex flex-col gap-3">
+              {[...Array(6)].map((_, index) => (
+                <div key={`right-${index}`} className="w-12 h-12 overflow-hidden rounded-sm">
+                  <img
+                    src={`/artworks/${artworks[(index + 14) % artworks.length]}`}
+                    alt={`Gallery ${index + 15}`}
+                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                    onError={(e) => {
+                      const img = e.target as HTMLImageElement;
+                      img.onerror = null;
+                      img.src = '/placeholder.png';
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 下部の画像列 */}
+          <div className="flex w-full gap-3 mt-3">
+            {[...Array(8)].map((_, index) => (
+              <div key={`bottom-${index}`} className="w-12 h-12 overflow-hidden rounded-sm">
+                <img
+                  src={`/artworks/${artworks[(index + 20) % artworks.length]}`}
+                  alt={`Gallery ${index + 21}`}
+                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                  onError={(e) => {
+                    const img = e.target as HTMLImageElement;
+                    img.onerror = null;
+                    img.src = '/placeholder.png';
+                  }}
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* 中央コンテンツエリア */}
+        {/* 中央の透過カバーとコンテンツ */}
+        <div className="absolute inset-24 bg-white/95 backdrop-blur-sm rounded-xl"></div>
+
+        {/* メインコンテンツ */}
         <div className="relative z-10 min-h-screen flex items-center">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <div className="bg-white/90 backdrop-blur-sm p-16 rounded-2xl">
-                <div className="text-center">
-                  <h1 className="text-6xl md:text-8xl font-bold mb-12 reveal-text tracking-[0.2em] text-gray-800">
-                    ATELIER ISSEI
-                  </h1>
-                  <p className="text-xl md:text-3xl font-light mb-16 reveal-text tracking-[0.3em] text-gray-700">
-                    心に寄り添うアートを
+              <div className="text-center">
+                <h1 className="text-6xl md:text-8xl font-bold mb-12 reveal-text tracking-[0.2em] text-gray-800">
+                  ATELIER ISSEI
+                </h1>
+                <p className="text-xl md:text-3xl font-light mb-16 reveal-text tracking-[0.3em] text-gray-700">
+                  心に寄り添うアートを
+                </p>
+                <div className="max-w-2xl mx-auto space-y-8">
+                  <p className="text-lg tracking-[0.15em] leading-relaxed font-medium text-gray-700">
+                    私たちは、日常の中に特別な瞬間を創造します。
+                    温かみのある色彩と大胆な構図で、
+                    見る人の心に寄り添う作品を生み出しています。
                   </p>
-                  <div className="max-w-2xl mx-auto space-y-8">
-                    <p className="text-lg tracking-[0.15em] leading-relaxed font-medium text-gray-700">
-                      私たちは、日常の中に特別な瞬間を創造します。
-                      温かみのある色彩と大胆な構図で、
-                      見る人の心に寄り添う作品を生み出しています。
-                    </p>
-                  </div>
                 </div>
               </div>
             </div>
