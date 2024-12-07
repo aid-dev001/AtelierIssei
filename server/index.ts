@@ -17,6 +17,8 @@ function log(message: string) {
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(express.static('client/public'));
+app.use('/artworks', express.static('.'));
 
 app.use((req, res, next) => {
   const start = Date.now();

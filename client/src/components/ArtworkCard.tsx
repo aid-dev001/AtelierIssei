@@ -11,13 +11,14 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
     <Card className="overflow-hidden group">
       <CardContent className="p-0 relative">
         <img
-          src={artwork.imageUrl.startsWith('http') ? artwork.imageUrl : `${artwork.imageUrl}`}
+          src={artwork.imageUrl}
           alt={artwork.title}
           className="w-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105"
           onError={(e) => {
             const img = e.target as HTMLImageElement;
             img.onerror = null;
-            img.src = '/placeholder.jpg';
+            console.error(`Failed to load image: ${artwork.imageUrl}`);
+            img.src = '/placeholder.png';
           }}
         />
         {artwork.isAvailable && artwork.price && (
