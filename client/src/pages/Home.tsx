@@ -11,16 +11,7 @@ const Home = () => {
     });
   }, []);
 
-  const poem = [
-    "芸術家 ISSEI が紡ぎ出す、",
-    "静謐な時の中で生まれる至高の芸術",
-    "深い洞察と繊細な感性から描き出される",
-    "優美なる色彩と力強い筆致が織りなす",
-    "魂の深淵から湧き上がる創造の結晶",
-    "見る者の心に永遠の感動をもたらし",
-    "その瞬間、あなたの人生に",
-    "かけがえのない輝きを添えます"
-  ];
+  // Hero section content
 
   const locations = [
     {
@@ -74,20 +65,9 @@ const Home = () => {
               洗練された美の世界へ、心を解き放つ旅
             </p>
             <div className="max-w-3xl mx-auto bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {poem.map((line, index) => (
-                  <p 
-                    key={index} 
-                    className="text-lg reveal-text tracking-wider leading-relaxed font-medium text-gray-800"
-                    style={{
-                      animationDelay: `${index * 0.15}s`,
-                      textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                    }}
-                  >
-                    {line}
-                  </p>
-                ))}
-              </div>
+              <p className="text-lg tracking-wider leading-relaxed font-medium text-gray-800">
+                洗練された美の世界で、新たな芸術体験をお届けします。
+              </p>
             </div>
           </div>
         </div>
@@ -148,6 +128,119 @@ const Home = () => {
             <Button asChild variant="outline" className="w-full h-12 text-lg">
               <Link href="/news">Latest News</Link>
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Latest Exhibition Works */}
+      <section className="container mx-auto px-4 py-20">
+        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">LATEST WORKS</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {["/12648.jpg", "/12649.jpg", "/12650.jpg"].map((img, index) => (
+            <div key={index} className="group relative aspect-square overflow-hidden rounded-lg shadow-xl">
+              <img
+                src={img}
+                alt={`Latest Work ${index + 1}`}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity group-hover:opacity-100" />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Artist Style */}
+      <section className="bg-gray-50/80 py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">ARTISTIC STYLE</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="text-center space-y-4">
+              <div className="text-2xl font-medium mb-4">Color Harmony</div>
+              <p className="text-gray-600 leading-relaxed">
+                鮮やかな色彩と繊細なグラデーションが織りなす、独特の世界観を表現します。
+              </p>
+            </div>
+            <div className="text-center space-y-4">
+              <div className="text-2xl font-medium mb-4">Modern Expression</div>
+              <p className="text-gray-600 leading-relaxed">
+                伝統と革新が融合した、現代的な表現技法で新しい価値を創造します。
+              </p>
+            </div>
+            <div className="text-center space-y-4">
+              <div className="text-2xl font-medium mb-4">Emotional Depth</div>
+              <p className="text-gray-600 leading-relaxed">
+                深い感性と洞察力から生まれる、心に響く芸術作品を提供します。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Media Coverage */}
+      <section className="container mx-auto px-4 py-20">
+        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">MEDIA</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div className="bg-white rounded-xl shadow-lg p-8 space-y-4">
+            <div className="text-xl font-medium">Art Journal Magazine</div>
+            <p className="text-gray-600">"現代アートシーンに新風を吹き込む注目のアーティスト"</p>
+            <div className="text-sm text-gray-500">2024年1月号</div>
+          </div>
+          <div className="bg-white rounded-xl shadow-lg p-8 space-y-4">
+            <div className="text-xl font-medium">Contemporary Art Review</div>
+            <p className="text-gray-600">"伝統と革新の融合：ISSEI's Vision"</p>
+            <div className="text-sm text-gray-500">2023年12月特集</div>
+          </div>
+        </div>
+      </section>
+
+      {/* Special Events */}
+      <section className="bg-gray-50/80 py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">SPECIAL EVENTS</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="relative group aspect-[4/3] overflow-hidden rounded-xl shadow-xl">
+              <img
+                src="/artworks/image.png"
+                alt="Workshop"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/50 p-8 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="text-2xl font-medium mb-4">アーティストワークショップ</div>
+                <p>ISSEIと共に創造性を探求する特別なワークショップを開催</p>
+              </div>
+            </div>
+            <div className="relative group aspect-[4/3] overflow-hidden rounded-xl shadow-xl">
+              <img
+                src="/artworks/スクリーンショット 2024-12-07 12.26.30.png"
+                alt="Exhibition"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/50 p-8 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="text-2xl font-medium mb-4">プライベート展示会</div>
+                <p>限定公開の特別展示会。新作のプレビューと対話の機会を提供</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Collections */}
+      <section className="container mx-auto px-4 py-20">
+        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">COLLECTIONS</h2>
+        <div className="space-y-16">
+          <div className="space-y-8">
+            <h3 className="text-2xl font-medium text-center">Abstract Collection 2024</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {["/12651.jpg", "/12652.jpg", "/12653.jpg", "/12654.jpg"].map((img, index) => (
+                <div key={index} className="aspect-square overflow-hidden rounded-lg shadow-lg">
+                  <img
+                    src={img}
+                    alt={`Collection ${index + 1}`}
+                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
