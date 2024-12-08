@@ -61,11 +61,11 @@ const Testimonials = () => {
 
   return (
     <div className="space-y-20">
-      <section className="bg-gray-50/80">
+      <section>
         <div className="container mx-auto px-4 py-20">
           <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-4xl font-bold mb-12 tracking-wider text-gray-700">VOICES</h1>
-            <p className="text-xl text-gray-700/90 leading-relaxed font-medium max-w-2xl mx-auto">
+            <h1 className="text-4xl font-bold mb-12 tracking-wider text-gray-800">VOICES</h1>
+            <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-2xl mx-auto">
               芸術を愛する方々からいただいた言葉の数々が、私たちの創造への情熱を支えています。
             </p>
           </div>
