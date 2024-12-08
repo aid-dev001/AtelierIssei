@@ -169,12 +169,25 @@ const Home = () => {
                 温かみのある色彩と大胆な構図で、<br />
                 見る人の心に寄り添う作品を生み出しています。
               </p>
-              <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8 pt-8">
-                <Button asChild className="w-full md:w-auto bg-black hover:bg-gray-900 text-white px-10 py-7 text-sm tracking-[0.2em] border border-black hover:border-gray-900 transition-all duration-500 shadow-xl hover:shadow-2xl transform hover:-translate-y-0.5">
-                  <ScrollToTopLink href="/concept">詳しく見る</ScrollToTopLink>
+              <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 pt-4">
+                <Button 
+                  asChild 
+                  className="w-full md:w-auto bg-black/90 hover:bg-black text-white px-8 py-6 text-sm tracking-[0.2em] rounded-lg transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-0.5 group relative overflow-hidden"
+                >
+                  <ScrollToTopLink href="/concept" className="relative z-10 flex items-center justify-center gap-2">
+                    詳しく見る
+                    <span className="w-5 h-[1px] bg-white transform transition-transform duration-300 group-hover:scale-x-150" />
+                  </ScrollToTopLink>
                 </Button>
-                <Button asChild variant="outline" className="w-full md:w-auto px-10 py-7 text-sm tracking-[0.2em] border border-black/80 hover:border-black hover:bg-black/5 transition-all duration-500 shadow-xl hover:shadow-2xl transform hover:-translate-y-0.5">
-                  <ScrollToTopLink href="/artworks">作品を見る</ScrollToTopLink>
+                <Button 
+                  asChild 
+                  variant="outline" 
+                  className="w-full md:w-auto px-8 py-6 text-sm tracking-[0.2em] rounded-lg border-black/80 hover:border-black bg-white/80 hover:bg-white transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-0.5 group relative overflow-hidden"
+                >
+                  <ScrollToTopLink href="/artworks" className="relative z-10 flex items-center justify-center gap-2">
+                    作品を見る
+                    <span className="w-5 h-[1px] bg-black transform transition-transform duration-300 group-hover:scale-x-150" />
+                  </ScrollToTopLink>
                 </Button>
               </div>
             </div>
