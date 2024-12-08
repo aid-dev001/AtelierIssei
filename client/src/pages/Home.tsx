@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link } from "wouter";
+import ScrollToTopLink from "@/components/ScrollToTopLink";
 import { Button } from "@/components/ui/button";
 import CustomMap from "@/components/Map";
 
@@ -158,21 +158,21 @@ const Home = () => {
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="absolute -bottom-20 right-0 w-[60%] p-16 bg-white">
-          <div className="space-y-8">
-            <h2 className="text-4xl font-bold tracking-[0.2em] text-gray-800">ART CONCEPT</h2>
-            <div className="space-y-6">
-              <p className="text-xl leading-relaxed text-gray-800 tracking-wider">
+        <div className="absolute -bottom-32 right-0 w-[75%] bg-white shadow-xl">
+          <div className="p-12 space-y-6">
+            <h2 className="text-2xl font-bold tracking-[0.2em] text-gray-800">ART CONCEPT</h2>
+            <div className="space-y-4">
+              <p className="text-base leading-relaxed text-gray-800 tracking-wider">
                 私たちは、日常の中に特別な瞬間を創造します。<br />
                 温かみのある色彩と大胆な構図で、<br />
                 見る人の心に寄り添う作品を生み出しています。
               </p>
               <div className="space-x-4">
-                <Button asChild className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-6 text-lg tracking-wider">
-                  <Link href="/concept">詳しく見る</Link>
+                <Button asChild className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-4 text-sm tracking-wider">
+                  <ScrollToTopLink href="/concept">詳しく見る</ScrollToTopLink>
                 </Button>
-                <Button asChild variant="outline" className="px-8 py-6 text-lg tracking-wider">
-                  <Link href="/artworks">作品を見る</Link>
+                <Button asChild variant="outline" className="px-6 py-4 text-sm tracking-wider">
+                  <ScrollToTopLink href="/artworks">作品を見る</ScrollToTopLink>
                 </Button>
               </div>
             </div>
@@ -188,7 +188,7 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {ATELIER_LOCATIONS.map((location) => (
               <div key={location} className="bg-white rounded-xl shadow-md overflow-hidden group transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                <Link href={`/ateliers/${location}`}>
+                <ScrollToTopLink href={`/ateliers/${location}`}>
                   <div className="aspect-[4/3] relative overflow-hidden cursor-pointer">
                     <img
                       src={AtelierInfo[location].mainImage}
@@ -196,7 +196,7 @@ const Home = () => {
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
-                </Link>
+                </ScrollToTopLink>
                 <div className="p-8">
                   <h3 className="text-2xl font-bold mb-3 tracking-wide">{location}</h3>
                   <p className="text-gray-600 leading-relaxed">{AtelierInfo[location].description}</p>
