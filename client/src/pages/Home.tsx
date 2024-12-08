@@ -160,7 +160,7 @@ const Home = () => {
         </div>
         <div className="absolute md:-bottom-32 md:-right-8 bottom-0 right-0 w-full md:w-[70%] bg-white shadow-xl md:transform md:translate-y-[-2rem]">
           <div className="p-8 md:p-24 space-y-8 md:space-y-12">
-            <h2 className="text-2xl md:text-3xl font-bold tracking-[0.2em] text-gray-800">ART CONCEPT</h2>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-wider text-gray-800">ART CONCEPT</h2>
             <div className="space-y-6 md:space-y-8">
               <p className="text-base md:text-lg leading-relaxed text-gray-800 tracking-wider">
                 私たちは、日常の中に特別な瞬間を創造します。<br />
