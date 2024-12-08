@@ -216,24 +216,55 @@ const Home = () => {
 
       {/* Voices Section */}
       <section className="container mx-auto px-4 py-20">
-        <ScrollToTopLink href="/voices">
-          <h2 className="text-4xl font-bold mb-16 text-center tracking-wider hover:text-primary/80 transition-colors">VOICES</h2>
-        </ScrollToTopLink>
+        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">VOICES</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {["12648.jpg", "12653.jpg", "12658.jpg"].map((img, index) => (
-            <div key={index} className="group relative aspect-square overflow-hidden rounded-lg shadow-xl">
-              <img
-                src={`/${img}`}
-                alt={`Voice ${index + 1}`}
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                onError={(e) => {
-                  const img = e.target as HTMLImageElement;
-                  img.onerror = null;
-                  console.error(`Failed to load image: ${img}`);
-                  img.src = '/placeholder.png';
-                }}
-              />
-            </div>
+          {[
+            {
+              image: "12648.jpg",
+              name: "Sarah Thompson",
+              title: "NY Gallery Owner",
+              quote: "優雅さと力強さが見事に調和した作品群"
+            },
+            {
+              image: "12653.jpg",
+              name: "Pierre Dubois",
+              title: "Art Collector",
+              quote: "日本の繊細さと現代アートの融合"
+            },
+            {
+              image: "12658.jpg",
+              name: "山田 誠",
+              title: "建築家",
+              quote: "空間に新たな生命を吹き込む稀有な才能"
+            }
+          ].map((voice, index) => (
+            <ScrollToTopLink href="/voices" key={index}>
+              <div className="group relative aspect-[3/4] overflow-hidden rounded-xl shadow-xl cursor-pointer">
+                <img
+                  src={`/artworks/${voice.image}`}
+                  alt={`Voice by ${voice.name}`}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  onError={(e) => {
+                    const img = e.target as HTMLImageElement;
+                    img.onerror = null;
+                    img.src = '/placeholder.png';
+                  }}
+                />
+                <div className="absolute inset-0 bg-black/40 transition-opacity duration-500 group-hover:opacity-70" />
+                <div className="absolute inset-0 flex flex-col justify-end p-8 text-white transform translate-y-8 transition-transform duration-500 group-hover:translate-y-0">
+                  <div className="space-y-2">
+                    <p className="text-lg font-medium tracking-wide opacity-0 transform -translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                      "{voice.quote}"
+                    </p>
+                    <div className="h-px w-12 bg-white/70 transform scale-x-0 transition-transform duration-500 origin-left group-hover:scale-x-100" />
+                    <div className="space-y-1 opacity-0 transform -translate-y-4 transition-all duration-500 delay-100 group-hover:opacity-100 group-hover:translate-y-0">
+                      <p className="font-medium">{voice.name}</p>
+                      <p className="text-sm text-white/80">{voice.title}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ScrollToTopLink>
           ))}
         </div>
       </section>
@@ -269,25 +300,49 @@ const Home = () => {
       {/* Collections */}
       <section className="container mx-auto px-4 py-20">
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">COLLECTIONS</h2>
-        <div className="space-y-16">
-          <div className="space-y-8">
-            <h3 className="text-2xl font-medium text-center">Abstract Collection 2024</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {["12653.jpg", "12654.jpg", "12655.jpg", "12656.jpg"].map((img, index) => (
-                <div key={index} className="aspect-square overflow-hidden rounded-lg shadow-lg">
-                  <img
-                    src={`/artworks/${img}`}
-                    alt={`Collection ${index + 1}`}
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-                    onError={(e) => {
-                      const img = e.target as HTMLImageElement;
-                      img.onerror = null;
-                      img.src = '/placeholder.png';
-                    }}
-                  />
-                </div>
-              ))}
+        <div className="space-y-20">
+          {[
+            {
+              title: "Abstract Collection 2024",
+              images: ["12653.jpg", "12654.jpg", "12655.jpg", "12656.jpg"],
+            },
+            {
+              title: "Serenity Collection",
+              images: ["12657.jpg", "12658.jpg", "12659.jpg", "12660.jpg"],
+            },
+            {
+              title: "Memory Collection",
+              images: ["12661.jpg", "12662.jpg", "12663.jpg", "12664.jpg"],
+            }
+          ].map((collection, collectionIndex) => (
+            <div key={collectionIndex} className="space-y-8">
+              <ScrollToTopLink href="/collections">
+                <h3 className="text-2xl font-medium text-center group-hover:text-primary/80 transition-colors">
+                  {collection.title}
+                </h3>
+              </ScrollToTopLink>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {collection.images.map((img, index) => (
+                  <div key={index} className="aspect-square overflow-hidden rounded-lg shadow-lg group">
+                    <img
+                      src={`/artworks/${img}`}
+                      alt={`${collection.title} - Image ${index + 1}`}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onError={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        img.onerror = null;
+                        img.src = '/placeholder.png';
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
+          ))}
+          <div className="text-center">
+            <Button asChild variant="outline" size="lg" className="tracking-wider">
+              <ScrollToTopLink href="/collections">View All Collections</ScrollToTopLink>
+            </Button>
           </div>
         </div>
       </section>

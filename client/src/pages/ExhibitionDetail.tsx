@@ -49,51 +49,57 @@ const ExhibitionDetail = () => {
 
   return (
     <div className="space-y-20">
-      <section className="container mx-auto px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-12">
-            <Button asChild variant="ghost" className="mb-8">
-              <ScrollToTopLink href="/exhibition" className="flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" />
-                Back to Exhibitions
+      <section className="relative bg-gray-50/80 py-20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <Button asChild variant="ghost" className="absolute top-8 left-8">
+              <ScrollToTopLink href="/exhibition" className="flex items-center gap-2 group">
+                <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+                <span className="text-sm tracking-wider">Back to Exhibitions</span>
               </ScrollToTopLink>
             </Button>
-            <h1 className="text-4xl font-bold mb-4 tracking-wider">{exhibition.city}</h1>
-            <p className="text-xl text-gray-600">{exhibition.address}</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="space-y-8">
-              <div className="aspect-[4/3] overflow-hidden rounded-xl shadow-xl">
-                <img
-                  src={exhibition.mainImage}
-                  alt={exhibition.city}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="bg-white p-8 rounded-xl shadow-lg">
-                <h2 className="text-2xl font-bold mb-4 tracking-wide">About</h2>
-                <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                  {exhibition.detailText}
-                </p>
-              </div>
+            
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <h1 className="text-5xl font-bold mb-6 tracking-wider text-gray-800">{exhibition.city}</h1>
+              <p className="text-xl text-gray-600 tracking-wide">{exhibition.address}</p>
             </div>
 
-            <div className="space-y-8">
-              <h2 className="text-2xl font-bold tracking-wide">Gallery</h2>
-              <div className="grid grid-cols-1 gap-6">
-                {exhibition.galleryImages.map((image, index) => (
-                  <div
-                    key={index}
-                    className="aspect-[4/3] overflow-hidden rounded-lg shadow-lg group"
-                  >
-                    <img
-                      src={image}
-                      alt={`Gallery ${index + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+              <div className="space-y-12">
+                <div className="aspect-[4/3] overflow-hidden rounded-2xl shadow-2xl">
+                  <img
+                    src={exhibition.mainImage}
+                    alt={exhibition.city}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="bg-white p-10 rounded-xl shadow-lg">
+                  <h2 className="text-2xl font-bold mb-6 tracking-wide text-gray-800">About</h2>
+                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-lg">
+                    {exhibition.detailText}
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-10">
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold tracking-wide text-gray-800">Gallery</h2>
+                  <p className="text-gray-600">展示空間のギャラリー</p>
+                </div>
+                <div className="grid grid-cols-1 gap-8">
+                  {exhibition.galleryImages.map((image, index) => (
+                    <div
+                      key={index}
+                      className="aspect-[4/3] overflow-hidden rounded-lg shadow-xl group"
+                    >
+                      <img
+                        src={image}
+                        alt={`Gallery ${index + 1}`}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

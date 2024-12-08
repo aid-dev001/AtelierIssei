@@ -40,19 +40,27 @@ const Exhibition = () => {
 
   return (
     <div className="space-y-20">
-      <section className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          <h1 className="text-4xl font-bold tracking-wider">EXHIBITION</h1>
-          <div className="aspect-video rounded-lg overflow-hidden shadow-lg">
-            <iframe
-              width="100%"
-              height="100%"
-              src="https://www.youtube.com/embed/Xti4v4ayTnk"
-              title="ATELIER ISSEI Exhibition"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full"
-            />
+      <section className="bg-gray-50/80">
+        <div className="container mx-auto px-4 py-20">
+          <div className="max-w-4xl mx-auto text-center space-y-12">
+            <div className="space-y-6">
+              <h1 className="text-4xl font-bold tracking-wider text-gray-800">EXHIBITION</h1>
+              <p className="text-xl text-gray-700 leading-relaxed max-w-2xl mx-auto">
+                世界各地で開催される展示会を通じて、
+                アートの持つ普遍的な力と美しさを伝えています。
+              </p>
+            </div>
+            <div className="aspect-video rounded-xl overflow-hidden shadow-2xl">
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/Xti4v4ayTnk"
+                title="ATELIER ISSEI Exhibition"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -61,20 +69,26 @@ const Exhibition = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {exhibitions.map((exhibition) => (
             <ScrollToTopLink href={`/exhibition/${exhibition.id}`} key={exhibition.id}>
-              <div className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-                <div className="aspect-[4/3] overflow-hidden">
+              <div className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 overflow-hidden transform hover:-translate-y-1">
+                <div className="aspect-[4/3] overflow-hidden relative">
                   <img
                     src={exhibition.mainImage}
                     alt={`${exhibition.city} Exhibition`}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
+                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold mb-3 group-hover:text-primary/80 transition-colors">
+                <div className="p-8 space-y-4">
+                  <h3 className="text-2xl font-bold tracking-wide group-hover:text-primary/80 transition-colors">
                     {exhibition.city}
                   </h3>
-                  <p className="text-lg mb-2 text-gray-700">{exhibition.address}</p>
-                  <p className="text-sm text-gray-600">{exhibition.description}</p>
+                  <p className="text-lg text-gray-700">{exhibition.address}</p>
+                  <p className="text-gray-600 leading-relaxed">{exhibition.description}</p>
+                  <div className="pt-4">
+                    <span className="text-sm font-medium text-primary/80 group-hover:text-primary transition-colors">
+                      詳細を見る →
+                    </span>
+                  </div>
                 </div>
               </div>
             </ScrollToTopLink>

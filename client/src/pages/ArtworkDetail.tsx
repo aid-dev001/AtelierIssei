@@ -75,13 +75,16 @@ const ArtworkDetail = () => {
                 
               </div>
               <div className="flex gap-4">
-                <div className="bg-white/90 backdrop-blur px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
-                  <Palette className="w-4 h-4 text-primary/80" />
+                <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
+                  <Palette className="w-4 h-4 text-black" />
                   作成: {artwork.createdLocation || '銀座'}
                 </div>
-                <div className="bg-white/90 backdrop-blur px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
-                  <Building2 className="w-4 h-4 text-primary/80" />
+                <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
+                  <Building2 className="w-4 h-4 text-black" />
                   展示: {artwork.storedLocation || '銀座'}
+                </div>
+                <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
+                  サイズ: {artwork.size || 'F4サイズ (333mm × 242mm)'}
                 </div>
               </div>
             </div>
