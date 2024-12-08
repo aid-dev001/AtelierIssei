@@ -158,16 +158,16 @@ const Home = () => {
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="absolute -bottom-32 right-0 w-[75%] bg-white shadow-xl">
-          <div className="p-12 space-y-6">
+        <div className="absolute -bottom-40 right-0 w-[75%] bg-white shadow-xl">
+          <div className="p-16 space-y-8">
             <h2 className="text-2xl font-bold tracking-[0.2em] text-gray-800">ART CONCEPT</h2>
-            <div className="space-y-4">
+            <div className="space-y-6">
               <p className="text-base leading-relaxed text-gray-800 tracking-wider">
                 私たちは、日常の中に特別な瞬間を創造します。<br />
                 温かみのある色彩と大胆な構図で、<br />
                 見る人の心に寄り添う作品を生み出しています。
               </p>
-              <div className="space-x-4">
+              <div className="space-x-4 pt-4">
                 <Button asChild className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-4 text-sm tracking-wider">
                   <ScrollToTopLink href="/concept">詳しく見る</ScrollToTopLink>
                 </Button>
