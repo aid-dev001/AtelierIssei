@@ -176,6 +176,38 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Atelier History */}
+      <section className="bg-gray-50 py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold mb-4 text-center tracking-wider">ATELIER HISTORY</h2>
+          <p className="text-xl text-center mb-16 text-gray-700">アーティストisseiが創作活動を行ってきた場所の記録</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {ATELIER_LOCATIONS.map((location) => (
+              <div key={location} className="bg-white rounded-xl shadow-md overflow-hidden group transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <Link href={`/ateliers/${location}`}>
+                  <div className="aspect-[4/3] relative overflow-hidden cursor-pointer">
+                    <img
+                      src={AtelierInfo[location].mainImage}
+                      alt={`${location}アトリエ`}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                </Link>
+                <div className="p-8">
+                  <h3 className="text-2xl font-bold mb-3 tracking-wide">{location}</h3>
+                  <p className="text-gray-600 leading-relaxed">{AtelierInfo[location].description}</p>
+                  <div className="mt-6">
+                    <span className="inline-block bg-gray-100 text-gray-800 px-4 py-2 rounded-md text-sm font-bold tracking-wide">
+                      {AtelierInfo[location].period}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Latest Exhibition Works */}
       <section className="container mx-auto px-4 py-20">
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">LATEST WORKS</h2>
@@ -219,38 +251,6 @@ const Home = () => {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Atelier History */}
-      <section className="bg-gray-50 py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold mb-4 text-center tracking-wider">ATELIER HISTORY</h2>
-          <p className="text-xl text-center mb-16 text-gray-700">アーティストisseiが創作活動を行ってきた場所の記録</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {ATELIER_LOCATIONS.map((location) => (
-              <div key={location} className="bg-white rounded-xl shadow-md overflow-hidden group transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                <Link href={`/ateliers/${location}`}>
-                  <div className="aspect-[4/3] relative overflow-hidden cursor-pointer">
-                    <img
-                      src={AtelierInfo[location].mainImage}
-                      alt={`${location}アトリエ`}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                </Link>
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold mb-3 tracking-wide">{location}</h3>
-                  <p className="text-gray-600 leading-relaxed">{AtelierInfo[location].description}</p>
-                  <div className="mt-6">
-                    <span className="inline-block bg-gray-100 text-gray-800 px-4 py-2 rounded-md text-sm font-bold tracking-wide">
-                      {AtelierInfo[location].period}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
