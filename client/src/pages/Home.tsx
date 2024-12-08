@@ -73,8 +73,8 @@ const Home = () => {
         {/* 背景の画像ギャラリー */}
         <div className="absolute inset-0">
           {/* グリッド状の画像レイアウト */}
-          <div className="grid grid-cols-18 gap-0.5">
-            {[...Array(324)].map((_, index) => {
+          <div className="grid grid-cols-15 gap-0.5">
+            {[...Array(450)].map((_, index) => {
               const imageFiles = [
                 "23313_0.jpg", "23317.jpg", "23677.jpg", "1912_0.jpg", 
                 "2266.jpg", "2914.jpg", "3316.jpg", "3446.jpg",
@@ -104,7 +104,7 @@ const Home = () => {
           </div>
           
           {/* 中央の透過カバー - 外側1行1列だけ見えるようにサイズ調整 */}
-          <div className="absolute inset-[32px] bg-white">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[85%] bg-white">
             {/* メインコンテンツ */}
             <div className="h-full flex items-center">
               <div className="container mx-auto px-4">
