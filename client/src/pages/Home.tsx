@@ -130,20 +130,22 @@ const Home = () => {
       </section>
 
       <section className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">GALLERY LOCATION</h2>
+        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">EXHIBITION</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {locations.map((location, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-8">
-              <h3 className="text-2xl font-bold mb-3">{location.city}</h3>
-              <p className="text-lg mb-2 text-gray-700">{location.address}</p>
-              <p className="text-sm text-gray-600">{location.description}</p>
-            </div>
+            <ScrollToTopLink href={`/exhibition/${location.city.toLowerCase()}`} key={index}>
+              <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-8 cursor-pointer group">
+                <h3 className="text-2xl font-bold mb-3 group-hover:text-primary/80 transition-colors">{location.city}</h3>
+                <p className="text-lg mb-2 text-gray-700">{location.address}</p>
+                <p className="text-sm text-gray-600">{location.description}</p>
+              </div>
+            </ScrollToTopLink>
           ))}
         </div>
         <div className="aspect-[16/9] w-full overflow-hidden rounded-xl shadow-xl">
           <img
             src="/artworks/image.png"
-            alt="Gallery Map"
+            alt="Exhibition Map"
             className="w-full h-full object-cover"
           />
         </div>
@@ -159,19 +161,19 @@ const Home = () => {
           />
         </div>
         <div className="absolute md:-bottom-32 right-0 bottom-0 w-4/5 md:w-[65%] bg-white shadow-xl md:transform md:translate-y-[-2rem] ml-auto">
-          <div className="p-8 md:p-24 space-y-8 md:space-y-12">
+          <div className="p-8 md:p-20 space-y-8 md:space-y-12">
             <h2 className="text-3xl md:text-4xl font-bold tracking-wider text-gray-800">ART CONCEPT</h2>
-            <div className="space-y-6 md:space-y-8">
+            <div className="space-y-6 md:space-y-8 max-w-xl">
               <p className="text-base md:text-lg leading-relaxed text-gray-800 tracking-wider">
                 私たちは、日常の中に特別な瞬間を創造します。<br />
                 温かみのある色彩と大胆な構図で、<br />
                 見る人の心に寄り添う作品を生み出しています。
               </p>
               <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 pt-4 md:pt-8">
-                <Button asChild className="w-full md:w-auto bg-gray-900 hover:bg-gray-800 text-white px-6 py-4 text-sm tracking-wider">
+                <Button asChild className="w-full md:w-auto bg-black hover:bg-gray-900 text-white px-8 py-6 text-sm tracking-widest border border-black hover:border-gray-900 transition-all duration-300 shadow-lg hover:shadow-xl">
                   <ScrollToTopLink href="/concept">詳しく見る</ScrollToTopLink>
                 </Button>
-                <Button asChild variant="outline" className="w-full md:w-auto px-6 py-4 text-sm tracking-wider">
+                <Button asChild variant="outline" className="w-full md:w-auto px-8 py-6 text-sm tracking-widest border-2 hover:bg-black/5 transition-all duration-300 shadow-lg hover:shadow-xl">
                   <ScrollToTopLink href="/artworks">作品を見る</ScrollToTopLink>
                 </Button>
               </div>
