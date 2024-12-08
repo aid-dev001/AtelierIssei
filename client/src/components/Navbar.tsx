@@ -52,8 +52,7 @@ const Navbar = () => {
                   <span className="relative z-10 transition-colors duration-300 ease-out group-hover:text-primary">
                     {label}
                   </span>
-                  <span className="absolute left-0 bottom-0 w-full h-[2px] bg-primary origin-left transform scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100" />
-                  <span className="absolute inset-0 w-full h-full bg-primary/5 rounded-lg transform scale-y-0 transition-transform duration-300 ease-out group-hover:scale-y-100" />
+                  <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary/80 origin-left transform scale-x-0 transition-all duration-300 ease-out group-hover:scale-x-100" />
                 </span>
               </ScrollToTopLink>
             ))}
@@ -96,8 +95,7 @@ const Navbar = () => {
                   <span className="relative z-10 transition-colors duration-300 ease-out group-hover:text-primary">
                     {label}
                   </span>
-                  <span className="absolute left-0 bottom-0 w-full h-[2px] bg-primary origin-left transform scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100" />
-                  <span className="absolute inset-0 w-full h-full bg-primary/5 rounded-lg transform scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
+                  <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary/80 origin-left transform scale-x-0 transition-all duration-300 ease-out group-hover:scale-x-100" />
                 </span>
               </ScrollToTopLink>
             ))}
