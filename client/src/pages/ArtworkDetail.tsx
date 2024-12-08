@@ -94,7 +94,7 @@ const ArtworkDetail = () => {
                 </p>
               </div>
               
-              <div className="bg-white/90 backdrop-blur px-8 py-6 rounded-xl shadow-sm">
+              <div className="bg-white px-8 py-6 rounded-xl shadow-sm">
                 <div className="text-2xl font-bold mb-3 tracking-wide text-gray-800/90">
                   {artwork.status === 'sold' ? 'SOLD OUT' : 
                    artwork.status === 'reserved' ? '予約済み' :

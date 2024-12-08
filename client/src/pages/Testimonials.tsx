@@ -94,7 +94,7 @@ const Testimonials = () => {
                       }}
                     />
                   </div>
-                  <div className="p-8 space-y-6 flex flex-col justify-center bg-white/90">
+                  <div className="p-8 space-y-6 flex flex-col justify-center bg-white">
                     <Quote className="w-8 h-8 text-gray-300" />
                     <p className="text-lg leading-relaxed text-gray-700">
                       "{testimonial.content}"

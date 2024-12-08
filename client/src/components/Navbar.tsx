@@ -33,7 +33,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="border-b bg-white/80 backdrop-blur-sm fixed w-full z-50">
+    <nav className="border-b bg-white fixed w-full z-50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <ScrollToTopLink href="/" className="text-2xl font-bold tracking-wider">
@@ -75,7 +75,7 @@ const Navbar = () => {
       
       {/* Mobile menu panel */}
       <div className={cn(
-        "fixed inset-y-0 right-0 w-64 bg-white/95 backdrop-blur-sm z-50 transform transition-transform duration-300 ease-out shadow-xl md:hidden",
+        "fixed inset-y-0 right-0 w-64 bg-white z-50 transform transition-transform duration-300 ease-out shadow-xl md:hidden",
         isOpen ? "translate-x-0" : "translate-x-full"
       )}>
         <div className="pt-20 px-6">
