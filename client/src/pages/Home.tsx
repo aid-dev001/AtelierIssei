@@ -161,15 +161,15 @@ const Home = () => {
           />
         </div>
         <div className="absolute bottom-0 right-0 w-4/5 md:w-[60%] bg-white shadow-xl transform translate-y-1/4 ml-auto">
-          <div className="p-8 md:p-16 space-y-8">
+          <div className="p-12 md:p-24 space-y-12">
             <h2 className="text-3xl md:text-4xl font-bold tracking-wider text-gray-800">ART CONCEPT</h2>
-            <div className="space-y-6 max-w-lg ml-auto">
+            <div className="space-y-8 max-w-lg ml-auto">
               <p className="text-base md:text-lg leading-relaxed text-gray-800/90 tracking-wider">
                 私たちは、日常の中に特別な瞬間を創造します。<br />
                 温かみのある色彩と大胆な構図で、<br />
                 見る人の心に寄り添う作品を生み出しています。
               </p>
-              <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8 pt-4">
+              <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8 pt-8">
                 <Button asChild className="w-full md:w-auto bg-black hover:bg-gray-900 text-white px-10 py-7 text-sm tracking-[0.2em] border border-black hover:border-gray-900 transition-all duration-500 shadow-xl hover:shadow-2xl transform hover:-translate-y-0.5">
                   <ScrollToTopLink href="/concept">詳しく見る</ScrollToTopLink>
                 </Button>
