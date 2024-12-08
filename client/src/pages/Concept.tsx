@@ -19,16 +19,16 @@ const Concept = () => {
               alt="Church Exhibition"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black/20" />
+            <div className="absolute inset-0 bg-white/10" />
           </div>
           
           <div className="relative container mx-auto px-4">
-            <div className="max-w-3xl mx-auto bg-black/40 backdrop-blur-sm p-16 rounded-2xl space-y-8 shadow-2xl">
+            <div className="max-w-3xl mx-auto bg-white/40 backdrop-blur-sm p-16 rounded-2xl space-y-8 shadow-2xl">
               <div className="space-y-8">
-                <p className="text-2xl text-white leading-loose tracking-wider font-medium text-center">
+                <p className="text-2xl text-gray-800 leading-loose tracking-wider font-medium text-center">
                   アーティストisseiが、
                 </p>
-                <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
+                <p className="text-xl text-gray-800 leading-loose tracking-wider font-medium text-center">
                   心が沈み、孤独を感じる瞬間
                 </p>
                 <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
