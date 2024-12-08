@@ -19,13 +19,13 @@ const Concept = () => {
               alt="Church Exhibition"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black/30" />
+            <div className="absolute inset-0 bg-black/20" />
           </div>
           
           <div className="relative container mx-auto px-4">
-            <div className="max-w-3xl mx-auto bg-white/20 backdrop-blur-sm p-16 rounded-2xl space-y-8">
-              <div className="space-y-6">
-                <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
+            <div className="max-w-3xl mx-auto bg-black/40 backdrop-blur-sm p-16 rounded-2xl space-y-8 shadow-2xl">
+              <div className="space-y-8">
+                <p className="text-2xl text-white leading-loose tracking-wider font-medium text-center">
                   アーティストisseiが、
                 </p>
                 <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
