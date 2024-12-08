@@ -44,15 +44,12 @@ const Navbar = () => {
               <ScrollToTopLink 
                 key={href} 
                 href={href}
-                className={cn(
-                  "text-sm tracking-widest relative py-2 px-1",
-                  "after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5",
-                  "after:bg-primary/80 after:transform after:scale-x-0 after:origin-bottom-right",
-                  "hover:text-primary/80 hover:after:scale-x-100 hover:after:origin-bottom-left",
-                  "transition-all duration-300 after:transition-transform after:duration-300",
-                  "hover:scale-105"
-                )}
+                className="text-sm tracking-widest relative py-2 px-1 transition-all duration-300 hover:text-primary/80 group"
               >
+                <span className="relative">
+                  {label}
+                  <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary/80 transform scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
+                </span>
                 {label}
               </ScrollToTopLink>
             ))}
