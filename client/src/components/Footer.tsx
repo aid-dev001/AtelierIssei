@@ -1,4 +1,5 @@
 import { Separator } from "@/components/ui/separator";
+import { Facebook, Instagram, Twitter } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -22,8 +23,34 @@ const Footer = () => {
           </div>
           <div>
             <h4 className="text-sm font-semibold mb-4">FOLLOW US</h4>
-            <div className="flex space-x-4">
-              {/* Social media links */}
+            <div className="flex space-x-6">
+              <a 
+                href="https://www.facebook.com/profile.php?id=100025683092990"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 hover:text-primary transition-colors"
+                aria-label="Facebook"
+              >
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a 
+                href="https://www.instagram.com/iisssseeiiii/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 hover:text-primary transition-colors"
+                aria-label="Instagram"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a 
+                href="https://x.com/isseing333"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 hover:text-primary transition-colors"
+                aria-label="X (Twitter)"
+              >
+                <Twitter className="w-5 h-5" />
+              </a>
             </div>
           </div>
         </div>
