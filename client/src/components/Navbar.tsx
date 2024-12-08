@@ -45,8 +45,12 @@ const Navbar = () => {
                 key={href} 
                 href={href}
                 className={cn(
-                  "text-sm tracking-widest hover:text-primary/80 transition-colors",
-                  "py-2 px-1 border-b-2 border-transparent hover:border-primary/80"
+                  "text-sm tracking-widest relative py-2 px-1",
+                  "after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5",
+                  "after:bg-primary/80 after:transform after:scale-x-0 after:origin-bottom-right",
+                  "hover:text-primary/80 hover:after:scale-x-100 hover:after:origin-bottom-left",
+                  "transition-all duration-300 after:transition-transform after:duration-300",
+                  "hover:scale-105"
                 )}
               >
                 {label}
