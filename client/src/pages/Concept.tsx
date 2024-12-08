@@ -5,10 +5,38 @@ const Concept = () => {
         <div className="container mx-auto px-4 py-20">
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-4xl font-bold mb-12 tracking-wider text-gray-800">ART CONCEPT</h1>
-            <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-2xl mx-auto">
-              私たちは、日常の中に特別な瞬間を創造します。
-              温かみのある色彩と大胆な構図で、見る人の心に寄り添う作品を生み出しています。
-            </p>
+            <div className="space-y-8">
+              <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-2xl mx-auto">
+                私たちは、日常の中に特別な瞬間を創造します。
+                温かみのある色彩と大胆な構図で、見る人の心に寄り添う作品を生み出しています。
+              </p>
+              <div className="max-w-2xl mx-auto bg-white/50 p-12 rounded-xl space-y-6">
+                <p className="text-lg text-gray-700 leading-loose tracking-wider">
+                  アーティストisseiが、
+                </p>
+                <p className="text-lg text-gray-700 leading-loose tracking-wider">
+                  心が沈み、孤独を感じる瞬間
+                </p>
+                <p className="text-lg text-gray-700 leading-loose tracking-wider">
+                  自らを励ますために描く希望のアート
+                </p>
+                <p className="text-lg text-gray-700 leading-loose tracking-wider">
+                  華やかさの中に漂うほのかな儚さが、
+                </p>
+                <p className="text-lg text-gray-700 leading-loose tracking-wider">
+                  心の深淵を映し出しています
+                </p>
+                <p className="text-lg text-gray-700 leading-loose tracking-wider">
+                  その一枚一枚が、見る人の心にそっと寄り添い
+                </p>
+                <p className="text-lg text-gray-700 leading-loose tracking-wider">
+                  優雅で鮮やかな色彩と力強い形は
+                </p>
+                <p className="text-lg text-gray-700 leading-loose tracking-wider">
+                  温かな幸福感と希望の光をもたらします
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
