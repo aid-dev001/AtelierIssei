@@ -11,6 +11,7 @@ const Navbar = () => {
     { href: "/", label: "TOP" },
     { href: "/artworks", label: "ARTWORKS" },
     { href: "/concept", label: "CONCEPT" },
+    { href: "/exhibition", label: "EXHIBITION" },
     { href: "/ateliers", label: "ATELIER" },
     { href: "/profile", label: "PROFILE" },
     { href: "/news", label: "NEWS" },
