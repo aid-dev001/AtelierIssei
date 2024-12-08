@@ -1,30 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import CustomMap from "@/components/Map";
-
-const ATELIER_LOCATIONS = ['池袋', '赤坂', '東新宿'] as const;
-
-const AtelierInfo = {
-  '池袋': {
-    description: "都会の喧騒の中で見つけた静寂を表現するアトリエ",
-    address: "東京都豊島区池袋",
-    period: "2020-2022",
-    mainImage: "/artworks/12648.jpg",
-  },
-  '赤坂': {
-    description: "伝統と革新が交差する街で生まれる新しい表現",
-    address: "東京都港区赤坂",
-    period: "2022-2023",
-    mainImage: "/artworks/12653.jpg",
-  },
-  '東新宿': {
-    description: "多様な文化が混ざり合う場所からインスピレーションを得る",
-    address: "東京都新宿区新宿",
-    period: "2023-現在",
-    mainImage: "/artworks/12658.jpg",
-  }
-} as const;
 
 const Home = () => {
   useEffect(() => {
@@ -34,47 +10,14 @@ const Home = () => {
     });
   }, []);
 
-  const locations = [
-    {
-      city: "東京",
-      address: "銀座 ATELIER ISSEI本店",
-      description: "洗練された空間で新たな芸術体験を"
-    },
-    {
-      city: "広島",
-      address: "平和記念公園 アートギャラリー",
-      description: "心安らぐ空間での芸術との出会い"
-    },
-    {
-      city: "パリ",
-      address: "Galerie ISSEI Paris",
-      description: "芸術の都で味わう日本の美意識"
-    },
-    {
-      city: "ニース",
-      address: "ISSEI Art Space Nice",
-      description: "地中海の光に包まれた展示空間"
-    },
-    {
-      city: "ドバイ",
-      address: "ISSEI Gallery Dubai",
-      description: "伝統と革新が融合する芸術空間"
-    },
-    {
-      city: "ロンドン",
-      address: "ISSEI London Gallery",
-      description: "歴史ある街並みに佇む現代アート"
-    }
-  ];
-
   return (
     <div className="space-y-20">
       <section className="min-h-screen relative overflow-hidden">
         {/* 背景の画像ギャラリー */}
         <div className="absolute inset-0">
           {/* グリッド状の画像レイアウト */}
-          <div className="grid grid-cols-12 gap-0.5">
-            {[...Array(144)].map((_, index) => {
+          <div className="grid grid-cols-16 gap-0.5">
+            {[...Array(256)].map((_, index) => {
               const imageFiles = [
                 "23313_0.jpg", "23317.jpg", "23677.jpg", "1912_0.jpg", 
                 "2266.jpg", "2914.jpg", "3316.jpg", "3446.jpg",
@@ -103,8 +46,8 @@ const Home = () => {
             })}
           </div>
           
-          {/* 中央の透過カバー */}
-          <div className="absolute inset-[40px] bg-white/90 backdrop-blur-sm">
+          {/* 中央の透過カバー - 外側1行1列だけ見えるように調整 */}
+          <div className="absolute inset-[60px] bg-white/95 backdrop-blur-sm">
             {/* このdivは透過カバーとして機能します */}
           </div>
         </div>
@@ -131,155 +74,50 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">GALLERY LOCATION</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {locations.map((location, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-8">
-              <h3 className="text-2xl font-bold mb-3">{location.city}</h3>
-              <p className="text-lg mb-2 text-gray-700">{location.address}</p>
-              <p className="text-sm text-gray-600">{location.description}</p>
-            </div>
-          ))}
-        </div>
-        <div className="aspect-[16/9] w-full overflow-hidden rounded-xl shadow-xl">
-          <img
-            src="/artworks/image.png"
-            alt="Gallery Map"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </section>
-
-      {/* Ateliers Summary */}
-      <section className="bg-gray-50 py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">ATELIER</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {ATELIER_LOCATIONS.map((location) => (
-              <div key={location} className="bg-white rounded-xl shadow-md overflow-hidden group transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                <Link href={`/ateliers/${location}`}>
-                  <div className="aspect-[4/3] relative overflow-hidden cursor-pointer">
-                    <img
-                      src={AtelierInfo[location].mainImage}
-                      alt={`${location}アトリエ`}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                </Link>
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold mb-3 tracking-wide">{location}</h3>
-                  <p className="text-gray-600 leading-relaxed">{AtelierInfo[location].description}</p>
-                  <div className="mt-6">
-                    <span className="inline-block bg-gray-100 text-gray-800 px-4 py-2 rounded-md text-sm font-bold tracking-wide">
-                      {AtelierInfo[location].period}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Latest Exhibition Works */}
-      <section className="container mx-auto px-4 py-20">
-        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">LATEST WORKS</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {["23313_0.jpg", "23317.jpg", "23677.jpg"].map((img, index) => (
-            <div key={index} className="group relative aspect-square overflow-hidden rounded-lg shadow-xl">
-              <img
-                src={`/artworks/${img}`}
-                alt={`Latest Work ${index + 1}`}
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                onError={(e) => {
-                  const img = e.target as HTMLImageElement;
-                  img.onerror = null;
-                  img.src = '/placeholder.png';
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Collections */}
-      <section className="container mx-auto px-4 py-20">
-        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">COLLECTIONS</h2>
-        <div className="space-y-16">
-          <div className="space-y-8">
-            <h3 className="text-2xl font-medium text-center">Abstract Collection 2024</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {["12653.jpg", "12654.jpg", "12655.jpg", "12656.jpg"].map((img, index) => (
-                <div key={index} className="aspect-square overflow-hidden rounded-lg shadow-lg">
-                  <img
-                    src={`/artworks/${img}`}
-                    alt={`Collection ${index + 1}`}
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-                    onError={(e) => {
-                      const img = e.target as HTMLImageElement;
-                      img.onerror = null;
-                      img.src = '/placeholder.png';
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Recruitment Section */}
-      <section className="relative min-h-[70vh] overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src="/artworks/12648.jpg"
-            alt="Recruitment Background"
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="relative z-10 flex items-center min-h-[70vh]">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl">
-              <h2 className="text-6xl font-bold mb-12 tracking-[0.2em] text-gray-800">
-                RECRUITMENT
-              </h2>
-              <div className="space-y-8">
-                <p className="text-xl leading-relaxed text-gray-800 max-w-3xl">
-                  カイカイキキではアートの制作スタッフを始め、新規事業立ち上げやデジタル事業等の様々な職種で、新卒・中途問わず、クリエイティブな人材を求めています。私たちは、アートを愛し、どんなことにでも熱意を持って取り組む仲間を待っています。
-                </p>
-                <Button asChild className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-6 text-lg">
-                  <Link href="/contact">採用情報はこちら</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Art Concept Section */}
-      <section className="relative min-h-[70vh] overflow-hidden">
-        <div className="absolute inset-0">
+      {/* Art Concept Section - 洗練されたミニマルデザイン */}
+      <section className="relative overflow-hidden bg-black">
+        <div className="absolute inset-0 opacity-40">
           <img
             src="/artworks/12653.jpg"
             alt="Art Concept Background"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover filter blur-sm"
           />
         </div>
-        <div className="relative z-10 flex items-center min-h-[70vh]">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl">
-              <h2 className="text-6xl font-bold mb-12 tracking-[0.2em] text-gray-800">
-                ART CONCEPT
-              </h2>
-              <div className="space-y-8">
-                <p className="text-xl leading-relaxed text-gray-800 max-w-3xl">
-                  私たちは、アートを通じて人々の心に響く体験を創造します。
-                  伝統と革新を融合させ、見る人の心に深く刻まれる作品を生み出すことを目指しています。
-                  それぞれの作品には、独自の物語と感動が込められています。
-                </p>
-                <Button asChild className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-6 text-lg">
-                  <Link href="/artworks">作品を見る</Link>
+        <div className="relative z-10">
+          <div className="container mx-auto px-4 py-32">
+            <div className="max-w-4xl mx-auto text-white space-y-16">
+              <div className="space-y-8 text-center">
+                <h2 className="text-7xl font-bold tracking-[0.3em] opacity-90">
+                  ART CONCEPT
+                </h2>
+                <div className="w-24 h-0.5 bg-white/60 mx-auto"></div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-light tracking-wider">Tradition</h3>
+                  <p className="text-sm leading-relaxed opacity-80">
+                    伝統的な技法と現代的な表現を
+                    融合させた新しい芸術体験
+                  </p>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-light tracking-wider">Emotion</h3>
+                  <p className="text-sm leading-relaxed opacity-80">
+                    見る人の心に深く刻まれる
+                    感動的な瞬間の創造
+                  </p>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-light tracking-wider">Innovation</h3>
+                  <p className="text-sm leading-relaxed opacity-80">
+                    革新的なアプローチで
+                    新しい価値の創出へ
+                  </p>
+                </div>
+              </div>
+              <div className="text-center pt-8">
+                <Button asChild className="bg-white/10 hover:bg-white/20 text-white border border-white/30 px-12 py-6 text-lg tracking-wider">
+                  <Link href="/artworks">View Artworks</Link>
                 </Button>
               </div>
             </div>
