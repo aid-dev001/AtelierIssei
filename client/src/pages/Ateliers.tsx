@@ -47,7 +47,10 @@ const AtelierInfo = {
   }
 } as const;
 
+import { useScrollTop } from "@/hooks/useScrollTop";
+
 const Ateliers = () => {
+  useScrollTop();
   const [selectedLocation, setSelectedLocation] = useState<AtelierLocation>('池袋');
   
   const { data: artworks, isLoading } = useQuery<Artwork[]>({
