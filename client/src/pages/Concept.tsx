@@ -11,13 +11,13 @@ const Concept = () => {
                 温かみのある色彩と大胆な構図で、見る人の心に寄り添う作品を生み出しています。
               </p>
               <div className="max-w-2xl mx-auto relative">
-                <div className="absolute inset-0 -z-10">
+                <div className="absolute inset-0">
                   <img
                     src="/1731420256.jpg"
                     alt="Church Exhibition"
                     className="w-full h-full object-cover rounded-xl"
                   />
-                  <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-xl" />
+                  <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] rounded-xl" />
                 </div>
                 <div className="relative p-12 space-y-6">
                 <p className="text-lg text-gray-700 leading-loose tracking-wider">
