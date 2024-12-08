@@ -50,7 +50,6 @@ const Navbar = () => {
                   {label}
                   <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary/80 transform scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
                 </span>
-                {label}
               </ScrollToTopLink>
             ))}
           </div>
