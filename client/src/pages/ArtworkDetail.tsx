@@ -84,7 +84,7 @@ const ArtworkDetail = () => {
                   展示: {artwork.storedLocation || '銀座'}
                 </div>
                 <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
-                  サイズ: {artwork.size || 'F4サイズ (333mm × 242mm)'}
+                  サイズ: {artwork.size || 'F4'}
                 </div>
               </div>
             </div>
