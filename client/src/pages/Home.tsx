@@ -152,43 +152,54 @@ const Home = () => {
       </section>
 
       {/* Art Concept Section */}
-      <section className="relative overflow-hidden" style={{ height: '80vh' }}>
-        <div className="absolute inset-0">
-          <img
-            src="/artworks/12648.jpg"
-            alt="Art Concept Background"
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="absolute bottom-0 right-0 w-4/5 md:w-[60%] bg-white shadow-xl transform translate-y-[10%] ml-auto">
-          <div className="p-16 md:p-32 space-y-16">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-wider text-gray-800">ART CONCEPT</h2>
-            <div className="space-y-8 max-w-lg ml-auto">
-              <p className="text-base md:text-lg leading-relaxed text-gray-800/90 tracking-wider">
-                私たちは、日常の中に特別な瞬間を創造します。<br />
-                温かみのある色彩と大胆な構図で、<br />
-                見る人の心に寄り添う作品を生み出しています。
-              </p>
-              <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 pt-4">
-                <Button 
-                  asChild 
-                  className="w-full md:w-auto bg-black/90 hover:bg-black text-white px-8 py-6 text-sm tracking-[0.2em] rounded-lg transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-0.5 group relative overflow-hidden"
-                >
-                  <ScrollToTopLink href="/concept" className="relative z-10 flex items-center justify-center gap-2">
-                    詳しく見る
-                    <span className="w-5 h-[1px] bg-white transform transition-transform duration-300 group-hover:scale-x-150" />
-                  </ScrollToTopLink>
-                </Button>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  className="w-full md:w-auto px-8 py-6 text-sm tracking-[0.2em] rounded-lg border-black/80 hover:border-black bg-white/80 hover:bg-white transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-0.5 group relative overflow-hidden"
-                >
-                  <ScrollToTopLink href="/artworks" className="relative z-10 flex items-center justify-center gap-2">
-                    作品を見る
-                    <span className="w-5 h-[1px] bg-black transform transition-transform duration-300 group-hover:scale-x-150" />
-                  </ScrollToTopLink>
-                </Button>
+      <section className="min-h-screen">
+        <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+          {/* Left Column - Image */}
+          <div className="relative overflow-hidden">
+            <img
+              src="/artworks/12648.jpg"
+              alt="Art Concept Background"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          
+          {/* Right Column - Content */}
+          <div className="flex items-center bg-white">
+            <div className="px-8 md:px-16 lg:px-24 py-20 space-y-12 max-w-xl">
+              <div className="space-y-2">
+                <h2 className="text-5xl font-bold tracking-wider text-gray-800">ART CONCEPT</h2>
+                <p className="text-lg text-gray-600 tracking-wider">心に寄り添うアートを</p>
+              </div>
+              
+              <div className="space-y-6">
+                <p className="text-base md:text-lg leading-relaxed text-gray-800/90 tracking-wider">
+                  私たちは、日常の中に特別な瞬間を創造します。<br />
+                  温かみのある色彩と大胆な構図で、<br />
+                  見る人の心に寄り添う作品を生み出しています。
+                </p>
+                
+                <div className="space-y-4">
+                  <Button 
+                    asChild 
+                    className="w-full bg-black/90 hover:bg-black text-white h-14 text-sm tracking-[0.2em] rounded-lg transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-0.5 group"
+                  >
+                    <ScrollToTopLink href="/concept" className="flex items-center justify-center gap-2">
+                      詳しく見る
+                      <span className="w-5 h-[1px] bg-white transform transition-transform duration-300 group-hover:scale-x-150" />
+                    </ScrollToTopLink>
+                  </Button>
+                  
+                  <Button 
+                    asChild 
+                    variant="outline" 
+                    className="w-full h-14 text-sm tracking-[0.2em] rounded-lg border-black/80 hover:border-black bg-white hover:bg-white/80 transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-0.5 group"
+                  >
+                    <ScrollToTopLink href="/artworks" className="flex items-center justify-center gap-2">
+                      作品を見る
+                      <span className="w-5 h-[1px] bg-black transform transition-transform duration-300 group-hover:scale-x-150" />
+                    </ScrollToTopLink>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
