@@ -22,7 +22,7 @@ const Footer = () => {
             </address>
           </div>
           <div>
-            <h4 className="text-sm font-semibold mb-4">FOLLOW US</h4>
+            <h4 className="text-sm font-semibold mb-4">isseiのアカウント</h4>
             <div className="flex space-x-6">
               <a 
                 href="https://www.facebook.com/profile.php?id=100025683092990"
