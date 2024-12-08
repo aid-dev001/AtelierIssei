@@ -73,8 +73,8 @@ const Home = () => {
         {/* 背景の画像ギャラリー */}
         <div className="absolute inset-0">
           {/* グリッド状の画像レイアウト */}
-          <div className="grid grid-cols-12 gap-0.5">
-            {[...Array(144)].map((_, index) => {
+          <div className="grid grid-cols-24 gap-0.5">
+            {[...Array(576)].map((_, index) => {
               const imageFiles = [
                 "23313_0.jpg", "23317.jpg", "23677.jpg", "1912_0.jpg", 
                 "2266.jpg", "2914.jpg", "3316.jpg", "3446.jpg",
@@ -103,28 +103,26 @@ const Home = () => {
             })}
           </div>
           
-          {/* 中央の透過カバー */}
-          <div className="absolute inset-[40px] bg-white/90 backdrop-blur-sm">
-            {/* このdivは透過カバーとして機能します */}
-          </div>
-        </div>
-
-        {/* メインコンテンツ */}
-        <div className="relative z-10 min-h-screen flex items-center">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-6xl md:text-8xl font-bold mb-12 reveal-text tracking-[0.2em] text-gray-800">
-                ATELIER ISSEI
-              </h1>
-              <p className="text-xl md:text-3xl font-light mb-16 reveal-text tracking-[0.3em] text-gray-700">
-                心に寄り添うアートを
-              </p>
-              <div className="max-w-2xl mx-auto space-y-8">
-                <p className="text-lg tracking-[0.15em] leading-relaxed font-medium text-gray-700">
-                  私たちは、日常の中に特別な瞬間を創造します。
-                  温かみのある色彩と大胆な構図で、
-                  見る人の心に寄り添う作品を生み出しています。
-                </p>
+          {/* 中央の透過カバー - 外側1行1列だけ見えるようにサイズ調整 */}
+          <div className="absolute inset-[32px] bg-white/95 backdrop-blur-sm">
+            {/* メインコンテンツ */}
+            <div className="h-full flex items-center">
+              <div className="container mx-auto px-4">
+                <div className="max-w-4xl mx-auto text-center">
+                  <h1 className="text-6xl md:text-8xl font-bold mb-12 reveal-text tracking-[0.2em] text-gray-800">
+                    ATELIER ISSEI
+                  </h1>
+                  <p className="text-xl md:text-3xl font-light mb-16 reveal-text tracking-[0.3em] text-gray-700">
+                    心に寄り添うアートを
+                  </p>
+                  <div className="max-w-2xl mx-auto space-y-8">
+                    <p className="text-lg tracking-[0.15em] leading-relaxed font-medium text-gray-700">
+                      私たちは、日常の中に特別な瞬間を創造します。
+                      温かみのある色彩と大胆な構図で、
+                      見る人の心に寄り添う作品を生み出しています。
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
