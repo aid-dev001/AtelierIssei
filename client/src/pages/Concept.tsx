@@ -23,30 +23,30 @@ const Concept = () => {
           </div>
           
           <div className="relative container mx-auto px-4">
-            <div className="max-w-3xl mx-auto bg-white/40 backdrop-blur-sm p-16 rounded-2xl space-y-8 shadow-2xl">
+            <div className="max-w-3xl mx-auto bg-gradient-to-b from-white/80 to-white/60 backdrop-blur-md p-16 rounded-2xl space-y-8 shadow-2xl border border-white/20">
               <div className="space-y-8">
-                <p className="text-2xl text-gray-800 leading-loose tracking-wider font-medium text-center">
+                <p className="text-2xl text-gray-800/90 leading-loose tracking-wider font-medium text-center">
                   アーティストisseiが、
                 </p>
-                <p className="text-xl text-gray-800 leading-loose tracking-wider font-medium text-center">
+                <p className="text-xl text-gray-800/90 leading-loose tracking-wider font-medium text-center">
                   心が沈み、孤独を感じる瞬間
                 </p>
-                <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
+                <p className="text-xl text-gray-800/90 leading-loose tracking-wider font-medium text-center">
                   自らを励ますために描く希望のアート
                 </p>
-                <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
+                <p className="text-xl text-gray-800/90 leading-loose tracking-wider font-medium text-center">
                   華やかさの中に漂うほのかな儚さが、
                 </p>
-                <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
+                <p className="text-xl text-gray-800/90 leading-loose tracking-wider font-medium text-center">
                   心の深淵を映し出しています
                 </p>
-                <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
+                <p className="text-xl text-gray-800/90 leading-loose tracking-wider font-medium text-center">
                   その一枚一枚が、見る人の心にそっと寄り添い
                 </p>
-                <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
+                <p className="text-xl text-gray-800/90 leading-loose tracking-wider font-medium text-center">
                   優雅で鮮やかな色彩と力強い形は
                 </p>
-                <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
+                <p className="text-xl text-gray-800/90 leading-loose tracking-wider font-medium text-center">
                   温かな幸福感と希望の光をもたらします
                 </p>
               </div>
