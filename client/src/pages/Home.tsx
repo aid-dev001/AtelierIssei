@@ -150,27 +150,29 @@ const Home = () => {
       </section>
 
       {/* Art Concept Section */}
-      <section className="relative min-h-screen overflow-hidden">
+      <section className="relative overflow-hidden py-32">
         <div className="absolute inset-0">
           <img
             src="/artworks/12648.jpg"
             alt="Art Concept Background"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-white/95"></div>
+          <div className="absolute inset-0 bg-white/80"></div>
         </div>
-        <div className="relative z-10 flex items-center min-h-screen">
+        <div className="relative z-10">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-6xl font-bold mb-16 tracking-[0.2em] text-gray-800">ART CONCEPT</h2>
-              <p className="text-xl leading-relaxed text-gray-800">
-                私たちは、日常の中に特別な瞬間を創造します。<br />
-                温かみのある色彩と大胆な構図で、<br />
-                見る人の心に寄り添う作品を生み出しています。
-              </p>
-              <Button asChild className="mt-12 bg-gray-900 hover:bg-gray-800 text-white px-8 py-6 text-lg">
-                <Link href="/artworks">作品を見る</Link>
-              </Button>
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-5xl font-bold mb-12 tracking-[0.2em] text-gray-800">ART CONCEPT</h2>
+              <div className="space-y-8">
+                <p className="text-2xl leading-relaxed text-gray-800 tracking-wider">
+                  私たちは、日常の中に特別な瞬間を創造します。<br />
+                  温かみのある色彩と大胆な構図で、<br />
+                  見る人の心に寄り添う作品を生み出しています。
+                </p>
+                <Button asChild className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-6 text-lg tracking-wider">
+                  <Link href="/artworks">作品を見る</Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
