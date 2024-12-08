@@ -50,7 +50,11 @@ export function registerRoutes(app: Express) {
 
   app.post("/api/contact", async (req, res) => {
     try {
-      const contact = await db.insert(contacts).values(req.body);
+      const contactData = {
+        ...req.body,
+        email: "isseiart2018@gmail.com", // 送信先メールアドレスを固定
+      };
+      const contact = await db.insert(contacts).values(contactData);
       res.json(contact);
     } catch (error) {
       res.status(500).json({ error: "Failed to submit contact form" });

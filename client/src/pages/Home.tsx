@@ -158,7 +158,7 @@ const Home = () => {
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="absolute md:-bottom-32 md:-right-[-5%] bottom-0 right-0 w-4/5 md:w-[65%] bg-white shadow-xl md:transform md:translate-y-[-2rem] ml-auto">
+        <div className="absolute md:-bottom-32 md:-right-[-15%] bottom-0 right-0 w-4/5 md:w-[65%] bg-white shadow-xl md:transform md:translate-y-[-2rem] ml-auto">
           <div className="p-8 md:p-24 space-y-8 md:space-y-12">
             <h2 className="text-3xl md:text-4xl font-bold tracking-wider text-gray-800">ART CONCEPT</h2>
             <div className="space-y-6 md:space-y-8">
@@ -212,15 +212,17 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Latest Exhibition Works */}
+      {/* Voices Section */}
       <section className="container mx-auto px-4 py-20">
-        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">LATEST WORKS</h2>
+        <ScrollToTopLink href="/voices">
+          <h2 className="text-4xl font-bold mb-16 text-center tracking-wider hover:text-primary/80 transition-colors">VOICES</h2>
+        </ScrollToTopLink>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {["23313_0.jpg", "23317.jpg", "23677.jpg"].map((img, index) => (
             <div key={index} className="group relative aspect-square overflow-hidden rounded-lg shadow-xl">
               <img
                 src={`/artworks/${img}`}
-                alt={`Latest Work ${index + 1}`}
+                alt={`Voice ${index + 1}`}
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 onError={(e) => {
                   const img = e.target as HTMLImageElement;
