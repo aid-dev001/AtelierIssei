@@ -288,15 +288,15 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
           {[
             {
-              src: "/LINE_ALBUM_20241124 _2_241208_1.jpg",
+              src: "/artworks/LINE_ALBUM_20241124 _2_241208_1.jpg",
               title: "Vibrant Architecture"
             },
             {
-              src: "/LINE_ALBUM_20241124 _2_241208_2.jpg",
+              src: "/artworks/LINE_ALBUM_20241124 _2_241208_2.jpg",
               title: "Abstract Portrait"
             },
             {
-              src: "/image.jpg",
+              src: "/artworks/image.jpg",
               title: "Purple Dreams"
             }
           ].map((work, index) => (
@@ -309,6 +309,11 @@ const Home = () => {
                 src={work.src}
                 alt={work.title}
                 className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
+                onError={(e) => {
+                  const img = e.target as HTMLImageElement;
+                  img.onerror = null;
+                  img.src = '/placeholder.png';
+                }}
               />
               <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <h3 className="text-white text-lg font-medium">{work.title}</h3>
