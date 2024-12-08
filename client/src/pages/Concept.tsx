@@ -1,50 +1,54 @@
 const Concept = () => {
   return (
     <div className="space-y-20">
-      <section className="bg-gray-50">
-        <div className="container mx-auto px-4 py-20">
-          <div className="text-center max-w-3xl mx-auto">
+      <section>
+        <div className="text-center py-20 bg-white">
+          <div className="container mx-auto px-4">
             <h1 className="text-4xl font-bold mb-12 tracking-wider text-gray-800">ART CONCEPT</h1>
-            <div className="space-y-8">
-              <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-2xl mx-auto">
-                私たちは、日常の中に特別な瞬間を創造します。
-                温かみのある色彩と大胆な構図で、見る人の心に寄り添う作品を生み出しています。
-              </p>
-              <div className="max-w-2xl mx-auto relative">
-                <div className="absolute inset-0">
-                  <img
-                    src="/1731420256.jpg"
-                    alt="Church Exhibition"
-                    className="w-full h-full object-cover rounded-xl"
-                  />
-                  <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] rounded-xl" />
-                </div>
-                <div className="relative p-12 space-y-6">
-                <p className="text-lg text-gray-700 leading-loose tracking-wider">
+            <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-2xl mx-auto">
+              私たちは、日常の中に特別な瞬間を創造します。
+              温かみのある色彩と大胆な構図で、見る人の心に寄り添う作品を生み出しています。
+            </p>
+          </div>
+        </div>
+
+        <div className="relative min-h-[80vh] flex items-center justify-center">
+          <div className="absolute inset-0">
+            <img
+              src="/1731420256.jpg"
+              alt="Church Exhibition"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/40" />
+          </div>
+          
+          <div className="relative container mx-auto px-4">
+            <div className="max-w-3xl mx-auto bg-white/20 backdrop-blur-sm p-16 rounded-2xl space-y-8">
+              <div className="space-y-6">
+                <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
                   アーティストisseiが、
                 </p>
-                <p className="text-lg text-gray-700 leading-loose tracking-wider">
+                <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
                   心が沈み、孤独を感じる瞬間
                 </p>
-                <p className="text-lg text-gray-700 leading-loose tracking-wider">
+                <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
                   自らを励ますために描く希望のアート
                 </p>
-                <p className="text-lg text-gray-700 leading-loose tracking-wider">
+                <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
                   華やかさの中に漂うほのかな儚さが、
                 </p>
-                <p className="text-lg text-gray-700 leading-loose tracking-wider">
+                <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
                   心の深淵を映し出しています
                 </p>
-                <p className="text-lg text-gray-700 leading-loose tracking-wider">
+                <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
                   その一枚一枚が、見る人の心にそっと寄り添い
                 </p>
-                <p className="text-lg text-gray-700 leading-loose tracking-wider">
+                <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
                   優雅で鮮やかな色彩と力強い形は
                 </p>
-                <p className="text-lg text-gray-700 leading-loose tracking-wider">
+                <p className="text-xl text-white leading-loose tracking-wider font-medium text-center">
                   温かな幸福感と希望の光をもたらします
                 </p>
-              </div>
               </div>
             </div>
           </div>
