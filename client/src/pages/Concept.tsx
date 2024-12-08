@@ -12,14 +12,14 @@ const Concept = () => {
           </div>
         </div>
 
-        <div className="relative min-h-[80vh] flex items-center justify-center">
+        <div className="relative min-h-screen flex items-center justify-center">
           <div className="absolute inset-0">
             <img
-              src="/1731420256.jpg"
+              src="/artworks/1731420256.jpg"
               alt="Church Exhibition"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 bg-black/30" />
           </div>
           
           <div className="relative container mx-auto px-4">
