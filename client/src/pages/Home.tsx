@@ -150,16 +150,28 @@ const Home = () => {
       </section>
 
       {/* Art Concept Section */}
-      <section className="bg-white py-32">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center space-y-4 mb-16">
-              <h2 className="text-5xl font-bold tracking-[0.2em] text-gray-900">RECRUITMENT</h2>
-              <p className="text-xl tracking-[0.1em] text-gray-700">採用情報</p>
+      <section className="relative min-h-screen overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="/artworks/12648.jpg"
+            alt="Art Concept Background"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-white/95"></div>
+        </div>
+        <div className="relative z-10 flex items-center min-h-screen">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="text-6xl font-bold mb-16 tracking-[0.2em] text-gray-800">ART CONCEPT</h2>
+              <p className="text-xl leading-relaxed text-gray-800">
+                私たちは、日常の中に特別な瞬間を創造します。<br />
+                温かみのある色彩と大胆な構図で、<br />
+                見る人の心に寄り添う作品を生み出しています。
+              </p>
+              <Button asChild className="mt-12 bg-gray-900 hover:bg-gray-800 text-white px-8 py-6 text-lg">
+                <Link href="/artworks">作品を見る</Link>
+              </Button>
             </div>
-            <p className="text-lg leading-relaxed text-gray-700 max-w-3xl mx-auto text-center">
-              カイカイキキではアートの制作スタッフを始め、新規事業立ち上げやデジタル事業等の様々な職種で、新卒・中途問わず、クリエイティブな人材を求めています。私たちは、アートを愛し、どんなことにでも熱意を持って取り組む仲間を待っています。
-            </p>
           </div>
         </div>
       </section>
