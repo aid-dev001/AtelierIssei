@@ -287,28 +287,43 @@ const Home = () => {
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">FEATURED WORKS</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
           {[
-            "LINE_ALBUM_20241124 _2_241208_1.jpg",
-            "LINE_ALBUM_20241124 _2_241208_2.jpg",
-            "image.jpg"
-          ].map((img, index) => (
-            <div key={index} className="group relative aspect-square overflow-hidden rounded-xl shadow-lg">
+            {
+              src: "/LINE_ALBUM_20241124 _2_241208_1.jpg",
+              title: "Vibrant Architecture"
+            },
+            {
+              src: "/LINE_ALBUM_20241124 _2_241208_2.jpg",
+              title: "Abstract Portrait"
+            },
+            {
+              src: "/image.jpg",
+              title: "Purple Dreams"
+            }
+          ].map((work, index) => (
+            <div 
+              key={index} 
+              className="group relative aspect-square overflow-hidden rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300"
+            >
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 z-10" />
               <img
-                src={`/${img}`}
-                alt={`Featured Work ${index + 1}`}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                onError={(e) => {
-                  const img = e.target as HTMLImageElement;
-                  img.onerror = null;
-                  console.error(`Failed to load image: ${img}`);
-                  img.src = '/placeholder.png';
-                }}
+                src={work.src}
+                alt={work.title}
+                className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
               />
+              <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <h3 className="text-white text-lg font-medium">{work.title}</h3>
+              </div>
             </div>
           ))}
         </div>
 
         <div className="text-center">
-          <Button asChild variant="outline" size="lg" className="tracking-wider">
+          <Button 
+            asChild 
+            variant="outline" 
+            size="lg" 
+            className="tracking-wider hover:bg-primary hover:text-white transition-colors duration-300"
+          >
             <ScrollToTopLink href="/artworks">View All Works</ScrollToTopLink>
           </Button>
         </div>
