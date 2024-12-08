@@ -26,38 +26,6 @@ const Profile = () => {
         </div>
       </section>
 
-      <section className="bg-gray-50/80 py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">ARTIST JOURNEY</h2>
-          <div className="max-w-6xl mx-auto">
-            {[
-              { year: "幼少期", content: "祖父の油絵に囲まれた環境で育つ" },
-              { year: "1997", content: "中学3年の美術の授業で油絵と出会い、創作への情熱が芽生える" },
-              { year: "2003", content: "抽象画との出会いが、新たな表現の可能性を開く" },
-              { year: "2015", content: "祖父の遺品整理を通じて、家族のアートの歴史と向き合う機会を得る" },
-              { year: "2018", content: "抽象画のイマジンシリーズを開始。ひょこあにシリーズで日本各地、台湾での撮影を展開" },
-              { year: "2019", content: "メモリーシリーズを開始。ドバイ展示会、国内ギャラリー、デザインフェスタに参加。パリで初の個展を開催" },
-              { year: "2022", content: "パリ個展開催。世界的な評価を獲得" },
-              { year: "2023", content: "パリ個展でisseiブランドの世界観を確立" },
-              { year: "2024", content: "フランス・ニースやバリ郊外の教会で個展を開催。国際的な活動の幅を広げる" }
-            ].map((item, index) => (
-              <div key={index} className="grid grid-cols-12 gap-8 mb-8 group">
-                <div className="col-span-3 md:text-right">
-                  <div className="text-xl font-bold text-gray-800/90">{item.year}</div>
-                </div>
-                <div className="relative col-span-1 flex justify-center">
-                  <div className="w-px h-full bg-gray-200 absolute"></div>
-                  <div className="w-3 h-3 rounded-full bg-primary/80 relative top-2 group-hover:scale-125 transition-transform duration-300"></div>
-                </div>
-                <div className="col-span-8">
-                  <p className="text-gray-600 leading-relaxed">{item.content}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="container mx-auto px-4">
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">EXHIBITIONS</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
@@ -99,6 +67,38 @@ const Profile = () => {
                 <p className="text-sm text-gray-600">Digital Art Space Tokyo</p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-gray-50/80 py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">ARTIST JOURNEY</h2>
+          <div className="max-w-6xl mx-auto">
+            {[
+              { year: "幼少期", content: "祖父の油絵に囲まれた環境で育つ" },
+              { year: "1997", content: "中学3年の美術の授業で油絵と出会い、創作への情熱が芽生える" },
+              { year: "2003", content: "抽象画との出会いが、新たな表現の可能性を開く" },
+              { year: "2015", content: "祖父の遺品整理を通じて、家族のアートの歴史と向き合う機会を得る" },
+              { year: "2018", content: "抽象画のイマジンシリーズを開始。ひょこあにシリーズで日本各地、台湾での撮影を展開" },
+              { year: "2019", content: "メモリーシリーズを開始。ドバイ展示会、国内ギャラリー、デザインフェスタに参加。パリで初の個展を開催" },
+              { year: "2022", content: "パリ個展開催。世界的な評価を獲得" },
+              { year: "2023", content: "パリ個展でisseiブランドの世界観を確立" },
+              { year: "2024", content: "フランス・ニースやバリ郊外の教会で個展を開催。国際的な活動の幅を広げる" }
+            ].map((item, index) => (
+              <div key={index} className="grid grid-cols-12 gap-8 mb-8 group">
+                <div className="col-span-3 md:text-right">
+                  <div className="text-xl font-bold text-gray-800/90">{item.year}</div>
+                </div>
+                <div className="relative col-span-1 flex justify-center">
+                  <div className="w-px h-full bg-gray-200 absolute"></div>
+                  <div className="w-3 h-3 rounded-full bg-primary/80 relative top-2 group-hover:scale-125 transition-transform duration-300"></div>
+                </div>
+                <div className="col-span-8">
+                  <p className="text-gray-600 leading-relaxed">{item.content}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
