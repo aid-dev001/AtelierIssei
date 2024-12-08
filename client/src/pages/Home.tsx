@@ -282,15 +282,19 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Latest Works */}
+      {/* Featured Works */}
       <section className="container mx-auto px-4 py-20">
-        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">LATEST WORKS</h2>
+        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">FEATURED WORKS</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-          {["12662.jpg", "12663.jpg", "12664.jpg"].map((img, index) => (
+          {[
+            "LINE_ALBUM_20241124 _2_241208_1.jpg",
+            "LINE_ALBUM_20241124 _2_241208_2.jpg",
+            "image.jpg"
+          ].map((img, index) => (
             <div key={index} className="group relative aspect-square overflow-hidden rounded-xl shadow-lg">
               <img
                 src={`/${img}`}
-                alt={`Latest Work ${index + 1}`}
+                alt={`Featured Work ${index + 1}`}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 onError={(e) => {
                   const img = e.target as HTMLImageElement;
