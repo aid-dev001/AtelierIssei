@@ -158,11 +158,11 @@ const Home = () => {
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="absolute bottom-0 right-0 w-[45%] p-12 bg-white/90 backdrop-blur-sm">
-          <div className="space-y-8">
-            <h2 className="text-5xl font-bold tracking-[0.2em] text-gray-800">ART CONCEPT</h2>
+        <div className="absolute bottom-0 right-0 w-[60%] p-16 bg-white">
+          <div className="space-y-12">
+            <h2 className="text-6xl font-bold tracking-[0.2em] text-gray-800">ART CONCEPT</h2>
             <div className="space-y-8">
-              <p className="text-2xl leading-relaxed text-gray-800 tracking-wider">
+              <p className="text-3xl leading-relaxed text-gray-800 tracking-wider">
                 私たちは、日常の中に特別な瞬間を創造します。<br />
                 温かみのある色彩と大胆な構図で、<br />
                 見る人の心に寄り添う作品を生み出しています。
