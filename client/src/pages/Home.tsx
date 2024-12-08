@@ -103,7 +103,7 @@ const Home = () => {
             })}
           </div>
           
-          {/* 中央の透過カバー - 外側1行1列だけ見えるようにサイズ調整 */}
+          {/* 中央の透過カバー */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[85%] bg-white">
             {/* メインコンテンツ */}
             <div className="h-full flex items-center">
@@ -146,37 +146,6 @@ const Home = () => {
             alt="Gallery Map"
             className="w-full h-full object-cover"
           />
-        </div>
-      </section>
-
-      {/* Ateliers Summary */}
-      <section className="bg-gray-50 py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">ATELIER</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {ATELIER_LOCATIONS.map((location) => (
-              <div key={location} className="bg-white rounded-xl shadow-md overflow-hidden group transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                <Link href={`/ateliers/${location}`}>
-                  <div className="aspect-[4/3] relative overflow-hidden cursor-pointer">
-                    <img
-                      src={AtelierInfo[location].mainImage}
-                      alt={`${location}アトリエ`}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                </Link>
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold mb-3 tracking-wide">{location}</h3>
-                  <p className="text-gray-600 leading-relaxed">{AtelierInfo[location].description}</p>
-                  <div className="mt-6">
-                    <span className="inline-block bg-gray-100 text-gray-800 px-4 py-2 rounded-md text-sm font-bold tracking-wide">
-                      {AtelierInfo[location].period}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -227,60 +196,61 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Recruitment Section */}
-      <section className="relative min-h-[70vh] overflow-hidden">
+      {/* Art Concept Section */}
+      <section className="relative min-h-screen overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="/artworks/12648.jpg"
-            alt="Recruitment Background"
+            alt="Art Concept Background"
             className="w-full h-full object-cover"
           />
+          <div className="absolute inset-0 bg-white/95"></div>
         </div>
-        <div className="relative z-10 flex items-center min-h-[70vh]">
+        <div className="relative z-10 flex items-center min-h-screen">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl">
-              <h2 className="text-6xl font-bold mb-12 tracking-[0.2em] text-gray-800">
-                RECRUITMENT
-              </h2>
-              <div className="space-y-8">
-                <p className="text-xl leading-relaxed text-gray-800 max-w-3xl">
-                  カイカイキキではアートの制作スタッフを始め、新規事業立ち上げやデジタル事業等の様々な職種で、新卒・中途問わず、クリエイティブな人材を求めています。私たちは、アートを愛し、どんなことにでも熱意を持って取り組む仲間を待っています。
-                </p>
-                <Button asChild className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-6 text-lg">
-                  <Link href="/contact">採用情報はこちら</Link>
-                </Button>
-              </div>
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="text-6xl font-bold mb-16 tracking-[0.2em] text-gray-800">ART CONCEPT</h2>
+              <p className="text-xl leading-relaxed text-gray-800">
+                私たちは、日常の中に特別な瞬間を創造します。<br />
+                温かみのある色彩と大胆な構図で、<br />
+                見る人の心に寄り添う作品を生み出しています。
+              </p>
+              <Button asChild className="mt-12 bg-gray-900 hover:bg-gray-800 text-white px-8 py-6 text-lg">
+                <Link href="/artworks">作品を見る</Link>
+              </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Art Concept Section */}
-      <section className="relative min-h-[70vh] overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src="/artworks/12653.jpg"
-            alt="Art Concept Background"
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="relative z-10 flex items-center min-h-[70vh]">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl">
-              <h2 className="text-6xl font-bold mb-12 tracking-[0.2em] text-gray-800">
-                ART CONCEPT
-              </h2>
-              <div className="space-y-8">
-                <p className="text-xl leading-relaxed text-gray-800 max-w-3xl">
-                  私たちは、アートを通じて人々の心に響く体験を創造します。
-                  伝統と革新を融合させ、見る人の心に深く刻まれる作品を生み出すことを目指しています。
-                  それぞれの作品には、独自の物語と感動が込められています。
-                </p>
-                <Button asChild className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-6 text-lg">
-                  <Link href="/artworks">作品を見る</Link>
-                </Button>
+      {/* Atelier History */}
+      <section className="bg-gray-50 py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold mb-4 text-center tracking-wider">ATELIER HISTORY</h2>
+          <p className="text-xl text-center mb-16 text-gray-700">アーティストisseiが創作活動を行ってきた場所の記録</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {ATELIER_LOCATIONS.map((location) => (
+              <div key={location} className="bg-white rounded-xl shadow-md overflow-hidden group transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <Link href={`/ateliers/${location}`}>
+                  <div className="aspect-[4/3] relative overflow-hidden cursor-pointer">
+                    <img
+                      src={AtelierInfo[location].mainImage}
+                      alt={`${location}アトリエ`}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                </Link>
+                <div className="p-8">
+                  <h3 className="text-2xl font-bold mb-3 tracking-wide">{location}</h3>
+                  <p className="text-gray-600 leading-relaxed">{AtelierInfo[location].description}</p>
+                  <div className="mt-6">
+                    <span className="inline-block bg-gray-100 text-gray-800 px-4 py-2 rounded-md text-sm font-bold tracking-wide">
+                      {AtelierInfo[location].period}
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
