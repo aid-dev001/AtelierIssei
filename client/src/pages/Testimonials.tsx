@@ -77,7 +77,7 @@ const Testimonials = () => {
           {testimonials.map((testimonial, index) => (
             <Card 
               key={index}
-              className="testimonial-card opacity-0 translate-y-4 transition-all duration-700 ease-out hover:shadow-lg overflow-hidden"
+              className="testimonial-card opacity-0 translate-y-4 transition-all duration-700 ease-out hover:shadow-lg overflow-hidden bg-transparent"
             >
               <CardContent className="p-0">
                 <div className={`grid md:grid-cols-2 ${index % 2 === 0 ? 'md:grid-flow-col' : 'md:grid-flow-col-dense'}`}>
@@ -85,7 +85,7 @@ const Testimonials = () => {
                     <img 
                       src={testimonial.imageUrl}
                       alt={`Artwork appreciated by ${testimonial.name}`}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                       onError={(e) => {
                         const img = e.target as HTMLImageElement;
                         img.onerror = null;
@@ -94,7 +94,7 @@ const Testimonials = () => {
                       }}
                     />
                   </div>
-                  <div className="p-8 space-y-6 flex flex-col justify-center">
+                  <div className="p-8 space-y-6 flex flex-col justify-center bg-white/90">
                     <Quote className="w-8 h-8 text-gray-300" />
                     <p className="text-lg leading-relaxed text-gray-700">
                       "{testimonial.content}"
