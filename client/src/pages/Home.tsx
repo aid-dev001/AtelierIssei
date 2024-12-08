@@ -160,8 +160,8 @@ const Home = () => {
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="absolute bottom-0 right-0 w-4/5 md:w-[60%] bg-white shadow-xl transform translate-y-[10%] ml-auto">
-          <div className="p-16 md:p-32 space-y-16">
+        <div className="absolute bottom-0 right-0 w-4/5 md:w-[60%] bg-white shadow-xl transform translate-y-[30%] ml-auto">
+          <div className="p-16 md:p-24 space-y-12">
             <h2 className="text-3xl md:text-4xl font-bold tracking-wider text-gray-800">ART CONCEPT</h2>
             <div className="space-y-8 max-w-lg ml-auto">
               <p className="text-base md:text-lg leading-relaxed text-gray-800/90 tracking-wider">
