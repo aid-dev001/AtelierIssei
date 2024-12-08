@@ -46,11 +46,14 @@ const Navbar = () => {
               <ScrollToTopLink 
                 key={href} 
                 href={href}
-                className="text-sm tracking-widest relative py-2 px-1 transition-all duration-300 hover:text-primary/80 group"
+                className="text-sm tracking-widest relative py-2 px-1 group"
               >
-                <span className="relative">
-                  {label}
-                  <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary/80 transform scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
+                <span className="relative inline-block">
+                  <span className="relative z-10 transition-colors duration-300 ease-out group-hover:text-primary">
+                    {label}
+                  </span>
+                  <span className="absolute left-0 bottom-0 w-full h-[2px] bg-primary origin-left transform scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100" />
+                  <span className="absolute inset-0 w-full h-full bg-primary/5 rounded-lg transform scale-y-0 transition-transform duration-300 ease-out group-hover:scale-y-100" />
                 </span>
               </ScrollToTopLink>
             ))}
@@ -86,10 +89,16 @@ const Navbar = () => {
               <ScrollToTopLink
                 key={href}
                 href={href}
-                className="block text-lg tracking-wider py-2 border-b border-gray-100 hover:text-primary/80 transition-colors"
+                className="block text-lg tracking-wider py-2 border-b border-gray-100 relative group"
                 onClick={closeMenu}
               >
-                {label}
+                <span className="relative inline-block w-full">
+                  <span className="relative z-10 transition-colors duration-300 ease-out group-hover:text-primary">
+                    {label}
+                  </span>
+                  <span className="absolute left-0 bottom-0 w-full h-[2px] bg-primary origin-left transform scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100" />
+                  <span className="absolute inset-0 w-full h-full bg-primary/5 rounded-lg transform scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
+                </span>
               </ScrollToTopLink>
             ))}
           </div>
