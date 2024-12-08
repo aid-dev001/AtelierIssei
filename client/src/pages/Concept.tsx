@@ -1,7 +1,4 @@
-import { useScrollTop } from "@/hooks/useScrollTop";
-
 const Concept = () => {
-  useScrollTop();
   return (
     <div className="space-y-20">
       <section className="bg-gray-50">

@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useScrollTop } from "@/hooks/useScrollTop";
 import { Card, CardContent } from "@/components/ui/card";
 import { Quote } from "lucide-react";
 
@@ -42,7 +41,6 @@ const testimonials = [
 ];
 
 const Testimonials = () => {
-  useScrollTop();
   useEffect(() => {
     const cards = document.querySelectorAll('.testimonial-card');
     const observer = new IntersectionObserver((entries) => {

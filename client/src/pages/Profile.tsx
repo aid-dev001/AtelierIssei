@@ -1,7 +1,4 @@
-import { useScrollTop } from "@/hooks/useScrollTop";
-
 const Profile = () => {
-  useScrollTop();
   return (
     <div className="space-y-20">
       <section className="container mx-auto px-4">
