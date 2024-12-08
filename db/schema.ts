@@ -11,9 +11,9 @@ export const artworks = pgTable("artworks", {
   status: text("status").notNull().default('available'),  // 'available', 'reserved', 'sold'
   createdLocation: text("created_location").notNull().default('銀座'),  // アトリエの場所: '池袋', '赤坂', '東新宿'
   storedLocation: text("stored_location").notNull().default('銀座'),
-  size: text("size").default('F4サイズ (333mm × 242mm)'),  // 作品サイズ
   isAvailable: boolean("is_available").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  size: text("size").default('F4サイズ (333mm × 242mm)').notNull(),  // 作品サイズ
 });
 
 export const news = pgTable("news", {
