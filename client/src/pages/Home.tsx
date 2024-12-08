@@ -150,28 +150,28 @@ const Home = () => {
       </section>
 
       {/* Art Concept Section */}
-      <section className="relative overflow-hidden" style={{ height: '80vh' }}>
-        <div className="absolute inset-0">
+      <section className="relative overflow-hidden bg-white md:bg-transparent" style={{ minHeight: '80vh' }}>
+        <div className="hidden md:block absolute inset-0">
           <img
             src="/artworks/12648.jpg"
             alt="Art Concept Background"
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="absolute -bottom-32 -right-8 w-[70%] bg-white shadow-xl transform translate-y-[-2rem]">
-          <div className="p-24 space-y-12">
-            <h2 className="text-3xl font-bold tracking-[0.2em] text-gray-800">ART CONCEPT</h2>
-            <div className="space-y-8">
-              <p className="text-lg leading-relaxed text-gray-800 tracking-wider">
+        <div className="md:absolute md:-bottom-32 md:-right-8 w-full md:w-[70%] bg-white md:shadow-xl md:transform md:translate-y-[-2rem]">
+          <div className="p-8 md:p-24 space-y-8 md:space-y-12">
+            <h2 className="text-2xl md:text-3xl font-bold tracking-[0.2em] text-gray-800">ART CONCEPT</h2>
+            <div className="space-y-6 md:space-y-8">
+              <p className="text-base md:text-lg leading-relaxed text-gray-800 tracking-wider">
                 私たちは、日常の中に特別な瞬間を創造します。<br />
                 温かみのある色彩と大胆な構図で、<br />
                 見る人の心に寄り添う作品を生み出しています。
               </p>
-              <div className="space-x-6 pt-8">
-                <Button asChild className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-4 text-sm tracking-wider">
+              <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 pt-4 md:pt-8">
+                <Button asChild className="w-full md:w-auto bg-gray-900 hover:bg-gray-800 text-white px-6 py-4 text-sm tracking-wider">
                   <ScrollToTopLink href="/concept">詳しく見る</ScrollToTopLink>
                 </Button>
-                <Button asChild variant="outline" className="px-6 py-4 text-sm tracking-wider">
+                <Button asChild variant="outline" className="w-full md:w-auto px-6 py-4 text-sm tracking-wider">
                   <ScrollToTopLink href="/artworks">作品を見る</ScrollToTopLink>
                 </Button>
               </div>
