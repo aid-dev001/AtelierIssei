@@ -104,7 +104,7 @@ const Home = () => {
           </div>
           
           {/* 中央の透過カバー */}
-          <div className="absolute left-1/2 -translate-x-1/2 w-[87%] h-[85%] bg-white" style={{ top: 'calc(100vw * 0.14 / 2)' }}>
+          <div className="absolute left-1/2 -translate-x-1/2 w-[87%] h-[85%] bg-white" style={{ top: 'calc(100vw * 0.125 / 2)' }}>
             {/* メインコンテンツ */}
             <div className="h-full flex items-center">
               <div className="container mx-auto px-4">
