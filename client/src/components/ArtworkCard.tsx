@@ -49,7 +49,7 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
             </div>
           </div>
           <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium">
-            {artwork.size || 'F4サイズ (333mm × 242mm)'}
+            サイズ: {artwork.size}
           </div>
         </div>
       </CardContent>
