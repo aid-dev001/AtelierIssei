@@ -10,7 +10,16 @@ const Concept = () => {
                 私たちは、日常の中に特別な瞬間を創造します。
                 温かみのある色彩と大胆な構図で、見る人の心に寄り添う作品を生み出しています。
               </p>
-              <div className="max-w-2xl mx-auto bg-white/50 p-12 rounded-xl space-y-6">
+              <div className="max-w-2xl mx-auto relative">
+                <div className="absolute inset-0 -z-10">
+                  <img
+                    src="/1731420256.jpg"
+                    alt="Church Exhibition"
+                    className="w-full h-full object-cover rounded-xl"
+                  />
+                  <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-xl" />
+                </div>
+                <div className="relative p-12 space-y-6">
                 <p className="text-lg text-gray-700 leading-loose tracking-wider">
                   アーティストisseiが、
                 </p>
@@ -35,6 +44,7 @@ const Concept = () => {
                 <p className="text-lg text-gray-700 leading-loose tracking-wider">
                   温かな幸福感と希望の光をもたらします
                 </p>
+              </div>
               </div>
             </div>
           </div>
