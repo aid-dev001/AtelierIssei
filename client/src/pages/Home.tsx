@@ -218,20 +218,49 @@ const Home = () => {
           <h2 className="text-4xl font-bold mb-16 text-center tracking-wider hover:text-primary/80 transition-colors">VOICES</h2>
         </ScrollToTopLink>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {["23313_0.jpg", "23317.jpg", "23677.jpg"].map((img, index) => (
+          {["12648.jpg", "12653.jpg", "12658.jpg"].map((img, index) => (
             <div key={index} className="group relative aspect-square overflow-hidden rounded-lg shadow-xl">
               <img
-                src={`/artworks/${img}`}
+                src={`/${img}`}
                 alt={`Voice ${index + 1}`}
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 onError={(e) => {
                   const img = e.target as HTMLImageElement;
                   img.onerror = null;
+                  console.error(`Failed to load image: ${img}`);
                   img.src = '/placeholder.png';
                 }}
               />
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Latest Works */}
+      <section className="container mx-auto px-4 py-20">
+        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">LATEST WORKS</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+          {["12662.jpg", "12663.jpg", "12664.jpg"].map((img, index) => (
+            <div key={index} className="group relative aspect-square overflow-hidden rounded-xl shadow-lg">
+              <img
+                src={`/${img}`}
+                alt={`Latest Work ${index + 1}`}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                onError={(e) => {
+                  const img = e.target as HTMLImageElement;
+                  img.onerror = null;
+                  console.error(`Failed to load image: ${img}`);
+                  img.src = '/placeholder.png';
+                }}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center">
+          <Button asChild variant="outline" size="lg" className="tracking-wider">
+            <ScrollToTopLink href="/artworks">View All Works</ScrollToTopLink>
+          </Button>
         </div>
       </section>
 
