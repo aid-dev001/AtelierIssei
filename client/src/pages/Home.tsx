@@ -104,7 +104,7 @@ const Home = () => {
           </div>
           
           {/* 中央の透過カバー */}
-          <div className="absolute left-1/2 -translate-x-1/2 w-[87%] h-[85%] bg-white" style={{ top: 'calc(100vw * 0.125 / 2)' }}>
+          <div className="absolute left-1/2 -translate-x-1/2 w-[87%] bg-white" style={{ height: 'calc(100vw * 0.125 * 13)', top: 'calc(100vw * 0.125 / 2)' }}>
             {/* メインコンテンツ */}
             <div className="h-full flex items-center">
               <div className="container mx-auto px-4">
@@ -130,7 +130,7 @@ const Home = () => {
       </section>
 
       <section className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">GALLERY LOCATION</h2>
+        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">GALLERY HISTORY</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {locations.map((location, index) => (
             <div key={index} className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-8">
@@ -158,7 +158,7 @@ const Home = () => {
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="absolute md:-bottom-32 right-0 bottom-0 w-4/5 md:w-[65%] bg-white shadow-xl md:transform md:translate-y-[-2rem] ml-auto">
+        <div className="absolute md:-bottom-32 right-0 bottom-0 w-4/5 md:w-[45%] bg-white shadow-xl md:transform md:translate-y-[-2rem] ml-auto">
           <div className="p-8 md:p-24 space-y-8 md:space-y-12">
             <h2 className="text-3xl md:text-4xl font-bold tracking-wider text-gray-800">ART CONCEPT</h2>
             <div className="space-y-6 md:space-y-8">
@@ -168,10 +168,10 @@ const Home = () => {
                 見る人の心に寄り添う作品を生み出しています。
               </p>
               <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 pt-4 md:pt-8">
-                <Button asChild className="w-full md:w-auto bg-gray-900 hover:bg-gray-800 text-white px-6 py-4 text-sm tracking-wider">
+                <Button asChild className="w-full md:w-auto bg-black hover:bg-gray-900 text-white px-8 py-4 text-sm tracking-widest shadow-lg transition-all duration-300 hover:shadow-xl border border-gray-900/10">
                   <ScrollToTopLink href="/concept">詳しく見る</ScrollToTopLink>
                 </Button>
-                <Button asChild variant="outline" className="w-full md:w-auto px-6 py-4 text-sm tracking-wider">
+                <Button asChild variant="outline" className="w-full md:w-auto px-8 py-4 text-sm tracking-widest shadow-md hover:shadow-lg transition-all duration-300 border-2">
                   <ScrollToTopLink href="/artworks">作品を見る</ScrollToTopLink>
                 </Button>
               </div>
