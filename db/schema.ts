@@ -13,7 +13,6 @@ export const artworks = pgTable("artworks", {
   storedLocation: text("stored_location").notNull().default('銀座'),
   isAvailable: boolean("is_available").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  size: text("size").default('F4サイズ (333mm × 242mm)').notNull(),  // 作品サイズ
 });
 
 export const news = pgTable("news", {
