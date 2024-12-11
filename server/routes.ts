@@ -196,8 +196,9 @@ export default function setupRoutes(app: express.Express) {
   // Update artwork
   app.put(`/admin/${ADMIN_URL_PATH}/artworks/:id`, requireAdmin, async (req, res) => {
     try {
+      const { id, ...updateData } = req.body;
       await db.update(artworks)
-        .set(req.body)
+        .set(updateData)
         .where(eq(artworks.id, parseInt(req.params.id)));
       
       const updatedArtwork = await db.query.artworks.findFirst({

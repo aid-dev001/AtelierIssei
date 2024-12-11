@@ -122,7 +122,7 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
           onChange={handleFileInput}
         />
         {preview ? (
-          <div className="relative aspect-square w-full overflow-hidden rounded-lg">
+          <div className="relative w-full h-[300px] overflow-hidden rounded-lg">
             <img
               src={preview}
               alt="Preview"
