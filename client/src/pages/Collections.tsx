@@ -3,31 +3,25 @@ import { Card } from "@/components/ui/card";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 import { ArrowRight } from "lucide-react";
 
-const collections = [
-  {
-    id: "abstract-2024",
-    title: "Abstract Collection 2024",
-    description: "抽象的な形と色彩が織りなす、心の風景を表現したコレクション",
-    images: ["12653.jpg", "12654.jpg", "12655.jpg", "12656.jpg"],
-    year: "2024",
-  },
-  {
-    id: "serenity",
-    title: "Serenity Collection",
-    description: "静寂と調和をテーマにした、心安らぐアート作品群",
-    images: ["12657.jpg", "12658.jpg", "12659.jpg", "12660.jpg"],
-    year: "2023",
-  },
-  {
-    id: "memory",
-    title: "Memory Collection",
-    description: "思い出と感情を色彩豊かに表現した、記憶のアートコレクション",
-    images: ["12661.jpg", "12662.jpg", "12663.jpg", "12664.jpg"],
-    year: "2023",
-  }
-];
+import { useQuery } from "@tanstack/react-query";
+import type { Collection, Artwork } from "@db/schema";
+
+const useCollectionsWithArtworks = () => {
+  const { data: collections } = useQuery<Collection[]>({
+    queryKey: ["collections"],
+    queryFn: () => fetch("/api/collections").then(res => res.json()),
+  });
+
+  const { data: artworks } = useQuery<Artwork[]>({
+    queryKey: ["artworks"],
+    queryFn: () => fetch("/api/artworks").then(res => res.json()),
+  });
+
+  return { collections, artworks };
+};
 
 const Collections = () => {
+  const { collections, artworks } = useCollectionsWithArtworks();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -48,7 +42,7 @@ const Collections = () => {
 
       <section className="container mx-auto px-4">
         <div className="space-y-32">
-          {collections.map((collection, index) => (
+          {collections?.map((collection, index) => (
             <div key={collection.id} className="space-y-12">
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold tracking-wide text-center">{collection.title}</h2>
@@ -58,11 +52,12 @@ const Collections = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {collection.images.map((img, imgIndex) => (
+                {artworks?.filter(artwork => artwork.collectionId === collection.id)
+                  .map((artwork, imgIndex) => (
                   <Card key={imgIndex} className="overflow-hidden group">
                     <div className="aspect-square relative">
                       <img
-                        src={`/artworks/${img}`}
+                        src={artwork.imageUrl}
                         alt={`${collection.title} - Image ${imgIndex + 1}`}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         onError={(e) => {

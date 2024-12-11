@@ -594,16 +594,27 @@ const AdminDashboard = () => {
                   key={collection.id}
                   className="border p-4 rounded-lg hover:shadow-lg transition-all"
                 >
-                  <div className="aspect-square mb-2 overflow-hidden rounded-lg">
-                    <img
-                      src={collection.imageUrl}
-                      alt={collection.title}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const img = e.target as HTMLImageElement;
-                        img.src = '/placeholder.png';
-                      }}
-                    />
+                  <div className="grid grid-cols-2 gap-2 mb-2">
+                    {artworks?.filter(artwork => artwork.collectionId === collection.id)
+                      .slice(0, 4)
+                      .map((artwork, index) => (
+                        <div key={artwork.id} className="aspect-square overflow-hidden rounded-lg">
+                          <img
+                            src={artwork.imageUrl}
+                            alt={artwork.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              const img = e.target as HTMLImageElement;
+                              img.src = '/placeholder.png';
+                            }}
+                          />
+                        </div>
+                      ))}
+                    {Array.from({ length: Math.max(0, 4 - (artworks?.filter(artwork => artwork.collectionId === collection.id).length || 0)) }).map((_, i) => (
+                      <div key={`empty-${i}`} className="aspect-square rounded-lg bg-gray-100 flex items-center justify-center">
+                        <span className="text-gray-400">No Image</span>
+                      </div>
+                    ))}
                   </div>
                   <h3 className="font-medium">{collection.title}</h3>
                   <p className="text-sm text-gray-600">{collection.description}</p>
