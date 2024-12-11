@@ -7,9 +7,9 @@ import { adminUsers } from "@db/schema";
 // Generate a random string for the admin URL path
 export const ADMIN_URL_PATH = "6f4e2d1c3b8a9f7e5d2c1b4a8f7e3d2c1b4a8f7e3d2c1b4a8f7e3d2c1b4a8f";
 
-// Generate a random username and password
-const ADMIN_USERNAME = `admin_${crypto.randomBytes(8).toString('hex')}`;
-const ADMIN_PASSWORD = crypto.randomBytes(16).toString('base64');
+// Fixed admin credentials
+const ADMIN_USERNAME = 'admin';
+const ADMIN_PASSWORD = 'admin123';
 
 // Hash the password for storage
 const ADMIN_PASSWORD_HASH = bcrypt.hashSync(ADMIN_PASSWORD, 10);
