@@ -79,7 +79,7 @@ const AdminDashboard = () => {
   });
 
   const updateArtworkMutation = useMutation({
-    mutationFn: async (artwork: Artwork) => {
+    mutationFn: async (artwork: Partial<Artwork>) => {
       const response = await fetch(`${adminPath}/artworks/${artwork.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -119,7 +119,7 @@ const AdminDashboard = () => {
     const formData = new FormData(e.currentTarget);
     
     const file = formData.get('image') as File;
-    if (!file || !(file instanceof File)) {
+    if (!selectedArtwork && (!file || !(file instanceof File))) {
       toast({
         variant: "destructive",
         title: "画像を選択してください",
@@ -129,15 +129,16 @@ const AdminDashboard = () => {
 
     if (selectedArtwork) {
       const artworkData = {
-        ...selectedArtwork,
+        id: selectedArtwork.id,
         title: formData.get('title') as string,
         description: formData.get('description') as string,
         price: formData.get('price') as string,
         size: formData.get('size') as string | null,
-        status: formData.get('status') as 'available' | 'reserved' | 'sold',
+        status: formData.get('status') as string,
         createdLocation: formData.get('createdLocation') as string,
         storedLocation: formData.get('storedLocation') as string,
         isAvailable: true,
+        imageUrl: selectedArtwork.imageUrl,
       };
       updateArtworkMutation.mutate(artworkData);
     } else {
@@ -150,6 +151,7 @@ const AdminDashboard = () => {
       <div className="space-y-4">
         <Label htmlFor="image">作品画像</Label>
         <Dropzone
+          existingImageUrl={selectedArtwork?.imageUrl}
           onFileChange={async (file) => {
             try {
               const formData = new FormData();

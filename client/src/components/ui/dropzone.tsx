@@ -5,18 +5,24 @@ import { UploadCloud } from "lucide-react";
 
 export interface DropzoneProps extends React.HTMLAttributes<HTMLDivElement> {
   onFileChange: (file: File) => void;
+  existingImageUrl?: string;
 }
 
 const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
-  ({ className, onFileChange, ...props }, ref) => {
+  ({ className, onFileChange, existingImageUrl, ...props }, ref) => {
     const { toast } = useToast();
     const [isDragging, setIsDragging] = React.useState(false);
-    const [preview, setPreview] = React.useState<string | null>(null);
+    const [preview, setPreview] = React.useState<string | null>(existingImageUrl || null);
 
     React.useEffect(() => {
-      // クリーンアップ関数
+      if (existingImageUrl) {
+        setPreview(existingImageUrl);
+      }
+    }, [existingImageUrl]);
+
+    React.useEffect(() => {
       return () => {
-        if (preview) {
+        if (preview && !preview.startsWith('http')) {
           URL.revokeObjectURL(preview);
         }
       };
@@ -44,7 +50,6 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
           return false;
         }
 
-        // JPEGとPNGのみを許可
         if (!["image/jpeg", "image/png"].includes(file.type)) {
           toast({
             variant: "destructive",
@@ -61,12 +66,10 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
           return false;
         }
 
-        // 既存のプレビューをクリーンアップ
-        if (preview) {
+        if (preview && !preview.startsWith('http')) {
           URL.revokeObjectURL(preview);
         }
 
-        // 新しいプレビューを作成
         setPreview(URL.createObjectURL(file));
         onFileChange(file);
         return true;

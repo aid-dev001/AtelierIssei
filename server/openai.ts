@@ -31,7 +31,7 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
     // OpenAI APIにリクエストを送信
     console.log('Sending request to OpenAI API...');
     const openaiResponse = await openai.chat.completions.create({
-      model: "gpt-4-vision-preview-2023",
+      model: "gpt-4-vision-preview",
       messages: [
         {
           role: "user",
