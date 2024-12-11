@@ -6,7 +6,15 @@ const openai = new OpenAI({
 
 export async function generateArtworkDescription(imageUrl: string): Promise<{ title: string; description: string }> {
   try {
+    console.log('OpenAI API Key exists:', !!process.env.OPENAI_API_KEY);
     console.log('Generating artwork description for image:', imageUrl);
+
+    // Base64エンコードされた画像データの場合の処理を追加
+    const imageUrlToUse = imageUrl.startsWith('data:image') 
+      ? imageUrl 
+      : `data:image/jpeg;base64,${Buffer.from(imageUrl).toString('base64')}`;
+
+    console.log('Using image URL format:', imageUrlToUse.substring(0, 50) + '...');
 
     const response = await openai.chat.completions.create({
       model: "gpt-4-vision-preview",
@@ -16,12 +24,12 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
           content: [
             { 
               type: "text", 
-              text: "この画像はアート作品です。この作品にふさわしいタイトルと説明文を日本語か英語で生成してください。必ずJSONフォーマットで返してください。例: {\"title\": \"青い静寂\", \"description\": \"深い青が織りなす静謐な世界\"}" 
+              text: "この画像はアート作品です。この作品にふさわしいタイトルと説明文を日本語か英語で生成してください。タイトルは10文字程度、説明文は30文字程度でお願いします。必ずJSONフォーマットで返してください。例: {\"title\": \"青い静寂\", \"description\": \"深い青が織りなす静謐な世界\"}" 
             },
             {
               type: "image_url",
               image_url: {
-                url: imageUrl,
+                url: imageUrlToUse,
               },
             },
           ],
@@ -63,13 +71,25 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
     console.error('Error in generateArtworkDescription:', error);
     
     if (error instanceof Error) {
+      console.error('Detailed error information:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      });
+
       if (error.message.includes('API')) {
         throw new Error('OpenAI APIとの通信に失敗しました。ネットワーク接続を確認してください。');
       } else if (error.message.includes('JSON')) {
         throw new Error('生成された内容の解析に失敗しました。再度お試しください。');
+      } else if (error.message.includes('invalid_api_key')) {
+        throw new Error('OpenAI APIキーが無効です。APIキーを確認してください。');
+      } else if (error.message.includes('insufficient_quota')) {
+        throw new Error('OpenAI APIの利用制限に達しました。');
+      } else if (error.message.includes('rate_limit_exceeded')) {
+        throw new Error('OpenAI APIのレート制限に達しました。しばらく待ってから再試行してください。');
       }
     }
     
-    throw error;
+    throw new Error(`予期せぬエラーが発生しました: ${error instanceof Error ? error.message : '不明なエラー'}`);
   }
 }

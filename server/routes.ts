@@ -133,8 +133,12 @@ export default function setupRoutes(app: express.Express) {
 
       // OpenAI APIを使用して説明を生成
       try {
-        const { title, description } = await generateArtworkDescription(`${req.protocol}://${req.get('host')}${imageUrl}`);
-        console.log('Generated description:', { title, description });
+        // 画像のフルURLを生成
+        const imageFullUrl = `${req.protocol}://${req.get('host')}${imageUrl}`;
+        console.log('Attempting to generate description for image:', imageFullUrl);
+
+        const { title, description } = await generateArtworkDescription(imageFullUrl);
+        console.log('Successfully generated description:', { title, description });
 
         if (!title || !description) {
           throw new Error('タイトルまたは説明文の生成に失敗しました');
@@ -148,9 +152,14 @@ export default function setupRoutes(app: express.Express) {
         });
       } catch (error) {
         console.error('Error in description generation:', error);
+        const errorMessage = error instanceof Error 
+          ? `説明文の生成に失敗しました: ${error.message}`
+          : 'タイトルと説明文の生成に失敗しました';
+        
         res.status(422).json({ 
-          error: error instanceof Error ? error.message : 'タイトルと説明文の生成に失敗しました',
-          imageUrl 
+          error: errorMessage,
+          imageUrl,
+          details: error instanceof Error ? error.message : '不明なエラー'
         });
       }
     } catch (error) {
