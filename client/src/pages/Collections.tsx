@@ -1,24 +1,30 @@
-import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 import { ArrowRight } from "lucide-react";
-
 import { useQuery } from "@tanstack/react-query";
 import type { Collection, Artwork } from "@db/schema";
 
 const useCollectionsWithArtworks = () => {
   const { data: collections } = useQuery<Collection[]>({
     queryKey: ["collections"],
-    queryFn: () => fetch("/api/collections").then(res => res.json()),
-    staleTime: 30000, // 30秒間はキャッシュを使用
-    cacheTime: 1000 * 60 * 5, // 5分間キャッシュを保持
+    queryFn: async () => {
+      const response = await fetch("/api/collections");
+      if (!response.ok) throw new Error('Failed to fetch collections');
+      return response.json();
+    },
+    gcTime: 1000 * 60 * 5,
+    staleTime: 1000 * 30,
   });
 
   const { data: artworks } = useQuery<Artwork[]>({
     queryKey: ["artworks"],
-    queryFn: () => fetch("/api/artworks").then(res => res.json()),
-    staleTime: 30000,
-    cacheTime: 1000 * 60 * 5,
+    queryFn: async () => {
+      const response = await fetch("/api/artworks");
+      if (!response.ok) throw new Error('Failed to fetch artworks');
+      return response.json();
+    },
+    gcTime: 1000 * 60 * 5,
+    staleTime: 1000 * 30,
   });
 
   return { collections, artworks };
@@ -26,6 +32,14 @@ const useCollectionsWithArtworks = () => {
 
 const Collections = () => {
   const { collections, artworks } = useCollectionsWithArtworks();
+
+  if (!collections || !artworks) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-2xl text-gray-600">Loading collections...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-20">
@@ -43,7 +57,7 @@ const Collections = () => {
 
       <section className="container mx-auto px-4">
         <div className="space-y-32">
-          {collections?.map((collection, index) => (
+          {collections.map((collection: Collection) => (
             <div key={collection.id} className="space-y-12">
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold tracking-wide text-center">{collection.title}</h2>
@@ -53,8 +67,8 @@ const Collections = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {artworks?.filter(artwork => artwork.collectionId === collection.id)
-                  .map((artwork, imgIndex) => (
+                {artworks.filter((artwork: Artwork) => artwork.collectionId === collection.id)
+                  .map((artwork: Artwork) => (
                   <ScrollToTopLink key={artwork.id} href={`/artwork/${artwork.id}`}>
                     <Card className="overflow-hidden group cursor-pointer">
                       <div className="aspect-square relative">
