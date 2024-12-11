@@ -76,7 +76,6 @@ export default function setupRoutes(app: express.Express) {
   app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) => {
     try {
       const currentYear = new Date().getFullYear();
-      // コンソールログを追加してデバッグ
       console.log('Received collection creation request:', req.body);
       
       const collectionData = {
@@ -91,14 +90,10 @@ export default function setupRoutes(app: express.Express) {
 
       console.log('Attempting to create collection with data:', collectionData);
 
-      try {
-        const result = await db.insert(collections).values(collectionData);
-        console.log('Collection created successfully:', result);
-        res.json({ success: true, data: collectionData });
-      } catch (error) {
-        console.error('Error details:', error);
-        throw error;
-      }
+      const [newCollection] = await db.insert(collections).values(collectionData).returning();
+      console.log('Collection created successfully:', newCollection);
+      
+      res.json(newCollection);
     } catch (error) {
       console.error("Error creating collection:", error);
       res.status(500).json({ error: "コレクションの作成に失敗しました" });

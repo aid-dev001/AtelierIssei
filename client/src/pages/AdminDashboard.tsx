@@ -378,7 +378,7 @@ const AdminDashboard = () => {
             <button
               className={`px-4 py-2 font-medium transition-all relative ${
                 activeTab === 'artworks'
-                  ? 'text-primary font-semibold'
+                  ? 'text-black font-semibold'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
               onClick={() => setActiveTab('artworks')}
@@ -391,7 +391,7 @@ const AdminDashboard = () => {
             <button
               className={`px-4 py-2 font-medium transition-all relative ${
                 activeTab === 'collections'
-                  ? 'text-primary font-semibold'
+                  ? 'text-black font-semibold'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
               onClick={() => setActiveTab('collections')}
