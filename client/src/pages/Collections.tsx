@@ -10,11 +10,15 @@ const useCollectionsWithArtworks = () => {
   const { data: collections } = useQuery<Collection[]>({
     queryKey: ["collections"],
     queryFn: () => fetch("/api/collections").then(res => res.json()),
+    staleTime: 30000, // 30秒間はキャッシュを使用
+    cacheTime: 1000 * 60 * 5, // 5分間キャッシュを保持
   });
 
   const { data: artworks } = useQuery<Artwork[]>({
     queryKey: ["artworks"],
     queryFn: () => fetch("/api/artworks").then(res => res.json()),
+    staleTime: 30000,
+    cacheTime: 1000 * 60 * 5,
   });
 
   return { collections, artworks };
@@ -22,9 +26,6 @@ const useCollectionsWithArtworks = () => {
 
 const Collections = () => {
   const { collections, artworks } = useCollectionsWithArtworks();
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   return (
     <div className="space-y-20">
