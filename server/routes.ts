@@ -292,14 +292,6 @@ export default function setupRoutes(app: express.Express) {
       const { id, ...updateData } = req.body;
       console.log('Updating artwork with data:', updateData);
       
-      // Ensure interiorImageUrls is properly handled
-      const interiorImageUrls = updateData.interiorImageUrls 
-        ? (Array.isArray(updateData.interiorImageUrls) 
-            ? updateData.interiorImageUrls 
-            : [updateData.interiorImageUrls]
-          ).filter(Boolean)
-        : [];
-
       const artwork = await db.query.artworks.findFirst({
         where: eq(artworks.id, parseInt(req.params.id)),
       });
@@ -308,20 +300,40 @@ export default function setupRoutes(app: express.Express) {
         return res.status(404).json({ error: "作品が見つかりません" });
       }
 
-      const updatedData = {
-        ...updateData,
+      // Clean up the update data
+      const cleanedData: any = {
+        title: updateData.title,
+        description: updateData.description,
+        imageUrl: updateData.imageUrl,
+        price: updateData.price,
+        size: updateData.size,
+        status: updateData.status,
+        createdLocation: updateData.createdLocation,
+        storedLocation: updateData.storedLocation,
+        exhibitionLocation: updateData.exhibitionLocation,
+        isAvailable: updateData.isAvailable,
+        collectionId: updateData.collectionId,
         updatedAt: new Date(),
       };
 
-      // Only update interiorImageUrls if it's provided
+      // Handle interiorImageUrls separately
       if (updateData.interiorImageUrls !== undefined) {
-        updatedData.interiorImageUrls = interiorImageUrls;
+        cleanedData.interiorImageUrls = Array.isArray(updateData.interiorImageUrls)
+          ? updateData.interiorImageUrls.filter(Boolean)
+          : [updateData.interiorImageUrls].filter(Boolean);
       }
 
-      delete updatedData.id; // Ensure id is not included in the update
+      // Remove any undefined values
+      Object.keys(cleanedData).forEach(key => {
+        if (cleanedData[key] === undefined) {
+          delete cleanedData[key];
+        }
+      });
+
+      console.log('Cleaned update data:', cleanedData);
 
       await db.update(artworks)
-        .set(updatedData)
+        .set(cleanedData)
         .where(eq(artworks.id, parseInt(req.params.id)));
       
       const updatedArtwork = await db.query.artworks.findFirst({

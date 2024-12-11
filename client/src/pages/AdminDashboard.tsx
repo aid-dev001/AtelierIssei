@@ -216,17 +216,38 @@ const AdminDashboard = () => {
       });
 
       if (!response.ok) {
-        throw new Error('画像のアップロードに失敗しました');
+        const errorData = await response.text();
+        throw new Error(errorData || '画像のアップロードに失敗しました');
       }
 
       const data = await response.json();
-      const newImageUrls = [...(selectedArtwork?.interiorImageUrls || [])];
+      console.log('Upload response:', data);
+
+      if (!data.imageUrl) {
+        throw new Error('画像URLの取得に失敗しました');
+      }
+
+      let newImageUrls = [...(selectedArtwork?.interiorImageUrls || [])];
       newImageUrls[index] = data.imageUrl;
+      
+      // Filter out any undefined or null values
+      newImageUrls = newImageUrls.filter(Boolean);
 
       if (selectedArtwork) {
+        const updateData = {
+          ...selectedArtwork,
+          interiorImageUrls: newImageUrls,
+        };
+        delete updateData.id;  // Remove id from update data
+        
+        console.log('Updating artwork with data:', updateData);
         await updateArtworkMutation.mutateAsync({
           id: selectedArtwork.id,
-          data: { ...selectedArtwork, interiorImageUrls: newImageUrls },
+          data: updateData,
+        });
+
+        toast({
+          title: "インテリアイメージをアップロードしました",
         });
       } else {
         setImageData(prev => ({
@@ -234,10 +255,6 @@ const AdminDashboard = () => {
           interiorImageUrls: newImageUrls,
         }));
       }
-
-      toast({
-        title: "インテリアイメージをアップロードしました",
-      });
     } catch (error) {
       console.error('Error uploading interior image:', error);
       toast({
