@@ -137,7 +137,7 @@ const AdminDashboard = () => {
 
               toast({
                 title: "画像をアップロード中...",
-                description: "しばらくお待ちください",
+                description: "AIによる説明文の生成を開始します",
               });
 
               const response = await fetch(`${adminPath}/generate-description`, {
@@ -146,10 +146,15 @@ const AdminDashboard = () => {
               });
 
               if (!response.ok) {
-                throw new Error('説明文の生成に失敗しました');
+                const errorData = await response.json();
+                throw new Error(errorData.error || '説明文の生成に失敗しました');
               }
 
               const data = await response.json();
+
+              if (!data.title || !data.description) {
+                throw new Error('タイトルまたは説明文の生成に失敗しました');
+              }
 
               const titleInput = document.querySelector<HTMLInputElement>('input[name="title"]');
               const descriptionInput = document.querySelector<HTMLTextAreaElement>('textarea[name="description"]');
@@ -159,14 +164,16 @@ const AdminDashboard = () => {
 
               toast({
                 title: "作品の説明を生成しました",
-                description: "タイトルと説明文を確認・編集してください",
+                description: "生成されたタイトルと説明文を確認・編集してください",
               });
             } catch (error) {
               console.error('Error generating description:', error);
               toast({
                 variant: "destructive",
                 title: "説明の生成に失敗しました",
-                description: error instanceof Error ? error.message : "手動で入力してください",
+                description: error instanceof Error 
+                  ? error.message 
+                  : "AIによる説明文の生成に失敗しました。手動で入力してください",
               });
             }
           }}

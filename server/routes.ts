@@ -124,19 +124,27 @@ export default function setupRoutes(app: express.Express) {
       console.log('Generating description for image:', imageUrl);
 
       // OpenAI APIを使用して説明を生成
-      const { title, description } = await generateArtworkDescription(`${req.protocol}://${req.get('host')}${imageUrl}`);
-      console.log('Generated description:', { title, description });
+      try {
+        const { title, description } = await generateArtworkDescription(`${req.protocol}://${req.get('host')}${imageUrl}`);
+        console.log('Generated description:', { title, description });
 
-      if (!title || !description) {
-        throw new Error('タイトルまたは説明文の生成に失敗しました');
+        if (!title || !description) {
+          throw new Error('タイトルまたは説明文の生成に失敗しました');
+        }
+
+        res.json({ 
+          success: true,
+          title, 
+          description,
+          imageUrl 
+        });
+      } catch (error) {
+        console.error('Error in description generation:', error);
+        res.status(422).json({ 
+          error: error instanceof Error ? error.message : 'タイトルと説明文の生成に失敗しました',
+          imageUrl 
+        });
       }
-
-      res.json({ 
-        success: true,
-        title, 
-        description,
-        imageUrl 
-      });
     } catch (error) {
       console.error("Error in generate-description:", error);
       const isOpenAIError = error instanceof Error && error.message.includes('OpenAI');

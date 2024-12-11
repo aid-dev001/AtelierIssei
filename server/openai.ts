@@ -34,14 +34,22 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
 
     const content = response.choices[0].message.content;
     if (!content) {
-      throw new Error('OpenAI APIからコンテンツが生成されませんでした');
+      throw new Error('タイトルと説明文の生成に失敗しました。再度お試しください。');
     }
 
     try {
       const parsed = JSON.parse(content);
       
       if (!parsed.title || !parsed.description) {
-        throw new Error('生成されたコンテンツにタイトルまたは説明文が含まれていません');
+        throw new Error('タイトルと説明文の形式が正しくありません。もう一度お試しください。');
+      }
+
+      // タイトルと説明文の長さを確認
+      if (parsed.title.length > 10) {
+        parsed.title = parsed.title.slice(0, 10);
+      }
+      if (parsed.description.length > 30) {
+        parsed.description = parsed.description.slice(0, 30);
       }
 
       const title = parsed.title;

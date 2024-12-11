@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { UploadCloud } from "lucide-react";
 
-interface DropzoneProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface DropzoneProps extends React.HTMLAttributes<HTMLDivElement> {
   onFileChange: (file: File) => void;
 }
 
