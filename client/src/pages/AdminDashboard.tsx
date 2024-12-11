@@ -608,6 +608,119 @@ const AdminDashboard = () => {
                   <h3 className="font-medium">{collection.title}</h3>
                   <p className="text-sm text-gray-600">{collection.description}</p>
                   <p className="text-sm text-gray-500 mt-1">{collection.year}年</p>
+                  <div className="flex gap-2 mt-4">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="flex-1">
+                          <PenLine className="w-3 h-3 mr-1" />
+                          編集
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>コレクションを編集</DialogTitle>
+                        </DialogHeader>
+                        <form onSubmit={async (e) => {
+                          e.preventDefault();
+                          const formData = new FormData(e.currentTarget);
+                          const title = formData.get('title') as string;
+                          
+                          if (!title.trim()) {
+                            toast({
+                              variant: "destructive",
+                              title: "エラー",
+                              description: "タイトルを入力してください"
+                            });
+                            return;
+                          }
+
+                          try {
+                            const response = await fetch(`${adminPath}/collections/${collection.id}`, {
+                              method: 'PUT',
+                              headers: {
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({
+                                title: title.trim(),
+                                description: `${title.trim()}コレクション`,
+                              }),
+                            });
+
+                            if (!response.ok) {
+                              throw new Error('コレクションの更新に失敗しました');
+                            }
+
+                            queryClient.invalidateQueries({ queryKey: ["collections"] });
+                            toast({ title: "コレクションを更新しました" });
+                            (e.target as HTMLFormElement).reset();
+                          } catch (error) {
+                            console.error('Collection update error:', error);
+                            toast({ 
+                              variant: "destructive", 
+                              title: "エラー",
+                              description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+                            });
+                          }
+                        }} className="space-y-4">
+                          <div>
+                            <Label htmlFor={`title-${collection.id}`}>タイトル</Label>
+                            <Input 
+                              id={`title-${collection.id}`} 
+                              name="title" 
+                              defaultValue={collection.title}
+                              required 
+                            />
+                          </div>
+                          <Button type="submit">更新</Button>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive" size="sm" className="flex-1">
+                          <Trash2 className="w-3 h-3 mr-1" />
+                          削除
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>コレクションを削除しますか？</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            この操作は取り消せません。本当に削除してもよろしいですか？<br />
+                            コレクション名: {collection.title}
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <div className="flex justify-end gap-4">
+                          <AlertDialogCancel>キャンセル</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={async () => {
+                              try {
+                                const response = await fetch(`${adminPath}/collections/${collection.id}`, {
+                                  method: 'DELETE',
+                                });
+
+                                if (!response.ok) {
+                                  throw new Error('コレクションの削除に失敗しました');
+                                }
+
+                                queryClient.invalidateQueries({ queryKey: ["collections"] });
+                                toast({ title: "コレクションを削除しました" });
+                              } catch (error) {
+                                console.error('Collection deletion error:', error);
+                                toast({ 
+                                  variant: "destructive", 
+                                  title: "エラー",
+                                  description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+                                });
+                              }
+                            }}
+                          >
+                            削除
+                          </AlertDialogAction>
+                        </div>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </div>
               ))}
             </div>

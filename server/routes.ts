@@ -101,15 +101,17 @@ export default function setupRoutes(app: express.Express) {
 
   app.put(`/admin/${ADMIN_URL_PATH}/collections/:id`, requireAdmin, async (req, res) => {
     try {
+      console.log('Updating collection:', req.params.id, 'with data:', req.body);
       const { id, ...updateData } = req.body;
       await db.update(collections)
         .set({ ...updateData, updatedAt: new Date() })
         .where(eq(collections.id, parseInt(req.params.id)));
       
-      const updatedCollection = await db.query.collections.findFirst({
-        where: eq(collections.id, parseInt(req.params.id)),
-      });
+      const updatedCollection = await db.select().from(collections)
+        .where(eq(collections.id, parseInt(req.params.id)))
+        .then(rows => rows[0]);
       
+      console.log('Collection updated successfully:', updatedCollection);
       res.json(updatedCollection);
     } catch (error) {
       console.error("Error updating collection:", error);
@@ -119,8 +121,10 @@ export default function setupRoutes(app: express.Express) {
 
   app.delete(`/admin/${ADMIN_URL_PATH}/collections/:id`, requireAdmin, async (req, res) => {
     try {
+      console.log('Attempting to delete collection:', req.params.id);
       await db.delete(collections)
         .where(eq(collections.id, parseInt(req.params.id)));
+      console.log('Collection deleted successfully');
       res.json({ success: true });
     } catch (error) {
       console.error("Error deleting collection:", error);
