@@ -112,18 +112,45 @@ export default function setupRoutes(app: express.Express) {
         return res.status(400).json({ error: "画像がアップロードされていません" });
       }
 
+      // アップロードされたファイルが存在することを確認
+      if (!fs.existsSync(req.file.path)) {
+        return res.status(500).json({ error: "アップロードされた画像の保存に失敗しました" });
+      }
+
       // 画像の公開URLを生成
       const imageUrl = `${req.protocol}://${req.get('host')}/artworks/${req.file.filename}`;
       console.log('Generating description for image:', imageUrl);
       
-      // OpenAI APIを使用して説明を生成
-      const { title, description } = await generateArtworkDescription(imageUrl);
-      console.log('Generated description:', { title, description });
-      
-      res.json({ title, description });
+      try {
+        // OpenAI APIを使用して説明を生成
+        const { title, description } = await generateArtworkDescription(imageUrl);
+        console.log('Generated description:', { title, description });
+        
+        if (!title || !description) {
+          throw new Error('タイトルまたは説明文の生成に失敗しました');
+        }
+
+        res.json({ 
+          success: true,
+          title, 
+          description,
+          imageUrl 
+        });
+      } catch (openaiError) {
+        console.error("OpenAI API Error:", openaiError);
+        // 画像は保存されているが、説明文の生成に失敗した場合
+        res.status(422).json({ 
+          error: "説明文の生成に失敗しました",
+          details: openaiError.message,
+          imageUrl // 画像URLは返す
+        });
+      }
     } catch (error) {
-      console.error("Error generating description:", error);
-      res.status(500).json({ error: "説明の生成に失敗しました" });
+      console.error("Server Error:", error);
+      res.status(500).json({ 
+        error: "サーバーエラーが発生しました",
+        details: error instanceof Error ? error.message : "不明なエラー"
+      });
     }
   });
 

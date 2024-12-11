@@ -6,6 +6,8 @@ const openai = new OpenAI({
 
 export async function generateArtworkDescription(imageUrl: string): Promise<{ title: string; description: string }> {
   try {
+    console.log('Generating artwork description for image:', imageUrl);
+
     const response = await openai.chat.completions.create({
       model: "gpt-4-vision-preview",
       messages: [
@@ -14,7 +16,7 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
           content: [
             { 
               type: "text", 
-              text: "この画像はアート作品です。この作品にふさわしいタイトルと説明文を日本語で生成してください。タイトルは30文字以内、説明文は100文字以内でお願いします。JSONフォーマットで返してください。" 
+              text: "この画像はアート作品です。この作品にふさわしいタイトルと説明文を日本語で生成してください。タイトルは30文字以内、説明文は100文字以内でお願いします。必ずJSONフォーマットで返してください。例: {\"title\": \"作品のタイトル\", \"description\": \"作品の説明文\"}" 
             },
             {
               type: "image_url",
@@ -28,29 +30,33 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
       max_tokens: 300,
     });
 
+    console.log('OpenAI API response:', response.choices[0].message);
+
     const content = response.choices[0].message.content;
     if (!content) {
-      throw new Error('No content generated');
+      throw new Error('OpenAI APIからコンテンツが生成されませんでした');
     }
 
     try {
       const parsed = JSON.parse(content);
-      return {
-        title: parsed.title || '無題',
-        description: parsed.description || '説明なし',
-      };
+      
+      if (!parsed.title || !parsed.description) {
+        throw new Error('生成されたコンテンツにタイトルまたは説明文が含まれていません');
+      }
+
+      // タイトルと説明文の長さを制限
+      const title = parsed.title.slice(0, 30);
+      const description = parsed.description.slice(0, 100);
+
+      console.log('Generated content:', { title, description });
+
+      return { title, description };
     } catch (e) {
-      // JSONのパースに失敗した場合のフォールバック
-      return {
-        title: '無題',
-        description: content.slice(0, 100),
-      };
+      console.error('JSON parse error:', e, 'Content:', content);
+      throw new Error('生成されたコンテンツの解析に失敗しました');
     }
   } catch (error) {
-    console.error('Error generating artwork description:', error);
-    return {
-      title: '無題',
-      description: 'アート作品の説明文を自動生成できませんでした。',
-    };
+    console.error('Error in generateArtworkDescription:', error);
+    throw error;
   }
 }

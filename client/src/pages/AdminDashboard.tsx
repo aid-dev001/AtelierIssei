@@ -141,17 +141,22 @@ const AdminDashboard = () => {
               const formData = new FormData();
               formData.append('image', file);
 
+              toast({
+                title: "画像をアップロード中...",
+                description: "しばらくお待ちください",
+              });
+
               const response = await fetch(`${adminPath}/generate-description`, {
                 method: 'POST',
                 body: formData,
               });
 
+              const data = await response.json();
+
               if (!response.ok) {
-                throw new Error(await response.text());
+                throw new Error(data.error || data.details || '説明文の生成に失敗しました');
               }
 
-              const data = await response.json();
-              
               const titleInput = document.querySelector<HTMLInputElement>('input[name="title"]');
               const descriptionInput = document.querySelector<HTMLTextAreaElement>('textarea[name="description"]');
               
