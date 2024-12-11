@@ -145,6 +145,7 @@ const AdminDashboard = () => {
 
       if (selectedArtwork) {
         // 更新の場合
+        const form = e.currentTarget;
         const updateData = {
           title: form.title.value,
           description: form.description.value,
@@ -155,16 +156,11 @@ const AdminDashboard = () => {
           storedLocation: form.storedLocation.value,
           imageUrl: imageData.url || selectedArtwork.imageUrl,
         };
-
-        // フォームをクローズする前にmutationを実行
-        const result = await updateArtworkMutation.mutateAsync({
+        
+        await updateArtworkMutation.mutateAsync({
           id: selectedArtwork.id,
           data: updateData,
         });
-        
-        // 成功した後にダイアログを閉じる
-        setIsEditDialogOpen(false);
-        setSelectedArtwork(null);
       } else {
         // 新規作成の場合
         if (!imageData.url) {
@@ -384,11 +380,11 @@ const AdminDashboard = () => {
           </Dialog>
         </div>
 
-        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {artworks?.map((artwork) => (
             <div
               key={artwork.id}
-              className="border p-2 rounded-lg hover:shadow-lg transition-all cursor-pointer"
+              className="border p-3 rounded-lg hover:shadow-lg transition-all cursor-pointer"
               onClick={() => {
                 setSelectedArtwork(artwork);
                 setImageData({
