@@ -272,17 +272,59 @@ export default function setupRoutes(app: express.Express) {
   });
 
   // Update artwork
+  // Handle interior image upload
+  app.post(`/admin/${ADMIN_URL_PATH}/upload`, requireAdmin, upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "画像がアップロードされていません" });
+      }
+
+      const imageUrl = `/artworks/${req.file.filename}`;
+      res.json({ imageUrl });
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      res.status(500).json({ error: "画像のアップロードに失敗しました" });
+    }
+  });
+
   app.put(`/admin/${ADMIN_URL_PATH}/artworks/:id`, requireAdmin, async (req, res) => {
     try {
       const { id, ...updateData } = req.body;
+      console.log('Updating artwork with data:', updateData);
+      
+      // Ensure interiorImageUrls is properly handled
+      const interiorImageUrls = updateData.interiorImageUrls 
+        ? (Array.isArray(updateData.interiorImageUrls) 
+            ? updateData.interiorImageUrls 
+            : [updateData.interiorImageUrls]
+          ).filter(Boolean)
+        : [];
+
+      const artwork = await db.query.artworks.findFirst({
+        where: eq(artworks.id, parseInt(req.params.id)),
+      });
+
+      if (!artwork) {
+        return res.status(404).json({ error: "作品が見つかりません" });
+      }
+
+      const updatedData = {
+        ...updateData,
+        updatedAt: new Date(),
+        interiorImageUrls,
+      };
+
+      delete updatedData.id; // Ensure id is not included in the update
+
       await db.update(artworks)
-        .set({ ...updateData, updatedAt: new Date() })
+        .set(updatedData)
         .where(eq(artworks.id, parseInt(req.params.id)));
       
       const updatedArtwork = await db.query.artworks.findFirst({
         where: eq(artworks.id, parseInt(req.params.id)),
       });
       
+      console.log('Updated artwork:', updatedArtwork);
       res.json(updatedArtwork);
     } catch (error) {
       console.error("Error updating artwork:", error);

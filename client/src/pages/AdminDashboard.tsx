@@ -201,6 +201,53 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleInteriorImageUpload = async (file: File, index: number) => {
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      toast({
+        title: "インテリアイメージをアップロード中...",
+      });
+
+      const response = await fetch(`${adminPath}/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('画像のアップロードに失敗しました');
+      }
+
+      const data = await response.json();
+      const newImageUrls = [...(selectedArtwork?.interiorImageUrls || [])];
+      newImageUrls[index] = data.imageUrl;
+
+      if (selectedArtwork) {
+        await updateArtworkMutation.mutateAsync({
+          id: selectedArtwork.id,
+          data: { ...selectedArtwork, interiorImageUrls: newImageUrls },
+        });
+      } else {
+        setImageData(prev => ({
+          ...prev,
+          interiorImageUrls: newImageUrls,
+        }));
+      }
+
+      toast({
+        title: "インテリアイメージをアップロードしました",
+      });
+    } catch (error) {
+      console.error('Error uploading interior image:', error);
+      toast({
+        variant: "destructive",
+        title: "インテリアイメージのアップロードに失敗しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+      });
+    }
+  };
+
   const handleFileChange = async (file: File) => {
     try {
       const formData = new FormData();
@@ -342,6 +389,21 @@ const AdminDashboard = () => {
           defaultValue={selectedArtwork?.exhibitionLocation || ''}
           placeholder="例: 銀座ギャラリー"
         />
+      </div>
+      <div className="space-y-4">
+        <Label>インテリアイメージ</Label>
+        <div className="grid grid-cols-2 gap-4">
+          <Dropzone
+            existingImageUrl={selectedArtwork?.interiorImageUrls?.[0]}
+            onFileChange={(file) => handleInteriorImageUpload(file, 0)}
+            className="h-[150px]"
+          />
+          <Dropzone
+            existingImageUrl={selectedArtwork?.interiorImageUrls?.[1]}
+            onFileChange={(file) => handleInteriorImageUpload(file, 1)}
+            className="h-[150px]"
+          />
+        </div>
       </div>
       <div className="space-y-2">
         <Label htmlFor="collectionId">コレクション</Label>
