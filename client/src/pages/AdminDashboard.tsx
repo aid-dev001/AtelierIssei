@@ -11,14 +11,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Dropzone } from "@/components/ui/dropzone";
+import type { DropzoneProps } from "@/components/ui/dropzone";
+import type { InsertArtwork, Artwork } from "@db/schema";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, AlertDialogDescription, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
 import { PenLine, Trash2 } from "lucide-react";
-import type { Artwork } from "@db/schema";
-
-type ArtworkFormData = Omit<Artwork, "id" | "createdAt" | "updatedAt">;
 
 const AdminDashboard = () => {
   const [, setLocation] = useLocation();
@@ -108,28 +107,23 @@ const AdminDashboard = () => {
       return;
     }
 
-    const artworkData = {
-      title: formData.get('title') as string,
-      description: formData.get('description') as string,
-      price: formData.get('price') as string,
-      size: formData.get('size') as string,
-      status: formData.get('status') as 'available' | 'reserved' | 'sold',
-      createdLocation: formData.get('createdLocation') as string,
-      storedLocation: formData.get('storedLocation') as string,
-      isAvailable: true,
-    };
-
     if (selectedArtwork) {
-      updateArtworkMutation.mutate({ ...selectedArtwork, ...artworkData });
+      const artworkData = {
+        ...selectedArtwork,
+        title: formData.get('title') as string,
+        description: formData.get('description') as string,
+        price: formData.get('price') as string,
+        size: formData.get('size') as string | null,
+        status: formData.get('status') as 'available' | 'reserved' | 'sold',
+        createdLocation: formData.get('createdLocation') as string,
+        storedLocation: formData.get('storedLocation') as string,
+        isAvailable: true,
+      };
+      updateArtworkMutation.mutate(artworkData);
     } else {
-      const submitFormData = new FormData(e.currentTarget);
-      createArtworkMutation.mutate(submitFormData);
+      createArtworkMutation.mutate(formData);
     }
   };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
 
   const ArtworkForm = () => (
     <form onSubmit={handleSubmit} className="space-y-8">
@@ -151,11 +145,11 @@ const AdminDashboard = () => {
                 body: formData,
               });
 
-              const data = await response.json();
-
               if (!response.ok) {
-                throw new Error(data.error || data.details || '説明文の生成に失敗しました');
+                throw new Error('説明文の生成に失敗しました');
               }
+
+              const data = await response.json();
 
               const titleInput = document.querySelector<HTMLInputElement>('input[name="title"]');
               const descriptionInput = document.querySelector<HTMLTextAreaElement>('textarea[name="description"]');
@@ -203,7 +197,7 @@ const AdminDashboard = () => {
           id="price"
           name="price"
           type="text"
-          defaultValue={selectedArtwork?.price}
+          defaultValue={selectedArtwork?.price?.toString()}
           required
         />
       </div>
@@ -212,8 +206,7 @@ const AdminDashboard = () => {
         <Input
           id="size"
           name="size"
-          defaultValue={selectedArtwork?.size}
-          required
+          defaultValue={selectedArtwork?.size || ''}
         />
       </div>
       <div className="space-y-2">
@@ -235,7 +228,7 @@ const AdminDashboard = () => {
         <Input
           id="createdLocation"
           name="createdLocation"
-          defaultValue={selectedArtwork?.createdLocation}
+          defaultValue={selectedArtwork?.createdLocation || '銀座'}
           required
         />
       </div>
@@ -244,7 +237,7 @@ const AdminDashboard = () => {
         <Input
           id="storedLocation"
           name="storedLocation"
-          defaultValue={selectedArtwork?.storedLocation}
+          defaultValue={selectedArtwork?.storedLocation || '銀座'}
           required
         />
       </div>
@@ -253,6 +246,10 @@ const AdminDashboard = () => {
       </Button>
     </form>
   );
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="space-y-8">
@@ -296,7 +293,7 @@ const AdminDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {artworks?.map((artwork: Artwork) => (
+          {artworks?.map((artwork) => (
             <div key={artwork.id} className="border p-4 rounded-lg">
               <div className="aspect-square mb-4 overflow-hidden rounded-lg">
                 <img

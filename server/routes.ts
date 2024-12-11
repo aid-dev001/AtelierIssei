@@ -120,33 +120,31 @@ export default function setupRoutes(app: express.Express) {
       }
 
       // 画像の公開URLを生成
-      const imageUrl = `${req.protocol}://${req.get('host')}/artworks/${req.file.filename}`;
+      const imageUrl = `/artworks/${req.file.filename}`;
       console.log('Generating description for image:', imageUrl);
-      
-      try {
-        // OpenAI APIを使用して説明を生成
-        const { title, description } = await generateArtworkDescription(imageUrl);
-        console.log('Generated description:', { title, description });
-        
-        res.json({ 
-          success: true,
-          title, 
-          description,
-          imageUrl 
-        });
-      } catch (openaiError) {
-        console.error("OpenAI API Error:", openaiError);
-        res.status(422).json({ 
-          error: "説明文の生成に失敗しました",
-          details: openaiError instanceof Error ? openaiError.message : "不明なエラー",
-          imageUrl // 画像URLは返す
-        });
+
+      // OpenAI APIを使用して説明を生成
+      const { title, description } = await generateArtworkDescription(`${req.protocol}://${req.get('host')}${imageUrl}`);
+      console.log('Generated description:', { title, description });
+
+      if (!title || !description) {
+        throw new Error('タイトルまたは説明文の生成に失敗しました');
       }
+
+      res.json({ 
+        success: true,
+        title, 
+        description,
+        imageUrl 
+      });
     } catch (error) {
-      console.error("Server Error:", error);
-      res.status(500).json({ 
-        error: "サーバーエラーが発生しました",
-        details: error instanceof Error ? error.message : "不明なエラー"
+      console.error("Error in generate-description:", error);
+      const isOpenAIError = error instanceof Error && error.message.includes('OpenAI');
+      
+      res.status(isOpenAIError ? 422 : 500).json({ 
+        error: isOpenAIError ? "説明文の生成に失敗しました" : "サーバーエラーが発生しました",
+        details: error instanceof Error ? error.message : "不明なエラー",
+        imageUrl: req.file ? `/artworks/${req.file.filename}` : undefined
       });
     }
   });
