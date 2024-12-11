@@ -12,55 +12,55 @@ export default function setupRoutes(app: Express) {
   // Public API routes
   app.get("/api/artworks", async (req, res) => {
     try {
-      const result = await db.execute(
-        `SELECT 
-          id, 
-          title, 
-          description, 
-          image_url as "imageUrl", 
-          price::text, 
-          size, 
-          status,
-          created_location as "createdLocation",
-          stored_location as "storedLocation",
-          is_available as "isAvailable",
-          created_at as "createdAt",
-          updated_at as "updatedAt"
-        FROM artworks 
-        ORDER BY created_at DESC`
-      );
+      const allArtworks = await db.query.artworks.findMany({
+        orderBy: (artworks, { desc }) => [desc(artworks.createdAt)],
+      });
 
-      if (!result.rows || result.rows.length === 0) {
+      if (!allArtworks || allArtworks.length === 0) {
         // サンプルデータを挿入
-        await db.execute(`
-          INSERT INTO artworks (title, description, image_url, price, size, status, created_location, stored_location)
-          VALUES 
-          ('Urban Dreams', '都市の夢想を描いた作品', '/artworks/12648.jpg', 250000, 'F15(65.2×53.0cm)', 'available', '銀座', '銀座'),
-          ('Serenity', '静寂の中の輝き', '/artworks/12653.jpg', 180000, 'F10(53.0×45.5cm)', 'available', '銀座', '銀座'),
-          ('Harmony', '調和の表現', '/artworks/12658.jpg', 220000, 'F12(60.6×50.0cm)', 'available', '銀座', '銀座')
-        `);
+        await db.insert(artworks).values([
+          {
+            title: 'Urban Dreams',
+            description: '都市の夢想を描いた作品',
+            imageUrl: '/artworks/12648.jpg',
+            price: '250000',
+            size: 'F15(65.2×53.0cm)',
+            status: 'available',
+            createdLocation: '銀座',
+            storedLocation: '銀座',
+            isAvailable: true,
+          },
+          {
+            title: 'Serenity',
+            description: '静寂の中の輝き',
+            imageUrl: '/artworks/12653.jpg',
+            price: '180000',
+            size: 'F10(53.0×45.5cm)',
+            status: 'available',
+            createdLocation: '銀座',
+            storedLocation: '銀座',
+            isAvailable: true,
+          },
+          {
+            title: 'Harmony',
+            description: '調和の表現',
+            imageUrl: '/artworks/12658.jpg',
+            price: '220000',
+            size: 'F12(60.6×50.0cm)',
+            status: 'available',
+            createdLocation: '銀座',
+            storedLocation: '銀座',
+            isAvailable: true,
+          },
+        ]);
 
-        const newResult = await db.execute(
-          `SELECT 
-            id, 
-            title, 
-            description, 
-            image_url as "imageUrl", 
-            price::text, 
-            size, 
-            status,
-            created_location as "createdLocation",
-            stored_location as "storedLocation",
-            is_available as "isAvailable",
-            created_at as "createdAt",
-            updated_at as "updatedAt"
-          FROM artworks 
-          ORDER BY created_at DESC`
-        );
+        const newArtworks = await db.query.artworks.findMany({
+          orderBy: (artworks, { desc }) => [desc(artworks.createdAt)],
+        });
         
-        res.json(newResult.rows);
+        res.json(newArtworks);
       } else {
-        res.json(result.rows);
+        res.json(allArtworks);
       }
     } catch (error) {
       console.error("Failed to fetch artworks:", error);
@@ -108,15 +108,15 @@ export default function setupRoutes(app: Express) {
   app.post(`/admin/${ADMIN_URL_PATH}/login`, async (req, res) => {
     try {
       const { username, password } = req.body;
-      const result = await db.query.adminUsers.findFirst({
+      const user = await db.query.adminUsers.findFirst({
         where: eq(adminUsers.username, username),
       });
 
-      if (!result) {
+      if (!user) {
         return res.status(401).json({ error: "Invalid credentials" });
       }
 
-      const match = await bcrypt.compare(password, result.passwordHash);
+      const match = await bcrypt.compare(password, user.passwordHash);
       if (!match) {
         return res.status(401).json({ error: "Invalid credentials" });
       }
@@ -124,6 +124,7 @@ export default function setupRoutes(app: Express) {
       req.session.isAdmin = true;
       res.json({ success: true });
     } catch (error) {
+      console.error("Login error:", error);
       res.status(500).json({ error: "Login failed" });
     }
   });
