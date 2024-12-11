@@ -16,7 +16,7 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
           content: [
             { 
               type: "text", 
-              text: "この画像はアート作品です。この作品にふさわしいタイトルと説明文を日本語で生成してください。タイトルは30文字以内、説明文は100文字以内でお願いします。必ずJSONフォーマットで返してください。例: {\"title\": \"作品のタイトル\", \"description\": \"作品の説明文\"}" 
+              text: "この画像はアート作品です。この作品にふさわしいタイトルと説明文を日本語で生成してください。タイトルは10文字程度、説明文は30文字程度でお願いします。必ずJSONフォーマットで返してください。例: {\"title\": \"青い静寂\", \"description\": \"深い青が織りなす静謐な世界\"}" 
             },
             {
               type: "image_url",
@@ -45,8 +45,8 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
       }
 
       // タイトルと説明文の長さを制限
-      const title = parsed.title.slice(0, 30);
-      const description = parsed.description.slice(0, 100);
+      const title = parsed.title.slice(0, 10);
+      const description = parsed.description.slice(0, 30);
 
       console.log('Generated content:', { title, description });
 

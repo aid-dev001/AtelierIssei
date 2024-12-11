@@ -84,7 +84,9 @@ export default function setupRoutes(app: express.Express) {
         return res.status(401).json({ error: "認証に失敗しました" });
       }
 
-      req.session.isAdmin = true;
+      if (req.session) {
+        req.session.isAdmin = true;
+      }
       res.json({ success: true });
     } catch (error) {
       console.error("Login error:", error);
@@ -126,10 +128,6 @@ export default function setupRoutes(app: express.Express) {
         const { title, description } = await generateArtworkDescription(imageUrl);
         console.log('Generated description:', { title, description });
         
-        if (!title || !description) {
-          throw new Error('タイトルまたは説明文の生成に失敗しました');
-        }
-
         res.json({ 
           success: true,
           title, 
@@ -138,10 +136,9 @@ export default function setupRoutes(app: express.Express) {
         });
       } catch (openaiError) {
         console.error("OpenAI API Error:", openaiError);
-        // 画像は保存されているが、説明文の生成に失敗した場合
         res.status(422).json({ 
           error: "説明文の生成に失敗しました",
-          details: openaiError.message,
+          details: openaiError instanceof Error ? openaiError.message : "不明なエラー",
           imageUrl // 画像URLは返す
         });
       }
