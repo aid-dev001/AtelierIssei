@@ -1,7 +1,10 @@
 import express, { type Request, Response, NextFunction } from "express";
+import session from "express-session";
+import MemoryStore from "memorystore";
 import setupRoutes from "./routes";
 import { setupVite, serveStatic } from "./vite";
 import { createServer } from "http";
+import { initializeAdmin } from "./admin";
 
 function log(message: string) {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -19,6 +22,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static('client/public'));
 app.use('/artworks', express.static('.'));
+
+const MemoryStoreSession = MemoryStore(session);
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  store: new MemoryStoreSession({
+    checkPeriod: 86400000 // 24時間でexpire
+  })
+}));
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -51,6 +64,7 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  await initializeAdmin();
   setupRoutes(app);
   const server = createServer(app);
 
