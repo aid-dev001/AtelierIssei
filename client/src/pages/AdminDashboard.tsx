@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Dropzone } from "@/components/ui/dropzone";
-import type { InsertArtwork, Artwork } from "@db/schema";
+import type { Artwork } from "@db/schema";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,24 +26,14 @@ const AdminDashboard = () => {
 
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [formData, setFormData] = useState<{
-    title: string;
-    description: string;
-    imageUrl: string;
-    price: string;
-    size: string;
-    status: string;
-    createdLocation: string;
-    storedLocation: string;
+  const [imageData, setImageData] = useState<{
+    url: string;
+    generatedTitle: string;
+    generatedDescription: string;
   }>({
-    title: '',
-    description: '',
-    imageUrl: '',
-    price: '',
-    size: '',
-    status: 'available',
-    createdLocation: '銀座',
-    storedLocation: '銀座'
+    url: '',
+    generatedTitle: '',
+    generatedDescription: '',
   });
 
   const { data: artworks, isLoading, error } = useQuery<Artwork[]>({
@@ -94,15 +84,10 @@ const AdminDashboard = () => {
       toast({ title: "作品を追加しました" });
       setIsEditDialogOpen(false);
       setSelectedArtwork(null);
-      setFormData({
-        title: '',
-        description: '',
-        imageUrl: '',
-        price: '',
-        size: '',
-        status: 'available',
-        createdLocation: '銀座',
-        storedLocation: '銀座'
+      setImageData({
+        url: '',
+        generatedTitle: '',
+        generatedDescription: '',
       });
     },
     onError: (error) => {
@@ -115,11 +100,10 @@ const AdminDashboard = () => {
   });
 
   const updateArtworkMutation = useMutation({
-    mutationFn: async (artwork: Partial<Artwork>) => {
-      const response = await fetch(`${adminPath}/artworks/${artwork.id}`, {
+    mutationFn: async ({ id, formData }: { id: number; formData: FormData }) => {
+      const response = await fetch(`${adminPath}/artworks/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(artwork),
+        body: formData,
       });
       if (!response.ok) throw new Error('Failed to update artwork');
       return response.json();
@@ -153,24 +137,18 @@ const AdminDashboard = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      const form = e.currentTarget as HTMLFormElement;
+      const formData = new FormData(form);
+
       if (selectedArtwork) {
         // 更新の場合
-        const artworkData = {
+        await updateArtworkMutation.mutateAsync({
           id: selectedArtwork.id,
-          title: formData.title || selectedArtwork.title,
-          description: formData.description || selectedArtwork.description,
-          price: e.currentTarget.price.value,
-          size: e.currentTarget.size.value,
-          status: e.currentTarget.status.value,
-          createdLocation: e.currentTarget.createdLocation.value,
-          storedLocation: e.currentTarget.storedLocation.value,
-          isAvailable: true,
-          imageUrl: selectedArtwork.imageUrl,
-        };
-        await updateArtworkMutation.mutateAsync(artworkData);
+          formData,
+        });
       } else {
         // 新規作成の場合
-        if (!formData.imageUrl && !selectedArtwork) {
+        if (!imageData.url) {
           toast({
             variant: "destructive",
             title: "画像をアップロードしてください",
@@ -178,19 +156,12 @@ const AdminDashboard = () => {
           return;
         }
 
-        const submitFormData = new FormData();
-        if (formData.imageUrl) {
-          submitFormData.append('image', await (await fetch(formData.imageUrl)).blob());
-        }
-        submitFormData.append('title', formData.title);
-        submitFormData.append('description', formData.description);
-        submitFormData.append('price', e.currentTarget.price.value);
-        submitFormData.append('size', e.currentTarget.size.value);
-        submitFormData.append('status', e.currentTarget.status.value);
-        submitFormData.append('createdLocation', e.currentTarget.createdLocation.value);
-        submitFormData.append('storedLocation', e.currentTarget.storedLocation.value);
+        // 画像データを追加
+        const imageResponse = await fetch(imageData.url);
+        const imageBlob = await imageResponse.blob();
+        formData.append('image', imageBlob);
 
-        await createArtworkMutation.mutateAsync(submitFormData);
+        await createArtworkMutation.mutateAsync(formData);
       }
     } catch (error) {
       console.error('Form submission error:', error);
@@ -229,12 +200,11 @@ const AdminDashboard = () => {
         throw new Error('タイトルまたは説明文の生成に失敗しました');
       }
 
-      setFormData(prev => ({
-        ...prev,
-        title: data.title,
-        description: data.description,
-        imageUrl: data.imageUrl
-      }));
+      setImageData({
+        url: data.imageUrl,
+        generatedTitle: data.title,
+        generatedDescription: data.description,
+      });
 
       toast({
         title: "作品の説明を生成しました",
@@ -263,7 +233,7 @@ const AdminDashboard = () => {
       <div className="space-y-4">
         <Label htmlFor="image">作品画像</Label>
         <Dropzone
-          existingImageUrl={formData.imageUrl || selectedArtwork?.imageUrl}
+          existingImageUrl={imageData.url || selectedArtwork?.imageUrl}
           onFileChange={handleFileChange}
           className="h-[200px]"
         />
@@ -273,8 +243,7 @@ const AdminDashboard = () => {
         <Input
           id="title"
           name="title"
-          defaultValue={formData.title || selectedArtwork?.title || ''}
-          onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+          defaultValue={selectedArtwork?.title || imageData.generatedTitle}
           required
         />
       </div>
@@ -283,8 +252,7 @@ const AdminDashboard = () => {
         <Textarea
           id="description"
           name="description"
-          defaultValue={formData.description || selectedArtwork?.description || ''}
-          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+          defaultValue={selectedArtwork?.description || imageData.generatedDescription}
           required
         />
       </div>
@@ -293,7 +261,7 @@ const AdminDashboard = () => {
         <Input
           id="price"
           name="price"
-          type="text"
+          type="number"
           defaultValue={selectedArtwork?.price?.toString()}
           required
         />
@@ -373,15 +341,10 @@ const AdminDashboard = () => {
               <Button
                 onClick={() => {
                   setSelectedArtwork(null);
-                  setFormData({
-                    title: '',
-                    description: '',
-                    imageUrl: '',
-                    price: '',
-                    size: '',
-                    status: 'available',
-                    createdLocation: '銀座',
-                    storedLocation: '銀座'
+                  setImageData({
+                    url: '',
+                    generatedTitle: '',
+                    generatedDescription: '',
                   });
                   setIsEditDialogOpen(true);
                 }}
@@ -426,15 +389,10 @@ const AdminDashboard = () => {
                   className="flex-1"
                   onClick={() => {
                     setSelectedArtwork(artwork);
-                    setFormData({
-                      title: artwork.title,
-                      description: artwork.description,
-                      imageUrl: artwork.imageUrl,
-                      price: artwork.price.toString(),
-                      size: artwork.size || '',
-                      status: artwork.status,
-                      createdLocation: artwork.createdLocation,
-                      storedLocation: artwork.storedLocation
+                    setImageData({
+                      url: artwork.imageUrl,
+                      generatedTitle: '',
+                      generatedDescription: '',
                     });
                     setIsEditDialogOpen(true);
                   }}
