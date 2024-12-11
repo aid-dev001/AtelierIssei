@@ -40,11 +40,10 @@ const AdminDashboard = () => {
   });
 
   const createArtworkMutation = useMutation({
-    mutationFn: async (newArtwork: ArtworkFormData) => {
+    mutationFn: async (formData: FormData) => {
       const response = await fetch(`${adminPath}/artworks`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newArtwork),
+        body: formData,
       });
       if (!response.ok) throw new Error('Failed to create artwork');
       return response.json();
@@ -98,10 +97,19 @@ const AdminDashboard = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    
+    const file = formData.get('image') as File;
+    if (!file || !(file instanceof File)) {
+      toast({
+        variant: "destructive",
+        title: "画像を選択してください",
+      });
+      return;
+    }
+
     const artworkData = {
       title: formData.get('title') as string,
       description: formData.get('description') as string,
-      imageUrl: formData.get('imageUrl') as string,
       price: formData.get('price') as string,
       size: formData.get('size') as string,
       status: formData.get('status') as 'available' | 'reserved' | 'sold',
@@ -113,7 +121,8 @@ const AdminDashboard = () => {
     if (selectedArtwork) {
       updateArtworkMutation.mutate({ ...selectedArtwork, ...artworkData });
     } else {
-      createArtworkMutation.mutate(artworkData);
+      const submitFormData = new FormData(e.currentTarget);
+      createArtworkMutation.mutate(submitFormData);
     }
   };
 
@@ -142,12 +151,19 @@ const AdminDashboard = () => {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="imageUrl">画像URL</Label>
+        <Label htmlFor="image">画像</Label>
         <Input
-          id="imageUrl"
-          name="imageUrl"
-          defaultValue={selectedArtwork?.imageUrl}
-          required
+          id="image"
+          name="image"
+          type="file"
+          accept="image/*"
+          required={!selectedArtwork}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              // TODO: ここでOpenAI APIを使用して画像の説明を生成する
+            }
+          }}
         />
       </div>
       <div className="space-y-2">

@@ -1,12 +1,45 @@
-import { type Express } from "express";
+import { type Express, Request } from "express";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 import { db } from "../db";
 import { ADMIN_URL_PATH, requireAdmin } from "./admin";
 import { 
   artworks, exhibitions, news, testimonials, 
   atelierPosts, contacts, adminUsers 
 } from "@db/schema";
+
+// 画像アップロード用の設定
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => {
+    const uploadDir = 'public/artworks';
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (_req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ 
+  storage,
+  fileFilter: (_req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(null, false);
+    }
+  },
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB制限
+  }
+});
 
 export default function setupRoutes(app: Express) {
   // Public API routes
@@ -178,10 +211,20 @@ export default function setupRoutes(app: Express) {
     }
   });
 
-  app.post(`/admin/${ADMIN_URL_PATH}/artworks`, requireAdmin, async (req, res) => {
+  app.post(`/admin/${ADMIN_URL_PATH}/artworks`, requireAdmin, upload.single('image'), async (req, res) => {
     try {
-      const artwork = await db.insert(artworks).values(req.body);
-      res.json(artwork);
+      if (!req.file) {
+        return res.status(400).json({ error: "No image uploaded" });
+      }
+
+      const imageUrl = `/artworks/${req.file.filename}`;
+      const artworkData = {
+        ...req.body,
+        imageUrl,
+      };
+
+      const artwork = await db.insert(artworks).values(artworkData);
+      res.json({ ...artwork, imageUrl });
     } catch (error) {
       res.status(500).json({ error: "Failed to create artwork" });
     }
