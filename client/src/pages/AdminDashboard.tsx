@@ -205,45 +205,35 @@ const AdminDashboard = () => {
     try {
       if (!selectedArtwork) return;
 
-      // Create a new array with at least 2 elements
-      const newDescriptions: string[] = Array(Math.max(2, index + 1)).fill('');
+      // 現在の説明文配列を取得（存在しない場合は空配列）
+      const currentDescriptions = selectedArtwork.interiorImageDescriptions || [];
       
-      // Copy existing descriptions if any
-      if (selectedArtwork.interiorImageDescriptions) {
-        selectedArtwork.interiorImageDescriptions.forEach((desc, i) => {
-          if (desc) newDescriptions[i] = desc;
-        });
+      // 新しい説明文配列を作成（必要な長さまで拡張）
+      const newDescriptions = [...currentDescriptions];
+      while (newDescriptions.length <= index) {
+        newDescriptions.push('');
       }
-
-      // Update the description at the specified index
+      
+      // インデックスの説明文を更新
       newDescriptions[index] = description;
 
-      console.log('Updating artwork with descriptions:', newDescriptions);
-      
-      const updateData = {
-        interiorImageDescriptions: newDescriptions,
-        updatedAt: new Date(),
-      };
-
+      // APIを使用して更新
       await updateArtworkMutation.mutateAsync({
         id: selectedArtwork.id,
-        data: updateData,
+        data: {
+          interiorImageDescriptions: newDescriptions
+        },
       });
 
-      // Update the local state with type safety
-      setSelectedArtwork((prev) => {
+      // ローカルステートを更新
+      setSelectedArtwork(prev => {
         if (!prev) return null;
-        const updated = {
+        return {
           ...prev,
-          interiorImageDescriptions: newDescriptions,
-          updatedAt: new Date(),
+          interiorImageDescriptions: newDescriptions
         };
-        return updated;
       });
 
-      toast({
-        title: "説明文を更新しました",
-      });
     } catch (error) {
       console.error('Error updating interior image description:', error);
       toast({
@@ -490,10 +480,7 @@ const AdminDashboard = () => {
             <Textarea
               placeholder="1枚目の説明文"
               value={selectedArtwork?.interiorImageDescriptions?.[0] ?? ''}
-              onChange={(e) => {
-                const value = e.target.value;
-                handleInteriorDescriptionChange(0, value);
-              }}
+              onChange={e => handleInteriorDescriptionChange(0, e.target.value)}
               className="h-20 resize-none"
             />
           </div>
@@ -506,10 +493,7 @@ const AdminDashboard = () => {
             <Textarea
               placeholder="2枚目の説明文"
               value={selectedArtwork?.interiorImageDescriptions?.[1] ?? ''}
-              onChange={(e) => {
-                const value = e.target.value;
-                handleInteriorDescriptionChange(1, value);
-              }}
+              onChange={e => handleInteriorDescriptionChange(1, e.target.value)}
               className="h-20 resize-none"
             />
           </div>
@@ -722,6 +706,7 @@ const AdminDashboard = () => {
                     e.preventDefault();
                     const formData = new FormData(e.currentTarget);
                     const title = formData.get('title') as string;
+                    const description = formData.get('description') as string;
                     
                     if (!title.trim()) {
                       toast({
@@ -740,6 +725,7 @@ const AdminDashboard = () => {
                         },
                         body: JSON.stringify({
                           title: title.trim(),
+                          description: description.trim() || `${title.trim()}コレクション`,
                         }),
                       });
 
@@ -748,7 +734,7 @@ const AdminDashboard = () => {
                         throw new Error(errorData.error || 'コレクションの作成に失敗しました');
                       }
 
-                      queryClient.invalidateQueries({ queryKey: [`${adminPath}/collections`] });
+                      queryClient.invalidateQueries({ queryKey: ["collections"] });
                       toast({ title: "コレクションを作成しました" });
                       (e.target as HTMLFormElement).reset();
                     } catch (error) {
@@ -763,6 +749,14 @@ const AdminDashboard = () => {
                     <div>
                       <Label htmlFor="title">タイトル</Label>
                       <Input id="title" name="title" required />
+                    </div>
+                    <div>
+                      <Label htmlFor="description">説明文</Label>
+                      <Textarea
+                        id="description"
+                        name="description"
+                        placeholder="コレクションの説明文を入力してください"
+                      />
                     </div>
                     <Button type="submit">作成</Button>
                   </form>
@@ -816,6 +810,7 @@ const AdminDashboard = () => {
                           e.preventDefault();
                           const formData = new FormData(e.currentTarget);
                           const title = formData.get('title') as string;
+                          const description = formData.get('description') as string;
                           
                           if (!title.trim()) {
                             toast({
@@ -834,7 +829,7 @@ const AdminDashboard = () => {
                               },
                               body: JSON.stringify({
                                 title: title.trim(),
-                                description: `${title.trim()}コレクション`,
+                                description: description.trim() || `${title.trim()}コレクション`,
                               }),
                             });
 
@@ -860,6 +855,19 @@ const AdminDashboard = () => {
                               id={`title-${collection.id}`} 
                               name="title" 
                               defaultValue={collection.title}
+                              required
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor={`description-${collection.id}`}>説明文</Label>
+                            <Textarea
+                              id={`description-${collection.id}`}
+                              name="description"
+                              defaultValue={collection.description}
+                              placeholder="コレクションの説明文を入力してください"
+                            />
+                          </div>
+                          <Button type="submit">更新</Button>
                               required 
                             />
                           </div>
