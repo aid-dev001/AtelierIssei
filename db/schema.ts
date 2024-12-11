@@ -9,7 +9,6 @@ export const artworks = pgTable("artworks", {
   imageUrl: text("image_url").notNull(),
   price: numeric("price").notNull(),
   status: text("status").notNull().default('available'),  // 'available', 'reserved', 'sold'
-  size: text("size").notNull().default('F4'),
   createdLocation: text("created_location").notNull().default('銀座'),  // アトリエの場所: '池袋', '赤坂', '東新宿'
   storedLocation: text("stored_location").notNull().default('銀座'),
   isAvailable: boolean("is_available").default(true).notNull(),

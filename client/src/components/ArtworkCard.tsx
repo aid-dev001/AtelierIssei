@@ -20,6 +20,7 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
             onError={(e) => {
               const img = e.target as HTMLImageElement;
               img.onerror = null;
+              console.error(`Failed to load image: ${artwork.imageUrl}`);
               img.src = '/placeholder.png';
             }}
           />
@@ -44,10 +45,10 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
             </div>
             <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium flex items-center gap-1.5">
               <Building2 className="w-4 h-4 text-black" />
-              保管: {artwork.storedLocation || '銀座'}
+              展示: {artwork.storedLocation || '銀座'}
             </div>
           </div>
-          <div className="bg-white/90 py-1 px-2 rounded-md text-sm font-medium inline-block w-fit">
+          <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium">
             {artwork.size || 'F4'}
           </div>
         </div>
