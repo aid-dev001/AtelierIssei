@@ -47,7 +47,7 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
               保管: {artwork.storedLocation || '銀座'}
             </div>
           </div>
-          <div className="bg-white/90 px-2 py-1 rounded-md text-sm font-medium min-w-0 whitespace-nowrap">
+          <div className="bg-white/90 px-1.5 py-0.5 rounded-md text-sm font-medium inline-block">
             {artwork.size || 'F4'}
           </div>
         </div>
