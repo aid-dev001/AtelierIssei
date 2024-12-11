@@ -12,10 +12,33 @@ export default function setupRoutes(app: Express) {
   // Public API routes
   app.get("/api/artworks", async (req, res) => {
     try {
-      const result = await db.execute(
-        "SELECT * FROM artworks ORDER BY created_at DESC"
-      );
-      res.json(result.rows);
+      const result = await db.query.artworks.findMany({
+        orderBy: (artworks) => [artworks.createdAt, "desc"],
+      });
+      
+      // サンプルデータを追加（開発用）
+      if (!result || result.length === 0) {
+        const sampleArtworks = [
+          {
+            id: 1,
+            title: "Urban Dreams",
+            description: "都市の夢想を描いた作品",
+            imageUrl: "/artworks/12648.jpg",
+            price: "250000",
+            size: "F15(65.2×53.0cm)",
+            status: "available",
+            createdLocation: "銀座",
+            storedLocation: "銀座",
+            isAvailable: true,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          },
+          // 他のサンプルデータも追加可能
+        ];
+        res.json(sampleArtworks);
+      } else {
+        res.json(result);
+      }
     } catch (error) {
       console.error("Failed to fetch artworks:", error);
       res.status(500).json({ error: "Failed to fetch artworks" });

@@ -21,6 +21,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static('client/public'));
+app.use('/artworks', express.static('public/artworks'));
 app.use('/artworks', express.static('.'));
 
 const MemoryStoreSession = MemoryStore(session);
