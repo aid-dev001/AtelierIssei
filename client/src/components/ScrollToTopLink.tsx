@@ -1,7 +1,8 @@
 import { Link } from "wouter";
 import { ComponentProps, useCallback, ReactNode } from "react";
 
-type ScrollToTopLinkProps = Omit<ComponentProps<typeof Link>, 'onClick'> & {
+type ScrollToTopLinkProps = {
+  href: string;
   className?: string;
   onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
   children: ReactNode;

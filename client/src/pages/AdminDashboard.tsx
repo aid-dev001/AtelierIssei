@@ -376,24 +376,30 @@ const AdminDashboard = () => {
           </div>
           <div className="flex gap-4 border-b">
             <button
-              className={`px-4 py-2 font-medium ${
+              className={`px-4 py-2 font-medium transition-all relative ${
                 activeTab === 'artworks'
-                  ? 'text-primary border-b-2 border-primary'
+                  ? 'text-primary font-semibold'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
               onClick={() => setActiveTab('artworks')}
             >
               作品管理
+              {activeTab === 'artworks' && (
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
+              )}
             </button>
             <button
-              className={`px-4 py-2 font-medium ${
+              className={`px-4 py-2 font-medium transition-all relative ${
                 activeTab === 'collections'
-                  ? 'text-primary border-b-2 border-primary'
+                  ? 'text-primary font-semibold'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
               onClick={() => setActiveTab('collections')}
             >
               コレクション管理
+              {activeTab === 'collections' && (
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
+              )}
             </button>
           </div>
         </div>
@@ -532,6 +538,17 @@ const AdminDashboard = () => {
                   <form onSubmit={async (e) => {
                     e.preventDefault();
                     const formData = new FormData(e.currentTarget);
+                    const title = formData.get('title') as string;
+                    
+                    if (!title.trim()) {
+                      toast({
+                        variant: "destructive",
+                        title: "エラー",
+                        description: "タイトルを入力してください"
+                      });
+                      return;
+                    }
+
                     try {
                       const response = await fetch(`${adminPath}/collections`, {
                         method: 'POST',
@@ -539,14 +556,20 @@ const AdminDashboard = () => {
                           'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                          title: formData.get('title'),
+                          title: title.trim(),
                         }),
                       });
-                      if (!response.ok) throw new Error('コレクションの作成に失敗しました');
+
+                      if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'コレクションの作成に失敗しました');
+                      }
+
                       queryClient.invalidateQueries({ queryKey: [`${adminPath}/collections`] });
                       toast({ title: "コレクションを作成しました" });
                       (e.target as HTMLFormElement).reset();
                     } catch (error) {
+                      console.error('Collection creation error:', error);
                       toast({ 
                         variant: "destructive", 
                         title: "エラー",

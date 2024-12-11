@@ -14,6 +14,7 @@ import {
   atelierPosts,
   contacts,
   adminUsers,
+  collections,
 } from "@db/schema";
 import { eq, desc } from "drizzle-orm";
 
@@ -75,16 +76,29 @@ export default function setupRoutes(app: express.Express) {
   app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) => {
     try {
       const currentYear = new Date().getFullYear();
+      // コンソールログを追加してデバッグ
+      console.log('Received collection creation request:', req.body);
+      
       const collectionData = {
         title: req.body.title,
         description: `${req.body.title}コレクション`,
-        imageUrl: '/placeholder.png',
+        imageUrl: '/artworks/placeholder.png',
         year: currentYear,
         isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
-      await db.insert(collections).values(collectionData);
-      res.json({ success: true, ...collectionData });
+      console.log('Attempting to create collection with data:', collectionData);
+
+      try {
+        const result = await db.insert(collections).values(collectionData);
+        console.log('Collection created successfully:', result);
+        res.json({ success: true, data: collectionData });
+      } catch (error) {
+        console.error('Error details:', error);
+        throw error;
+      }
     } catch (error) {
       console.error("Error creating collection:", error);
       res.status(500).json({ error: "コレクションの作成に失敗しました" });

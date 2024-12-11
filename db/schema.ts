@@ -15,7 +15,7 @@ export const artworks = pgTable("artworks", {
   title: text("title").notNull(),
   description: text("description").notNull(),
   imageUrl: text("image_url").notNull(),
-  price: numeric("price", { precision: 10, scale: 2 }).notNull(),
+  price: numeric("price").notNull(),
   size: text("size"),
   status: text("status").notNull().default('available'),
   createdLocation: text("created_location").notNull().default('銀座'),
@@ -27,11 +27,11 @@ export const artworks = pgTable("artworks", {
 });
 
 export const collections = pgTable("collections", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   title: text("title").notNull(),
   description: text("description").notNull(),
-  imageUrl: text("image_url").notNull(),
-  year: integer("year").notNull(),
+  imageUrl: text("image_url").notNull().default('/artworks/placeholder.png'),
+  year: integer("year").notNull().default(() => new Date().getFullYear()),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),

@@ -62,7 +62,7 @@ const Artworks = () => {
         <LoadingSkeleton />
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8 lg:gap-12">
             {paginatedArtworks?.map((artwork) => (
               <div key={artwork.id} className="flex flex-col">
                 <ArtworkCard artwork={artwork} />
