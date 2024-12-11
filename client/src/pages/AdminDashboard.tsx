@@ -38,9 +38,9 @@ const AdminDashboard = () => {
 
   // Collections data
   const { data: collections } = useQuery({
-    queryKey: [`${adminPath}/collections`],
+    queryKey: ["collections"],
     queryFn: async () => {
-      const response = await fetch(`${adminPath}/collections`);
+      const response = await fetch("/api/collections");
       if (!response.ok) throw new Error('Failed to fetch collections');
       const data = await response.json();
       console.log('Fetched collections:', data);

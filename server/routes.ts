@@ -63,9 +63,8 @@ export default function setupRoutes(app: express.Express) {
   // Collections CRUD endpoints
   app.get("/api/collections", async (req, res) => {
     try {
-      const allCollections = await db.query.collections.findMany({
-        orderBy: (collections) => desc(collections.updatedAt),
-      });
+      const allCollections = await db.select().from(collections).orderBy(desc(collections.updatedAt));
+      console.log('Fetched collections:', allCollections);
       res.json(allCollections);
     } catch (error) {
       console.error("Failed to fetch collections:", error);
