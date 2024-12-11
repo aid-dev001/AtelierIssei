@@ -133,10 +133,47 @@ export default function setupRoutes(app: Express) {
   app.get(`/admin/${ADMIN_URL_PATH}/artworks`, requireAdmin, async (req, res) => {
     try {
       const allArtworks = await db.query.artworks.findMany({
-        orderBy: (artworks) => artworks.createdAt,
+        orderBy: (artworks, { desc }) => [desc(artworks.createdAt)],
       });
-      res.json(allArtworks);
+      
+      if (!allArtworks || allArtworks.length === 0) {
+        // サンプルデータを挿入
+        await db.insert(artworks).values([
+          {
+            title: 'Urban Dreams',
+            description: '都市の夢想を描いた作品',
+            imageUrl: '/artworks/12648.jpg',
+            price: '250000',
+            size: 'F15(65.2×53.0cm)',
+            status: 'available',
+            createdLocation: '銀座',
+            storedLocation: '銀座',
+            isAvailable: true,
+          },
+          {
+            title: 'Serenity',
+            description: '静寂の中の輝き',
+            imageUrl: '/artworks/12653.jpg',
+            price: '180000',
+            size: 'F10(53.0×45.5cm)',
+            status: 'available',
+            createdLocation: '銀座',
+            storedLocation: '銀座',
+            isAvailable: true,
+          },
+        ]);
+
+        const initialArtworks = await db.query.artworks.findMany({
+          orderBy: (artworks, { desc }) => [desc(artworks.createdAt)],
+        });
+        console.log('Initial artworks loaded:', initialArtworks);
+        res.json(initialArtworks);
+      } else {
+        console.log('Existing artworks found:', allArtworks);
+        res.json(allArtworks);
+      }
     } catch (error) {
+      console.error("Failed to fetch artworks:", error);
       res.status(500).json({ error: "Failed to fetch artworks" });
     }
   });

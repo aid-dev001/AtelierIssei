@@ -235,7 +235,7 @@ const AdminDashboard = () => {
                 新規作品を追加
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>
                   {selectedArtwork ? '作品を編集' : '新規作品を追加'}
