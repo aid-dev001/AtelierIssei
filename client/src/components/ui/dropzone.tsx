@@ -44,10 +44,19 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
           return false;
         }
 
-        if (file.size > 5 * 1024 * 1024) {
+        // JPEGとPNGのみを許可
+        if (!["image/jpeg", "image/png"].includes(file.type)) {
           toast({
             variant: "destructive",
-            title: "ファイルサイズは5MB以下にしてください",
+            title: "JPEGまたはPNG形式の画像のみアップロード可能です",
+          });
+          return false;
+        }
+
+        if (file.size > 30 * 1024 * 1024) {
+          toast({
+            variant: "destructive",
+            title: "ファイルサイズは30MB以下にしてください",
           });
           return false;
         }
@@ -106,7 +115,7 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
           type="file"
           name="image"
           className="absolute inset-0 cursor-pointer opacity-0"
-          accept="image/*"
+          accept="image/jpeg,image/png"
           onChange={handleFileInput}
         />
         {preview ? (
@@ -128,7 +137,7 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
                 クリックまたはドラッグ＆ドロップで画像をアップロード
               </p>
               <p className="text-xs text-gray-500">
-                5MB以下のJPG、PNG、GIF形式の画像ファイル
+                30MB以下のJPEGまたはPNG形式の画像ファイル
               </p>
             </div>
           </div>

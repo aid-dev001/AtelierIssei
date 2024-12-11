@@ -73,8 +73,14 @@ app.use((req, res, next) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
+    console.error('Server error:', err);
+
+    if (err.code === 'EADDRINUSE') {
+      console.error('Port 5000 is already in use. Please make sure no other process is using this port.');
+      process.exit(1);
+    }
+
     res.status(status).json({ message });
-    throw err;
   });
 
   // importantly only setup vite in development and after
