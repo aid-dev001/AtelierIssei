@@ -20,7 +20,7 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
             onError={(e) => {
               const img = e.target as HTMLImageElement;
               img.onerror = null;
-              img.src = '/artworks/placeholder.png';
+              img.src = '/placeholder.png';
             }}
           />
         </Link>
@@ -47,8 +47,8 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
               保管: {artwork.storedLocation || '銀座'}
             </div>
           </div>
-          <div className="bg-white/90 py-1 rounded-md text-sm font-medium inline-block">
-            <span className="px-3">{artwork.size || 'F4'}</span>
+          <div className="bg-white/90 py-1 px-2 rounded-md text-sm font-medium inline-block w-fit">
+            {artwork.size || 'F4'}
           </div>
         </div>
       </CardContent>
