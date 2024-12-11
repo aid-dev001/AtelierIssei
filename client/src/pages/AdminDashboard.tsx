@@ -42,7 +42,9 @@ const AdminDashboard = () => {
     queryFn: async () => {
       const response = await fetch(`${adminPath}/collections`);
       if (!response.ok) throw new Error('Failed to fetch collections');
-      return response.json();
+      const data = await response.json();
+      console.log('Fetched collections:', data);
+      return data;
     },
   });
 
@@ -341,7 +343,7 @@ const AdminDashboard = () => {
           defaultValue={selectedArtwork?.collectionId || ''}
         >
           <option value="">コレクションを選択</option>
-          {collections?.map((collection: any) => (
+          {Array.isArray(collections) && collections.map((collection: any) => (
             <option key={collection.id} value={collection.id}>
               {collection.title}
             </option>
@@ -587,7 +589,7 @@ const AdminDashboard = () => {
               </Dialog>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {collections?.map((collection: any) => (
+              {Array.isArray(collections) && collections.map((collection: any) => (
                 <div
                   key={collection.id}
                   className="border p-4 rounded-lg hover:shadow-lg transition-all"
