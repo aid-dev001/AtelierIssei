@@ -168,14 +168,16 @@ const AdminDashboard = () => {
               });
             } catch (error) {
               console.error('Error generating description:', error);
+              const errorResponse = await response.json();
+              console.error('Error response:', errorResponse);
+              
               toast({
                 variant: "destructive",
-                title: "説明の生成に失敗しました",
-                description: error instanceof Error 
-                  ? `エラー詳細: ${error.message}` 
+                title: errorResponse.error || "説明の生成に失敗しました",
+                description: errorResponse.details 
+                  ? `エラー詳細: ${errorResponse.details}` 
                   : "AIによる説明文の生成に失敗しました。手動で入力してください",
               });
-              console.error('Error details:', error);
             }
           }}
           className="h-[200px]"

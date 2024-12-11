@@ -9,14 +9,28 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
     console.log('OpenAI API Key exists:', !!process.env.OPENAI_API_KEY);
     console.log('Generating artwork description for image:', imageUrl);
 
-    // Base64エンコードされた画像データの場合の処理を追加
-    const imageUrlToUse = imageUrl.startsWith('data:image') 
-      ? imageUrl 
-      : `data:image/jpeg;base64,${Buffer.from(imageUrl).toString('base64')}`;
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error('OpenAI APIキーが設定されていません');
+    }
 
-    console.log('Using image URL format:', imageUrlToUse.substring(0, 50) + '...');
+    if (!imageUrl) {
+      throw new Error('画像URLが提供されていません');
+    }
 
-    const response = await openai.chat.completions.create({
+    // 画像データの取得を試みる
+    const imageResponse = await fetch(imageUrl);
+    if (!imageResponse.ok) {
+      throw new Error(`画像の取得に失敗しました: ${imageResponse.status} ${imageResponse.statusText}`);
+    }
+
+    const buffer = await imageResponse.arrayBuffer();
+    const base64Image = Buffer.from(buffer).toString('base64');
+    const imageUrlToUse = `data:image/jpeg;base64,${base64Image}`;
+    console.log('Successfully converted image to base64');
+
+    // OpenAI APIにリクエストを送信
+    console.log('Sending request to OpenAI API...');
+    const openaiResponse = await openai.chat.completions.create({
       model: "gpt-4-vision-preview",
       messages: [
         {
@@ -38,60 +52,48 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
       max_tokens: 1000,
     });
 
-    console.log('OpenAI API response:', response.choices[0].message);
-
-    const content = response.choices[0].message.content;
-    if (!content) {
-      console.error('No content returned from OpenAI');
-      throw new Error('タイトルと説明文の生成に失敗しました。再度お試しください。');
+    if (!openaiResponse.choices?.[0]?.message?.content) {
+      console.error('Invalid response from OpenAI:', openaiResponse);
+      throw new Error('OpenAI APIからの応答が不正です');
     }
 
+    const content = openaiResponse.choices[0].message.content;
+    console.log('Raw content from OpenAI:', content);
+
     // Extract JSON from the response
-    const jsonString = content.replace(/.*?(\{.*\}).*/s, '$1');
-    
+    const jsonMatch = content.match(/\{.*\}/s);
+    if (!jsonMatch) {
+      throw new Error('JSONフォーマットの応答が見つかりませんでした');
+    }
+
+    const jsonString = jsonMatch[0];
+    console.log('Extracted JSON string:', jsonString);
+
     try {
-      console.log('Attempting to parse JSON response:', jsonString);
       const parsed = JSON.parse(jsonString);
       
       if (!parsed.title || !parsed.description) {
         console.error('Missing title or description in parsed JSON:', parsed);
-        console.error('Original OpenAI response:', content);
-        throw new Error('タイトルまたは説明文の生成に失敗しました。OpenAIからの応答が不完全です。');
+        throw new Error('タイトルまたは説明文が見つかりません');
       }
 
       const title = parsed.title.trim();
       const description = parsed.description.trim();
 
       console.log('Successfully generated content:', { title, description });
-
       return { title, description };
-    } catch (e) {
-      console.error('JSON parse error:', e, 'Content:', content);
-      throw new Error('生成されたコンテンツの解析に失敗しました。再度お試しください。');
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError);
+      throw new Error('生成されたコンテンツの解析に失敗しました');
     }
   } catch (error) {
     console.error('Error in generateArtworkDescription:', error);
-    
     if (error instanceof Error) {
-      console.error('Detailed error information:', {
-        message: error.message,
-        stack: error.stack,
-        name: error.name
-      });
-
       if (error.message.includes('API')) {
-        throw new Error('OpenAI APIとの通信に失敗しました。ネットワーク接続を確認してください。');
-      } else if (error.message.includes('JSON')) {
-        throw new Error('生成された内容の解析に失敗しました。再度お試しください。');
-      } else if (error.message.includes('invalid_api_key')) {
-        throw new Error('OpenAI APIキーが無効です。APIキーを確認してください。');
-      } else if (error.message.includes('insufficient_quota')) {
-        throw new Error('OpenAI APIの利用制限に達しました。');
-      } else if (error.message.includes('rate_limit_exceeded')) {
-        throw new Error('OpenAI APIのレート制限に達しました。しばらく待ってから再試行してください。');
+        throw new Error('OpenAI APIとの通信に失敗しました');
       }
+      throw error;
     }
-    
-    throw new Error(`予期せぬエラーが発生しました: ${error instanceof Error ? error.message : '不明なエラー'}`);
+    throw new Error('予期せぬエラーが発生しました');
   }
 }

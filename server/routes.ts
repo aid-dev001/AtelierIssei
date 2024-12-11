@@ -152,20 +152,12 @@ export default function setupRoutes(app: express.Express) {
         });
       } catch (error) {
         console.error('Error in description generation:', error);
-        const errorDetails = error instanceof Error 
-          ? {
-              message: error.message,
-              name: error.name,
-              stack: error.stack,
-            }
-          : { message: '不明なエラー' };
-
-        console.error('Detailed error information:', errorDetails);
+        const isOpenAIError = error instanceof Error && error.message.includes('OpenAI');
         
-        res.status(422).json({ 
-          error: `説明文の生成に失敗しました: ${errorDetails.message}`,
-          imageUrl,
-          details: errorDetails
+        res.status(isOpenAIError ? 422 : 500).json({ 
+          error: isOpenAIError ? "説明文の生成に失敗しました" : "サーバーエラーが発生しました",
+          details: error instanceof Error ? error.message : "不明なエラー",
+          imageUrl: req.file ? `/artworks/${req.file.filename}` : undefined
         });
       }
     } catch (error) {
