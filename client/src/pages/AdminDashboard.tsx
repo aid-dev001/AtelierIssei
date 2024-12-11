@@ -74,16 +74,34 @@ const AdminDashboard = () => {
         method: 'POST',
         body: formData,
       });
-      if (!response.ok) throw new Error('Failed to create artwork');
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error || 'Failed to create artwork');
+      }
       return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`${adminPath}/artworks`] });
       toast({ title: "作品を追加しました" });
       setIsEditDialogOpen(false);
+      setSelectedArtwork(null);
+      setFormData({
+        title: '',
+        description: '',
+        imageUrl: '',
+        price: '',
+        size: '',
+        status: 'available',
+        createdLocation: '銀座',
+        storedLocation: '銀座'
+      });
     },
-    onError: () => {
-      toast({ variant: "destructive", title: "作品の追加に失敗しました" });
+    onError: (error) => {
+      toast({ 
+        variant: "destructive", 
+        title: "作品の追加に失敗しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+      });
     },
   });
 
@@ -125,33 +143,67 @@ const AdminDashboard = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    
-    const file = formData.get('image') as File;
-    if (!selectedArtwork && (!file || !(file instanceof File))) {
+    try {
+      if (selectedArtwork) {
+        // 更新の場合
+        const artworkData = {
+          id: selectedArtwork.id,
+          title: formData.title || selectedArtwork.title,
+          description: formData.description || selectedArtwork.description,
+          price: e.currentTarget.price.value,
+          size: e.currentTarget.size.value,
+          status: e.currentTarget.status.value,
+          createdLocation: e.currentTarget.createdLocation.value,
+          storedLocation: e.currentTarget.storedLocation.value,
+          isAvailable: true,
+          imageUrl: selectedArtwork.imageUrl,
+        };
+        await updateArtworkMutation.mutateAsync(artworkData);
+      } else {
+        // 新規作成の場合
+        const submitFormData = new FormData();
+        const fileInput = e.currentTarget.querySelector('input[type="file"]') as HTMLInputElement;
+        const file = fileInput?.files?.[0];
+
+        if (!file) {
+          toast({
+            variant: "destructive",
+            title: "画像を選択してください",
+          });
+          return;
+        }
+
+        submitFormData.append('image', file);
+        submitFormData.append('title', formData.title);
+        submitFormData.append('description', formData.description);
+        submitFormData.append('price', e.currentTarget.price.value);
+        submitFormData.append('size', e.currentTarget.size.value);
+        submitFormData.append('status', e.currentTarget.status.value);
+        submitFormData.append('createdLocation', e.currentTarget.createdLocation.value);
+        submitFormData.append('storedLocation', e.currentTarget.storedLocation.value);
+
+        await createArtworkMutation.mutateAsync(submitFormData);
+      }
+
+      // 成功したらフォームをリセット
+      setFormData({
+        title: '',
+        description: '',
+        imageUrl: '',
+        price: '',
+        size: '',
+        status: 'available',
+        createdLocation: '銀座',
+        storedLocation: '銀座'
+      });
+      
+    } catch (error) {
+      console.error('Form submission error:', error);
       toast({
         variant: "destructive",
-        title: "画像を選択してください",
+        title: "エラーが発生しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
       });
-      return;
-    }
-
-    if (selectedArtwork) {
-      const artworkData = {
-        id: selectedArtwork.id,
-        title: formData.get('title') as string,
-        description: formData.get('description') as string,
-        price: formData.get('price') as string,
-        size: formData.get('size') as string | null,
-        status: formData.get('status') as string,
-        createdLocation: formData.get('createdLocation') as string,
-        storedLocation: formData.get('storedLocation') as string,
-        isAvailable: true,
-        imageUrl: selectedArtwork.imageUrl,
-      };
-      updateArtworkMutation.mutate(artworkData);
-    } else {
-      createArtworkMutation.mutate(formData);
     }
   };
 
@@ -228,9 +280,8 @@ const AdminDashboard = () => {
           name="title"
           value={formData.title || selectedArtwork?.title || ''}
           onChange={(e) => {
-            const value = e.target.value;
             if (!e.target.getAttribute('composing')) {
-              setFormData(prev => ({ ...prev, title: value }));
+              setFormData(prev => ({ ...prev, title: e.target.value }));
             }
           }}
           onCompositionStart={(e) => {
@@ -238,7 +289,8 @@ const AdminDashboard = () => {
           }}
           onCompositionEnd={(e) => {
             e.currentTarget.removeAttribute('composing');
-            setFormData(prev => ({ ...prev, title: e.currentTarget.value }));
+            const value = e.currentTarget.value;
+            setFormData(prev => ({ ...prev, title: value }));
           }}
           required
         />
@@ -250,9 +302,8 @@ const AdminDashboard = () => {
           name="description"
           value={formData.description || selectedArtwork?.description || ''}
           onChange={(e) => {
-            const value = e.target.value;
             if (!e.target.getAttribute('composing')) {
-              setFormData(prev => ({ ...prev, description: value }));
+              setFormData(prev => ({ ...prev, description: e.target.value }));
             }
           }}
           onCompositionStart={(e) => {
@@ -260,7 +311,8 @@ const AdminDashboard = () => {
           }}
           onCompositionEnd={(e) => {
             e.currentTarget.removeAttribute('composing');
-            setFormData(prev => ({ ...prev, description: e.currentTarget.value }));
+            const value = e.currentTarget.value;
+            setFormData(prev => ({ ...prev, description: value }));
           }}
           required
         />
