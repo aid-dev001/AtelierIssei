@@ -54,21 +54,23 @@ const Collections = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {artworks?.filter(artwork => artwork.collectionId === collection.id)
                   .map((artwork, imgIndex) => (
-                  <Card key={imgIndex} className="overflow-hidden group">
-                    <div className="aspect-square relative">
-                      <img
-                        src={artwork.imageUrl}
-                        alt={`${collection.title} - Image ${imgIndex + 1}`}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        onError={(e) => {
-                          const img = e.target as HTMLImageElement;
-                          img.onerror = null;
-                          img.src = '/placeholder.png';
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-                    </div>
-                  </Card>
+                  <ScrollToTopLink key={artwork.id} href={`/artwork/${artwork.id}`}>
+                    <Card className="overflow-hidden group cursor-pointer">
+                      <div className="aspect-square relative">
+                        <img
+                          src={artwork.imageUrl}
+                          alt={artwork.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          onError={(e) => {
+                            const img = e.target as HTMLImageElement;
+                            img.onerror = null;
+                            img.src = '/placeholder.png';
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+                      </div>
+                    </Card>
+                  </ScrollToTopLink>
                 ))}
               </div>
 

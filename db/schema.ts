@@ -20,6 +20,8 @@ export const artworks = pgTable("artworks", {
   status: text("status").notNull().default('available'),
   createdLocation: text("created_location").notNull().default('銀座'),
   storedLocation: text("stored_location").notNull().default('銀座'),
+  exhibitionLocation: text("exhibition_location"),
+  exhibitionImageUrl: text("exhibition_image_url"),
   isAvailable: boolean("is_available").default(true).notNull(),
   collectionId: integer("collection_id").references(() => collections.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),

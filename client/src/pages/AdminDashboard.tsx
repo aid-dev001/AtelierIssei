@@ -335,6 +335,23 @@ const AdminDashboard = () => {
         />
       </div>
       <div className="space-y-2">
+        <Label htmlFor="exhibitionLocation">展示場所</Label>
+        <Input
+          id="exhibitionLocation"
+          name="exhibitionLocation"
+          defaultValue={selectedArtwork?.exhibitionLocation}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="exhibitionImageUrl">展示写真</Label>
+        <Input
+          id="exhibitionImageUrl"
+          name="exhibitionImageUrl"
+          defaultValue={selectedArtwork?.exhibitionImageUrl}
+          placeholder="展示写真のURLを入力"
+        />
+      </div>
+      <div className="space-y-2">
         <Label htmlFor="collectionId">コレクション</Label>
         <select
           id="collectionId"
