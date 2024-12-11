@@ -14,13 +14,12 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
       <CardContent className="p-0 relative">
         <Link href={`/artwork/${artwork.id}`}>
           <img
-            src={artwork.imageUrl}
+            src={`/artworks/${artwork.imageUrl}`}
             alt={artwork.title}
             className="w-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
             onError={(e) => {
               const img = e.target as HTMLImageElement;
               img.onerror = null;
-              console.error(`Failed to load image: ${artwork.imageUrl}`);
               img.src = '/placeholder.png';
             }}
           />
@@ -45,10 +44,10 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
             </div>
             <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium flex items-center gap-1.5">
               <Building2 className="w-4 h-4 text-black" />
-              展示: {artwork.storedLocation || '銀座'}
+              保管: {artwork.storedLocation || '銀座'}
             </div>
           </div>
-          <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium">
+          <div className="bg-white/90 px-2 py-1 rounded-md text-sm font-medium min-w-0 whitespace-nowrap">
             {artwork.size || 'F4'}
           </div>
         </div>

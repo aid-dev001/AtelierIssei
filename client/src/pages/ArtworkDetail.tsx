@@ -68,11 +68,15 @@ const ArtworkDetail = () => {
             <div className="space-y-8">
               <div className="relative overflow-hidden shadow-2xl bg-white group">
                 <img
-                  src={artwork.imageUrl}
+                  src={`/artworks/${artwork.imageUrl}`}
                   alt={artwork.title}
                   className="w-full object-contain transition-transform duration-500 group-hover:scale-105"
+                  onError={(e) => {
+                    const img = e.target as HTMLImageElement;
+                    img.onerror = null;
+                    img.src = '/placeholder.png';
+                  }}
                 />
-                
               </div>
               <div className="flex gap-4">
                 <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
