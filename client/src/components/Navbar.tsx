@@ -93,7 +93,7 @@ const Navbar = () => {
             {links.map(({ href, label }) => (
               <div key={href} className="block relative group">
                 <ScrollToTopLink
-                  to={href}
+                  href={href}
                   className="block text-lg tracking-wider py-2 border-b border-gray-100"
                   onClick={closeMenu}
                 >

@@ -23,7 +23,7 @@ const AdminDashboard = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const adminPath = window.location.pathname.split('/dashboard')[0];
-
+  const [activeTab, setActiveTab] = useState<'artworks' | 'collections'>('artworks');
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [imageData, setImageData] = useState<{
@@ -36,6 +36,7 @@ const AdminDashboard = () => {
     generatedDescription: '',
   });
 
+  // Collections data
   const { data: collections } = useQuery({
     queryKey: [`${adminPath}/collections`],
     queryFn: async () => {
@@ -45,6 +46,7 @@ const AdminDashboard = () => {
     },
   });
 
+  // Artworks data
   const { data: artworks, isLoading, error } = useQuery<Artwork[]>({
     queryKey: [`${adminPath}/artworks`],
     queryFn: async () => {
@@ -149,21 +151,21 @@ const AdminDashboard = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const form = e.currentTarget as HTMLFormElement;
+      const form = e.currentTarget;
       const formData = new FormData(form);
 
       if (selectedArtwork) {
         // 更新の場合
-        const form = e.currentTarget;
         const updateData = {
-          title: form.title.value,
-          description: form.description.value,
-          price: parseFloat(form.price.value),
-          size: form.size.value,
-          status: form.status.value,
-          createdLocation: form.createdLocation.value,
-          storedLocation: form.storedLocation.value,
+          title: formData.get('title') as string,
+          description: formData.get('description') as string,
+          price: parseFloat(formData.get('price') as string),
+          size: formData.get('size') as string,
+          status: formData.get('status') as string,
+          createdLocation: formData.get('createdLocation') as string,
+          storedLocation: formData.get('storedLocation') as string,
           imageUrl: imageData.url || selectedArtwork.imageUrl,
+          collectionId: formData.get('collectionId') ? parseInt(formData.get('collectionId') as string) : null,
         };
         
         await updateArtworkMutation.mutateAsync({
@@ -339,7 +341,7 @@ const AdminDashboard = () => {
           defaultValue={selectedArtwork?.collectionId || ''}
         >
           <option value="">コレクションを選択</option>
-          {collections?.map((collection) => (
+          {collections?.map((collection: any) => (
             <option key={collection.id} value={collection.id}>
               {collection.title}
             </option>
@@ -355,12 +357,6 @@ const AdminDashboard = () => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
-  const [activeTab, setActiveTab] = useState<'artworks' | 'collections'>('artworks');
-
-  const handleTabChange = (tab: 'artworks' | 'collections') => {
-    setActiveTab(tab);
-  };
 
   return (
     <div className="space-y-8">
@@ -385,7 +381,7 @@ const AdminDashboard = () => {
                   ? 'text-primary border-b-2 border-primary'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
-              onClick={() => handleTabChange('artworks')}
+              onClick={() => setActiveTab('artworks')}
             >
               作品管理
             </button>
@@ -395,94 +391,54 @@ const AdminDashboard = () => {
                   ? 'text-primary border-b-2 border-primary'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
-              onClick={() => handleTabChange('collections')}
+              onClick={() => setActiveTab('collections')}
             >
               コレクション管理
             </button>
           </div>
         </div>
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">管理者ダッシュボード</h1>
-          <Button
-            variant="ghost"
-            onClick={() => {
-              setLocation(adminPath);
-            }}
-            className="text-gray-600 hover:text-gray-900"
-          >
-            ログアウト
-          </Button>
-        </div>
       </header>
 
       <main className="space-y-8">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-semibold">作品一覧</h2>
-          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-            <DialogTrigger asChild>
-              <Button
-                onClick={() => {
-                  setSelectedArtwork(null);
-                  setImageData({
-                    url: '',
-                    generatedTitle: '',
-                    generatedDescription: '',
-                  });
-                  setIsEditDialogOpen(true);
-                }}
-              >
-                新規作品を追加
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>
-                  {selectedArtwork ? '作品を編集' : '新規作品を追加'}
-                </DialogTitle>
-              </DialogHeader>
-              <div className="p-6">
-                <ArtworkForm />
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
+        {activeTab === 'artworks' ? (
+          <>
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold">作品一覧</h2>
+              <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    onClick={() => {
+                      setSelectedArtwork(null);
+                      setImageData({
+                        url: '',
+                        generatedTitle: '',
+                        generatedDescription: '',
+                      });
+                      setIsEditDialogOpen(true);
+                    }}
+                  >
+                    新規作品を追加
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>
+                      {selectedArtwork ? '作品を編集' : '新規作品を追加'}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="p-6">
+                    <ArtworkForm />
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {artworks?.map((artwork) => (
-            <div
-              key={artwork.id}
-              className="border p-3 rounded-lg hover:shadow-lg transition-all cursor-pointer"
-              onClick={() => {
-                setSelectedArtwork(artwork);
-                setImageData({
-                  url: artwork.imageUrl,
-                  generatedTitle: '',
-                  generatedDescription: '',
-                });
-                setIsEditDialogOpen(true);
-              }}
-            >
-              <div className="aspect-square mb-2 overflow-hidden rounded-lg">
-                <img
-                  src={artwork.imageUrl}
-                  alt={artwork.title}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    const img = e.target as HTMLImageElement;
-                    img.src = '/placeholder.png';
-                  }}
-                />
-              </div>
-              <h3 className="font-medium text-sm truncate">{artwork.title}</h3>
-              <p className="text-xs text-gray-600 line-clamp-1">{artwork.description}</p>
-              <p className="text-xs text-gray-600 mt-1">¥{Number(artwork.price).toLocaleString()}</p>
-              <div className="flex gap-2 mt-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 text-xs py-1"
-                  onClick={(e) => {
-                    e.stopPropagation();
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              {artworks?.map((artwork) => (
+                <div
+                  key={artwork.id}
+                  className="border p-3 rounded-lg hover:shadow-lg transition-all cursor-pointer"
+                  onClick={() => {
                     setSelectedArtwork(artwork);
                     setImageData({
                       url: artwork.imageUrl,
@@ -492,37 +448,139 @@ const AdminDashboard = () => {
                     setIsEditDialogOpen(true);
                   }}
                 >
-                  <PenLine className="w-3 h-3 mr-1" />
-                  編集
-                </Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="destructive" size="sm" className="flex-1">
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      削除
+                  <div className="aspect-square mb-2 overflow-hidden rounded-lg">
+                    <img
+                      src={artwork.imageUrl}
+                      alt={artwork.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        img.src = '/placeholder.png';
+                      }}
+                    />
+                  </div>
+                  <h3 className="font-medium text-sm truncate">{artwork.title}</h3>
+                  <p className="text-xs text-gray-600 line-clamp-1">{artwork.description}</p>
+                  <p className="text-xs text-gray-600 mt-1">¥{Number(artwork.price).toLocaleString()}</p>
+                  <div className="flex gap-2 mt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 text-xs py-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedArtwork(artwork);
+                        setImageData({
+                          url: artwork.imageUrl,
+                          generatedTitle: '',
+                          generatedDescription: '',
+                        });
+                        setIsEditDialogOpen(true);
+                      }}
+                    >
+                      <PenLine className="w-3 h-3 mr-1" />
+                      編集
                     </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>作品を削除しますか？</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        この操作は取り消せません。本当に削除してもよろしいですか？
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <div className="flex justify-end gap-4">
-                      <AlertDialogCancel>キャンセル</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => deleteArtworkMutation.mutate(artwork.id)}
-                      >
-                        削除
-                      </AlertDialogAction>
-                    </div>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button 
+                          variant="destructive" 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          削除
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>作品を削除しますか？</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            この操作は取り消せません。本当に削除してもよろしいですか？
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <div className="flex justify-end gap-4">
+                          <AlertDialogCancel>キャンセル</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => deleteArtworkMutation.mutate(artwork.id)}
+                          >
+                            削除
+                          </AlertDialogAction>
+                        </div>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        ) : (
+          <>
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold">コレクション一覧</h2>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>
+                    新規コレクションを追加
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>新規コレクションを追加</DialogTitle>
+                  </DialogHeader>
+                  <form className="space-y-4">
+                    <div>
+                      <Label htmlFor="title">タイトル</Label>
+                      <Input id="title" name="title" required />
+                    </div>
+                    <div>
+                      <Label htmlFor="description">説明</Label>
+                      <Textarea id="description" name="description" required />
+                    </div>
+                    <div>
+                      <Label htmlFor="year">年</Label>
+                      <Input id="year" name="year" type="number" required />
+                    </div>
+                    <div>
+                      <Label htmlFor="image">画像</Label>
+                      <Dropzone
+                        onFileChange={(file) => {
+                          console.log('File selected:', file);
+                        }}
+                        className="h-[200px]"
+                      />
+                    </div>
+                    <Button type="submit">作成</Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {collections?.map((collection: any) => (
+                <div
+                  key={collection.id}
+                  className="border p-4 rounded-lg hover:shadow-lg transition-all"
+                >
+                  <div className="aspect-square mb-2 overflow-hidden rounded-lg">
+                    <img
+                      src={collection.imageUrl}
+                      alt={collection.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        img.src = '/placeholder.png';
+                      }}
+                    />
+                  </div>
+                  <h3 className="font-medium">{collection.title}</h3>
+                  <p className="text-sm text-gray-600">{collection.description}</p>
+                  <p className="text-sm text-gray-500 mt-1">{collection.year}年</p>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </main>
     </div>
   );
