@@ -15,7 +15,7 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
         <Link href={`/artwork/${artwork.id}`}>
           <div className="w-full aspect-square overflow-hidden">
             <img
-              src={`/artworks/${artwork.imageUrl}`}
+              src={artwork.imageUrl}
               alt={artwork.title}
               className="w-full h-full object-cover cursor-pointer transition-transform duration-500 group-hover:scale-105"
               onError={(e) => {
@@ -48,7 +48,7 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
               保管: {artwork.storedLocation || '銀座'}
             </div>
           </div>
-          <div className="bg-white/90 px-2 py-0.5 rounded text-sm font-medium w-fit">
+          <div className="bg-white/90 px-2 py-0.5 rounded text-sm font-medium min-w-0 w-fit">
             {artwork.size?.split('(')[0] || 'F4'}
           </div>
         </div>

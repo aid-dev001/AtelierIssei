@@ -68,7 +68,7 @@ const ArtworkDetail = () => {
             <div className="space-y-8">
               <div className="relative overflow-hidden shadow-2xl bg-white group">
                 <img
-                  src={`/artworks/${artwork.imageUrl}`}
+                  src={artwork.imageUrl}
                   alt={artwork.title}
                   className="w-full object-contain transition-transform duration-500 group-hover:scale-105"
                   onError={(e) => {
