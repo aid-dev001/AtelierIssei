@@ -33,7 +33,7 @@ export const collections = pgTable("collections", {
   title: text("title").notNull(),
   description: text("description").notNull(),
   imageUrl: text("image_url").notNull().default('/artworks/placeholder.png'),
-  year: integer("year").notNull().default(() => new Date().getFullYear()),
+  year: integer("year").notNull().default(new Date().getFullYear()),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),

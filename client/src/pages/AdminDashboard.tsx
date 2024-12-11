@@ -227,36 +227,54 @@ const AdminDashboard = () => {
         throw new Error('画像URLの取得に失敗しました');
       }
 
-      let newImageUrls = [...(selectedArtwork?.interiorImageUrls || [])];
+      // Create a new array with the correct length (2 for now)
+      const currentUrls = selectedArtwork?.interiorImageUrls || [];
+      let newImageUrls = Array(2).fill(null);
+      
+      // Copy existing URLs
+      if (Array.isArray(currentUrls)) {
+        currentUrls.forEach((url: string, i: number) => {
+          if (i < 2) newImageUrls[i] = url;
+        });
+      }
+      
+      // Update the specific index
       newImageUrls[index] = data.imageUrl;
       
-      // Filter out any undefined or null values
-      newImageUrls = newImageUrls.filter(Boolean);
+      // Filter out any null values at the end
+      newImageUrls = newImageUrls.filter(url => url !== null);
 
       if (selectedArtwork) {
-        const updateData = {
-          ...selectedArtwork,
-          interiorImageUrls: newImageUrls,
-        };
-        delete updateData.id;  // Remove id from update data
-        
-        console.log('Updating artwork with data:', updateData);
-        await updateArtworkMutation.mutateAsync({
-          id: selectedArtwork.id,
-          data: updateData,
-        });
+        try {
+          console.log('Updating artwork with interior images:', newImageUrls);
+          
+          await updateArtworkMutation.mutateAsync({
+            id: selectedArtwork.id,
+            data: {
+              interiorImageUrls: newImageUrls
+            },
+          });
 
-        toast({
-          title: "インテリアイメージをアップロードしました",
-        });
+          toast({
+            title: "インテリアイメージをアップロードしました",
+          });
+        } catch (updateError) {
+          console.error('Error updating artwork with interior images:', updateError);
+          throw new Error('作品の更新に失敗しました: ' + 
+            (updateError instanceof Error ? updateError.message : '不明なエラー'));
+        }
       } else {
         setImageData(prev => ({
           ...prev,
           interiorImageUrls: newImageUrls,
         }));
+        
+        toast({
+          title: "インテリアイメージをアップロードしました",
+        });
       }
     } catch (error) {
-      console.error('Error uploading interior image:', error);
+      console.error('Error handling interior image upload:', error);
       toast({
         variant: "destructive",
         title: "インテリアイメージのアップロードに失敗しました",
