@@ -27,11 +27,16 @@ app.use('/artworks', express.static('.'));
 const MemoryStoreSession = MemoryStore(session);
 app.use(session({
   secret: 'your-secret-key',
-  resave: false,
-  saveUninitialized: false,
+  resave: true,
+  saveUninitialized: true,
   store: new MemoryStoreSession({
     checkPeriod: 86400000 // 24時間でexpire
-  })
+  }),
+  cookie: {
+    secure: false, // development環境ではfalse
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24時間
+  }
 }));
 
 app.use((req, res, next) => {

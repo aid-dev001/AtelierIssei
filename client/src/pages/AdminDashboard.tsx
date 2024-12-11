@@ -28,16 +28,36 @@ const AdminDashboard = () => {
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
-  const { data: artworks, isLoading } = useQuery<Artwork[]>({
+  const { data: artworks, isLoading, error } = useQuery<Artwork[]>({
     queryKey: [`${adminPath}/artworks`],
     queryFn: async () => {
-      const response = await fetch(`${adminPath}/artworks`);
-      if (!response.ok) {
-        throw new Error('Unauthorized');
+      try {
+        const response = await fetch(`${adminPath}/artworks`);
+        if (!response.ok) {
+          if (response.status === 401) {
+            setLocation(adminPath);
+            throw new Error('セッションが切れました。再度ログインしてください。');
+          }
+          throw new Error('データの取得に失敗しました');
+        }
+        return response.json();
+      } catch (error) {
+        console.error('Error fetching artworks:', error);
+        if (error instanceof Error && error.message.includes('セッション')) {
+          throw error;
+        }
+        throw new Error('データの取得中にエラーが発生しました');
       }
-      return response.json();
     },
   });
+
+  if (error) {
+    toast({
+      variant: "destructive",
+      title: "エラー",
+      description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+    });
+  }
 
   const createArtworkMutation = useMutation({
     mutationFn: async (formData: FormData) => {
