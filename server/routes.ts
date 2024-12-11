@@ -181,13 +181,19 @@ export default function setupRoutes(app: express.Express) {
 
       const imageUrl = `/artworks/${req.file.filename}`;
       const artworkData = {
-        ...req.body,
-        imageUrl,
+        title: req.body.title,
+        description: req.body.description,
+        price: req.body.price,
+        size: req.body.size,
+        status: req.body.status,
+        createdLocation: req.body.createdLocation,
+        storedLocation: req.body.storedLocation,
+        imageUrl: req.body.imageUrl || imageUrl,
         updatedAt: new Date(),
       };
 
-      const artwork = await db.insert(artworks).values(artworkData);
-      res.json({ ...artwork, imageUrl });
+      await db.insert(artworks).values(artworkData);
+      res.json({ success: true, ...artworkData });
     } catch (error) {
       console.error("Error creating artwork:", error);
       res.status(500).json({ error: "作品の作成に失敗しました" });

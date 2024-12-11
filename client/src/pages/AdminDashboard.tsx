@@ -26,7 +26,16 @@ const AdminDashboard = () => {
 
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    title: string;
+    description: string;
+    imageUrl: string;
+    price: string;
+    size: string;
+    status: string;
+    createdLocation: string;
+    storedLocation: string;
+  }>({
     title: '',
     description: '',
     imageUrl: '',
@@ -69,10 +78,10 @@ const AdminDashboard = () => {
   }
 
   const createArtworkMutation = useMutation({
-    mutationFn: async (formData: FormData) => {
+    mutationFn: async (artworkData: FormData) => {
       const response = await fetch(`${adminPath}/artworks`, {
         method: 'POST',
-        body: formData,
+        body: artworkData,
       });
       if (!response.ok) {
         const error = await response.text();
@@ -161,19 +170,16 @@ const AdminDashboard = () => {
         await updateArtworkMutation.mutateAsync(artworkData);
       } else {
         // 新規作成の場合
-        const submitFormData = new FormData();
-        const fileInput = e.currentTarget.querySelector('input[type="file"]') as HTMLInputElement;
-        const file = fileInput?.files?.[0];
-
-        if (!file) {
+        if (!formData.imageUrl) {
           toast({
             variant: "destructive",
-            title: "画像を選択してください",
+            title: "画像をアップロードしてください",
           });
           return;
         }
 
-        submitFormData.append('image', file);
+        const submitFormData = new FormData();
+        submitFormData.append('imageUrl', formData.imageUrl);
         submitFormData.append('title', formData.title);
         submitFormData.append('description', formData.description);
         submitFormData.append('price', e.currentTarget.price.value);
@@ -184,19 +190,6 @@ const AdminDashboard = () => {
 
         await createArtworkMutation.mutateAsync(submitFormData);
       }
-
-      // 成功したらフォームをリセット
-      setFormData({
-        title: '',
-        description: '',
-        imageUrl: '',
-        price: '',
-        size: '',
-        status: 'available',
-        createdLocation: '銀座',
-        storedLocation: '銀座'
-      });
-      
     } catch (error) {
       console.error('Form submission error:', error);
       toast({
@@ -207,69 +200,69 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleFileChange = async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      toast({
+        title: "画像をアップロード中...",
+        description: "AIによる説明文の生成を開始します",
+      });
+
+      const response = await fetch(`${adminPath}/generate-description`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || '説明文の生成に失敗しました');
+      }
+
+      const data = await response.json();
+      console.log('Generated data:', data);
+
+      if (!data.title || !data.description || !data.imageUrl) {
+        throw new Error('タイトルまたは説明文の生成に失敗しました');
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        title: data.title,
+        description: data.description,
+        imageUrl: data.imageUrl
+      }));
+
+      toast({
+        title: "作品の説明を生成しました",
+        description: "生成されたタイトルと説明文を確認・編集してください",
+      });
+    } catch (error) {
+      console.error('Error generating description:', error);
+      if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          title: "説明の生成に失敗しました",
+          description: `エラー詳細: ${error.message}`,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "説明の生成に失敗しました",
+          description: "AIによる説明文の生成に失敗しました。手動で入力してください",
+        });
+      }
+    }
+  };
+
   const ArtworkForm = () => (
     <form onSubmit={handleSubmit} className="space-y-8">
       <div className="space-y-4">
         <Label htmlFor="image">作品画像</Label>
         <Dropzone
           existingImageUrl={formData.imageUrl || selectedArtwork?.imageUrl}
-          onFileChange={async (file) => {
-            try {
-              const formData = new FormData();
-              formData.append('image', file);
-
-              toast({
-                title: "画像をアップロード中...",
-                description: "AIによる説明文の生成を開始します",
-              });
-
-              const response = await fetch(`${adminPath}/generate-description`, {
-                method: 'POST',
-                body: formData,
-              });
-
-              if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || '説明文の生成に失敗しました');
-              }
-
-              const data = await response.json();
-              console.log('Generated data:', data);
-
-              if (!data.title || !data.description) {
-                throw new Error('タイトルまたは説明文の生成に失敗しました');
-              }
-
-              // フォーム要素を直接取得せず、React的な方法で値を更新
-              // フォームデータを更新
-              setFormData(prev => ({
-                ...prev,
-                title: data.title,
-                description: data.description,
-                imageUrl: data.imageUrl
-              }));
-
-              toast({
-                title: "作品の説明を生成しました",
-                description: "生成されたタイトルと説明文を確認・編集してください",
-              });
-            } catch (error) {
-              console.error('Error generating description:', error);
-              if (error instanceof Error) {
-                toast({
-                  variant: "destructive",
-                  title: "説明の生成に失敗しました",
-                  description: `エラー詳細: ${error.message}`,
-                });
-              } else {
-                toast({
-                  variant: "destructive",
-                  title: "説明の生成に失敗しました",
-                  description: "AIによる説明文の生成に失敗しました。手動で入力してください",
-                });
-              }
-            }
-          }}
+          onFileChange={handleFileChange}
           className="h-[200px]"
         />
       </div>
@@ -279,19 +272,7 @@ const AdminDashboard = () => {
           id="title"
           name="title"
           value={formData.title || selectedArtwork?.title || ''}
-          onChange={(e) => {
-            if (!e.target.getAttribute('composing')) {
-              setFormData(prev => ({ ...prev, title: e.target.value }));
-            }
-          }}
-          onCompositionStart={(e) => {
-            e.currentTarget.setAttribute('composing', 'true');
-          }}
-          onCompositionEnd={(e) => {
-            e.currentTarget.removeAttribute('composing');
-            const value = e.currentTarget.value;
-            setFormData(prev => ({ ...prev, title: value }));
-          }}
+          onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
           required
         />
       </div>
@@ -301,19 +282,7 @@ const AdminDashboard = () => {
           id="description"
           name="description"
           value={formData.description || selectedArtwork?.description || ''}
-          onChange={(e) => {
-            if (!e.target.getAttribute('composing')) {
-              setFormData(prev => ({ ...prev, description: e.target.value }));
-            }
-          }}
-          onCompositionStart={(e) => {
-            e.currentTarget.setAttribute('composing', 'true');
-          }}
-          onCompositionEnd={(e) => {
-            e.currentTarget.removeAttribute('composing');
-            const value = e.currentTarget.value;
-            setFormData(prev => ({ ...prev, description: value }));
-          }}
+          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
           required
         />
       </div>
@@ -402,6 +371,16 @@ const AdminDashboard = () => {
               <Button
                 onClick={() => {
                   setSelectedArtwork(null);
+                  setFormData({
+                    title: '',
+                    description: '',
+                    imageUrl: '',
+                    price: '',
+                    size: '',
+                    status: 'available',
+                    createdLocation: '銀座',
+                    storedLocation: '銀座'
+                  });
                   setIsEditDialogOpen(true);
                 }}
               >
@@ -445,6 +424,16 @@ const AdminDashboard = () => {
                   className="flex-1"
                   onClick={() => {
                     setSelectedArtwork(artwork);
+                    setFormData({
+                      title: artwork.title,
+                      description: artwork.description,
+                      imageUrl: artwork.imageUrl,
+                      price: artwork.price.toString(),
+                      size: artwork.size || '',
+                      status: artwork.status,
+                      createdLocation: artwork.createdLocation,
+                      storedLocation: artwork.storedLocation
+                    });
                     setIsEditDialogOpen(true);
                   }}
                 >
