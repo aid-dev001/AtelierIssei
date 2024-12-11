@@ -31,7 +31,7 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
     // OpenAI APIにリクエストを送信
     console.log('Sending request to OpenAI API...');
     const openaiResponse = await openai.chat.completions.create({
-      model: "gpt-4-vision",
+      model: "gpt-4-vision-preview",
       messages: [
         {
           role: "user",
@@ -49,7 +49,7 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
           ],
         },
       ],
-      max_tokens: 1000,
+      max_tokens: 300,
     });
 
     if (!openaiResponse.choices?.[0]?.message?.content) {
@@ -91,17 +91,13 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
   } catch (error) {
     console.error('Error in generateArtworkDescription:', error);
     if (error instanceof Error) {
-      // OpenAIのエラーをより詳細に処理
-      if (error instanceof Error) {
-        if (error.message.includes('API')) {
-          throw new Error(`OpenAI APIエラー: ${error.message}`);
-        }
-        if (error.message.includes('deprecated')) {
-          throw new Error('OpenAIのモデルが更新されました。システム管理者に連絡してください。');
-        }
-        throw new Error(`画像処理エラー: ${error.message}`);
+      if (error.message.includes('API')) {
+        throw new Error(`OpenAI APIエラー: ${error.message}`);
       }
-      throw new Error('予期せぬエラーが発生しました');
+      if (error.message.includes('deprecated')) {
+        throw new Error('OpenAIのモデルが更新されました。システム管理者に連絡してください。');
+      }
+      throw new Error(`画像処理エラー: ${error.message}`);
     }
     throw new Error('予期せぬエラーが発生しました');
   }

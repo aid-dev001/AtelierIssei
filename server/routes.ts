@@ -15,7 +15,7 @@ import {
   contacts,
   adminUsers,
 } from "@db/schema";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 
 // Configure multer for handling file uploads
 const storage = multer.diskStorage({
@@ -52,7 +52,7 @@ export default function setupRoutes(app: express.Express) {
   app.get("/api/artworks", async (req, res) => {
     try {
       const allArtworks = await db.query.artworks.findMany({
-        orderBy: (artworks) => artworks.createdAt,
+        orderBy: (artworks) => desc(artworks.updatedAt),
       });
       res.json(allArtworks);
     } catch (error) {
@@ -106,7 +106,7 @@ export default function setupRoutes(app: express.Express) {
   app.get(`/admin/${ADMIN_URL_PATH}/artworks`, requireAdmin, async (req, res) => {
     try {
       const allArtworks = await db.query.artworks.findMany({
-        orderBy: (artworks) => artworks.createdAt,
+        orderBy: (artworks) => desc(artworks.updatedAt),
       });
       res.json(allArtworks);
     } catch (error) {
@@ -183,6 +183,7 @@ export default function setupRoutes(app: express.Express) {
       const artworkData = {
         ...req.body,
         imageUrl,
+        updatedAt: new Date(),
       };
 
       const artwork = await db.insert(artworks).values(artworkData);
@@ -198,7 +199,7 @@ export default function setupRoutes(app: express.Express) {
     try {
       const { id, ...updateData } = req.body;
       await db.update(artworks)
-        .set(updateData)
+        .set({ ...updateData, updatedAt: new Date() })
         .where(eq(artworks.id, parseInt(req.params.id)));
       
       const updatedArtwork = await db.query.artworks.findFirst({
