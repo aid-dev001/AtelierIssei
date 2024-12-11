@@ -64,6 +64,7 @@ export default function setupRoutes(app: express.Express) {
     }
   });
 
+  // Collections CRUD endpoints
   app.get("/api/collections", async (req, res) => {
     try {
       const allCollections = await db.query.collections.findMany({
@@ -73,6 +74,58 @@ export default function setupRoutes(app: express.Express) {
     } catch (error) {
       console.error("Failed to fetch collections:", error);
       res.status(500).json({ error: "コレクションの取得に失敗しました" });
+    }
+  });
+
+  app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "画像がアップロードされていません" });
+      }
+
+      const imageUrl = `/artworks/${req.file.filename}`;
+      const collectionData = {
+        title: req.body.title,
+        description: req.body.description,
+        imageUrl,
+        year: parseInt(req.body.year),
+        isActive: true,
+      };
+
+      await db.insert(collections).values(collectionData);
+      res.json({ success: true, ...collectionData });
+    } catch (error) {
+      console.error("Error creating collection:", error);
+      res.status(500).json({ error: "コレクションの作成に失敗しました" });
+    }
+  });
+
+  app.put(`/admin/${ADMIN_URL_PATH}/collections/:id`, requireAdmin, async (req, res) => {
+    try {
+      const { id, ...updateData } = req.body;
+      await db.update(collections)
+        .set({ ...updateData, updatedAt: new Date() })
+        .where(eq(collections.id, parseInt(req.params.id)));
+      
+      const updatedCollection = await db.query.collections.findFirst({
+        where: eq(collections.id, parseInt(req.params.id)),
+      });
+      
+      res.json(updatedCollection);
+    } catch (error) {
+      console.error("Error updating collection:", error);
+      res.status(500).json({ error: "コレクションの更新に失敗しました" });
+    }
+  });
+
+  app.delete(`/admin/${ADMIN_URL_PATH}/collections/:id`, requireAdmin, async (req, res) => {
+    try {
+      await db.delete(collections)
+        .where(eq(collections.id, parseInt(req.params.id)));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting collection:", error);
+      res.status(500).json({ error: "コレクションの削除に失敗しました" });
     }
   });
 

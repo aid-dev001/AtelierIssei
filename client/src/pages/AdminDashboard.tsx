@@ -356,9 +356,51 @@ const AdminDashboard = () => {
     return <div>Loading...</div>;
   }
 
+  const [activeTab, setActiveTab] = useState<'artworks' | 'collections'>('artworks');
+
+  const handleTabChange = (tab: 'artworks' | 'collections') => {
+    setActiveTab(tab);
+  };
+
   return (
     <div className="space-y-8">
       <header className="bg-gray-50/80 p-6 rounded-lg sticky top-0 z-50 shadow-sm">
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-between items-center">
+            <h1 className="text-3xl font-bold">管理者ダッシュボード</h1>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setLocation(adminPath);
+              }}
+              className="text-gray-600 hover:text-gray-900"
+            >
+              ログアウト
+            </Button>
+          </div>
+          <div className="flex gap-4 border-b">
+            <button
+              className={`px-4 py-2 font-medium ${
+                activeTab === 'artworks'
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              onClick={() => handleTabChange('artworks')}
+            >
+              作品管理
+            </button>
+            <button
+              className={`px-4 py-2 font-medium ${
+                activeTab === 'collections'
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              onClick={() => handleTabChange('collections')}
+            >
+              コレクション管理
+            </button>
+          </div>
+        </div>
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">管理者ダッシュボード</h1>
           <Button

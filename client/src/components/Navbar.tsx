@@ -89,23 +89,24 @@ const Navbar = () => {
         )}
       >
         <div className="pt-20 px-6">
-          <div className="space-y-6">
+          <nav className="space-y-6">
             {links.map(({ href, label }) => (
-              <ScrollToTopLink
-                key={href}
-                href={href}
-                className="block text-lg tracking-wider py-2 border-b border-gray-100 relative group"
-                onClick={closeMenu}
-              >
-                <span className="relative inline-block w-full">
-                  <span className="relative z-10 transition-colors duration-300 ease-out group-hover:text-primary">
-                    {label}
+              <div key={href} className="block relative group">
+                <ScrollToTopLink
+                  to={href}
+                  className="block text-lg tracking-wider py-2 border-b border-gray-100"
+                  onClick={closeMenu}
+                >
+                  <span className="relative inline-block w-full">
+                    <span className="relative z-10 transition-colors duration-300 ease-out group-hover:text-primary">
+                      {label}
+                    </span>
+                    <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary/80 origin-left transform scale-x-0 transition-all duration-300 ease-out group-hover:scale-x-100" />
                   </span>
-                  <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary/80 origin-left transform scale-x-0 transition-all duration-300 ease-out group-hover:scale-x-100" />
-                </span>
-              </ScrollToTopLink>
+                </ScrollToTopLink>
+              </div>
             ))}
-          </div>
+          </nav>
         </div>
       </div>
     </nav>
