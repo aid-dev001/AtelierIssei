@@ -110,26 +110,36 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
           onChange={handleFileInput}
         />
         {preview ? (
-          <div className="relative aspect-square w-full overflow-hidden rounded-lg">
+          <div className="relative aspect-square w-full overflow-hidden rounded-lg group">
             <img
               src={preview}
               alt="Preview"
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
-            <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity hover:opacity-100">
-              <p className="text-sm text-white">クリックまたはドラッグ＆ドロップで画像を変更</p>
+            <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-all duration-300 group-hover:opacity-100">
+              <div className="text-center space-y-2 px-4">
+                <p className="text-sm text-white font-medium">クリックまたはドラッグ＆ドロップで画像を変更</p>
+                <p className="text-xs text-white/80">推奨サイズ: 1200 x 1200px</p>
+              </div>
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center space-y-2 text-center">
-            <UploadCloud className="h-8 w-8 text-gray-400" />
-            <div className="space-y-1">
-              <p className="text-sm font-medium">
+          <div className="flex flex-col items-center justify-center space-y-4 text-center group">
+            <div className="p-6 rounded-full bg-primary/5 group-hover:bg-primary/10 transition-colors duration-300">
+              <UploadCloud className="h-10 w-10 text-primary/60 group-hover:text-primary/80 transition-colors duration-300" />
+            </div>
+            <div className="space-y-2">
+              <p className="text-base font-medium text-gray-700">
                 クリックまたはドラッグ＆ドロップで画像をアップロード
               </p>
-              <p className="text-xs text-gray-500">
-                5MB以下のJPG、PNG、GIF形式の画像ファイル
-              </p>
+              <div className="space-y-1">
+                <p className="text-sm text-gray-500">
+                  推奨サイズ: 1200 x 1200px
+                </p>
+                <p className="text-xs text-gray-400">
+                  5MB以下のJPG、PNG、GIF形式の画像ファイル
+                </p>
+              </div>
             </div>
           </div>
         )}
