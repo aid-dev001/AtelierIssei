@@ -313,6 +313,7 @@ export default function setupRoutes(app: express.Express) {
         exhibitionLocation: updateData.exhibitionLocation,
         isAvailable: updateData.isAvailable,
         collectionId: updateData.collectionId,
+        interiorImageDescriptions: updateData.interiorImageDescriptions,
         updatedAt: new Date(),
       };
 

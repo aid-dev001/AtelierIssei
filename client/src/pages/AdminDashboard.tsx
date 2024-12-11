@@ -205,22 +205,40 @@ const AdminDashboard = () => {
     try {
       if (!selectedArtwork) return;
 
-      const currentDescriptions = selectedArtwork.interiorImageDescriptions || [];
-      let newDescriptions = Array(2).fill('');
+      // Create a new array with at least 2 elements
+      const newDescriptions: string[] = Array(Math.max(2, index + 1)).fill('');
       
-      if (Array.isArray(currentDescriptions)) {
-        currentDescriptions.forEach((desc: string, i: number) => {
-          if (i < 2) newDescriptions[i] = desc;
+      // Copy existing descriptions if any
+      if (selectedArtwork.interiorImageDescriptions) {
+        selectedArtwork.interiorImageDescriptions.forEach((desc, i) => {
+          if (desc) newDescriptions[i] = desc;
         });
       }
-      
+
+      // Update the description at the specified index
       newDescriptions[index] = description;
+
+      console.log('Updating artwork with descriptions:', newDescriptions);
       
+      const updateData = {
+        interiorImageDescriptions: newDescriptions,
+        updatedAt: new Date(),
+      };
+
       await updateArtworkMutation.mutateAsync({
         id: selectedArtwork.id,
-        data: {
-          interiorImageDescriptions: newDescriptions.filter(desc => desc !== '')
-        },
+        data: updateData,
+      });
+
+      // Update the local state with type safety
+      setSelectedArtwork((prev) => {
+        if (!prev) return null;
+        const updated = {
+          ...prev,
+          interiorImageDescriptions: newDescriptions,
+          updatedAt: new Date(),
+        };
+        return updated;
       });
 
       toast({
@@ -471,8 +489,11 @@ const AdminDashboard = () => {
             />
             <Textarea
               placeholder="1枚目の説明文"
-              value={selectedArtwork?.interiorImageDescriptions?.[0] || ''}
-              onChange={(e) => handleInteriorDescriptionChange(0, e.target.value)}
+              value={selectedArtwork?.interiorImageDescriptions?.[0] ?? ''}
+              onChange={(e) => {
+                const value = e.target.value;
+                handleInteriorDescriptionChange(0, value);
+              }}
               className="h-20 resize-none"
             />
           </div>
@@ -484,8 +505,11 @@ const AdminDashboard = () => {
             />
             <Textarea
               placeholder="2枚目の説明文"
-              value={selectedArtwork?.interiorImageDescriptions?.[1] || ''}
-              onChange={(e) => handleInteriorDescriptionChange(1, e.target.value)}
+              value={selectedArtwork?.interiorImageDescriptions?.[1] ?? ''}
+              onChange={(e) => {
+                const value = e.target.value;
+                handleInteriorDescriptionChange(1, value);
+              }}
               className="h-20 resize-none"
             />
           </div>
