@@ -150,20 +150,44 @@ const AdminDashboard = () => {
           required
         />
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="image">画像</Label>
-        <Input
-          id="image"
-          name="image"
-          type="file"
-          accept="image/*"
-          required={!selectedArtwork}
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) {
-              // TODO: ここでOpenAI APIを使用して画像の説明を生成する
+      <div className="space-y-4">
+        <Label>作品画像</Label>
+        <Dropzone
+          onFileChange={async (file) => {
+            try {
+              // 画像をフォームデータとしてアップロード
+              const formData = new FormData();
+              formData.append('image', file);
+
+              const response = await fetch(`${adminPath}/generate-description`, {
+                method: 'POST',
+                body: formData,
+              });
+
+              if (!response.ok) throw new Error('Failed to generate description');
+
+              const data = await response.json();
+              
+              // フォームの値を自動設定
+              const titleInput = document.querySelector<HTMLInputElement>('input[name="title"]');
+              const descriptionInput = document.querySelector<HTMLTextAreaElement>('textarea[name="description"]');
+              
+              if (titleInput) titleInput.value = data.title;
+              if (descriptionInput) descriptionInput.value = data.description;
+
+              toast({
+                title: "作品の説明を生成しました",
+                description: "タイトルと説明文を確認・編集してください",
+              });
+            } catch (error) {
+              toast({
+                variant: "destructive",
+                title: "説明の生成に失敗しました",
+                description: "手動で入力してください",
+              });
             }
           }}
+          className="h-[200px]"
         />
       </div>
       <div className="space-y-2">

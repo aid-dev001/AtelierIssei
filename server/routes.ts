@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { generateArtworkDescription } from './openai';
 import { db } from "../db";
 import { ADMIN_URL_PATH, requireAdmin } from "./admin";
 import { 
@@ -208,6 +209,25 @@ export default function setupRoutes(app: Express) {
     } catch (error) {
       console.error("Failed to fetch artworks:", error);
       res.status(500).json({ error: "Failed to fetch artworks" });
+  app.post(`/admin/${ADMIN_URL_PATH}/generate-description`, requireAdmin, upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No image uploaded" });
+      }
+
+      // 画像のURLを生成（一時的なパス）
+      const imageUrl = `${req.protocol}://${req.get('host')}/artworks/${req.file.filename}`;
+      
+      // OpenAI APIを使用して説明を生成
+      const { title, description } = await generateArtworkDescription(imageUrl);
+      
+      res.json({ title, description });
+    } catch (error) {
+      console.error("Error generating description:", error);
+      res.status(500).json({ error: "Failed to generate description" });
+    }
+  });
+
     }
   });
 
