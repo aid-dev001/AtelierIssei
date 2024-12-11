@@ -8,8 +8,8 @@ import { adminUsers } from "@db/schema";
 export const ADMIN_URL_PATH = "6f4e2d1c3b8a9f7e5d2c1b4a8f7e3d2c1b4a8f7e3d2c1b4a8f7e3d2c1b4a8f";
 
 // Fixed admin credentials
-const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD = 'admin123';
+const ADMIN_USERNAME = 'admin_dae63fa78d78a44b';
+const ADMIN_PASSWORD = 'gq+qhZZx7Tt06r1FDiI2QQ==';
 
 // Hash the password for storage
 const ADMIN_PASSWORD_HASH = bcrypt.hashSync(ADMIN_PASSWORD, 10);

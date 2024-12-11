@@ -150,6 +150,32 @@ export default function setupRoutes(app: Express) {
     }
   });
 
+  app.put(`/admin/${ADMIN_URL_PATH}/artworks/:id`, requireAdmin, async (req, res) => {
+    try {
+      await db.update(artworks)
+        .set(req.body)
+        .where(eq(artworks.id, parseInt(req.params.id)));
+      
+      const updatedArtwork = await db.query.artworks.findFirst({
+        where: eq(artworks.id, parseInt(req.params.id)),
+      });
+      
+      res.json(updatedArtwork);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update artwork" });
+    }
+  });
+
+  app.delete(`/admin/${ADMIN_URL_PATH}/artworks/:id`, requireAdmin, async (req, res) => {
+    try {
+      await db.delete(artworks)
+        .where(eq(artworks.id, parseInt(req.params.id)));
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete artwork" });
+    }
+  });
+
   // Exhibition routes
   app.get(`/admin/${ADMIN_URL_PATH}/exhibitions`, requireAdmin, async (req, res) => {
     try {
