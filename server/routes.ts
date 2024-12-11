@@ -12,11 +12,12 @@ export default function setupRoutes(app: Express) {
   // Public API routes
   app.get("/api/artworks", async (req, res) => {
     try {
-      const allArtworks = await db.query.artworks.findMany({
-        orderBy: (artworks) => artworks.createdAt,
-      });
-      res.json(allArtworks);
+      const result = await db.execute(
+        "SELECT * FROM artworks ORDER BY created_at DESC"
+      );
+      res.json(result.rows);
     } catch (error) {
+      console.error("Failed to fetch artworks:", error);
       res.status(500).json({ error: "Failed to fetch artworks" });
     }
   });
