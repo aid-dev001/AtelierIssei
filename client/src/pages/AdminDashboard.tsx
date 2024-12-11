@@ -201,6 +201,41 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleInteriorDescriptionChange = async (index: number, description: string) => {
+    try {
+      if (!selectedArtwork) return;
+
+      const currentDescriptions = selectedArtwork.interiorImageDescriptions || [];
+      let newDescriptions = Array(2).fill('');
+      
+      if (Array.isArray(currentDescriptions)) {
+        currentDescriptions.forEach((desc: string, i: number) => {
+          if (i < 2) newDescriptions[i] = desc;
+        });
+      }
+      
+      newDescriptions[index] = description;
+      
+      await updateArtworkMutation.mutateAsync({
+        id: selectedArtwork.id,
+        data: {
+          interiorImageDescriptions: newDescriptions.filter(desc => desc !== '')
+        },
+      });
+
+      toast({
+        title: "説明文を更新しました",
+      });
+    } catch (error) {
+      console.error('Error updating interior image description:', error);
+      toast({
+        variant: "destructive",
+        title: "説明文の更新に失敗しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+      });
+    }
+  };
+
   const handleInteriorImageUpload = async (file: File, index: number) => {
     try {
       const formData = new FormData();
@@ -428,16 +463,32 @@ const AdminDashboard = () => {
       <div className="space-y-4">
         <Label>インテリアイメージ</Label>
         <div className="grid grid-cols-2 gap-4">
-          <Dropzone
-            existingImageUrl={selectedArtwork?.interiorImageUrls?.[0]}
-            onFileChange={(file) => handleInteriorImageUpload(file, 0)}
-            className="h-[150px]"
-          />
-          <Dropzone
-            existingImageUrl={selectedArtwork?.interiorImageUrls?.[1]}
-            onFileChange={(file) => handleInteriorImageUpload(file, 1)}
-            className="h-[150px]"
-          />
+          <div className="space-y-2">
+            <Dropzone
+              existingImageUrl={selectedArtwork?.interiorImageUrls?.[0]}
+              onFileChange={(file) => handleInteriorImageUpload(file, 0)}
+              className="h-[150px]"
+            />
+            <Textarea
+              placeholder="1枚目の説明文"
+              value={selectedArtwork?.interiorImageDescriptions?.[0] || ''}
+              onChange={(e) => handleInteriorDescriptionChange(0, e.target.value)}
+              className="h-20 resize-none"
+            />
+          </div>
+          <div className="space-y-2">
+            <Dropzone
+              existingImageUrl={selectedArtwork?.interiorImageUrls?.[1]}
+              onFileChange={(file) => handleInteriorImageUpload(file, 1)}
+              className="h-[150px]"
+            />
+            <Textarea
+              placeholder="2枚目の説明文"
+              value={selectedArtwork?.interiorImageDescriptions?.[1] || ''}
+              onChange={(e) => handleInteriorDescriptionChange(1, e.target.value)}
+              className="h-20 resize-none"
+            />
+          </div>
         </div>
       </div>
       <div className="space-y-2">

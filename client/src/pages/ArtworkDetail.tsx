@@ -117,18 +117,25 @@ const ArtworkDetail = () => {
               <div className="space-y-6">
                 <h2 className="text-2xl font-bold tracking-wide text-gray-800/90">インテリアイメージ</h2>
                 <div className="grid grid-cols-2 gap-6">
-                    {artwork.interiorImageUrls && artwork.interiorImageUrls.length > 0 ? (
-                      artwork.interiorImageUrls.map((url, index) => (
-                        <div key={index} className="relative group">
-                          <img
-                            src={url}
-                            alt={`${artwork.title} - Interior View ${index + 1}`}
-                            className="w-full aspect-[4/3] object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105"
-                            onError={(e) => {
-                              const img = e.target as HTMLImageElement;
-                              img.src = '/placeholder.png';
-                            }}
-                          />
+                    {artwork.interiorImageUrls && Array.isArray(artwork.interiorImageUrls) && artwork.interiorImageUrls.length > 0 ? (
+                      artwork.interiorImageUrls.map((url: string, index: number) => (
+                        <div key={index} className="space-y-2">
+                          <div className="relative group">
+                            <img
+                              src={url}
+                              alt={`${artwork.title} - Interior View ${index + 1}`}
+                              className="w-full aspect-[4/3] object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105"
+                              onError={(e) => {
+                                const img = e.target as HTMLImageElement;
+                                img.src = '/placeholder.png';
+                              }}
+                            />
+                          </div>
+                          {artwork.interiorImageDescriptions?.[index] && (
+                            <p className="text-sm text-gray-600 leading-relaxed">
+                              {artwork.interiorImageDescriptions[index]}
+                            </p>
+                          )}
                         </div>
                       ))
                     ) : (
