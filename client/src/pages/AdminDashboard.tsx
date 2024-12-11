@@ -170,7 +170,7 @@ const AdminDashboard = () => {
         await updateArtworkMutation.mutateAsync(artworkData);
       } else {
         // 新規作成の場合
-        if (!formData.imageUrl) {
+        if (!formData.imageUrl && !selectedArtwork) {
           toast({
             variant: "destructive",
             title: "画像をアップロードしてください",
@@ -179,7 +179,9 @@ const AdminDashboard = () => {
         }
 
         const submitFormData = new FormData();
-        submitFormData.append('imageUrl', formData.imageUrl);
+        if (formData.imageUrl) {
+          submitFormData.append('image', await (await fetch(formData.imageUrl)).blob());
+        }
         submitFormData.append('title', formData.title);
         submitFormData.append('description', formData.description);
         submitFormData.append('price', e.currentTarget.price.value);
@@ -271,7 +273,7 @@ const AdminDashboard = () => {
         <Input
           id="title"
           name="title"
-          value={formData.title || selectedArtwork?.title || ''}
+          defaultValue={formData.title || selectedArtwork?.title || ''}
           onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
           required
         />
@@ -281,7 +283,7 @@ const AdminDashboard = () => {
         <Textarea
           id="description"
           name="description"
-          value={formData.description || selectedArtwork?.description || ''}
+          defaultValue={formData.description || selectedArtwork?.description || ''}
           onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
           required
         />
