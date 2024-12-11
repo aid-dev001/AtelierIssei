@@ -529,27 +529,34 @@ const AdminDashboard = () => {
                   <DialogHeader>
                     <DialogTitle>新規コレクションを追加</DialogTitle>
                   </DialogHeader>
-                  <form className="space-y-4">
+                  <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.currentTarget);
+                    try {
+                      const response = await fetch(`${adminPath}/collections`, {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          title: formData.get('title'),
+                        }),
+                      });
+                      if (!response.ok) throw new Error('コレクションの作成に失敗しました');
+                      queryClient.invalidateQueries({ queryKey: [`${adminPath}/collections`] });
+                      toast({ title: "コレクションを作成しました" });
+                      (e.target as HTMLFormElement).reset();
+                    } catch (error) {
+                      toast({ 
+                        variant: "destructive", 
+                        title: "エラー",
+                        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+                      });
+                    }
+                  }} className="space-y-4">
                     <div>
                       <Label htmlFor="title">タイトル</Label>
                       <Input id="title" name="title" required />
-                    </div>
-                    <div>
-                      <Label htmlFor="description">説明</Label>
-                      <Textarea id="description" name="description" required />
-                    </div>
-                    <div>
-                      <Label htmlFor="year">年</Label>
-                      <Input id="year" name="year" type="number" required />
-                    </div>
-                    <div>
-                      <Label htmlFor="image">画像</Label>
-                      <Dropzone
-                        onFileChange={(file) => {
-                          console.log('File selected:', file);
-                        }}
-                        className="h-[200px]"
-                      />
                     </div>
                     <Button type="submit">作成</Button>
                   </form>
