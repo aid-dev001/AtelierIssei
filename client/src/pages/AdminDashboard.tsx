@@ -227,7 +227,19 @@ const AdminDashboard = () => {
           id="title"
           name="title"
           value={formData.title || selectedArtwork?.title || ''}
-          onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (!e.target.getAttribute('composing')) {
+              setFormData(prev => ({ ...prev, title: value }));
+            }
+          }}
+          onCompositionStart={(e) => {
+            e.currentTarget.setAttribute('composing', 'true');
+          }}
+          onCompositionEnd={(e) => {
+            e.currentTarget.removeAttribute('composing');
+            setFormData(prev => ({ ...prev, title: e.currentTarget.value }));
+          }}
           required
         />
       </div>
@@ -237,7 +249,19 @@ const AdminDashboard = () => {
           id="description"
           name="description"
           value={formData.description || selectedArtwork?.description || ''}
-          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (!e.target.getAttribute('composing')) {
+              setFormData(prev => ({ ...prev, description: value }));
+            }
+          }}
+          onCompositionStart={(e) => {
+            e.currentTarget.setAttribute('composing', 'true');
+          }}
+          onCompositionEnd={(e) => {
+            e.currentTarget.removeAttribute('composing');
+            setFormData(prev => ({ ...prev, description: e.currentTarget.value }));
+          }}
           required
         />
       </div>
