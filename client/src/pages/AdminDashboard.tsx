@@ -172,16 +172,32 @@ const AdminDashboard = () => {
               }
 
               const data = await response.json();
+              console.log('Generated data:', data);
 
               if (!data.title || !data.description) {
                 throw new Error('タイトルまたは説明文の生成に失敗しました');
               }
 
-              const titleInput = document.querySelector<HTMLInputElement>('input[name="title"]');
-              const descriptionInput = document.querySelector<HTMLTextAreaElement>('textarea[name="description"]');
-              
-              if (titleInput) titleInput.value = data.title;
-              if (descriptionInput) descriptionInput.value = data.description;
+              // フォーム要素を直接取得せず、React的な方法で値を更新
+              const form = document.querySelector('form') as HTMLFormElement;
+              if (form) {
+                const titleInput = form.querySelector('input[name="title"]') as HTMLInputElement;
+                const descriptionInput = form.querySelector('textarea[name="description"]') as HTMLTextAreaElement;
+                
+                if (titleInput) titleInput.value = data.title;
+                if (descriptionInput) descriptionInput.value = data.description;
+
+                // イベントをディスパッチしてReactに変更を通知
+                titleInput?.dispatchEvent(new Event('input', { bubbles: true }));
+                descriptionInput?.dispatchEvent(new Event('input', { bubbles: true }));
+              }
+
+              // アップロードされた画像のプレビューを表示
+              const previewImg = document.querySelector('.dropzone-preview') as HTMLImageElement;
+              if (previewImg && data.imageUrl) {
+                previewImg.src = data.imageUrl;
+                previewImg.style.display = 'block';
+              }
 
               toast({
                 title: "作品の説明を生成しました",
