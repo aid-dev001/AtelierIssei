@@ -12,7 +12,15 @@ const Artworks = () => {
   const [page, setPage] = useState(1);
   const { data: artworks, isLoading } = useQuery<Artwork[]>({
     queryKey: ["artworks"],
-    queryFn: () => fetch("/api/artworks").then(res => res.json()),
+    queryFn: async () => {
+      const response = await fetch("/api/artworks");
+      const data = await response.json();
+      if (!Array.isArray(data)) {
+        console.error("Expected array of artworks, got:", data);
+        return [];
+      }
+      return data;
+    },
   });
 
   const handlePageChange = (newPage: number) => {
@@ -20,8 +28,10 @@ const Artworks = () => {
     window.scrollTo({ top: 0 });
   };
 
-  const totalPages = artworks ? Math.ceil(artworks.length / PAGE_SIZE) : 0;
-  const paginatedArtworks = artworks?.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const totalPages = artworks?.length ? Math.ceil(artworks.length / PAGE_SIZE) : 0;
+  const paginatedArtworks = Array.isArray(artworks) 
+    ? artworks.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+    : [];
 
   const LoadingSkeleton = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
