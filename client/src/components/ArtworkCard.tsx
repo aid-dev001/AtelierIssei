@@ -13,16 +13,17 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
     <Card className="overflow-hidden group hover:shadow-lg transition-all duration-300">
       <CardContent className="p-0 relative">
         <Link href={`/artwork/${artwork.id}`}>
-          <img
-            src={`/artworks/${artwork.imageUrl}`}
-            alt={artwork.title}
-            className="w-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
-            onError={(e) => {
-              const img = e.target as HTMLImageElement;
-              img.onerror = null;
-              img.src = '/placeholder.png';
-            }}
-          />
+          <div className="w-full aspect-square overflow-hidden">
+            <img
+              src={`/artworks/${artwork.imageUrl}`}
+              alt={artwork.title}
+              className="w-full h-full object-cover cursor-pointer transition-transform duration-500 group-hover:scale-105"
+              onError={(e) => {
+                const img = e.target as HTMLImageElement;
+                img.src = '/placeholder.png';
+              }}
+            />
+          </div>
         </Link>
         <div className="absolute top-4 right-4 flex flex-col gap-2">
           <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium">
@@ -47,7 +48,7 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
               保管: {artwork.storedLocation || '銀座'}
             </div>
           </div>
-          <div className="bg-white/90 px-1 py-0.5 rounded-md text-sm font-medium inline-block">
+          <div className="bg-white/90 px-2 py-0.5 rounded text-sm font-medium w-fit">
             {artwork.size?.split('(')[0] || 'F4'}
           </div>
         </div>
