@@ -36,6 +36,15 @@ const AdminDashboard = () => {
     generatedDescription: '',
   });
 
+  const { data: collections } = useQuery({
+    queryKey: [`${adminPath}/collections`],
+    queryFn: async () => {
+      const response = await fetch(`${adminPath}/collections`);
+      if (!response.ok) throw new Error('Failed to fetch collections');
+      return response.json();
+    },
+  });
+
   const { data: artworks, isLoading, error } = useQuery<Artwork[]>({
     queryKey: [`${adminPath}/artworks`],
     queryFn: async () => {
@@ -320,6 +329,22 @@ const AdminDashboard = () => {
           defaultValue={selectedArtwork?.storedLocation || '銀座'}
           required
         />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="collectionId">コレクション</Label>
+        <select
+          id="collectionId"
+          name="collectionId"
+          className="w-full rounded-md border border-input bg-background px-3 py-2"
+          defaultValue={selectedArtwork?.collectionId || ''}
+        >
+          <option value="">コレクションを選択</option>
+          {collections?.map((collection) => (
+            <option key={collection.id} value={collection.id}>
+              {collection.title}
+            </option>
+          ))}
+        </select>
       </div>
       <Button type="submit" className="w-full">
         {selectedArtwork ? '更新' : '作成'}

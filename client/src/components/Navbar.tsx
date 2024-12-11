@@ -38,7 +38,11 @@ const Navbar = () => {
     <nav className="border-b bg-white fixed w-full z-50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          <ScrollToTopLink href="/" className="text-2xl font-bold tracking-wider">
+          <ScrollToTopLink 
+            href="/" 
+            className="text-2xl font-bold tracking-wider"
+            onClick={closeMenu}
+          >
             ATELIER ISSEI
           </ScrollToTopLink>
           <div className="hidden md:flex space-x-8">
@@ -78,10 +82,12 @@ const Navbar = () => {
       />
       
       {/* Mobile menu panel */}
-      <div className={cn(
-        "fixed inset-y-0 right-0 w-64 bg-white z-50 transform transition-transform duration-300 ease-out shadow-xl md:hidden",
-        isOpen ? "translate-x-0" : "translate-x-full"
-      )}>
+      <div 
+        className={cn(
+          "fixed inset-y-0 right-0 w-64 bg-white z-50 transform transition-transform duration-300 ease-out shadow-xl md:hidden",
+          isOpen ? "translate-x-0" : "translate-x-full"
+        )}
+      >
         <div className="pt-20 px-6">
           <div className="space-y-6">
             {links.map(({ href, label }) => (

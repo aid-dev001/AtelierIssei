@@ -53,11 +53,26 @@ export default function setupRoutes(app: express.Express) {
     try {
       const allArtworks = await db.query.artworks.findMany({
         orderBy: (artworks) => desc(artworks.updatedAt),
+        with: {
+          collection: true,
+        },
       });
       res.json(allArtworks);
     } catch (error) {
       console.error("Failed to fetch artworks:", error);
       res.status(500).json({ error: "作品の取得に失敗しました" });
+    }
+  });
+
+  app.get("/api/collections", async (req, res) => {
+    try {
+      const allCollections = await db.query.collections.findMany({
+        orderBy: (collections) => desc(collections.updatedAt),
+      });
+      res.json(allCollections);
+    } catch (error) {
+      console.error("Failed to fetch collections:", error);
+      res.status(500).json({ error: "コレクションの取得に失敗しました" });
     }
   });
 

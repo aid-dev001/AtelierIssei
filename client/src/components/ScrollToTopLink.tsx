@@ -14,10 +14,8 @@ const ScrollToTopLink = ({ children, onClick, className, ...props }: ScrollToTop
   }, [onClick]);
 
   return (
-    <Link href={props.to || '/'}>
-      <a onClick={handleClick} className={className}>
-        {children}
-      </a>
+    <Link href={props.to || '/'} onClick={handleClick}>
+      {children}
     </Link>
   );
 };
