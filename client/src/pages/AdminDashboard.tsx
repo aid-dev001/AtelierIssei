@@ -172,9 +172,10 @@ const AdminDashboard = () => {
                 variant: "destructive",
                 title: "説明の生成に失敗しました",
                 description: error instanceof Error 
-                  ? error.message 
+                  ? `エラー詳細: ${error.message}` 
                   : "AIによる説明文の生成に失敗しました。手動で入力してください",
               });
+              console.error('Error details:', error);
             }
           }}
           className="h-[200px]"

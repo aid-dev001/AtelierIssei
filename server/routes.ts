@@ -152,14 +152,20 @@ export default function setupRoutes(app: express.Express) {
         });
       } catch (error) {
         console.error('Error in description generation:', error);
-        const errorMessage = error instanceof Error 
-          ? `説明文の生成に失敗しました: ${error.message}`
-          : 'タイトルと説明文の生成に失敗しました';
+        const errorDetails = error instanceof Error 
+          ? {
+              message: error.message,
+              name: error.name,
+              stack: error.stack,
+            }
+          : { message: '不明なエラー' };
+
+        console.error('Detailed error information:', errorDetails);
         
         res.status(422).json({ 
-          error: errorMessage,
+          error: `説明文の生成に失敗しました: ${errorDetails.message}`,
           imageUrl,
-          details: error instanceof Error ? error.message : '不明なエラー'
+          details: errorDetails
         });
       }
     } catch (error) {

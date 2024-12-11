@@ -50,11 +50,13 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
     const jsonString = content.replace(/.*?(\{.*\}).*/s, '$1');
     
     try {
+      console.log('Attempting to parse JSON response:', jsonString);
       const parsed = JSON.parse(jsonString);
       
       if (!parsed.title || !parsed.description) {
         console.error('Missing title or description in parsed JSON:', parsed);
-        throw new Error('タイトルまたは説明文が見つかりません。再度お試しください。');
+        console.error('Original OpenAI response:', content);
+        throw new Error('タイトルまたは説明文の生成に失敗しました。OpenAIからの応答が不完全です。');
       }
 
       const title = parsed.title.trim();
