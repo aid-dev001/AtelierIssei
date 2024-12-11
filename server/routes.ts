@@ -51,12 +51,7 @@ export default function setupRoutes(app: express.Express) {
   // Public routes
   app.get("/api/artworks", async (req, res) => {
     try {
-      const allArtworks = await db.query.artworks.findMany({
-        orderBy: (artworks) => desc(artworks.updatedAt),
-        with: {
-          collection: true,
-        },
-      });
+      const allArtworks = await db.select().from(artworks).orderBy(desc(artworks.updatedAt));
       res.json(allArtworks);
     } catch (error) {
       console.error("Failed to fetch artworks:", error);
@@ -77,18 +72,14 @@ export default function setupRoutes(app: express.Express) {
     }
   });
 
-  app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, upload.single('image'), async (req, res) => {
+  app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) => {
     try {
-      if (!req.file) {
-        return res.status(400).json({ error: "画像がアップロードされていません" });
-      }
-
-      const imageUrl = `/artworks/${req.file.filename}`;
+      const currentYear = new Date().getFullYear();
       const collectionData = {
         title: req.body.title,
-        description: req.body.description,
-        imageUrl,
-        year: parseInt(req.body.year),
+        description: `${req.body.title}コレクション`,
+        imageUrl: '/placeholder.png',
+        year: currentYear,
         isActive: true,
       };
 
