@@ -26,6 +26,16 @@ const AdminDashboard = () => {
 
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    imageUrl: '',
+    price: '',
+    size: '',
+    status: 'available',
+    createdLocation: '銀座',
+    storedLocation: '銀座'
+  });
 
   const { data: artworks, isLoading, error } = useQuery<Artwork[]>({
     queryKey: [`${adminPath}/artworks`],
@@ -150,7 +160,7 @@ const AdminDashboard = () => {
       <div className="space-y-4">
         <Label htmlFor="image">作品画像</Label>
         <Dropzone
-          existingImageUrl={selectedArtwork?.imageUrl}
+          existingImageUrl={formData.imageUrl || selectedArtwork?.imageUrl}
           onFileChange={async (file) => {
             try {
               const formData = new FormData();
@@ -179,25 +189,13 @@ const AdminDashboard = () => {
               }
 
               // フォーム要素を直接取得せず、React的な方法で値を更新
-              const form = document.querySelector('form') as HTMLFormElement;
-              if (form) {
-                const titleInput = form.querySelector('input[name="title"]') as HTMLInputElement;
-                const descriptionInput = form.querySelector('textarea[name="description"]') as HTMLTextAreaElement;
-                
-                if (titleInput) titleInput.value = data.title;
-                if (descriptionInput) descriptionInput.value = data.description;
-
-                // イベントをディスパッチしてReactに変更を通知
-                titleInput?.dispatchEvent(new Event('input', { bubbles: true }));
-                descriptionInput?.dispatchEvent(new Event('input', { bubbles: true }));
-              }
-
-              // アップロードされた画像のプレビューを表示
-              const previewImg = document.querySelector('.dropzone-preview') as HTMLImageElement;
-              if (previewImg && data.imageUrl) {
-                previewImg.src = data.imageUrl;
-                previewImg.style.display = 'block';
-              }
+              // フォームデータを更新
+              setFormData(prev => ({
+                ...prev,
+                title: data.title,
+                description: data.description,
+                imageUrl: data.imageUrl
+              }));
 
               toast({
                 title: "作品の説明を生成しました",
@@ -228,7 +226,8 @@ const AdminDashboard = () => {
         <Input
           id="title"
           name="title"
-          defaultValue={selectedArtwork?.title}
+          value={formData.title || selectedArtwork?.title || ''}
+          onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
           required
         />
       </div>
@@ -237,7 +236,8 @@ const AdminDashboard = () => {
         <Textarea
           id="description"
           name="description"
-          defaultValue={selectedArtwork?.description}
+          value={formData.description || selectedArtwork?.description || ''}
+          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
           required
         />
       </div>
