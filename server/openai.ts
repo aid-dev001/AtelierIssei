@@ -60,21 +60,22 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
     const content = openaiResponse.choices[0].message.content;
     console.log('Raw content from OpenAI:', content);
 
-    // Extract JSON from the response
-    const jsonMatch = content.match(/\{.*\}/s);
-    if (!jsonMatch) {
+    // Extract JSON from the response using a safer method
+    const matches = content.match(/\{[^]*\}/);
+    if (!matches) {
       throw new Error('JSONフォーマットの応答が見つかりませんでした');
     }
 
-    const jsonString = jsonMatch[0];
+    const jsonString = matches[0];
     console.log('Extracted JSON string:', jsonString);
 
     try {
-      const parsed = JSON.parse(jsonString);
+      const parsed = JSON.parse(jsonString) as { title?: string; description?: string };
+      console.log('Parsed JSON content:', parsed);
       
       if (!parsed.title || !parsed.description) {
         console.error('Missing title or description in parsed JSON:', parsed);
-        throw new Error('タイトルまたは説明文が見つかりません');
+        throw new Error(`タイトルまたは説明文が見つかりません。受信したデータ: ${JSON.stringify(parsed)}`);
       }
 
       const title = parsed.title.trim();
@@ -82,9 +83,10 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
 
       console.log('Successfully generated content:', { title, description });
       return { title, description };
-    } catch (parseError) {
-      console.error('JSON parse error:', parseError);
-      throw new Error('生成されたコンテンツの解析に失敗しました');
+    } catch (error) {
+      console.error('JSON parse error:', error);
+      const errorMessage = error instanceof Error ? error.message : '不明なエラー';
+      throw new Error(`生成されたコンテンツの解析に失敗しました。エラー: ${errorMessage}`);
     }
   } catch (error) {
     console.error('Error in generateArtworkDescription:', error);

@@ -168,16 +168,19 @@ const AdminDashboard = () => {
               });
             } catch (error) {
               console.error('Error generating description:', error);
-              const errorResponse = await response.json();
-              console.error('Error response:', errorResponse);
-              
-              toast({
-                variant: "destructive",
-                title: errorResponse.error || "説明の生成に失敗しました",
-                description: errorResponse.details 
-                  ? `エラー詳細: ${errorResponse.details}` 
-                  : "AIによる説明文の生成に失敗しました。手動で入力してください",
-              });
+              if (error instanceof Error) {
+                toast({
+                  variant: "destructive",
+                  title: "説明の生成に失敗しました",
+                  description: `エラー詳細: ${error.message}`,
+                });
+              } else {
+                toast({
+                  variant: "destructive",
+                  title: "説明の生成に失敗しました",
+                  description: "AIによる説明文の生成に失敗しました。手動で入力してください",
+                });
+              }
             }
           }}
           className="h-[200px]"
