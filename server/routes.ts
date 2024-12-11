@@ -311,8 +311,12 @@ export default function setupRoutes(app: express.Express) {
       const updatedData = {
         ...updateData,
         updatedAt: new Date(),
-        interiorImageUrls,
       };
+
+      // Only update interiorImageUrls if it's provided
+      if (updateData.interiorImageUrls !== undefined) {
+        updatedData.interiorImageUrls = interiorImageUrls;
+      }
 
       delete updatedData.id; // Ensure id is not included in the update
 
@@ -328,7 +332,7 @@ export default function setupRoutes(app: express.Express) {
       res.json(updatedArtwork);
     } catch (error) {
       console.error("Error updating artwork:", error);
-      res.status(500).json({ error: "作品の更新に失敗しました" });
+      res.status(500).json({ error: error instanceof Error ? error.message : "作品の更新に失敗しました" });
     }
   });
 
