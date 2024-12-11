@@ -100,10 +100,13 @@ const AdminDashboard = () => {
   });
 
   const updateArtworkMutation = useMutation({
-    mutationFn: async ({ id, formData }: { id: number; formData: FormData }) => {
+    mutationFn: async ({ id, data }: { id: number; data: any }) => {
       const response = await fetch(`${adminPath}/artworks/${id}`, {
         method: 'PUT',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       });
       if (!response.ok) throw new Error('Failed to update artwork');
       return response.json();
@@ -142,9 +145,21 @@ const AdminDashboard = () => {
 
       if (selectedArtwork) {
         // 更新の場合
+        const form = e.currentTarget;
+        const updateData = {
+          title: form.title.value,
+          description: form.description.value,
+          price: parseFloat(form.price.value),
+          size: form.size.value,
+          status: form.status.value,
+          createdLocation: form.createdLocation.value,
+          storedLocation: form.storedLocation.value,
+          imageUrl: imageData.url || selectedArtwork.imageUrl,
+        };
+        
         await updateArtworkMutation.mutateAsync({
           id: selectedArtwork.id,
-          formData,
+          data: updateData,
         });
       } else {
         // 新規作成の場合
@@ -365,10 +380,22 @@ const AdminDashboard = () => {
           </Dialog>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {artworks?.map((artwork) => (
-            <div key={artwork.id} className="border p-4 rounded-lg">
-              <div className="aspect-square mb-4 overflow-hidden rounded-lg">
+            <div
+              key={artwork.id}
+              className="border p-3 rounded-lg hover:shadow-lg transition-all cursor-pointer"
+              onClick={() => {
+                setSelectedArtwork(artwork);
+                setImageData({
+                  url: artwork.imageUrl,
+                  generatedTitle: '',
+                  generatedDescription: '',
+                });
+                setIsEditDialogOpen(true);
+              }}
+            >
+              <div className="aspect-square mb-2 overflow-hidden rounded-lg">
                 <img
                   src={artwork.imageUrl}
                   alt={artwork.title}
@@ -379,15 +406,16 @@ const AdminDashboard = () => {
                   }}
                 />
               </div>
-              <h3 className="font-medium">{artwork.title}</h3>
-              <p className="text-sm text-gray-600 line-clamp-2">{artwork.description}</p>
-              <p className="text-sm text-gray-600">¥{artwork.price}</p>
-              <div className="flex gap-2 mt-4">
+              <h3 className="font-medium text-sm truncate">{artwork.title}</h3>
+              <p className="text-xs text-gray-600 line-clamp-1">{artwork.description}</p>
+              <p className="text-xs text-gray-600 mt-1">¥{Number(artwork.price).toLocaleString()}</p>
+              <div className="flex gap-2 mt-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex-1"
-                  onClick={() => {
+                  className="flex-1 text-xs py-1"
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setSelectedArtwork(artwork);
                     setImageData({
                       url: artwork.imageUrl,
@@ -397,7 +425,7 @@ const AdminDashboard = () => {
                     setIsEditDialogOpen(true);
                   }}
                 >
-                  <PenLine className="w-4 h-4 mr-2" />
+                  <PenLine className="w-3 h-3 mr-1" />
                   編集
                 </Button>
                 <AlertDialog>
