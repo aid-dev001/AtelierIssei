@@ -79,7 +79,7 @@ export default function setupRoutes(app: express.Express) {
       
       const collectionData = {
         title: req.body.title,
-        description: req.body.title,
+        description: `${req.body.title}コレクション`,
         imageUrl: '/artworks/placeholder.png',
         year: currentYear,
         isActive: true,
