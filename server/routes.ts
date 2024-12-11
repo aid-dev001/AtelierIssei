@@ -123,11 +123,7 @@ export default function setupRoutes(app: express.Express) {
       res.json({ title, description });
     } catch (error) {
       console.error("Error generating description:", error);
-      const errorMessage = error instanceof Error ? error.message : "説明の生成に失敗しました";
-      res.status(500).json({ 
-        error: errorMessage,
-        details: "画像からタイトルと説明文を生成できませんでした。手動で入力してください。"
-      });
+      res.status(500).json({ error: "説明の生成に失敗しました" });
     }
   });
 
