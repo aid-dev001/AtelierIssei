@@ -11,7 +11,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Dropzone } from "@/components/ui/dropzone";
-import type { DropzoneProps } from "@/components/ui/dropzone";
 import type { InsertArtwork, Artwork } from "@db/schema";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -288,20 +287,23 @@ const AdminDashboard = () => {
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">管理者ダッシュボード</h1>
-        <Button
-          variant="outline"
-          onClick={() => {
-            setLocation(adminPath);
-          }}
-        >
-          ログアウト
-        </Button>
-      </div>
+      <header className="bg-gray-50/80 p-6 rounded-lg sticky top-0 z-50 shadow-sm">
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-bold">管理者ダッシュボード</h1>
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setLocation(adminPath);
+            }}
+            className="text-gray-600 hover:text-gray-900"
+          >
+            ログアウト
+          </Button>
+        </div>
+      </header>
 
-      <div>
-        <div className="flex justify-between items-center mb-4">
+      <main className="space-y-8">
+        <div className="flex justify-between items-center">
           <h2 className="text-2xl font-semibold">作品一覧</h2>
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
             <DialogTrigger asChild>
@@ -385,7 +387,7 @@ const AdminDashboard = () => {
             </div>
           ))}
         </div>
-      </div>
+      </main>
     </div>
   );
 };

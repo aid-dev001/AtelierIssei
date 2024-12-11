@@ -32,6 +32,7 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
     console.log('Sending request to OpenAI API...');
     const openaiResponse = await openai.chat.completions.create({
       model: "gpt-4-vision-preview",
+      max_tokens: 300,
       messages: [
         {
           role: "user",
@@ -49,7 +50,6 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
           ],
         },
       ],
-      max_tokens: 300,
     });
 
     if (!openaiResponse.choices?.[0]?.message?.content) {
