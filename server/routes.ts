@@ -12,32 +12,55 @@ export default function setupRoutes(app: Express) {
   // Public API routes
   app.get("/api/artworks", async (req, res) => {
     try {
-      const result = await db.query.artworks.findMany({
-        orderBy: (artworks) => [artworks.createdAt, "desc"],
-      });
-      
-      // サンプルデータを追加（開発用）
-      if (!result || result.length === 0) {
-        const sampleArtworks = [
-          {
-            id: 1,
-            title: "Urban Dreams",
-            description: "都市の夢想を描いた作品",
-            imageUrl: "/artworks/12648.jpg",
-            price: "250000",
-            size: "F15(65.2×53.0cm)",
-            status: "available",
-            createdLocation: "銀座",
-            storedLocation: "銀座",
-            isAvailable: true,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          },
-          // 他のサンプルデータも追加可能
-        ];
-        res.json(sampleArtworks);
+      const result = await db.execute(
+        `SELECT 
+          id, 
+          title, 
+          description, 
+          image_url as "imageUrl", 
+          price::text, 
+          size, 
+          status,
+          created_location as "createdLocation",
+          stored_location as "storedLocation",
+          is_available as "isAvailable",
+          created_at as "createdAt",
+          updated_at as "updatedAt"
+        FROM artworks 
+        ORDER BY created_at DESC`
+      );
+
+      if (!result.rows || result.rows.length === 0) {
+        // サンプルデータを挿入
+        await db.execute(`
+          INSERT INTO artworks (title, description, image_url, price, size, status, created_location, stored_location)
+          VALUES 
+          ('Urban Dreams', '都市の夢想を描いた作品', '/artworks/12648.jpg', 250000, 'F15(65.2×53.0cm)', 'available', '銀座', '銀座'),
+          ('Serenity', '静寂の中の輝き', '/artworks/12653.jpg', 180000, 'F10(53.0×45.5cm)', 'available', '銀座', '銀座'),
+          ('Harmony', '調和の表現', '/artworks/12658.jpg', 220000, 'F12(60.6×50.0cm)', 'available', '銀座', '銀座')
+        `);
+
+        const newResult = await db.execute(
+          `SELECT 
+            id, 
+            title, 
+            description, 
+            image_url as "imageUrl", 
+            price::text, 
+            size, 
+            status,
+            created_location as "createdLocation",
+            stored_location as "storedLocation",
+            is_available as "isAvailable",
+            created_at as "createdAt",
+            updated_at as "updatedAt"
+          FROM artworks 
+          ORDER BY created_at DESC`
+        );
+        
+        res.json(newResult.rows);
       } else {
-        res.json(result);
+        res.json(result.rows);
       }
     } catch (error) {
       console.error("Failed to fetch artworks:", error);
