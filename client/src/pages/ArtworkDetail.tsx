@@ -117,24 +117,31 @@ const ArtworkDetail = () => {
               <div className="space-y-6">
                 <h2 className="text-2xl font-bold tracking-wide text-gray-800/90">インテリアイメージ</h2>
                 <div className="grid grid-cols-2 gap-6">
-                  <div className="relative group">
-                    <img
-                      src="/artworks/3316.jpg"
-                      alt="Interior View 1"
-                      className="w-full aspect-[4/3] object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105"
-                    />
-                    </div>
-                  <div className="relative group">
-                    <img
-                      src="/artworks/3446.jpg"
-                      alt="Interior View 2"
-                      className="w-full aspect-[4/3] object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105"
-                    />
+                    {artwork.interiorImageUrls && artwork.interiorImageUrls.length > 0 ? (
+                      artwork.interiorImageUrls.map((url, index) => (
+                        <div key={index} className="relative group">
+                          <img
+                            src={url}
+                            alt={`${artwork.title} - Interior View ${index + 1}`}
+                            className="w-full aspect-[4/3] object-cover rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-105"
+                            onError={(e) => {
+                              const img = e.target as HTMLImageElement;
+                              img.src = '/placeholder.png';
+                            }}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <div className="col-span-2 text-center text-gray-500">
+                        インテリアイメージは準備中です
+                      </div>
+                    )}
                   </div>
-                </div>
-                <p className="text-sm text-gray-500/80 text-center">
-                  ※ インテリアイメージは参考例です
-                </p>
+                  {artwork.interiorImageUrls && artwork.interiorImageUrls.length > 0 && (
+                    <p className="text-sm text-gray-500/80 text-center">
+                      ※ 実際の展示イメージです
+                    </p>
+                  )}
               </div>
             </div>
           </div>
