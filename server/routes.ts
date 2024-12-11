@@ -1,104 +1,55 @@
-import { type Express, Request } from "express";
-import { eq } from "drizzle-orm";
-import bcrypt from "bcryptjs";
+import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import bcrypt from 'bcryptjs';
 import { generateArtworkDescription } from './openai';
 import { db } from "../db";
 import { ADMIN_URL_PATH, requireAdmin } from "./admin";
 import { 
-  artworks, exhibitions, news, testimonials, 
-  atelierPosts, contacts, adminUsers 
+  artworks,
+  exhibitions,
+  news,
+  testimonials,
+  atelierPosts,
+  contacts,
+  adminUsers,
 } from "@db/schema";
+import { eq } from "drizzle-orm";
 
-// 画像アップロード用の設定
+// Configure multer for handling file uploads
 const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
+  destination: (req, file, cb) => {
     const uploadDir = 'public/artworks';
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
     cb(null, uploadDir);
   },
-  filename: (_req, file, cb) => {
+  filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, uniqueSuffix + path.extname(file.originalname));
   }
 });
 
 const upload = multer({ 
-  storage,
-  fileFilter: (_req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    if (allowedTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(null, false);
-    }
-  },
+  storage: storage,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB制限
+    fileSize: 5 * 1024 * 1024 // 5MB limit
   }
 });
 
-export default function setupRoutes(app: Express) {
-  // Public API routes
+export default function setupRoutes(app: express.Express) {
+  // Public routes
   app.get("/api/artworks", async (req, res) => {
     try {
       const allArtworks = await db.query.artworks.findMany({
-        orderBy: (artworks, { desc }) => [desc(artworks.createdAt)],
+        orderBy: (artworks) => artworks.createdAt,
       });
-
-      if (!allArtworks || allArtworks.length === 0) {
-        // サンプルデータを挿入
-        await db.insert(artworks).values([
-          {
-            title: 'Urban Dreams',
-            description: '都市の夢想を描いた作品',
-            imageUrl: '/artworks/12648.jpg',
-            price: '250000',
-            size: 'F15(65.2×53.0cm)',
-            status: 'available',
-            createdLocation: '銀座',
-            storedLocation: '銀座',
-            isAvailable: true,
-          },
-          {
-            title: 'Serenity',
-            description: '静寂の中の輝き',
-            imageUrl: '/artworks/12653.jpg',
-            price: '180000',
-            size: 'F10(53.0×45.5cm)',
-            status: 'available',
-            createdLocation: '銀座',
-            storedLocation: '銀座',
-            isAvailable: true,
-          },
-          {
-            title: 'Harmony',
-            description: '調和の表現',
-            imageUrl: '/artworks/12658.jpg',
-            price: '220000',
-            size: 'F12(60.6×50.0cm)',
-            status: 'available',
-            createdLocation: '銀座',
-            storedLocation: '銀座',
-            isAvailable: true,
-          },
-        ]);
-
-        const newArtworks = await db.query.artworks.findMany({
-          orderBy: (artworks, { desc }) => [desc(artworks.createdAt)],
-        });
-        
-        res.json(newArtworks);
-      } else {
-        res.json(allArtworks);
-      }
+      res.json(allArtworks);
     } catch (error) {
       console.error("Failed to fetch artworks:", error);
-      res.status(500).json({ error: "Failed to fetch artworks" });
+      res.status(500).json({ error: "作品の取得に失敗しました" });
     }
   });
 
@@ -108,37 +59,15 @@ export default function setupRoutes(app: Express) {
         where: eq(artworks.id, parseInt(req.params.id)),
       });
       if (!artwork) {
-        return res.status(404).json({ error: "Artwork not found" });
+        return res.status(404).json({ error: "作品が見つかりません" });
       }
       res.json(artwork);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch artwork" });
+      res.status(500).json({ error: "作品の取得に失敗しました" });
     }
   });
 
-  app.get("/api/exhibitions", async (req, res) => {
-    try {
-      const allExhibitions = await db.query.exhibitions.findMany({
-        orderBy: (exhibitions) => exhibitions.startDate,
-      });
-      res.json(allExhibitions);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch exhibitions" });
-    }
-  });
-
-  app.get("/api/news", async (req, res) => {
-    try {
-      const allNews = await db.query.news.findMany({
-        orderBy: (news) => news.publishedAt,
-      });
-      res.json(allNews);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch news" });
-    }
-  });
-
-  // 管理者認証
+  // Admin authentication
   app.post(`/admin/${ADMIN_URL_PATH}/login`, async (req, res) => {
     try {
       const { username, password } = req.body;
@@ -147,94 +76,62 @@ export default function setupRoutes(app: Express) {
       });
 
       if (!user) {
-        return res.status(401).json({ error: "Invalid credentials" });
+        return res.status(401).json({ error: "認証に失敗しました" });
       }
 
       const match = await bcrypt.compare(password, user.passwordHash);
       if (!match) {
-        return res.status(401).json({ error: "Invalid credentials" });
+        return res.status(401).json({ error: "認証に失敗しました" });
       }
 
       req.session.isAdmin = true;
       res.json({ success: true });
     } catch (error) {
       console.error("Login error:", error);
-      res.status(500).json({ error: "Login failed" });
+      res.status(500).json({ error: "ログインに失敗しました" });
     }
   });
 
-  // 管理者用API routes
+  // Admin routes
   app.get(`/admin/${ADMIN_URL_PATH}/artworks`, requireAdmin, async (req, res) => {
     try {
       const allArtworks = await db.query.artworks.findMany({
-        orderBy: (artworks, { desc }) => [desc(artworks.createdAt)],
+        orderBy: (artworks) => artworks.createdAt,
       });
-      
-      if (!allArtworks || allArtworks.length === 0) {
-        // サンプルデータを挿入
-        await db.insert(artworks).values([
-          {
-            title: 'Urban Dreams',
-            description: '都市の夢想を描いた作品',
-            imageUrl: '/artworks/12648.jpg',
-            price: '250000',
-            size: 'F15(65.2×53.0cm)',
-            status: 'available',
-            createdLocation: '銀座',
-            storedLocation: '銀座',
-            isAvailable: true,
-          },
-          {
-            title: 'Serenity',
-            description: '静寂の中の輝き',
-            imageUrl: '/artworks/12653.jpg',
-            price: '180000',
-            size: 'F10(53.0×45.5cm)',
-            status: 'available',
-            createdLocation: '銀座',
-            storedLocation: '銀座',
-            isAvailable: true,
-          },
-        ]);
-
-        const initialArtworks = await db.query.artworks.findMany({
-          orderBy: (artworks, { desc }) => [desc(artworks.createdAt)],
-        });
-        console.log('Initial artworks loaded:', initialArtworks);
-        res.json(initialArtworks);
-      } else {
-        console.log('Existing artworks found:', allArtworks);
-        res.json(allArtworks);
-      }
+      res.json(allArtworks);
     } catch (error) {
       console.error("Failed to fetch artworks:", error);
-      res.status(500).json({ error: "Failed to fetch artworks" });
+      res.status(500).json({ error: "作品の取得に失敗しました" });
+    }
+  });
+
+  // Generate description using OpenAI
   app.post(`/admin/${ADMIN_URL_PATH}/generate-description`, requireAdmin, upload.single('image'), async (req, res) => {
     try {
       if (!req.file) {
-        return res.status(400).json({ error: "No image uploaded" });
+        return res.status(400).json({ error: "画像がアップロードされていません" });
       }
 
-      // 画像のURLを生成（一時的なパス）
+      // 画像の公開URLを生成
       const imageUrl = `${req.protocol}://${req.get('host')}/artworks/${req.file.filename}`;
+      console.log('Generating description for image:', imageUrl);
       
       // OpenAI APIを使用して説明を生成
       const { title, description } = await generateArtworkDescription(imageUrl);
+      console.log('Generated description:', { title, description });
       
       res.json({ title, description });
     } catch (error) {
       console.error("Error generating description:", error);
-      res.status(500).json({ error: "Failed to generate description" });
+      res.status(500).json({ error: "説明の生成に失敗しました" });
     }
   });
 
-    }
-  });
-
+  // Create artwork
   app.post(`/admin/${ADMIN_URL_PATH}/artworks`, requireAdmin, upload.single('image'), async (req, res) => {
     try {
       if (!req.file) {
-        return res.status(400).json({ error: "No image uploaded" });
+        return res.status(400).json({ error: "画像がアップロードされていません" });
       }
 
       const imageUrl = `/artworks/${req.file.filename}`;
@@ -246,10 +143,12 @@ export default function setupRoutes(app: Express) {
       const artwork = await db.insert(artworks).values(artworkData);
       res.json({ ...artwork, imageUrl });
     } catch (error) {
-      res.status(500).json({ error: "Failed to create artwork" });
+      console.error("Error creating artwork:", error);
+      res.status(500).json({ error: "作品の作成に失敗しました" });
     }
   });
 
+  // Update artwork
   app.put(`/admin/${ADMIN_URL_PATH}/artworks/:id`, requireAdmin, async (req, res) => {
     try {
       await db.update(artworks)
@@ -262,104 +161,24 @@ export default function setupRoutes(app: Express) {
       
       res.json(updatedArtwork);
     } catch (error) {
-      res.status(500).json({ error: "Failed to update artwork" });
+      console.error("Error updating artwork:", error);
+      res.status(500).json({ error: "作品の更新に失敗しました" });
     }
   });
 
+  // Delete artwork
   app.delete(`/admin/${ADMIN_URL_PATH}/artworks/:id`, requireAdmin, async (req, res) => {
     try {
       await db.delete(artworks)
         .where(eq(artworks.id, parseInt(req.params.id)));
       res.json({ success: true });
     } catch (error) {
-      res.status(500).json({ error: "Failed to delete artwork" });
+      console.error("Error deleting artwork:", error);
+      res.status(500).json({ error: "作品の削除に失敗しました" });
     }
   });
 
-  // Exhibition routes
-  app.get(`/admin/${ADMIN_URL_PATH}/exhibitions`, requireAdmin, async (req, res) => {
-    try {
-      const allExhibitions = await db.query.exhibitions.findMany({
-        orderBy: (exhibitions) => exhibitions.startDate,
-      });
-      res.json(allExhibitions);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch exhibitions" });
-    }
-  });
-
-  app.post(`/admin/${ADMIN_URL_PATH}/exhibitions`, requireAdmin, async (req, res) => {
-    try {
-      const exhibition = await db.insert(exhibitions).values(req.body);
-      res.json(exhibition);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create exhibition" });
-    }
-  });
-
-  // News routes
-  app.get(`/admin/${ADMIN_URL_PATH}/news`, requireAdmin, async (req, res) => {
-    try {
-      const allNews = await db.query.news.findMany({
-        orderBy: (news) => news.publishedAt,
-      });
-      res.json(allNews);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch news" });
-    }
-  });
-
-  app.post(`/admin/${ADMIN_URL_PATH}/news`, requireAdmin, async (req, res) => {
-    try {
-      const newsItem = await db.insert(news).values(req.body);
-      res.json(newsItem);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create news" });
-    }
-  });
-
-  // Testimonials routes
-  app.get(`/admin/${ADMIN_URL_PATH}/testimonials`, requireAdmin, async (req, res) => {
-    try {
-      const allTestimonials = await db.query.testimonials.findMany({
-        orderBy: (testimonials) => testimonials.createdAt,
-      });
-      res.json(allTestimonials);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch testimonials" });
-    }
-  });
-
-  app.post(`/admin/${ADMIN_URL_PATH}/testimonials`, requireAdmin, async (req, res) => {
-    try {
-      const testimonial = await db.insert(testimonials).values(req.body);
-      res.json(testimonial);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create testimonial" });
-    }
-  });
-
-  // Atelier posts routes
-  app.get(`/admin/${ADMIN_URL_PATH}/atelier-posts`, requireAdmin, async (req, res) => {
-    try {
-      const allPosts = await db.query.atelierPosts.findMany({
-        orderBy: (posts) => posts.createdAt,
-      });
-      res.json(allPosts);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch atelier posts" });
-    }
-  });
-
-  app.post(`/admin/${ADMIN_URL_PATH}/atelier-posts`, requireAdmin, async (req, res) => {
-    try {
-      const post = await db.insert(atelierPosts).values(req.body);
-      res.json(post);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create atelier post" });
-    }
-  });
-
+  // Contact form submission
   app.post("/api/contact", async (req, res) => {
     try {
       const contactData = {
@@ -369,7 +188,8 @@ export default function setupRoutes(app: Express) {
       const contact = await db.insert(contacts).values(contactData);
       res.json(contact);
     } catch (error) {
-      res.status(500).json({ error: "Failed to submit contact form" });
+      console.error("Error submitting contact form:", error);
+      res.status(500).json({ error: "お問い合わせの送信に失敗しました" });
     }
   });
 }
