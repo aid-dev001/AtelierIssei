@@ -3,7 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
-import { generateArtworkDescription } from './openai';
+import { generateArtworkDescription, generateCollectionDescription } from './openai';
 import { db } from "../db";
 import { ADMIN_URL_PATH, requireAdmin } from "./admin";
 import { 
@@ -72,7 +72,22 @@ export default function setupRoutes(app: express.Express) {
     }
   });
 
-  app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) => {
+  app.post(`/admin/${ADMIN_URL_PATH}/generate-collection-description`, requireAdmin, async (req, res) => {
+  try {
+    const { title } = req.body;
+    if (!title) {
+      return res.status(400).json({ error: "タイトルが必要です" });
+    }
+
+    const description = await generateCollectionDescription(title);
+    res.json({ description });
+  } catch (error) {
+    console.error("Error generating collection description:", error);
+    res.status(500).json({ error: "説明文の生成に失敗しました" });
+  }
+});
+
+app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) => {
     try {
       const currentYear = new Date().getFullYear();
       console.log('Received collection creation request:', req.body);

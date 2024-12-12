@@ -4,6 +4,41 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+export async function generateCollectionDescription(title: string): Promise<string> {
+  try {
+    console.log('Generating collection description for title:', title);
+
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error('OpenAI APIキーが設定されていません');
+    }
+
+    const response = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        {
+          role: "system",
+          content: "あなたはアートギャラリーのキュレーターです。アートコレクションの説明文を生成してください。"
+        },
+        {
+          role: "user",
+          content: `コレクション「${title}」の説明文を50文字程度で生成してください。アート作品群の特徴や意図を優雅に表現してください。`
+        }
+      ],
+    });
+
+    const description = response.choices[0]?.message?.content;
+    if (!description) {
+      throw new Error('説明文の生成に失敗しました');
+    }
+
+    console.log('Generated collection description:', description);
+    return description.trim();
+  } catch (error) {
+    console.error('Error generating collection description:', error);
+    throw error;
+  }
+}
+
 export async function generateArtworkDescription(imageUrl: string): Promise<{ title: string; description: string }> {
   try {
     console.log('OpenAI API Key exists:', !!process.env.OPENAI_API_KEY);

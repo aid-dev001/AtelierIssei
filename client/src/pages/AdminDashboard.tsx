@@ -24,6 +24,8 @@ const AdminDashboard = () => {
   const queryClient = useQueryClient();
   const adminPath = window.location.pathname.split('/dashboard')[0];
   const [activeTab, setActiveTab] = useState<'artworks' | 'collections'>('artworks');
+  const [selectedCollection, setSelectedCollection] = useState<any>(null);
+  const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [imageData, setImageData] = useState<{
@@ -838,12 +840,30 @@ const AdminDashboard = () => {
                         id="title" 
                         name="title" 
                         required 
-                        onChange={(e) => {
+                        onBlur={async (e) => {
                           const title = e.target.value.trim();
                           if (title) {
                             const descriptionField = document.getElementById('description') as HTMLTextAreaElement;
                             if (descriptionField && !descriptionField.value) {
-                              descriptionField.value = `${title}シリーズの作品群です。独自の美的感性と芸術的表現を追求したコレクションとなっています。`;
+                              try {
+                                const response = await fetch(`${adminPath}/generate-collection-description`, {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ title })
+                                });
+                                
+                                if (!response.ok) throw new Error('説明文の生成に失敗しました');
+                                
+                                const data = await response.json();
+                                descriptionField.value = data.description;
+                              } catch (error) {
+                                console.error('Error generating description:', error);
+                                toast({
+                                  variant: "destructive",
+                                  title: "エラー",
+                                  description: "説明文の生成に失敗しました"
+                                });
+                              }
                             }
                           }
                         }}
@@ -862,12 +882,88 @@ const AdminDashboard = () => {
                   </form>
                 </DialogContent>
               </Dialog>
+
+              <Dialog open={isEditCollectionDialogOpen} onOpenChange={setIsEditCollectionDialogOpen}>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>コレクションを編集</DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.currentTarget);
+                    const title = formData.get('title') as string;
+                    const description = formData.get('description') as string;
+
+                    if (!title.trim()) {
+                      toast({
+                        variant: "destructive",
+                        title: "エラー",
+                        description: "タイトルを入力してください"
+                      });
+                      return;
+                    }
+
+                    try {
+                      const response = await fetch(`${adminPath}/collections/${selectedCollection.id}`, {
+                        method: 'PUT',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          title: title.trim(),
+                          description: description.trim(),
+                        }),
+                      });
+
+                      if (!response.ok) {
+                        throw new Error('コレクションの更新に失敗しました');
+                      }
+
+                      queryClient.invalidateQueries({ queryKey: ["collections"] });
+                      toast({ title: "コレクションを更新しました" });
+                      setIsEditCollectionDialogOpen(false);
+                      setSelectedCollection(null);
+                    } catch (error) {
+                      console.error('Collection update error:', error);
+                      toast({ 
+                        variant: "destructive", 
+                        title: "エラー",
+                        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+                      });
+                    }
+                  }} className="space-y-4">
+                    <div>
+                      <Label htmlFor="edit-title">タイトル</Label>
+                      <Input 
+                        id="edit-title" 
+                        name="title" 
+                        defaultValue={selectedCollection?.title}
+                        required 
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="edit-description">説明文</Label>
+                      <Textarea
+                        id="edit-description"
+                        name="description"
+                        defaultValue={selectedCollection?.description}
+                        className="min-h-[100px]"
+                      />
+                    </div>
+                    <Button type="submit">更新</Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {Array.isArray(collections) && collections.map((collection: any) => (
                 <div
                   key={collection.id}
-                  className="border p-4 rounded-lg hover:shadow-lg transition-all"
+                  className="border p-4 rounded-lg hover:shadow-lg transition-all cursor-pointer"
+                  onClick={() => {
+                    setSelectedCollection(collection);
+                    setIsEditCollectionDialogOpen(true);
+                  }}
                 >
                   <div className="grid grid-cols-2 gap-2 mb-2">
                     {artworks?.filter(artwork => artwork.collectionId === collection.id)
