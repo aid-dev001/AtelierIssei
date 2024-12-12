@@ -78,11 +78,9 @@ const CollectionsSection = () => {
 
         return (
           <div key={collection.id} className="space-y-8">
-            <ScrollToTopLink href={`/collections/${collection.id}`}>
-              <h3 className="text-2xl font-medium text-center hover:text-primary/80 transition-colors">
-                {collection.title}
-              </h3>
-            </ScrollToTopLink>
+            <h3 className="text-2xl font-medium text-center">
+              {collection.title}
+            </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {collectionArtworks.map((artwork, index) => (
                 <ScrollToTopLink key={index} href={`/collections/${collection.id}`}>

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Collection, Artwork } from "@db/schema";
-import ArtworkCard from "@/components/ArtworkCard";
+import ScrollToTopLink from "@/components/ScrollToTopLink";
 
 const CollectionDetail = () => {
   const [, params] = useRoute<{ id: string }>("/collections/:id");
