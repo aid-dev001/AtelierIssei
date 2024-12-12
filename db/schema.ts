@@ -43,9 +43,13 @@ export const collections = pgTable("collections", {
 export const exhibitions = pgTable("exhibitions", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: text("title").notNull(),
+  subtitle: text("subtitle"),
   description: text("description").notNull(),
+  details: text("details"),
   location: text("location").notNull(),
+  address: text("address"),
   imageUrl: text("image_url").notNull(),
+  subImageUrls: text("sub_image_urls").array(),
   startDate: timestamp("start_date").notNull(),
   endDate: timestamp("end_date").notNull(),
   isActive: boolean("is_active").default(true).notNull(),

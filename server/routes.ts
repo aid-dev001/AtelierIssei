@@ -3,7 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
-import { generateArtworkDescription, generateCollectionDescription } from './openai';
+import { generateArtworkDescription, generateCollectionDescription, generateExhibitionDescription } from './openai';
 import { db } from "../db";
 import { ADMIN_URL_PATH, requireAdmin } from "./admin";
 import { 
@@ -394,6 +394,97 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
   });
 
   // Contact form submission
+  // Exhibitions CRUD endpoints
+  app.get("/api/exhibitions", async (req, res) => {
+    try {
+      const allExhibitions = await db.select().from(exhibitions).orderBy(desc(exhibitions.startDate));
+      res.json(allExhibitions);
+    } catch (error) {
+      console.error("Failed to fetch exhibitions:", error);
+      res.status(500).json({ error: "展示会の取得に失敗しました" });
+    }
+  });
+
+  app.post(`/admin/${ADMIN_URL_PATH}/generate-exhibition-description`, requireAdmin, async (req, res) => {
+    try {
+      const { title, location } = req.body;
+      if (!title || !location) {
+        return res.status(400).json({ error: "タイトルと場所が必要です" });
+      }
+
+      const { subtitle, description } = await generateExhibitionDescription(title, location);
+      res.json({ subtitle, description });
+    } catch (error) {
+      console.error("Error generating exhibition description:", error);
+      res.status(500).json({ error: "説明文の生成に失敗しました" });
+    }
+  });
+
+  app.post(`/admin/${ADMIN_URL_PATH}/exhibitions`, requireAdmin, upload.array('subImages'), async (req, res) => {
+    try {
+      const subImageUrls = req.files ? (req.files as Express.Multer.File[]).map(file => `/artworks/${file.filename}`) : [];
+      
+      const exhibitionData = {
+        title: req.body.title,
+        subtitle: req.body.subtitle,
+        description: req.body.description,
+        details: req.body.details,
+        location: req.body.location,
+        address: req.body.address,
+        imageUrl: req.body.imageUrl,
+        subImageUrls,
+        startDate: new Date(req.body.startDate),
+        endDate: new Date(req.body.endDate),
+        isActive: true,
+      };
+
+      const [newExhibition] = await db.insert(exhibitions).values(exhibitionData).returning();
+      res.json(newExhibition);
+    } catch (error) {
+      console.error("Error creating exhibition:", error);
+      res.status(500).json({ error: "展示会の作成に失敗しました" });
+    }
+  });
+
+  app.put(`/admin/${ADMIN_URL_PATH}/exhibitions/:id`, requireAdmin, upload.array('subImages'), async (req, res) => {
+    try {
+      const exhibitionId = parseInt(req.params.id);
+      const subImageUrls = req.files ? (req.files as Express.Multer.File[]).map(file => `/artworks/${file.filename}`) : undefined;
+      
+      const updateData = {
+        ...req.body,
+        subImageUrls: subImageUrls || req.body.subImageUrls,
+        startDate: new Date(req.body.startDate),
+        endDate: new Date(req.body.endDate),
+        updatedAt: new Date(),
+      };
+
+      await db.update(exhibitions)
+        .set(updateData)
+        .where(eq(exhibitions.id, exhibitionId));
+      
+      const updatedExhibition = await db.query.exhibitions.findFirst({
+        where: eq(exhibitions.id, exhibitionId),
+      });
+      
+      res.json(updatedExhibition);
+    } catch (error) {
+      console.error("Error updating exhibition:", error);
+      res.status(500).json({ error: "展示会の更新に失敗しました" });
+    }
+  });
+
+  app.delete(`/admin/${ADMIN_URL_PATH}/exhibitions/:id`, requireAdmin, async (req, res) => {
+    try {
+      await db.delete(exhibitions)
+        .where(eq(exhibitions.id, parseInt(req.params.id)));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting exhibition:", error);
+      res.status(500).json({ error: "展示会の削除に失敗しました" });
+    }
+  });
+
   app.post("/api/contact", async (req, res) => {
     try {
       const contactData = {

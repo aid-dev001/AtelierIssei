@@ -23,10 +23,12 @@ const AdminDashboard = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const adminPath = window.location.pathname.split('/dashboard')[0];
-  const [activeTab, setActiveTab] = useState<'artworks' | 'collections'>('artworks');
+  const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions'>('artworks');
   const [selectedCollection, setSelectedCollection] = useState<any>(null);
+  const [selectedExhibition, setSelectedExhibition] = useState<any>(null);
   const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
-const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
+  const [isEditExhibitionDialogOpen, setIsEditExhibitionDialogOpen] = useState(false);
+  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [imageData, setImageData] = useState<{
@@ -48,6 +50,16 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
       const data = await response.json();
       console.log('Fetched collections:', data);
       return data;
+    },
+  });
+
+  // Exhibitions data
+  const { data: exhibitions } = useQuery({
+    queryKey: ["exhibitions"],
+    queryFn: async () => {
+      const response = await fetch("/api/exhibitions");
+      if (!response.ok) throw new Error('Failed to fetch exhibitions');
+      return response.json();
     },
   });
 
@@ -655,6 +667,19 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
                 <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
               )}
             </button>
+            <button
+              className={`px-4 py-2 font-medium transition-all relative ${
+                activeTab === 'exhibitions'
+                  ? 'text-black font-semibold'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              onClick={() => setActiveTab('exhibitions')}
+            >
+              展示会管理
+              {activeTab === 'exhibitions' && (
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
+              )}
+            </button>
           </div>
         </div>
       </header>
@@ -777,7 +802,7 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
               ))}
             </div>
           </>
-        ) : (
+        ) : activeTab === 'collections' ? (
           <>
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-semibold">コレクション一覧</h2>
