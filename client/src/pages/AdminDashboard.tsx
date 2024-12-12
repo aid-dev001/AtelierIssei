@@ -207,27 +207,25 @@ const AdminDashboard = () => {
     try {
       if (!selectedArtwork) return;
 
-      // 新しい説明文の配列を作成
+      // 新しい説明文の配列を作成（常に文字列の配列として扱う）
       const newDescriptions = Array.isArray(selectedArtwork.interiorImageDescriptions) 
-        ? [...selectedArtwork.interiorImageDescriptions] 
-        : new Array(2).fill('');
+        ? selectedArtwork.interiorImageDescriptions.map(desc => String(desc || ''))
+        : Array(2).fill('');
 
       // インデックスの説明文を更新
       newDescriptions[index] = description;
 
+      // ローカルステートを先に更新
+      const updatedArtwork = {
+        ...selectedArtwork,
+        interiorImageDescriptions: newDescriptions
+      };
+      setSelectedArtwork(updatedArtwork);
+
       // データベースの更新
       await updateArtworkMutation.mutateAsync({
         id: selectedArtwork.id,
-        data: {
-          ...selectedArtwork,
-          interiorImageDescriptions: newDescriptions
-        }
-      });
-
-      // ローカルステートの更新
-      setSelectedArtwork({
-        ...selectedArtwork,
-        interiorImageDescriptions: newDescriptions
+        data: updatedArtwork
       });
 
     } catch (error) {
@@ -522,20 +520,18 @@ const AdminDashboard = () => {
             />
             <div className="space-y-2">
               <Label htmlFor="interior-desc-1">1枚目の説明文</Label>
-              <Textarea
+              <textarea
                 id="interior-desc-1"
                 placeholder="1枚目の説明文を入力してください"
-                value={selectedArtwork?.interiorImageDescriptions?.[0] ?? ''}
-                onChange={e => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleInteriorDescriptionChange(0, e.target.value);
+                value={String(selectedArtwork?.interiorImageDescriptions?.[0] || '')}
+                onChange={e => handleInteriorDescriptionChange(0, e.target.value)}
+                onFocus={() => {
+                  // モバイルデバイスでのキーボード制御
+                  if (window.innerWidth < 768) {
+                    window.scrollTo(0, 0);
+                  }
                 }}
-                onKeyDown={e => {
-                  e.stopPropagation();
-                  e.nativeEvent.stopImmediatePropagation();
-                }}
-                className="resize-none"
+                className="w-full min-h-[80px] rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 rows={4}
                 autoComplete="off"
                 autoCapitalize="off"
@@ -551,20 +547,18 @@ const AdminDashboard = () => {
             />
             <div className="space-y-2">
               <Label htmlFor="interior-desc-2">2枚目の説明文</Label>
-              <Textarea
+              <textarea
                 id="interior-desc-2"
                 placeholder="2枚目の説明文を入力してください"
-                value={selectedArtwork?.interiorImageDescriptions?.[1] ?? ''}
-                onChange={e => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleInteriorDescriptionChange(1, e.target.value);
+                value={String(selectedArtwork?.interiorImageDescriptions?.[1] || '')}
+                onChange={e => handleInteriorDescriptionChange(1, e.target.value)}
+                onFocus={() => {
+                  // モバイルデバイスでのキーボード制御
+                  if (window.innerWidth < 768) {
+                    window.scrollTo(0, 0);
+                  }
                 }}
-                onKeyDown={e => {
-                  e.stopPropagation();
-                  e.nativeEvent.stopImmediatePropagation();
-                }}
-                className="resize-none"
+                className="w-full min-h-[80px] rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 rows={4}
                 autoComplete="off"
                 autoCapitalize="off"
