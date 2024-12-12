@@ -1,82 +1,716 @@
 import { useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Card } from "@/components/ui/card";
+import { useLocation } from "wouter";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Dropzone } from "@/components/ui/dropzone";
+import type { Artwork } from "@db/schema";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { toast } from "@/hooks/use-toast";
-import { Dropzone } from "@/components/Dropzone";
-import type { Exhibition } from "@db/schema";
-
-const adminPath = "/api/admin";
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, AlertDialogDescription, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
+import { PenLine, Trash2 } from "lucide-react";
 
 const AdminDashboard = () => {
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState("exhibitions");
-
-  const { data: artworks } = useQuery({
-    queryKey: ["artworks"],
-    queryFn: () => fetch(`${adminPath}/artworks`).then(res => res.json()),
+  const adminPath = window.location.pathname.split('/dashboard')[0];
+  const [activeTab, setActiveTab] = useState<'artworks' | 'collections'>('artworks');
+  const [selectedCollection, setSelectedCollection] = useState<any>(null);
+  const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
+const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
+  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [imageData, setImageData] = useState<{
+    url: string;
+    generatedTitle: string;
+    generatedDescription: string;
+  }>({
+    url: '',
+    generatedTitle: '',
+    generatedDescription: '',
   });
 
+  // Collections data
   const { data: collections } = useQuery({
     queryKey: ["collections"],
-    queryFn: () => fetch(`${adminPath}/collections`).then(res => res.json()),
+    queryFn: async () => {
+      const response = await fetch("/api/collections");
+      if (!response.ok) throw new Error('Failed to fetch collections');
+      const data = await response.json();
+      console.log('Fetched collections:', data);
+      return data;
+    },
   });
 
-  const { data: exhibitions } = useQuery<Exhibition[]>({
-    queryKey: ["exhibitions"],
-    queryFn: () => fetch(`${adminPath}/exhibitions`).then(res => res.json()),
+  // Artworks data
+  const { data: artworks, isLoading, error } = useQuery<Artwork[]>({
+    queryKey: [`${adminPath}/artworks`],
+    queryFn: async () => {
+      try {
+        const response = await fetch(`${adminPath}/artworks`);
+        if (!response.ok) {
+          if (response.status === 401) {
+            setLocation(adminPath);
+            throw new Error('セッションが切れました。再度ログインしてください。');
+          }
+          throw new Error('データの取得に失敗しました');
+        }
+        return response.json();
+      } catch (error) {
+        console.error('Error fetching artworks:', error);
+        if (error instanceof Error && error.message.includes('セッション')) {
+          throw error;
+        }
+        throw new Error('データの取得中にエラーが発生しました');
+      }
+    },
   });
 
-  const handleLogout = async () => {
+  if (error) {
+    toast({
+      variant: "destructive",
+      title: "エラー",
+      description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+    });
+  }
+
+  const createArtworkMutation = useMutation({
+    mutationFn: async (artworkData: FormData) => {
+      const response = await fetch(`${adminPath}/artworks`, {
+        method: 'POST',
+        body: artworkData,
+      });
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error || 'Failed to create artwork');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`${adminPath}/artworks`] });
+      toast({ title: "作品を追加しました" });
+      setIsEditDialogOpen(false);
+      setSelectedArtwork(null);
+      setImageData({
+        url: '',
+        generatedTitle: '',
+        generatedDescription: '',
+      });
+    },
+    onError: (error) => {
+      toast({ 
+        variant: "destructive", 
+        title: "作品の追加に失敗しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+      });
+    },
+  });
+
+  const updateArtworkMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+      const response = await fetch(`${adminPath}/artworks/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error('Failed to update artwork');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`${adminPath}/artworks`] });
+      toast({ title: "作品を更新しました" });
+      setIsEditDialogOpen(false);
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "作品の更新に失敗しました" });
+    },
+  });
+
+  const deleteArtworkMutation = useMutation({
+    mutationFn: async (artworkId: number) => {
+      const response = await fetch(`${adminPath}/artworks/${artworkId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete artwork');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`${adminPath}/artworks`] });
+      toast({ title: "作品を削除しました" });
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "作品の削除に失敗しました" });
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      window.location.href = '/admin/login';
+      const form = e.currentTarget;
+      const formData = new FormData(form);
+
+      if (selectedArtwork) {
+        // 更新の場合
+        const updateData = {
+          title: formData.get('title') as string,
+          description: formData.get('description') as string,
+          price: parseFloat(formData.get('price') as string),
+          size: formData.get('size') as string,
+          status: formData.get('status') as string,
+          createdLocation: formData.get('createdLocation') as string,
+          storedLocation: formData.get('storedLocation') as string,
+          imageUrl: imageData.url || selectedArtwork.imageUrl,
+          collectionId: formData.get('collectionId') ? parseInt(formData.get('collectionId') as string) : null,
+          interiorImageUrls: selectedArtwork.interiorImageUrls,
+          interiorImageDescriptions: selectedArtwork.interiorImageDescriptions,
+        };
+        
+        await updateArtworkMutation.mutateAsync({
+          id: selectedArtwork.id,
+          data: updateData,
+        });
+      } else {
+        // 新規作成の場合
+        if (!imageData.url) {
+          toast({
+            variant: "destructive",
+            title: "画像をアップロードしてください",
+          });
+          return;
+        }
+
+        // 画像データを追加
+        const imageResponse = await fetch(imageData.url);
+        const imageBlob = await imageResponse.blob();
+        formData.append('image', imageBlob);
+
+        await createArtworkMutation.mutateAsync(formData);
+      }
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error('Form submission error:', error);
+      toast({
+        variant: "destructive",
+        title: "エラーが発生しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+      });
     }
   };
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">管理画面</h1>
-        <Button variant="outline" onClick={handleLogout}>
-          ログアウト
-        </Button>
-      </div>
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-8">
-          <TabsTrigger value="artworks">作品管理</TabsTrigger>
-          <TabsTrigger value="collections">コレクション管理</TabsTrigger>
-          <TabsTrigger value="exhibitions">展示会管理</TabsTrigger>
-        </TabsList>
+  const handleInteriorDescriptionChange = async (index: number, description: string) => {
+    try {
+      if (!selectedArtwork) return;
 
-        <TabsContent value="artworks">
-          <div className="space-y-8">
+      // 新しい説明文の配列を作成
+      const newDescriptions = Array.isArray(selectedArtwork.interiorImageDescriptions) 
+        ? [...selectedArtwork.interiorImageDescriptions]
+        : ['', ''];
+
+      // インデックスの説明文を更新
+      newDescriptions[index] = description;
+
+      // ローカルステートを先に更新
+      setSelectedArtwork({
+        ...selectedArtwork,
+        interiorImageDescriptions: newDescriptions
+      });
+
+      // データベースの更新
+      await updateArtworkMutation.mutateAsync({
+        id: selectedArtwork.id,
+        data: {
+          interiorImageDescriptions: newDescriptions
+        }
+      });
+
+      toast({
+        title: "説明文を更新しました",
+      });
+
+    } catch (error) {
+      console.error('Error updating description:', error);
+      toast({
+        variant: "destructive",
+        title: "説明文の更新に失敗しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+      });
+    }
+  };
+
+  const handleInteriorImageUpload = async (file: File, index: number) => {
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      toast({
+        title: "インテリアイメージをアップロード中...",
+      });
+
+      const response = await fetch(`${adminPath}/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(errorData || '画像のアップロードに失敗しました');
+      }
+
+      const data = await response.json();
+      console.log('Upload response:', data);
+
+      if (!data.imageUrl) {
+        throw new Error('画像URLの取得に失敗しました');
+      }
+
+      // Create a new array with the correct length (2 for now)
+      const currentUrls = selectedArtwork?.interiorImageUrls || [];
+      let newImageUrls = Array(2).fill(null);
+      
+      // Copy existing URLs
+      if (Array.isArray(currentUrls)) {
+        currentUrls.forEach((url: string, i: number) => {
+          if (i < 2) newImageUrls[i] = url;
+        });
+      }
+      
+      // Update the specific index
+      newImageUrls[index] = data.imageUrl;
+      
+      // Filter out any null values at the end
+      newImageUrls = newImageUrls.filter(url => url !== null);
+
+      if (selectedArtwork) {
+        try {
+          console.log('Updating artwork with interior images:', newImageUrls);
+          
+          await updateArtworkMutation.mutateAsync({
+            id: selectedArtwork.id,
+            data: {
+              interiorImageUrls: newImageUrls
+            },
+          });
+
+          toast({
+            title: "インテリアイメージをアップロードしました",
+          });
+        } catch (updateError) {
+          console.error('Error updating artwork with interior images:', updateError);
+          throw new Error('作品の更新に失敗しました: ' + 
+            (updateError instanceof Error ? updateError.message : '不明なエラー'));
+        }
+      } else {
+        setImageData(prev => ({
+          ...prev,
+          interiorImageUrls: newImageUrls,
+        }));
+        
+        toast({
+          title: "インテリアイメージをアップロードしました",
+        });
+      }
+    } catch (error) {
+      console.error('Error handling interior image upload:', error);
+      toast({
+        variant: "destructive",
+        title: "インテリアイメージのアップロードに失敗しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+      });
+    }
+  };
+
+  const handleFileChange = async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      toast({
+        title: "画像をアップロード中...",
+        description: "AIによる説明文の生成を開始します",
+      });
+
+      const response = await fetch(`${adminPath}/generate-description`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || '説明文の生成に失敗しました');
+      }
+
+      const data = await response.json();
+      console.log('Generated data:', data);
+
+      if (!data.title || !data.description || !data.imageUrl) {
+        throw new Error('タイトルまたは説明文の生成に失敗しました');
+      }
+
+      setImageData({
+        url: data.imageUrl,
+        generatedTitle: data.title,
+        generatedDescription: data.description,
+      });
+
+      toast({
+        title: "作品の説明を生成しました",
+        description: "生成されたタイトルと説明文を確認・編集してください",
+      });
+    } catch (error) {
+      console.error('Error generating description:', error);
+      if (error instanceof Error) {
+        toast({
+          variant: "destructive",
+          title: "説明の生成に失敗しました",
+          description: `エラー詳細: ${error.message}`,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "説明の生成に失敗しました",
+          description: "AIによる説明文の生成に失敗しました。手動で入力してください",
+        });
+      }
+    }
+  };
+
+  const handleArtworkUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!selectedArtwork) return;
+
+    try {
+      const form = e.currentTarget;
+      const formData = new FormData(form);
+      
+      const price = formData.get('price');
+      const collectionId = formData.get('collectionId');
+
+      const updatedData = {
+        ...selectedArtwork,
+        title: formData.get('title') as string,
+        description: formData.get('description') as string,
+        price: price ? parseFloat(price as string) : selectedArtwork.price,
+        size: formData.get('size') as string,
+        status: formData.get('status') as string,
+        createdLocation: formData.get('createdLocation') as string,
+        storedLocation: formData.get('storedLocation') as string,
+        exhibitionLocation: formData.get('exhibitionLocation') as string,
+        imageUrl: imageData.url || selectedArtwork.imageUrl,
+        collectionId: collectionId ? parseInt(collectionId as string) : null
+      };
+
+      console.log('Updating artwork with data:', updatedData);
+
+      await updateArtworkMutation.mutateAsync({
+        id: selectedArtwork.id,
+        data: updatedData
+      });
+
+      toast({
+        title: "作品情報を更新しました",
+      });
+      setIsEditDialogOpen(false);
+    } catch (error) {
+      console.error('Error updating artwork:', error);
+      toast({
+        variant: "destructive",
+        title: "更新に失敗しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+      });
+    }
+  };
+
+
+  const ArtworkForm = () => (
+    <form onSubmit={handleArtworkUpdate} className="space-y-8">
+      <div className="space-y-4">
+        <Label htmlFor="image">作品画像</Label>
+        <Dropzone
+          existingImageUrl={imageData.url || selectedArtwork?.imageUrl}
+          onFileChange={handleFileChange}
+          className="aspect-square w-full h-[200px] mx-auto"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="title">タイトル</Label>
+        <Input
+          id="title"
+          name="title"
+          defaultValue={selectedArtwork?.title || imageData.generatedTitle}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="description">説明</Label>
+        <Textarea
+          id="description"
+          name="description"
+          defaultValue={selectedArtwork?.description || imageData.generatedDescription}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="price">価格</Label>
+        <Input
+          id="price"
+          name="price"
+          type="number"
+          defaultValue={selectedArtwork?.price?.toString()}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="size">サイズ</Label>
+        <Input
+          id="size"
+          name="size"
+          defaultValue={selectedArtwork?.size || ''}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="status">ステータス</Label>
+        <select
+          id="status"
+          name="status"
+          className="w-full rounded-md border border-input bg-background px-3 py-2"
+          defaultValue={selectedArtwork?.status || 'available'}
+          required
+        >
+          <option value="available">販売中</option>
+          <option value="reserved">予約済</option>
+          <option value="sold">売約済</option>
+        </select>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="createdLocation">制作場所</Label>
+        <Input
+          id="createdLocation"
+          name="createdLocation"
+          defaultValue={selectedArtwork?.createdLocation || '銀座'}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="storedLocation">保管場所</Label>
+        <Input
+          id="storedLocation"
+          name="storedLocation"
+          defaultValue={selectedArtwork?.storedLocation || '銀座'}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="exhibitionLocation">展示履歴</Label>
+        <Input
+          id="exhibitionLocation"
+          name="exhibitionLocation"
+          defaultValue={selectedArtwork?.exhibitionLocation || ''}
+          placeholder="例: 銀座ギャラリー"
+        />
+      </div>
+      <div className="space-y-4">
+        <Label>インテリアイメージ</Label>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Dropzone
+              existingImageUrl={selectedArtwork?.interiorImageUrls?.[0]}
+              onFileChange={(file) => handleInteriorImageUpload(file, 0)}
+              className="aspect-square w-full h-[160px]"
+            />
+            <div className="space-y-2">
+              <Label htmlFor="interior-desc-1">1枚目の説明文</Label>
+              <Textarea
+                id="interior-desc-1"
+                name="interior-desc-1"
+                placeholder="1枚目の説明文を入力してください"
+                value={Array.isArray(selectedArtwork?.interiorImageDescriptions) 
+                  ? selectedArtwork.interiorImageDescriptions[0] || '' 
+                  : ''}
+                onChange={e => {
+                  if (selectedArtwork) {
+                    const descriptions: string[] = Array.isArray(selectedArtwork.interiorImageDescriptions)
+                      ? [...selectedArtwork.interiorImageDescriptions]
+                      : ['', ''];
+                    descriptions[0] = e.target.value;
+                    setSelectedArtwork(prev => ({
+                      ...prev,
+                      interiorImageDescriptions: descriptions,
+                    }));
+                  }
+                }}
+                className="resize-none"
+                rows={4}
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Dropzone
+              existingImageUrl={selectedArtwork?.interiorImageUrls?.[1]}
+              onFileChange={(file) => handleInteriorImageUpload(file, 1)}
+              className="aspect-square w-full h-[160px]"
+            />
+            <div className="space-y-2">
+              <Label htmlFor="interior-desc-2">2枚目の説明文</Label>
+              <Textarea
+                id="interior-desc-2"
+                name="interior-desc-2"
+                placeholder="2枚目の説明文を入力してください"
+                value={Array.isArray(selectedArtwork?.interiorImageDescriptions) 
+                  ? selectedArtwork.interiorImageDescriptions[1] || '' 
+                  : ''}
+                onChange={e => {
+                  if (selectedArtwork) {
+                    const descriptions: string[] = Array.isArray(selectedArtwork.interiorImageDescriptions)
+                      ? [...selectedArtwork.interiorImageDescriptions]
+                      : ['', ''];
+                    descriptions[1] = e.target.value;
+                    setSelectedArtwork(prev => ({
+                      ...prev,
+                      interiorImageDescriptions: descriptions,
+                    }));
+                  }
+                }}
+                className="resize-none"
+                rows={4}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="collectionId">コレクション</Label>
+        <select
+          id="collectionId"
+          name="collectionId"
+          className="w-full rounded-md border border-input bg-background px-3 py-2"
+          defaultValue={selectedArtwork?.collectionId || ''}
+        >
+          <option value="">コレクションを選択</option>
+          {Array.isArray(collections) && collections.map((collection: any) => (
+            <option key={collection.id} value={collection.id}>
+              {collection.title}
+            </option>
+          ))}
+        </select>
+      </div>
+      <Button type="submit" className="w-full">
+        {selectedArtwork ? '更新' : '作成'}
+      </Button>
+    </form>
+  );
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div className="space-y-8">
+      <header className="bg-gray-50/80 p-6 rounded-lg sticky top-0 z-50 shadow-sm">
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-between items-center">
+            <h1 className="text-3xl font-bold">管理者ダッシュボード</h1>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setLocation(adminPath);
+              }}
+              className="text-gray-600 hover:text-gray-900"
+            >
+              ログアウト
+            </Button>
+          </div>
+          <div className="flex gap-4 border-b">
+            <button
+              className={`px-4 py-2 font-medium transition-all relative ${
+                activeTab === 'artworks'
+                  ? 'text-black font-semibold'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              onClick={() => setActiveTab('artworks')}
+            >
+              作品管理
+              {activeTab === 'artworks' && (
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
+              )}
+            </button>
+            <button
+              className={`px-4 py-2 font-medium transition-all relative ${
+                activeTab === 'collections'
+                  ? 'text-black font-semibold'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              onClick={() => setActiveTab('collections')}
+            >
+              コレクション管理
+              {activeTab === 'collections' && (
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
+              )}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="space-y-8">
+        {activeTab === 'artworks' ? (
+          <>
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-semibold">作品一覧</h2>
-              <Dialog>
+              <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button>新規作品を追加</Button>
+                  <Button
+                    onClick={() => {
+                      setSelectedArtwork(null);
+                      setImageData({
+                        url: '',
+                        generatedTitle: '',
+                        generatedDescription: '',
+                      });
+                      setIsEditDialogOpen(true);
+                    }}
+                  >
+                    新規作品を追加
+                  </Button>
                 </DialogTrigger>
-                <DialogContent className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-3xl max-h-[90vh] overflow-y-auto z-50">
-                  <DialogHeader>
-                    <DialogTitle>新規作品を追加</DialogTitle>
-                  </DialogHeader>
-                  {/* 作品追加フォーム */}
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh] p-0">
+                  <div className="sticky top-0 bg-background z-10 px-6 pt-6">
+                    <DialogHeader>
+                      <DialogTitle>
+                        {selectedArtwork ? '作品を編集' : '新規作品を追加'}
+                      </DialogTitle>
+                    </DialogHeader>
+                  </div>
+                  <div className="px-6 pb-6 h-[calc(90vh-80px)] overflow-y-auto">
+                    <ArtworkForm />
+                  </div>
                 </DialogContent>
               </Dialog>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {artworks?.map((artwork) => (
-                <Card key={artwork.id} className="overflow-hidden">
-                  <div className="aspect-video relative">
+                <div
+                  key={artwork.id}
+                  className="border p-3 rounded-lg hover:shadow-lg transition-all cursor-pointer"
+                  onClick={() => {
+                    setSelectedArtwork(artwork);
+                    setImageData({
+                      url: artwork.imageUrl,
+                      generatedTitle: '',
+                      generatedDescription: '',
+                    });
+                    setIsEditDialogOpen(true);
+                  }}
+                >
+                  <div className="aspect-square mb-2 overflow-hidden rounded-lg">
                     <img
                       src={artwork.imageUrl}
                       alt={artwork.title}
@@ -87,334 +721,410 @@ const AdminDashboard = () => {
                       }}
                     />
                   </div>
-                  <div className="p-4 space-y-2">
-                    <h3 className="text-lg font-semibold">{artwork.title}</h3>
-                    <p className="text-sm text-gray-500">{artwork.description}</p>
-                    <p className="text-sm">¥{artwork.price?.toLocaleString()}</p>
+                  <h3 className="font-medium text-sm truncate">{artwork.title}</h3>
+                  <p className="text-xs text-gray-600 line-clamp-1">{artwork.description}</p>
+                  <p className="text-xs text-gray-600 mt-1">¥{Number(artwork.price).toLocaleString()}</p>
+                  <div className="flex gap-2 mt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 text-xs py-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedArtwork(artwork);
+                        setImageData({
+                          url: artwork.imageUrl,
+                          generatedTitle: '',
+                          generatedDescription: '',
+                        });
+                        setIsEditDialogOpen(true);
+                      }}
+                    >
+                      <PenLine className="w-3 h-3 mr-1" />
+                      編集
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button 
+                          variant="destructive" 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          削除
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>作品を削除しますか？</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            この操作は取り消せません。本当に削除してもよろしいですか？
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <div className="flex justify-end gap-4">
+                          <AlertDialogCancel>キャンセル</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => deleteArtworkMutation.mutate(artwork.id)}
+                          >
+                            削除
+                          </AlertDialogAction>
+                        </div>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
-                </Card>
+                </div>
               ))}
             </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="collections">
-          <div className="space-y-8">
+          </>
+        ) : (
+          <>
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-semibold">コレクション一覧</h2>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button>新規コレクションを追加</Button>
+                  <Button>
+                    新規コレクションを追加
+                  </Button>
                 </DialogTrigger>
-                <DialogContent className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-3xl max-h-[90vh] overflow-y-auto z-50">
+                <DialogContent>
                   <DialogHeader>
                     <DialogTitle>新規コレクションを追加</DialogTitle>
-                  </DialogHeader>
-                  {/* コレクション追加フォーム */}
-                </DialogContent>
-              </Dialog>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {collections?.map((collection) => (
-                <Card key={collection.id} className="overflow-hidden">
-                  <div className="aspect-video relative">
-                    <img
-                      src={collection.imageUrl}
-                      alt={collection.title}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const img = e.target as HTMLImageElement;
-                        img.src = '/placeholder.png';
-                      }}
-                    />
-                  </div>
-                  <div className="p-4 space-y-2">
-                    <h3 className="text-lg font-semibold">{collection.title}</h3>
-                    <p className="text-sm text-gray-500">{collection.description}</p>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="exhibitions">
-          <div className="space-y-8">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold">展示会一覧</h2>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button>新規展示会を追加</Button>
-                </DialogTrigger>
-                <DialogContent className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-3xl max-h-[90vh] overflow-y-auto z-50">
-                  <DialogHeader>
-                    <DialogTitle>新規展示会を追加</DialogTitle>
                   </DialogHeader>
                   <form onSubmit={async (e) => {
                     e.preventDefault();
                     const formData = new FormData(e.currentTarget);
+                    const title = formData.get('title') as string;
+                    let description = formData.get('description') as string;
+                    
+                    if (!title.trim()) {
+                      toast({
+                        variant: "destructive",
+                        title: "エラー",
+                        description: "タイトルを入力してください"
+                      });
+                      return;
+                    }
+
+                    // 説明文が空の場合、自動生成
+                    if (!description.trim()) {
+                      description = `${title.trim()}シリーズの作品群です。独自の美的感性と芸術的表現を追求したコレクションとなっています。`;
+                    }
 
                     try {
-                      const response = await fetch(`${adminPath}/exhibitions`, {
+                      const response = await fetch(`${adminPath}/collections`, {
                         method: 'POST',
                         headers: {
                           'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                          title: formData.get('title'),
-                          subtitle: formData.get('subtitle'),
-                          description: formData.get('description'),
-                          location: formData.get('location'),
-                          imageUrl: formData.get('imageUrl'),
-                          subImageUrls: formData.getAll('subImageUrls'),
-                          startDate: formData.get('startDate'),
-                          endDate: formData.get('endDate'),
+                          title: title.trim(),
+                          description: description.trim(),
                         }),
                       });
 
                       if (!response.ok) {
-                        throw new Error('展示会の作成に失敗しました');
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'コレクションの作成に失敗しました');
                       }
 
-                      queryClient.invalidateQueries({ queryKey: ["exhibitions"] });
-                      toast({ title: "展示会を作成しました" });
+                      queryClient.invalidateQueries({ queryKey: ["collections"] });
+                      toast({ title: "コレクションを作成しました" });
                       (e.target as HTMLFormElement).reset();
                     } catch (error) {
-                      console.error('Exhibition creation error:', error);
-                      toast({
-                        variant: "destructive",
+                      console.error('Collection creation error:', error);
+                      toast({ 
+                        variant: "destructive", 
                         title: "エラー",
                         description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
                       });
                     }
-                  }} className="space-y-6">
+                  }} className="space-y-4">
                     <div>
-                      <Label htmlFor="title">タイトル *</Label>
+                      <Label htmlFor="title">タイトル</Label>
                       <Input 
                         id="title" 
                         name="title" 
                         required 
-                      />
-                    </div>
-                    <div>
-                      <Label>メイン画像 *</Label>
-                      <Dropzone
-                        onFileChange={async (file) => {
-                          const formData = new FormData();
-                          formData.append('image', file);
-                          
-                          try {
-                            const response = await fetch(`${adminPath}/upload`, {
-                              method: 'POST',
-                              body: formData,
-                            });
-                            
-                            if (!response.ok) throw new Error('画像のアップロードに失敗しました');
-                            
-                            const data = await response.json();
-                            if (!data.imageUrl) throw new Error('画像URLの取得に失敗しました');
-                            
-                            const imageUrlInput = document.getElementById('imageUrl') as HTMLInputElement;
-                            if (imageUrlInput) imageUrlInput.value = data.imageUrl;
-                            
-                            toast({ title: "メイン画像をアップロードしました" });
-
-                            // Scroll to form top after toast
-                            const dialogContent = document.querySelector('[role="dialog"]');
-                            if (dialogContent) {
-                              dialogContent.scrollTop = 0;
+                        onBlur={async (e) => {
+                          const title = e.target.value.trim();
+                          if (title) {
+                            const descriptionField = document.getElementById('description') as HTMLTextAreaElement;
+                            if (descriptionField && !descriptionField.value) {
+                              try {
+                                const response = await fetch(`${adminPath}/generate-collection-description`, {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ title })
+                                });
+                                
+                                if (!response.ok) throw new Error('説明文の生成に失敗しました');
+                                
+                                const data = await response.json();
+                                descriptionField.value = data.description;
+                              } catch (error) {
+                                console.error('Error generating description:', error);
+                                toast({
+                                  variant: "destructive",
+                                  title: "エラー",
+                                  description: "説明文の生成に失敗しました"
+                                });
+                              }
                             }
-                          } catch (error) {
-                            toast({
-                              variant: "destructive",
-                              title: "画像のアップロードに失敗しました",
-                              description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
-                            });
                           }
                         }}
-                        className="aspect-video w-full"
-                      />
-                      <Input
-                        id="imageUrl"
-                        name="imageUrl"
-                        type="hidden"
-                        required
                       />
                     </div>
                     <div>
-                      <Label htmlFor="location">場所 *</Label>
+                      <Label htmlFor="description">説明文</Label>
+                      <Textarea
+                        id="description"
+                        name="description"
+                        placeholder="コレクションの説明文を入力してください"
+                        className="min-h-[100px]"
+                      />
+                    </div>
+                    <Button type="submit">作成</Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
+
+              <Dialog open={isEditCollectionDialogOpen} onOpenChange={setIsEditCollectionDialogOpen}>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>コレクションを編集</DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.currentTarget);
+                    const title = formData.get('title') as string;
+                    const description = formData.get('description') as string;
+
+                    if (!title.trim()) {
+                      toast({
+                        variant: "destructive",
+                        title: "エラー",
+                        description: "タイトルを入力してください"
+                      });
+                      return;
+                    }
+
+                    try {
+                      const response = await fetch(`${adminPath}/collections/${selectedCollection.id}`, {
+                        method: 'PUT',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          title: title.trim(),
+                          description: description.trim(),
+                        }),
+                      });
+
+                      if (!response.ok) {
+                        throw new Error('コレクションの更新に失敗しました');
+                      }
+
+                      queryClient.invalidateQueries({ queryKey: ["collections"] });
+                      toast({ title: "コレクションを更新しました" });
+                      setIsEditCollectionDialogOpen(false);
+                      setSelectedCollection(null);
+                    } catch (error) {
+                      console.error('Collection update error:', error);
+                      toast({ 
+                        variant: "destructive", 
+                        title: "エラー",
+                        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+                      });
+                    }
+                  }} className="space-y-4">
+                    <div>
+                      <Label htmlFor="edit-title">タイトル</Label>
                       <Input 
-                        id="location" 
-                        name="location" 
-                        required 
-                      />
-                    </div>
-                    <Button
-                      type="button"
-                      className="w-full"
-                      onClick={async () => {
-                        const title = (document.getElementById('title') as HTMLInputElement)?.value;
-                        const location = (document.getElementById('location') as HTMLInputElement)?.value;
-                        
-                        if (!title || !location) {
-                          toast({
-                            variant: "destructive",
-                            title: "入力エラー",
-                            description: "タイトルと場所を入力してください"
-                          });
-                          return;
-                        }
-
-                        try {
-                          const response = await fetch(`${adminPath}/ai/generate-content`, {
-                            method: 'POST',
-                            headers: {
-                              'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ title, location }),
-                          });
-
-                          if (!response.ok) throw new Error('AI生成に失敗しました');
-
-                          const data = await response.json();
-                          
-                          const subtitleInput = document.getElementById('subtitle') as HTMLInputElement;
-                          const descriptionInput = document.getElementById('description') as HTMLTextAreaElement;
-                          
-                          if (subtitleInput) subtitleInput.value = data.subtitle;
-                          if (descriptionInput) descriptionInput.value = data.description;
-                          
-                          toast({ title: "AI生成が完了しました" });
-                        } catch (error) {
-                          toast({
-                            variant: "destructive",
-                            title: "AI生成に失敗しました",
-                            description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
-                          });
-                        }
-                      }}
-                    >
-                      AIでサブタイトルと説明を生成
-                    </Button>
-                    <div>
-                      <Label htmlFor="subtitle">サブタイトル *</Label>
-                      <Input 
-                        id="subtitle" 
-                        name="subtitle" 
+                        id="edit-title" 
+                        name="title" 
+                        defaultValue={selectedCollection?.title}
                         required 
                       />
                     </div>
                     <div>
-                      <Label htmlFor="description">説明 *</Label>
-                      <Textarea 
-                        id="description" 
-                        name="description" 
-                        required 
+                      <Label htmlFor="edit-description">説明文</Label>
+                      <Textarea
+                        id="edit-description"
+                        name="description"
+                        defaultValue={selectedCollection?.description}
+                        className="min-h-[100px]"
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="startDate">開始日時 *</Label>
-                        <Input 
-                          id="startDate" 
-                          name="startDate" 
-                          type="datetime-local"
-                          required 
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="endDate">終了日時 *</Label>
-                        <Input 
-                          id="endDate" 
-                          name="endDate" 
-                          type="datetime-local"
-                          required 
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <Label>サブ画像（複数可）</Label>
-                      <div className="grid grid-cols-2 gap-4 mt-2">
-                        {[1, 2, 3, 4].map((index) => (
-                          <div key={index} className="space-y-2">
-                            <Dropzone
-                              onFileChange={async (file) => {
-                                const formData = new FormData();
-                                formData.append('image', file);
-                                
-                                try {
-                                  const response = await fetch(`${adminPath}/upload`, {
-                                    method: 'POST',
-                                    body: formData,
-                                  });
-                                  
-                                  if (!response.ok) throw new Error('画像のアップロードに失敗しました');
-                                  
-                                  const data = await response.json();
-                                  if (!data.imageUrl) throw new Error('画像URLの取得に失敗しました');
-                                  
-                                  const form = document.querySelector('form');
-                                  if (form) {
-                                    const subImageInput = document.createElement('input');
-                                    subImageInput.type = 'hidden';
-                                    subImageInput.name = 'subImageUrls';
-                                    subImageInput.value = data.imageUrl;
-                                    form.appendChild(subImageInput);
-                                  }
-                                  
-                                  toast({ title: "サブ画像をアップロードしました" });
-                                } catch (error) {
-                                  toast({
-                                    variant: "destructive",
-                                    title: "画像のアップロードに失敗しました",
-                                    description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
-                                  });
-                                }
-                              }}
-                              className="aspect-square w-full"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <Button type="submit" className="w-full">
-                      展示会を作成
-                    </Button>
+                    <Button type="submit">更新</Button>
                   </form>
                 </DialogContent>
               </Dialog>
             </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {Array.isArray(collections) && collections.map((collection: any) => (
+                <div
+                  key={collection.id}
+                  className="border p-4 rounded-lg hover:shadow-lg transition-all cursor-pointer"
+                  onClick={() => {
+                    setSelectedCollection(collection);
+                    setIsEditCollectionDialogOpen(true);
+                  }}
+                >
+                  <div className="grid grid-cols-2 gap-2 mb-2">
+                    {artworks?.filter(artwork => artwork.collectionId === collection.id)
+                      .slice(0, 4)
+                      .map((artwork, index) => (
+                        <div key={artwork.id} className="aspect-square overflow-hidden rounded-lg">
+                          <img
+                            src={artwork.imageUrl}
+                            alt={artwork.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              const img = e.target as HTMLImageElement;
+                              img.src = '/placeholder.png';
+                            }}
+                          />
+                        </div>
+                      ))}
+                    {Array.from({ length: Math.max(0, 4 - (artworks?.filter(artwork => artwork.collectionId === collection.id).length || 0)) }).map((_, i) => (
+                      <div key={`empty-${i}`} className="aspect-square rounded-lg bg-gray-100 flex items-center justify-center">
+                        <span className="text-gray-400">No Image</span>
+                      </div>
+                    ))}
+                  </div>
+                  <h3 className="font-medium">{collection.title}</h3>
+                  <p className="text-sm text-gray-600">{collection.description}</p>
+                  <p className="text-sm text-gray-500 mt-1">{collection.year}年</p>
+                  <div className="flex gap-2 mt-4">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="flex-1">
+                          <PenLine className="w-3 h-3 mr-1" />
+                          編集
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>コレクションを編集</DialogTitle>
+                        </DialogHeader>
+                        <form onSubmit={async (e) => {
+                          e.preventDefault();
+                          const formData = new FormData(e.currentTarget);
+                          const title = formData.get('title') as string;
+                          const description = formData.get('description') as string;
+                          
+                          if (!title.trim()) {
+                            toast({
+                              variant: "destructive",
+                              title: "エラー",
+                              description: "タイトルを入力してください"
+                            });
+                            return;
+                          }
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {exhibitions?.map((exhibition) => (
-                <Card key={exhibition.id} className="overflow-hidden">
-                  <div className="aspect-video relative">
-                    <img
-                      src={exhibition.imageUrl}
-                      alt={exhibition.title}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const img = e.target as HTMLImageElement;
-                        img.src = '/placeholder.png';
-                      }}
-                    />
+                          try {
+                            const response = await fetch(`${adminPath}/collections/${collection.id}`, {
+                              method: 'PUT',
+                              headers: {
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({
+                                title: title.trim(),
+                                description: description.trim() || `${title.trim()}コレクション`,
+                              }),
+                            });
+
+                            if (!response.ok) {
+                              throw new Error('コレクションの更新に失敗しました');
+                            }
+
+                            queryClient.invalidateQueries({ queryKey: ["collections"] });
+                            toast({ title: "コレクションを更新しました" });
+                            (e.target as HTMLFormElement).reset();
+                          } catch (error) {
+                            console.error('Collection update error:', error);
+                            toast({ 
+                              variant: "destructive", 
+                              title: "エラー",
+                              description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+                            });
+                          }
+                        }} className="space-y-4">
+                          <div>
+                            <Label htmlFor={`title-${collection.id}`}>タイトル</Label>
+                            <Input 
+                              id={`title-${collection.id}`} 
+                              name="title" 
+                              defaultValue={collection.title}
+                              required
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor={`description-${collection.id}`}>説明文</Label>
+                            <Textarea
+                              id={`description-${collection.id}`}
+                              name="description"
+                              defaultValue={collection.description}
+                              placeholder="コレクションの説明文を入力してください"
+                            />
+                          </div>
+                          <Button type="submit">更新</Button>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive" size="sm" className="flex-1">
+                          <Trash2 className="w-3 h-3 mr-1" />
+                          削除
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>コレクションを削除しますか？</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            この操作は取り消せません。本当に削除してもよろしいですか？<br />
+                            コレクション名: {collection.title}
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <div className="flex justify-end gap-4">
+                          <AlertDialogCancel>キャンセル</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={async () => {
+                              try {
+                                const response = await fetch(`${adminPath}/collections/${collection.id}`, {
+                                  method: 'DELETE',
+                                });
+
+                                if (!response.ok) {
+                                  throw new Error('コレクションの削除に失敗しました');
+                                }
+
+                                queryClient.invalidateQueries({ queryKey: ["collections"] });
+                                toast({ title: "コレクションを削除しました" });
+                              } catch (error) {
+                                console.error('Collection deletion error:', error);
+                                toast({ 
+                                  variant: "destructive", 
+                                  title: "エラー",
+                                  description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+                                });
+                              }
+                            }}
+                          >
+                            削除
+                          </AlertDialogAction>
+                        </div>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
-                  <div className="p-4 space-y-2">
-                    <h3 className="text-lg font-semibold">{exhibition.title}</h3>
-                    <p className="text-sm text-gray-500">{exhibition.subtitle}</p>
-                    <p className="text-sm">{exhibition.location}</p>
-                    <div className="flex justify-between text-sm text-gray-500">
-                      <span>開始: {new Date(exhibition.startDate).toLocaleString()}</span>
-                      <span>終了: {new Date(exhibition.endDate).toLocaleString()}</span>
-                    </div>
-                  </div>
-                </Card>
+                </div>
               ))}
             </div>
-          </div>
-        </TabsContent>
-      </Tabs>
+          </>
+        )}
+      </main>
     </div>
   );
 };
