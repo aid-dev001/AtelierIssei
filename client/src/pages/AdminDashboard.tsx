@@ -24,6 +24,9 @@ interface InteriorImage {
   description: string;
 }
 
+type InteriorImageUrl = string;
+type InteriorImageDescription = string;
+
 const AdminDashboard = () => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -103,11 +106,13 @@ const AdminDashboard = () => {
   const handleInteriorImageChange = (index: number, file: File) => {
     setInteriorImages(prev => {
       const updated = [...prev];
-      updated[index] = {
-        ...updated[index],
-        file,
-        preview: URL.createObjectURL(file)
-      };
+      if (updated[index]) {
+        updated[index] = {
+          ...updated[index],
+          file,
+          preview: URL.createObjectURL(file)
+        };
+      }
       return updated;
     });
   };
@@ -115,10 +120,12 @@ const AdminDashboard = () => {
   const handleInteriorDescriptionChange = (index: number, description: string) => {
     setInteriorImages(prev => {
       const updated = [...prev];
-      updated[index] = {
-        ...updated[index],
-        description
-      };
+      if (updated[index]) {
+        updated[index] = {
+          ...updated[index],
+          description
+        };
+      }
       return updated;
     });
   };
@@ -128,12 +135,9 @@ const AdminDashboard = () => {
     const formData = new FormData(e.currentTarget);
     
     try {
-      let mainImageUrl = selectedArtwork?.imageUrl;
-      const interiorImageUrls: string[] = [...(selectedArtwork?.interiorImageUrls || [])];
-      const interiorImageDescriptions: string[] = [...(selectedArtwork?.interiorImageDescriptions || ['', ''])];
-
       // Upload main image if changed
-      if (imageData.file) {
+      let mainImageUrl = selectedArtwork?.imageUrl;
+      if (imageData.file instanceof File) {
         const mainImageFormData = new FormData();
         mainImageFormData.append('image', imageData.file);
         const uploadResponse = await fetch(`/api/upload`, {
@@ -146,20 +150,27 @@ const AdminDashboard = () => {
       }
 
       // Upload interior images if changed
+      const updatedInteriorImageUrls: InteriorImageUrl[] = 
+        [...(selectedArtwork?.interiorImageUrls || [])];
+      const updatedInteriorImageDescriptions: InteriorImageDescription[] = 
+        [...(selectedArtwork?.interiorImageDescriptions || ['', ''])];
+
       for (let i = 0; i < interiorImages.length; i++) {
         const currentImage = interiorImages[i];
-        if (currentImage.file) {
+        if (currentImage.file instanceof File) {
           const interiorImageFormData = new FormData();
           interiorImageFormData.append('image', currentImage.file);
           const uploadResponse = await fetch(`/api/upload`, {
             method: 'POST',
             body: interiorImageFormData,
           });
-          if (!uploadResponse.ok) throw new Error(`インテリア画像${i + 1}のアップロードに失敗しました`);
+          if (!uploadResponse.ok) {
+            throw new Error(`インテリア画像${i + 1}のアップロードに失敗しました`);
+          }
           const { imageUrl } = await uploadResponse.json();
-          interiorImageUrls[i] = imageUrl;
+          updatedInteriorImageUrls[i] = imageUrl;
         }
-        interiorImageDescriptions[i] = currentImage.description;
+        updatedInteriorImageDescriptions[i] = currentImage.description;
       }
 
       const artworkData = {
@@ -173,8 +184,8 @@ const AdminDashboard = () => {
         storedLocation: formData.get('storedLocation') as string,
         exhibitionLocation: formData.get('exhibitionLocation') as string,
         collectionId: formData.get('collectionId') as string,
-        interiorImageUrls,
-        interiorImageDescriptions,
+        interiorImageUrls: updatedInteriorImageUrls,
+        interiorImageDescriptions: updatedInteriorImageDescriptions,
       };
 
       const response = await fetch(
@@ -230,7 +241,7 @@ const AdminDashboard = () => {
       </header>
 
       <main className="container mx-auto py-8 px-4">
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as typeof activeTab)}>
+        <Tabs defaultValue="artworks" value={activeTab} onValueChange={(value) => setActiveTab(value as typeof activeTab)}>
           <TabsList className="mb-8">
             <TabsTrigger value="artworks">作品管理</TabsTrigger>
             <TabsTrigger value="collections">コレクション管理</TabsTrigger>
@@ -264,11 +275,11 @@ const AdminDashboard = () => {
                   <form onSubmit={handleArtworkSubmit} className="space-y-8">
                     <div className="space-y-4">
                       <Label htmlFor="image">作品画像</Label>
-                      <div className="w-[200px] mx-auto">
+                      <div className="max-w-[200px] w-full mx-auto">
                         <Dropzone
-                          existingImageUrl={selectedArtwork?.imageUrl || imageData.preview}
+                          existingImageUrl={selectedArtwork?.imageUrl || imageData.preview || undefined}
                           onFileChange={handleFileChange}
-                          className="aspect-square w-full"
+                          className="aspect-square w-full object-contain"
                         />
                       </div>
                     </div>
@@ -371,7 +382,7 @@ const AdminDashboard = () => {
                           <Label className="text-base">インテリアイメージ {index + 1}</Label>
                           <div className="w-full max-w-md mx-auto">
                             <Dropzone
-                              existingImageUrl={selectedArtwork?.interiorImageUrls?.[index] || image.preview}
+                              existingImageUrl={selectedArtwork?.interiorImageUrls?.[index] || image.preview || undefined}
                               onFileChange={(file) => handleInteriorImageChange(index, file)}
                               className="aspect-video w-full"
                             />
@@ -424,7 +435,7 @@ const AdminDashboard = () => {
                         file: null,
                       });
                       setInteriorImages(
-                        (artwork.interiorImageUrls || []).map((url, i) => ({
+                        (artwork.interiorImageUrls || []).map((url: string, i: number) => ({
                           file: null,
                           preview: url,
                           description: artwork.interiorImageDescriptions?.[i] || ''
