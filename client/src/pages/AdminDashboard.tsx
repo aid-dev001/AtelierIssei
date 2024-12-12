@@ -16,14 +16,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, AlertDialogDescription, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
+import { Card } from "@/components/ui/card";
 import { PenLine, Trash2 } from "lucide-react";
+import type { Exhibition } from "@db/schema";
 
 const AdminDashboard = () => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const adminPath = window.location.pathname.split('/dashboard')[0];
-  const [activeTab, setActiveTab] = useState<'artworks' | 'collections'>('artworks');
+  const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions'>('artworks');
   const [selectedCollection, setSelectedCollection] = useState<any>(null);
   const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
 const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
@@ -37,6 +39,16 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
     url: '',
     generatedTitle: '',
     generatedDescription: '',
+  });
+
+  // Exhibitions data
+  const { data: exhibitions } = useQuery({
+    queryKey: ["exhibitions"],
+    queryFn: async () => {
+      const response = await fetch("/api/exhibitions");
+      if (!response.ok) throw new Error('Failed to fetch exhibitions');
+      return response.json();
+    },
   });
 
   // Collections data
@@ -655,6 +667,19 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
                 <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
               )}
             </button>
+            <button
+              className={`px-4 py-2 font-medium transition-all relative ${
+                activeTab === 'exhibitions'
+                  ? 'text-black font-semibold'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              onClick={() => setActiveTab('exhibitions')}
+            >
+              展示会管理
+              {activeTab === 'exhibitions' && (
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
+              )}
+            </button>
           </div>
         </div>
       </header>
@@ -777,10 +802,146 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
               ))}
             </div>
           </>
-        ) : (
+        ) : activeTab === 'collections' ? (
           <>
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-semibold">コレクション一覧</h2>
+            </div>
+          </>
+        ) : activeTab === 'exhibitions' ? (
+          <>
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold">展示会一覧</h2>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>
+                    新規展示会を追加
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>新規展示会を追加</DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.currentTarget);
+                    
+                    try {
+                      const response = await fetch(`${adminPath}/exhibitions`, {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          title: formData.get('title'),
+                          description: formData.get('description'),
+                          location: formData.get('location'),
+                          imageUrl: formData.get('imageUrl'),
+                          startDate: formData.get('startDate'),
+                          endDate: formData.get('endDate'),
+                        }),
+                      });
+
+                      if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || '展示会の作成に失敗しました');
+                      }
+
+                      queryClient.invalidateQueries({ queryKey: ["exhibitions"] });
+                      toast({ title: "展示会を作成しました" });
+                      (e.target as HTMLFormElement).reset();
+                    } catch (error) {
+                      console.error('Exhibition creation error:', error);
+                      toast({ 
+                        variant: "destructive", 
+                        title: "エラー",
+                        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+                      });
+                    }
+                  }} className="space-y-4">
+                    <div>
+                      <Label htmlFor="title">タイトル</Label>
+                      <Input 
+                        id="title" 
+                        name="title" 
+                        required 
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="description">説明</Label>
+                      <Textarea 
+                        id="description" 
+                        name="description" 
+                        required 
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="location">場所</Label>
+                      <Input 
+                        id="location" 
+                        name="location" 
+                        required 
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="imageUrl">画像URL</Label>
+                      <Input 
+                        id="imageUrl" 
+                        name="imageUrl" 
+                        type="url"
+                        required 
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="startDate">開始日</Label>
+                      <Input 
+                        id="startDate" 
+                        name="startDate" 
+                        type="date"
+                        required 
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="endDate">終了日</Label>
+                      <Input 
+                        id="endDate" 
+                        name="endDate" 
+                        type="date"
+                        required 
+                      />
+                    </div>
+                    <Button type="submit" className="w-full">
+                      作成
+                    </Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+              {exhibitions?.map((exhibition) => (
+                <Card key={exhibition.id} className="p-4">
+                  <div className="aspect-video mb-4 overflow-hidden rounded-lg">
+                    <img
+                      src={exhibition.imageUrl}
+                      alt={exhibition.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        img.src = '/placeholder.png';
+                      }}
+                    />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">{exhibition.title}</h3>
+                  <p className="text-sm text-gray-600 mb-4">{exhibition.description}</p>
+                  <div className="text-sm text-gray-500">
+                    <p>場所: {exhibition.location}</p>
+                    <p>期間: {new Date(exhibition.startDate).toLocaleDateString()} - {new Date(exhibition.endDate).toLocaleDateString()}</p>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </>
               <Dialog>
                 <DialogTrigger asChild>
                   <Button>

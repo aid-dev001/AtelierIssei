@@ -24,10 +24,10 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Start Full Stack App"
+args = "Start application"
 
 [[workflows.workflow]]
-name = "Start Full Stack App"
+name = "Start application"
 author = "agent"
 
 [workflows.workflow.metadata]

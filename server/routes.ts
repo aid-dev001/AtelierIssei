@@ -407,4 +407,38 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
       res.status(500).json({ error: "お問い合わせの送信に失敗しました" });
     }
   });
+
+  // Exhibition endpoints
+  app.post(`/admin/${ADMIN_URL_PATH}/exhibitions`, requireAdmin, async (req, res) => {
+    try {
+      const exhibitionData = {
+        title: req.body.title,
+        description: req.body.description,
+        location: req.body.location,
+        imageUrl: req.body.imageUrl,
+        startDate: new Date(req.body.startDate),
+        endDate: new Date(req.body.endDate),
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const [newExhibition] = await db.insert(exhibitions).values(exhibitionData).returning();
+      res.json(newExhibition);
+    } catch (error) {
+      console.error("Error creating exhibition:", error);
+      res.status(500).json({ error: "展示会の作成に失敗しました" });
+    }
+  });
+
+  // Get all exhibitions
+  app.get("/api/exhibitions", async (req, res) => {
+    try {
+      const allExhibitions = await db.select().from(exhibitions).orderBy(desc(exhibitions.startDate));
+      res.json(allExhibitions);
+    } catch (error) {
+      console.error("Failed to fetch exhibitions:", error);
+      res.status(500).json({ error: "展示会の取得に失敗しました" });
+    }
+  });
 }
