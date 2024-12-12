@@ -43,11 +43,9 @@ export const collections = pgTable("collections", {
 export const exhibitions = pgTable("exhibitions", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: text("title").notNull(),
-  subtitle: text("subtitle").notNull(),
   description: text("description").notNull(),
   location: text("location").notNull(),
-  mainImageUrl: text("main_image_url").notNull(),
-  subImageUrls: text("sub_image_urls").array(),
+  imageUrl: text("image_url").notNull(),
   startDate: timestamp("start_date").notNull(),
   endDate: timestamp("end_date").notNull(),
   isActive: boolean("is_active").default(true).notNull(),
@@ -65,25 +63,13 @@ export const testimonials = pgTable("testimonials", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const ateliers = pgTable("ateliers", {
+export const atelierPosts = pgTable("atelier_posts", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   location: text("location").notNull(),
-  startYear: integer("start_year").notNull(),
-  endYear: integer("end_year").notNull(),
-  mainImageUrl: text("main_image_url").notNull(),
-  subImageUrls: text("sub_image_urls").array(),
+  title: text("title").notNull(),
   description: text("description").notNull(),
-  isActive: boolean("is_active").default(true).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export const voices = pgTable("voices", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
   imageUrl: text("image_url").notNull(),
-  customerName: text("customer_name").notNull(),
-  testimonial: text("testimonial").notNull(),
-  artworkId: integer("artwork_id").references(() => artworks.id),
+  period: text("period").notNull(),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -133,15 +119,10 @@ export const selectTestimonialSchema = createSelectSchema(testimonials);
 export type InsertTestimonial = z.infer<typeof insertTestimonialSchema>;
 export type Testimonial = z.infer<typeof selectTestimonialSchema>;
 
-export const insertAtelierSchema = createInsertSchema(ateliers);
-export const selectAtelierSchema = createSelectSchema(ateliers);
-export type InsertAtelier = z.infer<typeof insertAtelierSchema>;
-export type Atelier = z.infer<typeof selectAtelierSchema>;
-
-export const insertVoiceSchema = createInsertSchema(voices);
-export const selectVoiceSchema = createSelectSchema(voices);
-export type InsertVoice = z.infer<typeof insertVoiceSchema>;
-export type Voice = z.infer<typeof selectVoiceSchema>;
+export const insertAtelierPostSchema = createInsertSchema(atelierPosts);
+export const selectAtelierPostSchema = createSelectSchema(atelierPosts);
+export type InsertAtelierPost = z.infer<typeof insertAtelierPostSchema>;
+export type AtelierPost = z.infer<typeof selectAtelierPostSchema>;
 
 export const insertNewsSchema = createInsertSchema(news);
 export const selectNewsSchema = createSelectSchema(news);
