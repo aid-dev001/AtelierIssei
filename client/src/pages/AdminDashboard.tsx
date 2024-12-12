@@ -23,10 +23,12 @@ const AdminDashboard = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const adminPath = window.location.pathname.split('/dashboard')[0];
-  const [activeTab, setActiveTab] = useState<'artworks' | 'collections'>('artworks');
+  const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions'>('artworks');
   const [selectedCollection, setSelectedCollection] = useState<any>(null);
   const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
 const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
+  const [selectedExhibition, setSelectedExhibition] = useState<any>(null);
+  const [subImageUrls, setSubImageUrls] = useState<string[]>([]);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [imageData, setImageData] = useState<{
@@ -50,6 +52,52 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
       return data;
     },
   });
+
+  // Exhibitions data
+  const { data: exhibitions } = useQuery({
+    queryKey: ["exhibitions"],
+    queryFn: async () => {
+      const response = await fetch("/api/exhibitions");
+      if (!response.ok) throw new Error('Failed to fetch exhibitions');
+      return response.json();
+    },
+  });
+
+  const handleSubImageUpload = async (file: File, index: number) => {
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      toast({
+        title: "画像をアップロード中...",
+      });
+
+      const response = await fetch(`${adminPath}/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('画像のアップロードに失敗しました');
+      }
+
+      const data = await response.json();
+      const newUrls = [...subImageUrls];
+      newUrls[index] = data.imageUrl;
+      setSubImageUrls(newUrls);
+
+      toast({
+        title: "画像をアップロードしました",
+      });
+    } catch (error) {
+      console.error('Error uploading sub image:', error);
+      toast({
+        variant: "destructive",
+        title: "画像のアップロードに失敗しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+      });
+    }
+  };
 
   // Artworks data
   const { data: artworks, isLoading, error } = useQuery<Artwork[]>({
@@ -655,6 +703,19 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
                 <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
               )}
             </button>
+            <button
+              className={`px-4 py-2 font-medium transition-all relative ${
+                activeTab === 'exhibitions'
+                  ? 'text-black font-semibold'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              onClick={() => setActiveTab('exhibitions')}
+            >
+              展示会管理
+              {activeTab === 'exhibitions' && (
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
+              )}
+            </button>
           </div>
         </div>
       </header>
@@ -775,6 +836,258 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
                   </div>
                 </div>
               ))}
+            </div>
+          </>
+        ) : activeTab === 'exhibitions' ? (
+          <>
+            <div className="space-y-8">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-semibold">展示会一覧</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {exhibitions?.map((exhibition) => (
+                    <div
+                      key={exhibition.id}
+                      className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+                    >
+                      <div className="aspect-video relative">
+                        <img
+                          src={exhibition.imageUrl}
+                          alt={exhibition.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="p-4 space-y-2">
+                        <h3 className="text-lg font-semibold">{exhibition.title}</h3>
+                        <p className="text-sm text-gray-600">{exhibition.subtitle}</p>
+                        <p className="text-sm text-gray-500">
+                          {new Date(exhibition.startDate).toLocaleDateString()} 〜{" "}
+                          {new Date(exhibition.endDate).toLocaleDateString()}
+                        </p>
+                        <p className="text-sm text-gray-500">{exhibition.location}</p>
+                        <div className="flex gap-2 mt-4">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1"
+                            onClick={() => {
+                              setSelectedExhibition(exhibition);
+                              setSubImageUrls(exhibition.subImageUrls || []);
+                            }}
+                          >
+                            編集
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="destructive" size="sm" className="flex-1">
+                                削除
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>展示会を削除しますか？</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  この操作は取り消せません。本当に削除してもよろしいですか？
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <div className="flex justify-end gap-4">
+                                <AlertDialogCancel>キャンセル</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={async () => {
+                                    try {
+                                      const response = await fetch(
+                                        `${adminPath}/exhibitions/${exhibition.id}`,
+                                        { method: 'DELETE' }
+                                      );
+                                      if (!response.ok) throw new Error('削除に失敗しました');
+                                      
+                                      queryClient.invalidateQueries({ queryKey: ["exhibitions"] });
+                                      toast({ title: "展示会を削除しました" });
+                                    } catch (error) {
+                                      toast({
+                                        variant: "destructive",
+                                        title: "削除に失敗しました",
+                                        description: error instanceof Error ? error.message : "エラーが発生しました"
+                                      });
+                                    }
+                                  }}
+                                >
+                                  削除
+                                </AlertDialogAction>
+                              </div>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>
+                    新規展示会を追加
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh] p-0">
+                  <div className="sticky top-0 bg-background z-10 px-6 pt-6">
+                    <DialogHeader>
+                      <DialogTitle>
+                        新規展示会を追加
+                      </DialogTitle>
+                    </DialogHeader>
+                  </div>
+                  <div className="px-6 pb-6 h-[calc(90vh-80px)] overflow-y-auto">
+                    <form onSubmit={async (e) => {
+                      e.preventDefault();
+                      const formData = new FormData(e.currentTarget);
+                      
+                      try {
+                        // タイトルからサブタイトルを生成
+                        const title = formData.get('title') as string;
+                        if (!title.trim()) {
+                          toast({
+                            variant: "destructive",
+                            title: "エラー",
+                            description: "タイトルを入力してください"
+                          });
+                          return;
+                        }
+
+                        setIsGeneratingDescription(true);
+                        const response = await fetch(`${adminPath}/generate-exhibition-subtitle`, {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ title })
+                        });
+                        
+                        if (!response.ok) throw new Error('サブタイトルの生成に失敗しました');
+                        
+                        const data = await response.json();
+                        const subtitleField = document.getElementById('subtitle') as HTMLTextAreaElement;
+                        if (subtitleField) {
+                          subtitleField.value = data.subtitle;
+                        }
+
+                        // 展示会データの登録
+                        const exhibitionData = {
+                          title: title.trim(),
+                          subtitle: data.subtitle,
+                          description: formData.get('description') as string,
+                          location: formData.get('location') as string,
+                          startDate: formData.get('startDate') as string,
+                          endDate: formData.get('endDate') as string,
+                          imageUrl: formData.get('imageUrl') as string,
+                          subImageUrls: [], // TODO: 複数画像のアップロード処理
+                          isActive: true
+                        };
+
+                        const createResponse = await fetch(`${adminPath}/exhibitions`, {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify(exhibitionData)
+                        });
+
+                        if (!createResponse.ok) {
+                          const errorData = await createResponse.json();
+                          throw new Error(errorData.error || '展示会の作成に失敗しました');
+                        }
+
+                        queryClient.invalidateQueries({ queryKey: ["exhibitions"] });
+                        toast({ title: "展示会を作成しました" });
+                        e.currentTarget.reset();
+                      } catch (error) {
+                        console.error('Exhibition creation error:', error);
+                        toast({ 
+                          variant: "destructive", 
+                          title: "エラー",
+                          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+                        });
+                      } finally {
+                        setIsGeneratingDescription(false);
+                      }
+                    }} className="space-y-4">
+                      <div>
+                        <Label htmlFor="title">タイトル</Label>
+                        <Input 
+                          id="title" 
+                          name="title" 
+                          required 
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="subtitle">サブタイトル（自動生成）</Label>
+                        <Textarea 
+                          id="subtitle" 
+                          name="subtitle" 
+                          rows={2}
+                          className="resize-none"
+                          placeholder="タイトルを入力すると自動生成されます"
+                          readOnly
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="location">開催場所</Label>
+                        <Input 
+                          id="location" 
+                          name="location" 
+                          required 
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="startDate">開始日</Label>
+                          <Input 
+                            id="startDate" 
+                            name="startDate" 
+                            type="date"
+                            required 
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="endDate">終了日</Label>
+                          <Input 
+                            id="endDate" 
+                            name="endDate" 
+                            type="date"
+                            required 
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <Label htmlFor="description">説明</Label>
+                        <Textarea 
+                          id="description" 
+                          name="description" 
+                          rows={4}
+                          required 
+                        />
+                      </div>
+                      <div>
+                        <Label>メイン画像</Label>
+                        <Dropzone
+                          onFileChange={handleFileChange}
+                          className="aspect-video w-full mx-auto"
+                        />
+                      </div>
+                      <div>
+                        <Label>サブ画像</Label>
+                        <div className="grid grid-cols-2 gap-4">
+                          {[1, 2, 3, 4].map((index) => (
+                            <Dropzone
+                              key={index}
+                              onFileChange={(file) => handleSubImageUpload(file, index - 1)}
+                              className="aspect-square w-full"
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <Button type="submit" className="w-full">
+                        作成
+                      </Button>
+                    </form>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </>
         ) : (
