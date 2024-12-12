@@ -207,34 +207,27 @@ const AdminDashboard = () => {
     try {
       if (!selectedArtwork) return;
 
-      let currentDescriptions = selectedArtwork.interiorImageDescriptions || [];
-      
-      // 文字列の場合は配列に変換
-      if (typeof currentDescriptions === 'string') {
-        currentDescriptions = [];
-      }
-      
-      // 必要な長さまで配列を拡張
-      while (currentDescriptions.length <= index) {
-        currentDescriptions.push('');
-      }
+      // 新しい説明文の配列を作成
+      const newDescriptions = Array.isArray(selectedArtwork.interiorImageDescriptions) 
+        ? [...selectedArtwork.interiorImageDescriptions] 
+        : new Array(2).fill('');
 
       // インデックスの説明文を更新
-      currentDescriptions[index] = description;
+      newDescriptions[index] = description;
 
       // データベースの更新
       await updateArtworkMutation.mutateAsync({
         id: selectedArtwork.id,
         data: {
           ...selectedArtwork,
-          interiorImageDescriptions: currentDescriptions
+          interiorImageDescriptions: newDescriptions
         }
       });
 
       // ローカルステートの更新
       setSelectedArtwork({
         ...selectedArtwork,
-        interiorImageDescriptions: currentDescriptions
+        interiorImageDescriptions: newDescriptions
       });
 
     } catch (error) {
@@ -384,23 +377,32 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleArtworkUpdate = async (formData: FormData) => {
+  const handleArtworkUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (!selectedArtwork) return;
 
     try {
+      const form = e.currentTarget;
+      const formData = new FormData(form);
+      
+      const price = formData.get('price');
+      const collectionId = formData.get('collectionId');
+
       const updatedData = {
+        ...selectedArtwork,
         title: formData.get('title') as string,
         description: formData.get('description') as string,
-        price: parseFloat(formData.get('price') as string),
+        price: price ? parseFloat(price as string) : selectedArtwork.price,
         size: formData.get('size') as string,
         status: formData.get('status') as string,
         createdLocation: formData.get('createdLocation') as string,
         storedLocation: formData.get('storedLocation') as string,
+        exhibitionLocation: formData.get('exhibitionLocation') as string,
         imageUrl: imageData.url || selectedArtwork.imageUrl,
-        collectionId: formData.get('collectionId') ? parseInt(formData.get('collectionId') as string) : null,
-        interiorImageUrls: selectedArtwork.interiorImageUrls,
-        interiorImageDescriptions: selectedArtwork.interiorImageDescriptions,
+        collectionId: collectionId ? parseInt(collectionId as string) : null
       };
+
+      console.log('Updating artwork with data:', updatedData);
 
       await updateArtworkMutation.mutateAsync({
         id: selectedArtwork.id,
@@ -410,6 +412,7 @@ const AdminDashboard = () => {
       toast({
         title: "作品情報を更新しました",
       });
+      setIsEditDialogOpen(false);
     } catch (error) {
       console.error('Error updating artwork:', error);
       toast({
@@ -524,12 +527,13 @@ const AdminDashboard = () => {
                 placeholder="1枚目の説明文を入力してください"
                 value={selectedArtwork?.interiorImageDescriptions?.[0] ?? ''}
                 onChange={e => {
+                  e.preventDefault();
                   e.stopPropagation();
-                  const value = e.target.value;
-                  handleInteriorDescriptionChange(0, value);
+                  handleInteriorDescriptionChange(0, e.target.value);
                 }}
                 onKeyDown={e => {
                   e.stopPropagation();
+                  e.nativeEvent.stopImmediatePropagation();
                 }}
                 className="resize-none"
                 rows={4}
@@ -552,12 +556,13 @@ const AdminDashboard = () => {
                 placeholder="2枚目の説明文を入力してください"
                 value={selectedArtwork?.interiorImageDescriptions?.[1] ?? ''}
                 onChange={e => {
+                  e.preventDefault();
                   e.stopPropagation();
-                  const value = e.target.value;
-                  handleInteriorDescriptionChange(1, value);
+                  handleInteriorDescriptionChange(1, e.target.value);
                 }}
                 onKeyDown={e => {
                   e.stopPropagation();
+                  e.nativeEvent.stopImmediatePropagation();
                 }}
                 className="resize-none"
                 rows={4}

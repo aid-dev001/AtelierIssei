@@ -90,6 +90,11 @@ const ArtworkDetail = () => {
                 <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
                   サイズ: {artwork.size || 'F4(333mm x 242mm)'}
                 </div>
+                {artwork.exhibitionLocation && (
+                  <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
+                    展示履歴: {artwork.exhibitionLocation}
+                  </div>
+                )}
               </div>
             </div>
             
