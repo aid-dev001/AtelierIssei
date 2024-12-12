@@ -541,10 +541,10 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
                       ? [...selectedArtwork.interiorImageDescriptions]
                       : ['', ''];
                     descriptions[0] = e.target.value;
-                    setSelectedArtwork({
-                      ...selectedArtwork,
+                    setSelectedArtwork(prev => ({
+                      ...prev,
                       interiorImageDescriptions: descriptions,
-                    });
+                    }));
                   }
                 }}
                 className="resize-none"
@@ -573,10 +573,10 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
                       ? [...selectedArtwork.interiorImageDescriptions]
                       : ['', ''];
                     descriptions[1] = e.target.value;
-                    setSelectedArtwork({
-                      ...selectedArtwork,
+                    setSelectedArtwork(prev => ({
+                      ...prev,
                       interiorImageDescriptions: descriptions,
-                    });
+                    }));
                   }
                 }}
                 className="resize-none"
