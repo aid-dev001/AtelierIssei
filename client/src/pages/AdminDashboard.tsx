@@ -213,17 +213,16 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
       // 新しい説明文の配列を作成
       const newDescriptions = Array.isArray(selectedArtwork.interiorImageDescriptions) 
         ? [...selectedArtwork.interiorImageDescriptions]
-        : new Array(2).fill('');
+        : ['', ''];
 
       // インデックスの説明文を更新
       newDescriptions[index] = description;
 
       // ローカルステートを先に更新
-      const updatedArtwork = {
+      setSelectedArtwork({
         ...selectedArtwork,
         interiorImageDescriptions: newDescriptions
-      };
-      setSelectedArtwork(updatedArtwork);
+      });
 
       // データベースの更新
       await updateArtworkMutation.mutateAsync({
@@ -438,7 +437,7 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
         <Dropzone
           existingImageUrl={imageData.url || selectedArtwork?.imageUrl}
           onFileChange={handleFileChange}
-          className="h-[200px]"
+          className="aspect-square w-full max-w-[300px] mx-auto"
         />
       </div>
       <div className="space-y-2">
@@ -525,7 +524,7 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
             <Dropzone
               existingImageUrl={selectedArtwork?.interiorImageUrls?.[0]}
               onFileChange={(file) => handleInteriorImageUpload(file, 0)}
-              className="h-[150px]"
+              className="aspect-square w-full"
             />
             <div className="space-y-2">
               <Label htmlFor="interior-desc-1">1枚目の説明文</Label>
@@ -538,9 +537,9 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
                   : ''}
                 onChange={e => {
                   if (selectedArtwork) {
-                    const descriptions = Array.isArray(selectedArtwork.interiorImageDescriptions)
+                    const descriptions: string[] = Array.isArray(selectedArtwork.interiorImageDescriptions)
                       ? [...selectedArtwork.interiorImageDescriptions]
-                      : [];
+                      : ['', ''];
                     descriptions[0] = e.target.value;
                     setSelectedArtwork({
                       ...selectedArtwork,
@@ -557,7 +556,7 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
             <Dropzone
               existingImageUrl={selectedArtwork?.interiorImageUrls?.[1]}
               onFileChange={(file) => handleInteriorImageUpload(file, 1)}
-              className="h-[150px]"
+              className="aspect-square w-full"
             />
             <div className="space-y-2">
               <Label htmlFor="interior-desc-2">2枚目の説明文</Label>
@@ -570,9 +569,9 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
                   : ''}
                 onChange={e => {
                   if (selectedArtwork) {
-                    const descriptions = Array.isArray(selectedArtwork.interiorImageDescriptions)
+                    const descriptions: string[] = Array.isArray(selectedArtwork.interiorImageDescriptions)
                       ? [...selectedArtwork.interiorImageDescriptions]
-                      : [];
+                      : ['', ''];
                     descriptions[1] = e.target.value;
                     setSelectedArtwork({
                       ...selectedArtwork,
