@@ -17,6 +17,7 @@ import Concept from "./pages/Concept";
 import Exhibition from "./pages/Exhibition";
 import ExhibitionDetail from "./pages/ExhibitionDetail";
 import Collections from "./pages/Collections";
+import CollectionDetail from "./pages/CollectionDetail";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import Navbar from "./components/Navbar";
@@ -40,6 +41,7 @@ function Router() {
           <Route path="/exhibition" component={Exhibition} />
           <Route path="/exhibition/:id" component={ExhibitionDetail} />
           <Route path="/collections" component={Collections} />
+          <Route path="/collections/:id" component={CollectionDetail} />
           <Route path="/admin/:adminPath" component={AdminLogin} />
           <Route path="/admin/:adminPath/dashboard" component={AdminDashboard} />
           <Route>404 Page Not Found</Route>

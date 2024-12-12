@@ -27,6 +27,8 @@ const AtelierInfo = {
     period: "2023-現在",
     mainImage: "/artworks/12658.jpg",
   }
+} as const;
+
 const CollectionsSection = () => {
   const { data: collections, isLoading, error } = useQuery<Collection[]>({
     queryKey: ["collections"],
@@ -76,7 +78,7 @@ const CollectionsSection = () => {
 
         return (
           <div key={collection.id} className="space-y-8">
-            <ScrollToTopLink href="/collections">
+            <ScrollToTopLink href={`/collections/${collection.id}`}>
               <h3 className="text-2xl font-medium text-center hover:text-primary/80 transition-colors">
                 {collection.title}
               </h3>
@@ -103,7 +105,6 @@ const CollectionsSection = () => {
     </>
   );
 };
-} as const;
 
 const Home = () => {
   useEffect(() => {

@@ -76,12 +76,12 @@ const Collections = () => {
 
               <div className="flex justify-center">
                 <ScrollToTopLink
-                  href={`/artworks`}
-                  className="inline-flex items-center gap-2 text-lg font-medium text-gray-700 hover:text-primary/80 transition-colors group"
-                >
-                  View Collection
-                  <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
-                </ScrollToTopLink>
+                href={`/collections/${collection.id}`}
+                className="inline-flex items-center gap-2 text-lg font-medium text-gray-700 hover:text-primary/80 transition-colors group"
+              >
+                View Collection
+                <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
+              </ScrollToTopLink>
               </div>
             </div>
           ))}
