@@ -5,7 +5,27 @@ export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, onChange, onKeyDown, ...props }, ref) => {
+    const handleChange = React.useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (onChange) {
+        onChange(e);
+      }
+    }, [onChange]);
+
+    const handleKeyDown = React.useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      e.stopPropagation();
+      if (onKeyDown) {
+        onKeyDown(e);
+      }
+    }, [onKeyDown]);
+
+    const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
     return (
       <textarea
         className={cn(
@@ -13,6 +33,9 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           className
         )}
         ref={ref}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        onBlur={handleBlur}
         {...props}
       />
     )
