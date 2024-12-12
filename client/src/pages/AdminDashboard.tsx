@@ -787,7 +787,7 @@ const AdminDashboard = () => {
                     e.preventDefault();
                     const formData = new FormData(e.currentTarget);
                     const title = formData.get('title') as string;
-                    const description = formData.get('description') as string;
+                    let description = formData.get('description') as string;
                     
                     if (!title.trim()) {
                       toast({
@@ -798,6 +798,11 @@ const AdminDashboard = () => {
                       return;
                     }
 
+                    // 説明文が空の場合、自動生成
+                    if (!description.trim()) {
+                      description = `${title.trim()}シリーズの作品群です。独自の美的感性と芸術的表現を追求したコレクションとなっています。`;
+                    }
+
                     try {
                       const response = await fetch(`${adminPath}/collections`, {
                         method: 'POST',
@@ -806,7 +811,7 @@ const AdminDashboard = () => {
                         },
                         body: JSON.stringify({
                           title: title.trim(),
-                          description: description.trim() || `${title.trim()}コレクション`,
+                          description: description.trim(),
                         }),
                       });
 
@@ -829,7 +834,20 @@ const AdminDashboard = () => {
                   }} className="space-y-4">
                     <div>
                       <Label htmlFor="title">タイトル</Label>
-                      <Input id="title" name="title" required />
+                      <Input 
+                        id="title" 
+                        name="title" 
+                        required 
+                        onChange={(e) => {
+                          const title = e.target.value.trim();
+                          if (title) {
+                            const descriptionField = document.getElementById('description') as HTMLTextAreaElement;
+                            if (descriptionField && !descriptionField.value) {
+                              descriptionField.value = `${title}シリーズの作品群です。独自の美的感性と芸術的表現を追求したコレクションとなっています。`;
+                            }
+                          }
+                        }}
+                      />
                     </div>
                     <div>
                       <Label htmlFor="description">説明文</Label>
@@ -837,6 +855,7 @@ const AdminDashboard = () => {
                         id="description"
                         name="description"
                         placeholder="コレクションの説明文を入力してください"
+                        className="min-h-[100px]"
                       />
                     </div>
                     <Button type="submit">作成</Button>
