@@ -459,12 +459,15 @@ const AdminDashboard = () => {
               onFileChange={(file) => handleInteriorImageUpload(file, 0)}
               className="h-[150px]"
             />
-            <Textarea
-              placeholder="1枚目の説明文を入力してください"
-              value={selectedArtwork?.interiorImageDescriptions?.[0] ?? ''}
-              onChange={e => handleInteriorDescriptionChange(0, e.target.value)}
-              className="min-h-[80px]"
-            />
+            <div className="space-y-2">
+              <Label htmlFor="interior-desc-1">1枚目の説明文</Label>
+              <Textarea
+                id="interior-desc-1"
+                placeholder="1枚目の説明文を入力してください"
+                value={selectedArtwork?.interiorImageDescriptions?.[0] ?? ''}
+                onChange={e => handleInteriorDescriptionChange(0, e.target.value)}
+              />
+            </div>
           </div>
           <div className="space-y-2">
             <Dropzone
@@ -472,12 +475,15 @@ const AdminDashboard = () => {
               onFileChange={(file) => handleInteriorImageUpload(file, 1)}
               className="h-[150px]"
             />
-            <Textarea
-              placeholder="2枚目の説明文を入力してください"
-              value={selectedArtwork?.interiorImageDescriptions?.[1] ?? ''}
-              onChange={e => handleInteriorDescriptionChange(1, e.target.value)}
-              className="min-h-[80px]"
-            />
+            <div className="space-y-2">
+              <Label htmlFor="interior-desc-2">2枚目の説明文</Label>
+              <Textarea
+                id="interior-desc-2"
+                placeholder="2枚目の説明文を入力してください"
+                value={selectedArtwork?.interiorImageDescriptions?.[1] ?? ''}
+                onChange={e => handleInteriorDescriptionChange(1, e.target.value)}
+              />
+            </div>
           </div>
         </div>
       </div>
