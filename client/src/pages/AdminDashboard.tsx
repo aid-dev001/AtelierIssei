@@ -1,31 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Dropzone } from "@/components/ui/dropzone";
-import type { Artwork } from "@db/schema";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, AlertDialogDescription, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
 import { PenLine, Trash2 } from "lucide-react";
+import { Dropzone } from "@/components/ui/dropzone";
+import type { Artwork } from "@db/schema";
+import { ADMIN_URL_PATH } from "@/lib/constants";
 
 const AdminDashboard = () => {
   const [, setLocation] = useLocation();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const adminPath = window.location.pathname.split('/dashboard')[0];
   const [activeTab, setActiveTab] = useState<'artworks' | 'collections'>('artworks');
-  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [imageData, setImageData] = useState<{
     url: string;
     generatedTitle: string;
@@ -36,7 +28,10 @@ const AdminDashboard = () => {
     generatedDescription: '',
   });
 
-  // Collections data
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const adminPath = `/admin/${ADMIN_URL_PATH}`;
+
   const { data: collections } = useQuery({
     queryKey: ["collections"],
     queryFn: async () => {
@@ -48,7 +43,6 @@ const AdminDashboard = () => {
     },
   });
 
-  // Artworks data
   const { data: artworks, isLoading, error } = useQuery<Artwork[]>({
     queryKey: [`${adminPath}/artworks`],
     queryFn: async () => {
@@ -80,37 +74,6 @@ const AdminDashboard = () => {
     });
   }
 
-  const createArtworkMutation = useMutation({
-    mutationFn: async (artworkData: FormData) => {
-      const response = await fetch(`${adminPath}/artworks`, {
-        method: 'POST',
-        body: artworkData,
-      });
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error || 'Failed to create artwork');
-      }
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`${adminPath}/artworks`] });
-      toast({ title: "作品を追加しました" });
-      setIsEditDialogOpen(false);
-      setSelectedArtwork(null);
-      setImageData({
-        url: '',
-        generatedTitle: '',
-        generatedDescription: '',
-      });
-    },
-    onError: (error) => {
-      toast({ 
-        variant: "destructive", 
-        title: "作品の追加に失敗しました",
-        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
-      });
-    },
-  });
 
   const updateArtworkMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: any }) => {
@@ -150,97 +113,20 @@ const AdminDashboard = () => {
     },
   });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      const form = e.currentTarget;
-      const formData = new FormData(form);
-
-      if (selectedArtwork) {
-        // 更新の場合
-        const updateData = {
-          title: formData.get('title') as string,
-          description: formData.get('description') as string,
-          price: parseFloat(formData.get('price') as string),
-          size: formData.get('size') as string,
-          status: formData.get('status') as string,
-          createdLocation: formData.get('createdLocation') as string,
-          storedLocation: formData.get('storedLocation') as string,
-          imageUrl: imageData.url || selectedArtwork.imageUrl,
-          collectionId: formData.get('collectionId') ? parseInt(formData.get('collectionId') as string) : null,
-          interiorImageUrls: selectedArtwork.interiorImageUrls,
-          interiorImageDescriptions: selectedArtwork.interiorImageDescriptions,
-        };
-        
-        await updateArtworkMutation.mutateAsync({
-          id: selectedArtwork.id,
-          data: updateData,
-        });
-      } else {
-        // 新規作成の場合
-        if (!imageData.url) {
-          toast({
-            variant: "destructive",
-            title: "画像をアップロードしてください",
-          });
-          return;
-        }
-
-        // 画像データを追加
-        const imageResponse = await fetch(imageData.url);
-        const imageBlob = await imageResponse.blob();
-        formData.append('image', imageBlob);
-
-        await createArtworkMutation.mutateAsync(formData);
-      }
-    } catch (error) {
-      console.error('Form submission error:', error);
-      toast({
-        variant: "destructive",
-        title: "エラーが発生しました",
-        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
-      });
-    }
+  const handleInteriorDescriptionChange = (index: number, value: string) => {
+    if (!selectedArtwork) return;
+    
+    const newDescriptions = [...(selectedArtwork.interiorImageDescriptions || [])];
+    newDescriptions[index] = value;
+    
+    setSelectedArtwork({
+      ...selectedArtwork,
+      interiorImageDescriptions: newDescriptions as string[],
+    });
   };
 
-  const handleInteriorDescriptionChange = async (index: number, description: string) => {
-    try {
-      if (!selectedArtwork) return;
-
-      // 新しい説明文の配列を作成
-      const newDescriptions = Array.isArray(selectedArtwork.interiorImageDescriptions) 
-        ? [...selectedArtwork.interiorImageDescriptions] 
-        : new Array(2).fill('');
-
-      // インデックスの説明文を更新
-      newDescriptions[index] = description;
-
-      // データベースの更新
-      await updateArtworkMutation.mutateAsync({
-        id: selectedArtwork.id,
-        data: {
-          ...selectedArtwork,
-          interiorImageDescriptions: newDescriptions
-        }
-      });
-
-      // ローカルステートの更新
-      setSelectedArtwork({
-        ...selectedArtwork,
-        interiorImageDescriptions: newDescriptions
-      });
-
-    } catch (error) {
-      console.error('Error updating description:', error);
-      toast({
-        variant: "destructive",
-        title: "説明文の更新に失敗しました",
-        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
-      });
-    }
-  };
-
-  const handleInteriorImageUpload = async (file: File, index: number) => {
+  const handleInteriorImageUpload = async (file: File | null, index: number) => {
+  if (!file) return;
     try {
       const formData = new FormData();
       formData.append('image', file);
@@ -266,27 +152,20 @@ const AdminDashboard = () => {
         throw new Error('画像URLの取得に失敗しました');
       }
 
-      // Create a new array with the correct length (2 for now)
       const currentUrls = selectedArtwork?.interiorImageUrls || [];
       let newImageUrls = Array(2).fill(null);
       
-      // Copy existing URLs
       if (Array.isArray(currentUrls)) {
         currentUrls.forEach((url: string, i: number) => {
           if (i < 2) newImageUrls[i] = url;
         });
       }
       
-      // Update the specific index
       newImageUrls[index] = data.imageUrl;
-      
-      // Filter out any null values at the end
       newImageUrls = newImageUrls.filter(url => url !== null);
 
       if (selectedArtwork) {
         try {
-          console.log('Updating artwork with interior images:', newImageUrls);
-          
           await updateArtworkMutation.mutateAsync({
             id: selectedArtwork.id,
             data: {
@@ -377,55 +256,70 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleArtworkUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!selectedArtwork) return;
-
-    try {
-      const form = e.currentTarget;
-      const formData = new FormData(form);
-      
-      const price = formData.get('price');
-      const collectionId = formData.get('collectionId');
-
-      const updatedData = {
-        ...selectedArtwork,
-        title: formData.get('title') as string,
-        description: formData.get('description') as string,
-        price: price ? parseFloat(price as string) : selectedArtwork.price,
-        size: formData.get('size') as string,
-        status: formData.get('status') as string,
-        createdLocation: formData.get('createdLocation') as string,
-        storedLocation: formData.get('storedLocation') as string,
-        exhibitionLocation: formData.get('exhibitionLocation') as string,
-        imageUrl: imageData.url || selectedArtwork.imageUrl,
-        collectionId: collectionId ? parseInt(collectionId as string) : null
-      };
-
-      console.log('Updating artwork with data:', updatedData);
-
-      await updateArtworkMutation.mutateAsync({
-        id: selectedArtwork.id,
-        data: updatedData
-      });
-
-      toast({
-        title: "作品情報を更新しました",
-      });
-      setIsEditDialogOpen(false);
-    } catch (error) {
-      console.error('Error updating artwork:', error);
-      toast({
-        variant: "destructive",
-        title: "更新に失敗しました",
-        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
-      });
-    }
-  };
-
-
   const ArtworkForm = () => (
-    <form onSubmit={handleArtworkUpdate} className="space-y-8">
+    <form onSubmit={async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      
+      try {
+        const artworkData = {
+          title: formData.get('title') as string,
+          description: formData.get('description') as string,
+          imageUrl: imageData.url || selectedArtwork?.imageUrl,
+          price: parseFloat(formData.get('price') as string),
+          size: formData.get('size') as string,
+          status: formData.get('status') as string,
+          createdLocation: formData.get('createdLocation') as string,
+          storedLocation: formData.get('storedLocation') as string,
+          exhibitionLocation: formData.get('exhibitionLocation') as string,
+          interiorImageUrls: selectedArtwork?.interiorImageUrls || [],
+          interiorImageDescriptions: selectedArtwork?.interiorImageDescriptions || [],
+          isAvailable: true,
+          collectionId: Number(formData.get('collectionId')) || null,
+        };
+
+        if (selectedArtwork) {
+          const response = await fetch(`${adminPath}/artworks/${selectedArtwork.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(artworkData),
+          });
+
+          if (!response.ok) {
+            throw new Error('作品の更新に失敗しました');
+          }
+          
+          queryClient.invalidateQueries({ queryKey: ['artworks'] });
+          toast({ title: "作品を更新しました" });
+        } else {
+          const response = await fetch(`${adminPath}/artworks`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(artworkData),
+          });
+
+          if (!response.ok) {
+            throw new Error('作品の作成に失敗しました');
+          }
+
+          queryClient.invalidateQueries({ queryKey: ['artworks'] });
+          toast({ title: "作品を作成しました" });
+        }
+
+        setIsEditDialogOpen(false);
+      } catch (error) {
+        console.error('Artwork submission error:', error);
+        toast({
+          variant: "destructive",
+          title: "エラー",
+          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+        });
+      }
+    }} className="space-y-4">
       <div className="space-y-4">
         <Label htmlFor="image">作品画像</Label>
         <Dropzone
@@ -526,15 +420,7 @@ const AdminDashboard = () => {
                 id="interior-desc-1"
                 placeholder="1枚目の説明文を入力してください"
                 value={selectedArtwork?.interiorImageDescriptions?.[0] ?? ''}
-                onChange={e => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleInteriorDescriptionChange(0, e.target.value);
-                }}
-                onKeyDown={e => {
-                  e.stopPropagation();
-                  e.nativeEvent.stopImmediatePropagation();
-                }}
+                onChange={e => handleInteriorDescriptionChange(0, e.target.value)}
                 className="resize-none"
                 rows={4}
                 autoComplete="off"
@@ -555,15 +441,7 @@ const AdminDashboard = () => {
                 id="interior-desc-2"
                 placeholder="2枚目の説明文を入力してください"
                 value={selectedArtwork?.interiorImageDescriptions?.[1] ?? ''}
-                onChange={e => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleInteriorDescriptionChange(1, e.target.value);
-                }}
-                onKeyDown={e => {
-                  e.stopPropagation();
-                  e.nativeEvent.stopImmediatePropagation();
-                }}
+                onChange={e => handleInteriorDescriptionChange(1, e.target.value)}
                 className="resize-none"
                 rows={4}
                 autoComplete="off"
@@ -574,27 +452,83 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
+
       <div className="space-y-2">
         <Label htmlFor="collectionId">コレクション</Label>
         <select
           id="collectionId"
           name="collectionId"
           className="w-full rounded-md border border-input bg-background px-3 py-2"
-          defaultValue={selectedArtwork?.collectionId || ''}
+          value={selectedArtwork?.collectionId || ''}
+          onChange={(e) => {
+            if (selectedArtwork) {
+              setSelectedArtwork({
+                ...selectedArtwork,
+                collectionId: Number(e.target.value) || null,
+              });
+            }
+          }}
         >
           <option value="">コレクションを選択</option>
-          {Array.isArray(collections) && collections.map((collection: any) => (
+          {collections?.map((collection: any) => (
             <option key={collection.id} value={collection.id}>
               {collection.title}
             </option>
           ))}
         </select>
       </div>
+
       <Button type="submit" className="w-full">
         {selectedArtwork ? '更新' : '作成'}
       </Button>
     </form>
   );
+
+  const handleArtworkUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!selectedArtwork) return;
+
+    try {
+      const form = e.currentTarget;
+      const formData = new FormData(form);
+      
+      const price = formData.get('price');
+      const collectionId = formData.get('collectionId');
+
+      const updatedData = {
+        ...selectedArtwork,
+        title: formData.get('title') as string,
+        description: formData.get('description') as string,
+        price: price ? parseFloat(price as string) : selectedArtwork.price,
+        size: formData.get('size') as string,
+        status: formData.get('status') as string,
+        createdLocation: formData.get('createdLocation') as string,
+        storedLocation: formData.get('storedLocation') as string,
+        exhibitionLocation: formData.get('exhibitionLocation') as string,
+        imageUrl: imageData.url || selectedArtwork.imageUrl,
+        collectionId: collectionId ? parseInt(collectionId as string) : null
+      };
+
+      console.log('Updating artwork with data:', updatedData);
+
+      await updateArtworkMutation.mutateAsync({
+        id: selectedArtwork.id,
+        data: updatedData
+      });
+
+      toast({
+        title: "作品情報を更新しました",
+      });
+      setIsEditDialogOpen(false);
+    } catch (error) {
+      console.error('Error updating artwork:', error);
+      toast({
+        variant: "destructive",
+        title: "更新に失敗しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+      });
+    }
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
