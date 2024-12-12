@@ -21,7 +21,7 @@ export const artworks = pgTable("artworks", {
   createdLocation: text("created_location").notNull().default('銀座'),
   storedLocation: text("stored_location").notNull().default('銀座'),
   exhibitionLocation: text("exhibition_location"),
-  interiorImageUrls: text("interior_image_urls").array().notNull().default(['', '']),
+  interiorImageUrls: text("interior_image_urls").array(),
   interiorImageDescriptions: text("interior_image_descriptions").array().notNull().default(['', '']),
   isAvailable: boolean("is_available").default(true).notNull(),
   collectionId: integer("collection_id").references(() => collections.id),
@@ -43,27 +43,11 @@ export const collections = pgTable("collections", {
 export const exhibitions = pgTable("exhibitions", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: text("title").notNull(),
-  subtitle: text("subtitle").notNull(),
   description: text("description").notNull(),
   location: text("location").notNull(),
   imageUrl: text("image_url").notNull(),
-  subImageUrls: text("sub_image_urls").array(),
   startDate: timestamp("start_date").notNull(),
   endDate: timestamp("end_date").notNull(),
-  isActive: boolean("is_active").default(true).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export const atelierPosts = pgTable("atelier_posts", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  location: text("location").notNull(),
-  title: text("title").notNull(),
-  description: text("description").notNull(),
-  imageUrl: text("image_url").notNull(),
-  subImageUrls: text("sub_image_urls").array(),
-  startPeriod: timestamp("start_period").notNull(),
-  endPeriod: timestamp("end_period"),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -72,11 +56,23 @@ export const atelierPosts = pgTable("atelier_posts", {
 export const testimonials = pgTable("testimonials", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: text("name").notNull(),
-  imageUrl: text("image_url").notNull(),
+  title: text("title").notNull(),
   quote: text("quote").notNull(),
-  artworkId: integer("artwork_id").references(() => artworks.id),
+  imageUrl: text("image_url").notNull(),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const atelierPosts = pgTable("atelier_posts", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  location: text("location").notNull(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  imageUrl: text("image_url").notNull(),
+  period: text("period").notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const news = pgTable("news", {
@@ -118,15 +114,15 @@ export const selectExhibitionSchema = createSelectSchema(exhibitions);
 export type InsertExhibition = z.infer<typeof insertExhibitionSchema>;
 export type Exhibition = z.infer<typeof selectExhibitionSchema>;
 
-export const insertAtelierPostSchema = createInsertSchema(atelierPosts);
-export const selectAtelierPostSchema = createSelectSchema(atelierPosts);
-export type InsertAtelierPost = z.infer<typeof insertAtelierPostSchema>;
-export type AtelierPost = z.infer<typeof selectAtelierPostSchema>;
-
 export const insertTestimonialSchema = createInsertSchema(testimonials);
 export const selectTestimonialSchema = createSelectSchema(testimonials);
 export type InsertTestimonial = z.infer<typeof insertTestimonialSchema>;
 export type Testimonial = z.infer<typeof selectTestimonialSchema>;
+
+export const insertAtelierPostSchema = createInsertSchema(atelierPosts);
+export const selectAtelierPostSchema = createSelectSchema(atelierPosts);
+export type InsertAtelierPost = z.infer<typeof insertAtelierPostSchema>;
+export type AtelierPost = z.infer<typeof selectAtelierPostSchema>;
 
 export const insertNewsSchema = createInsertSchema(news);
 export const selectNewsSchema = createSelectSchema(news);
