@@ -1,29 +1,29 @@
 import { useEffect } from "react";
+import { Card } from "@/components/ui/card";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import CustomMap from "@/components/Map";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import type { Collection, Artwork } from "@db/schema";
-import { Skeleton } from "@/components/ui/skeleton";
+import CustomMap from "@/components/Map";
 
-const ATELIER_LOCATIONS = ['池袋', '赤坂', '東新宿'] as const;
+
+const ATELIER_LOCATIONS = ["銀座", "広島", "パリ"] as const;
 
 const AtelierInfo = {
-  '池袋': {
-    description: "都会の喧騒の中で見つけた静寂を表現するアトリエ",
-    address: "東京都豊島区池袋",
-    period: "2020-2022",
+  銀座: {
+    description: "都会の喧騒の中で、静寂と調和を見出すアトリエ",
+    period: "2018-2020",
     mainImage: "/artworks/12648.jpg",
   },
-  '赤坂': {
-    description: "伝統と革新が交差する街で生まれる新しい表現",
-    address: "東京都港区赤坂",
-    period: "2022-2023",
+  広島: {
+    description: "平和への祈りと共に、新たな芸術表現を追求",
+    period: "2020-2022",
     mainImage: "/artworks/12653.jpg",
   },
-  '東新宿': {
-    description: "多様な文化が混ざり合う場所からインスピレーションを得る",
-    address: "東京都新宿区新宿",
+  パリ: {
+    description: "芸術の都で、日本の美意識を世界へ発信",
     period: "2023-現在",
     mainImage: "/artworks/12658.jpg",
   }
@@ -85,18 +85,20 @@ const CollectionsSection = () => {
             </ScrollToTopLink>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {collectionArtworks.map((artwork, index) => (
-                <div key={index} className="aspect-square overflow-hidden rounded-lg shadow-lg group">
-                  <img
-                    src={artwork.imageUrl}
-                    alt={`${collection.title} - ${artwork.title}`}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    onError={(e) => {
-                      const img = e.target as HTMLImageElement;
-                      img.onerror = null;
-                      img.src = '/placeholder.png';
-                    }}
-                  />
-                </div>
+                <ScrollToTopLink key={index} href={`/collections/${collection.id}`}>
+                  <div className="aspect-square overflow-hidden rounded-lg shadow-lg group">
+                    <img
+                      src={artwork.imageUrl}
+                      alt={`${collection.title} - ${artwork.title}`}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onError={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        img.onerror = null;
+                        img.src = '/placeholder.png';
+                      }}
+                    />
+                  </div>
+                </ScrollToTopLink>
               ))}
             </div>
           </div>

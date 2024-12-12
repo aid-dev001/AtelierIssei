@@ -71,6 +71,23 @@ export default function setupRoutes(app: express.Express) {
       res.status(500).json({ error: "コレクションの取得に失敗しました" });
     }
   });
+  app.get("/api/collections/:id", async (req, res) => {
+    try {
+      const collection = await db.query.collections.findFirst({
+        where: eq(collections.id, parseInt(req.params.id)),
+      });
+      
+      if (!collection) {
+        return res.status(404).json({ error: "コレクションが見つかりません" });
+      }
+      
+      res.json(collection);
+    } catch (error) {
+      console.error("Failed to fetch collection:", error);
+      res.status(500).json({ error: "コレクションの取得に失敗しました" });
+    }
+  });
+
 
   app.post(`/admin/${ADMIN_URL_PATH}/generate-collection-description`, requireAdmin, async (req, res) => {
   try {
