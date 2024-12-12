@@ -26,6 +26,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<'artworks' | 'collections'>('artworks');
   const [selectedCollection, setSelectedCollection] = useState<any>(null);
   const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
+const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [imageData, setImageData] = useState<{
@@ -209,10 +210,10 @@ const AdminDashboard = () => {
     try {
       if (!selectedArtwork) return;
 
-      // 新しい説明文の配列を作成（常に文字列の配列として扱う）
+      // 新しい説明文の配列を作成
       const newDescriptions = Array.isArray(selectedArtwork.interiorImageDescriptions) 
-        ? selectedArtwork.interiorImageDescriptions.map(desc => String(desc || ''))
-        : Array(2).fill('');
+        ? [...selectedArtwork.interiorImageDescriptions]
+        : new Array(2).fill('');
 
       // インデックスの説明文を更新
       newDescriptions[index] = description;
@@ -227,7 +228,13 @@ const AdminDashboard = () => {
       // データベースの更新
       await updateArtworkMutation.mutateAsync({
         id: selectedArtwork.id,
-        data: updatedArtwork
+        data: {
+          interiorImageDescriptions: newDescriptions
+        }
+      });
+
+      toast({
+        title: "説明文を更新しました",
       });
 
     } catch (error) {

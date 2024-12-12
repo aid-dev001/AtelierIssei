@@ -2,6 +2,9 @@ import { useEffect } from "react";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 import { Button } from "@/components/ui/button";
 import CustomMap from "@/components/Map";
+import { useQuery } from "@tanstack/react-query";
+import type { Collection, Artwork } from "@db/schema";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ATELIER_LOCATIONS = ['池袋', '赤坂', '東新宿'] as const;
 
@@ -24,6 +27,82 @@ const AtelierInfo = {
     period: "2023-現在",
     mainImage: "/artworks/12658.jpg",
   }
+const CollectionsSection = () => {
+  const { data: collections, isLoading, error } = useQuery<Collection[]>({
+    queryKey: ["collections"],
+    queryFn: async () => {
+      const response = await fetch("/api/collections");
+      if (!response.ok) throw new Error('Failed to fetch collections');
+      return response.json();
+    },
+  });
+
+  const { data: artworks } = useQuery<Artwork[]>({
+    queryKey: ["artworks"],
+    queryFn: async () => {
+      const response = await fetch("/api/artworks");
+      if (!response.ok) throw new Error('Failed to fetch artworks');
+      return response.json();
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-8">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="space-y-4">
+            <Skeleton className="h-8 w-48 mx-auto" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[...Array(4)].map((_, j) => (
+                <Skeleton key={j} className="aspect-square rounded-lg" />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500">コレクションの読み込みに失敗しました</div>;
+  }
+
+  return (
+    <>
+      {collections?.slice(0, 3).map((collection) => {
+        const collectionArtworks = artworks?.filter(
+          artwork => artwork.collectionId === collection.id
+        ).slice(0, 4) || [];
+
+        return (
+          <div key={collection.id} className="space-y-8">
+            <ScrollToTopLink href="/collections">
+              <h3 className="text-2xl font-medium text-center hover:text-primary/80 transition-colors">
+                {collection.title}
+              </h3>
+            </ScrollToTopLink>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {collectionArtworks.map((artwork, index) => (
+                <div key={index} className="aspect-square overflow-hidden rounded-lg shadow-lg group">
+                  <img
+                    src={artwork.imageUrl}
+                    alt={`${collection.title} - ${artwork.title}`}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    onError={(e) => {
+                      const img = e.target as HTMLImageElement;
+                      img.onerror = null;
+                      img.src = '/placeholder.png';
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </>
+  );
+};
 } as const;
 
 const Home = () => {
@@ -338,44 +417,10 @@ const Home = () => {
       <section className="container mx-auto px-4 py-20">
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">COLLECTIONS</h2>
         <div className="space-y-20">
-          {[
-            {
-              title: "Abstract Collection 2024",
-              images: ["12653.jpg", "12654.jpg", "12655.jpg", "12656.jpg"],
-            },
-            {
-              title: "Serenity Collection",
-              images: ["12657.jpg", "12658.jpg", "12659.jpg", "12660.jpg"],
-            },
-            {
-              title: "Memory Collection",
-              images: ["12661.jpg", "12662.jpg", "12663.jpg", "12664.jpg"],
-            }
-          ].map((collection, collectionIndex) => (
-            <div key={collectionIndex} className="space-y-8">
-              <ScrollToTopLink href="/collections">
-                <h3 className="text-2xl font-medium text-center group-hover:text-primary/80 transition-colors">
-                  {collection.title}
-                </h3>
-              </ScrollToTopLink>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {collection.images.map((img, index) => (
-                  <div key={index} className="aspect-square overflow-hidden rounded-lg shadow-lg group">
-                    <img
-                      src={`/artworks/${img}`}
-                      alt={`${collection.title} - Image ${index + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      onError={(e) => {
-                        const img = e.target as HTMLImageElement;
-                        img.onerror = null;
-                        img.src = '/placeholder.png';
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+          <div className="space-y-20">
+            {/* Collections Display */}
+            <CollectionsSection />
+          </div>
           <div className="text-center">
             <Button asChild variant="outline" size="lg" className="tracking-wider">
               <ScrollToTopLink href="/collections">View All Collections</ScrollToTopLink>
