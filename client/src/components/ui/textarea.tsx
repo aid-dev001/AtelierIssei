@@ -5,25 +5,11 @@ export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, onChange, onKeyDown, ...props }, ref) => {
-    const handleChange = React.useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (onChange) {
-        onChange(e);
+  ({ className, ...props }, ref) => {
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      if (props.onChange) {
+        props.onChange(e);
       }
-    }, [onChange]);
-
-    const handleKeyDown = React.useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      e.stopPropagation();
-      if (onKeyDown) {
-        onKeyDown(e);
-      }
-    }, [onKeyDown]);
-
-    const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
     };
 
     return (
@@ -34,8 +20,6 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         )}
         ref={ref}
         onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        onBlur={handleBlur}
         {...props}
       />
     )

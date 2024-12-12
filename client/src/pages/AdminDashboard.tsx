@@ -520,22 +520,27 @@ const AdminDashboard = () => {
             />
             <div className="space-y-2">
               <Label htmlFor="interior-desc-1">1枚目の説明文</Label>
-              <textarea
+              <Textarea
                 id="interior-desc-1"
+                name="interior-desc-1"
                 placeholder="1枚目の説明文を入力してください"
-                value={String(selectedArtwork?.interiorImageDescriptions?.[0] || '')}
-                onChange={e => handleInteriorDescriptionChange(0, e.target.value)}
-                onFocus={() => {
-                  // モバイルデバイスでのキーボード制御
-                  if (window.innerWidth < 768) {
-                    window.scrollTo(0, 0);
+                value={Array.isArray(selectedArtwork?.interiorImageDescriptions) 
+                  ? selectedArtwork.interiorImageDescriptions[0] || '' 
+                  : ''}
+                onChange={e => {
+                  if (selectedArtwork) {
+                    const descriptions = Array.isArray(selectedArtwork.interiorImageDescriptions)
+                      ? [...selectedArtwork.interiorImageDescriptions]
+                      : [];
+                    descriptions[0] = e.target.value;
+                    setSelectedArtwork({
+                      ...selectedArtwork,
+                      interiorImageDescriptions: descriptions,
+                    });
                   }
                 }}
-                className="w-full min-h-[80px] rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                className="resize-none"
                 rows={4}
-                autoComplete="off"
-                autoCapitalize="off"
-                spellCheck={false}
               />
             </div>
           </div>
@@ -547,22 +552,27 @@ const AdminDashboard = () => {
             />
             <div className="space-y-2">
               <Label htmlFor="interior-desc-2">2枚目の説明文</Label>
-              <textarea
+              <Textarea
                 id="interior-desc-2"
+                name="interior-desc-2"
                 placeholder="2枚目の説明文を入力してください"
-                value={String(selectedArtwork?.interiorImageDescriptions?.[1] || '')}
-                onChange={e => handleInteriorDescriptionChange(1, e.target.value)}
-                onFocus={() => {
-                  // モバイルデバイスでのキーボード制御
-                  if (window.innerWidth < 768) {
-                    window.scrollTo(0, 0);
+                value={Array.isArray(selectedArtwork?.interiorImageDescriptions) 
+                  ? selectedArtwork.interiorImageDescriptions[1] || '' 
+                  : ''}
+                onChange={e => {
+                  if (selectedArtwork) {
+                    const descriptions = Array.isArray(selectedArtwork.interiorImageDescriptions)
+                      ? [...selectedArtwork.interiorImageDescriptions]
+                      : [];
+                    descriptions[1] = e.target.value;
+                    setSelectedArtwork({
+                      ...selectedArtwork,
+                      interiorImageDescriptions: descriptions,
+                    });
                   }
                 }}
-                className="w-full min-h-[80px] rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                className="resize-none"
                 rows={4}
-                autoComplete="off"
-                autoCapitalize="off"
-                spellCheck={false}
               />
             </div>
           </div>
