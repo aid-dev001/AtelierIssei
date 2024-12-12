@@ -201,47 +201,56 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleInteriorDescriptionChange = async (index: number, description: string) => {
-    try {
-      if (!selectedArtwork) return;
+  const handleInteriorDescriptionChange = (index: number, description: string) => {
+    if (!selectedArtwork) return;
 
-      // 現在の説明文配列を取得（存在しない場合は空配列）
-      const currentDescriptions = selectedArtwork.interiorImageDescriptions || [];
+    // ローカルステートを即座に更新
+    setSelectedArtwork(prev => {
+      if (!prev) return null;
       
-      // 新しい説明文配列を作成（必要な長さまで拡張）
+      const currentDescriptions = prev.interiorImageDescriptions || [];
       const newDescriptions = [...currentDescriptions];
       while (newDescriptions.length <= index) {
         newDescriptions.push('');
       }
-      
-      // インデックスの説明文を更新
       newDescriptions[index] = description;
 
-      // APIを使用して更新
-      await updateArtworkMutation.mutateAsync({
-        id: selectedArtwork.id,
-        data: {
-          interiorImageDescriptions: newDescriptions
-        },
-      });
+      return {
+        ...prev,
+        interiorImageDescriptions: newDescriptions
+      };
+    });
 
-      // ローカルステートを更新
-      setSelectedArtwork(prev => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          interiorImageDescriptions: newDescriptions
-        };
-      });
+    // APIを使用して更新（デバウンス処理付き）
+    const timeoutId = setTimeout(async () => {
+      try {
+        const currentArtwork = selectedArtwork;
+        if (!currentArtwork) return;
 
-    } catch (error) {
-      console.error('Error updating interior image description:', error);
-      toast({
-        variant: "destructive",
-        title: "説明文の更新に失敗しました",
-        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
-      });
-    }
+        const currentDescriptions = currentArtwork.interiorImageDescriptions || [];
+        const newDescriptions = [...currentDescriptions];
+        while (newDescriptions.length <= index) {
+          newDescriptions.push('');
+        }
+        newDescriptions[index] = description;
+
+        await updateArtworkMutation.mutateAsync({
+          id: currentArtwork.id,
+          data: {
+            interiorImageDescriptions: newDescriptions
+          },
+        });
+      } catch (error) {
+        console.error('Error updating interior image description:', error);
+        toast({
+          variant: "destructive",
+          title: "説明文の更新に失敗しました",
+          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+        });
+      }
+    }, 500); // 500ms後に更新
+
+    return () => clearTimeout(timeoutId);
   };
 
   const handleInteriorImageUpload = async (file: File, index: number) => {
@@ -481,6 +490,16 @@ const AdminDashboard = () => {
               placeholder="1枚目の説明文"
               value={selectedArtwork?.interiorImageDescriptions?.[0] ?? ''}
               onChange={e => handleInteriorDescriptionChange(0, e.target.value)}
+              onBlur={async () => {
+                if (selectedArtwork?.interiorImageDescriptions?.[0]) {
+                  await updateArtworkMutation.mutateAsync({
+                    id: selectedArtwork.id,
+                    data: {
+                      interiorImageDescriptions: selectedArtwork.interiorImageDescriptions
+                    },
+                  });
+                }
+              }}
               className="h-20 resize-none"
             />
           </div>
@@ -494,6 +513,16 @@ const AdminDashboard = () => {
               placeholder="2枚目の説明文"
               value={selectedArtwork?.interiorImageDescriptions?.[1] ?? ''}
               onChange={e => handleInteriorDescriptionChange(1, e.target.value)}
+              onBlur={async () => {
+                if (selectedArtwork?.interiorImageDescriptions?.[1]) {
+                  await updateArtworkMutation.mutateAsync({
+                    id: selectedArtwork.id,
+                    data: {
+                      interiorImageDescriptions: selectedArtwork.interiorImageDescriptions
+                    },
+                  });
+                }
+              }}
               className="h-20 resize-none"
             />
           </div>
@@ -865,10 +894,6 @@ const AdminDashboard = () => {
                               name="description"
                               defaultValue={collection.description}
                               placeholder="コレクションの説明文を入力してください"
-                            />
-                          </div>
-                          <Button type="submit">更新</Button>
-                              required 
                             />
                           </div>
                           <Button type="submit">更新</Button>
