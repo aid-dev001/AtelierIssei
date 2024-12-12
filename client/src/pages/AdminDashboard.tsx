@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Card, CardContent } from "@/components/ui/card";
 import { Dropzone } from "@/components/ui/dropzone";
 import type { Artwork } from "@db/schema";
 import { Input } from "@/components/ui/input";
@@ -23,12 +24,19 @@ const AdminDashboard = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const adminPath = window.location.pathname.split('/dashboard')[0];
-  const [activeTab, setActiveTab] = useState<'artworks' | 'collections'>('artworks');
+  const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions' | 'ateliers' | 'voices'>('artworks');
   const [selectedCollection, setSelectedCollection] = useState<any>(null);
   const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
-const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
+  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [exhibitionImages, setExhibitionImages] = useState<{
+    mainImage: string;
+    subImages: string[];
+  }>({
+    mainImage: '',
+    subImages: [],
+  });
   const [imageData, setImageData] = useState<{
     url: string;
     generatedTitle: string;
@@ -37,6 +45,99 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
     url: '',
     generatedTitle: '',
     generatedDescription: '',
+  });
+
+const handleExhibitionImageUpload = async (file: File, type: 'main' | string) => {
+  try {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const response = await fetch(`${adminPath}/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('画像のアップロードに失敗しました');
+    }
+
+    const data = await response.json();
+    
+    if (type === 'main') {
+      setExhibitionImages(prev => ({
+        ...prev,
+        mainImage: data.imageUrl,
+      }));
+    } else if (type.startsWith('sub')) {
+      const index = parseInt(type.replace('sub', '')) - 1;
+      setExhibitionImages(prev => ({
+        ...prev,
+        subImages: [
+          ...prev.subImages.slice(0, index),
+          data.imageUrl,
+          ...prev.subImages.slice(index + 1),
+        ],
+      }));
+    }
+
+    toast({
+const generateExhibitionSubtitle = async (title: string) => {
+  try {
+    setIsGeneratingDescription(true);
+    const response = await fetch(`${adminPath}/generate-exhibition-subtitle`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ title }),
+    });
+
+    if (!response.ok) {
+      throw new Error('サブタイトルの生成に失敗しました');
+    }
+
+    const data = await response.json();
+    return data.subtitle;
+  } catch (error) {
+    console.error('Error generating subtitle:', error);
+    toast({
+      variant: "destructive",
+      title: "サブタイトルの生成に失敗しました",
+      description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+    });
+    return null;
+  } finally {
+    setIsGeneratingDescription(false);
+  }
+};
+      title: "画像をアップロードしました",
+    });
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    toast({
+      variant: "destructive",
+      title: "画像のアップロードに失敗しました",
+      description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+    });
+  }
+};
+    url: string;
+    generatedTitle: string;
+    generatedDescription: string;
+  }>({
+    url: '',
+    generatedTitle: '',
+    generatedDescription: '',
+  });
+
+  // Exhibitions data
+  const { data: exhibitions } = useQuery({
+    queryKey: ["exhibitions"],
+    queryFn: async () => {
+      const response = await fetch("/api/exhibitions");
+      if (!response.ok) throw new Error('Failed to fetch exhibitions');
+      return response.json();
+    },
   });
 
   // Collections data
@@ -655,6 +756,19 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
                 <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
               )}
             </button>
+            <button
+              className={`px-4 py-2 font-medium transition-all relative ${
+                activeTab === 'exhibitions'
+                  ? 'text-black font-semibold'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              onClick={() => setActiveTab('exhibitions')}
+            >
+              展示会管理
+              {activeTab === 'exhibitions' && (
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
+              )}
+            </button>
           </div>
         </div>
       </header>
@@ -680,15 +794,15 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
                     新規作品を追加
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[800px] max-h-[90vh] p-0">
-                  <div className="sticky top-0 bg-background z-10 px-6 pt-6">
+                <DialogContent className="sm:max-w-[800px] w-[95vw] max-h-[90vh] p-0">
+                  <div className="sticky top-0 bg-background z-10 px-4 sm:px-6 pt-6">
                     <DialogHeader>
                       <DialogTitle>
                         {selectedArtwork ? '作品を編集' : '新規作品を追加'}
                       </DialogTitle>
                     </DialogHeader>
                   </div>
-                  <div className="px-6 pb-6 h-[calc(90vh-80px)] overflow-y-auto">
+                  <div className="px-4 sm:px-6 pb-6 h-[calc(90vh-80px)] overflow-y-auto">
                     <ArtworkForm />
                   </div>
                 </DialogContent>
@@ -774,6 +888,159 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
                     </AlertDialog>
                   </div>
                 </div>
+              ))}
+            </div>
+          </>
+        ) : activeTab === 'exhibitions' ? (
+          <>
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold">展示会一覧</h2>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>
+                    新規展示会を追加
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[800px] w-[95vw] max-h-[90vh] p-0">
+                  <div className="sticky top-0 bg-background z-10 px-4 sm:px-6 pt-6">
+                    <DialogHeader>
+                      <DialogTitle>新規展示会を追加</DialogTitle>
+                    </DialogHeader>
+                  </div>
+                  <div className="px-4 sm:px-6 pb-6 h-[calc(90vh-80px)] overflow-y-auto">
+                    <form onSubmit={async (e) => {
+                      e.preventDefault();
+                      const formData = new FormData(e.currentTarget);
+                      const title = formData.get('title') as string;
+                      const startDate = formData.get('startDate') as string;
+                      const endDate = formData.get('endDate') as string;
+                      const location = formData.get('location') as string;
+
+                      if (!title.trim() || !startDate || !endDate || !location.trim()) {
+                        toast({
+                          variant: "destructive",
+                          title: "エラー",
+                          description: "必須項目を入力してください"
+                        });
+                        return;
+                      }
+
+                      try {
+                        const response = await fetch(`${adminPath}/exhibitions`, {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                          },
+                          body: JSON.stringify({
+                            title: title.trim(),
+                            startDate,
+                            endDate,
+                            location: location.trim(),
+                          }),
+                        });
+
+                        if (!response.ok) {
+                          const errorData = await response.json();
+                          throw new Error(errorData.error || '展示会の作成に失敗しました');
+                        }
+
+                        queryClient.invalidateQueries({ queryKey: ["exhibitions"] });
+                        toast({ title: "展示会を作成しました" });
+                        (e.target as HTMLFormElement).reset();
+                      } catch (error) {
+                        console.error('Exhibition creation error:', error);
+                        toast({
+                          variant: "destructive",
+                          title: "エラー",
+                          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+                        });
+                      }
+                    }} className="space-y-4">
+                      <div>
+                        <Label htmlFor="title">タイトル</Label>
+                        <Input
+                          id="title"
+                          name="title"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="location">場所</Label>
+                        <Input
+                          id="location"
+                          name="location"
+                          required
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="startDate">開始日</Label>
+                          <Input
+                            id="startDate"
+                            name="startDate"
+                            type="date"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="endDate">終了日</Label>
+                          <Input
+                            id="endDate"
+                            name="endDate"
+                            type="date"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-4">
+                        <Label>メイン画像</Label>
+                        <Dropzone
+                          onFileChange={(file) => handleExhibitionImageUpload(file, 'main')}
+                          className="aspect-[16/9] w-full"
+                        />
+                      </div>
+                      <div className="space-y-4">
+                        <Label>サブ画像</Label>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                          {[...Array(6)].map((_, index) => (
+                            <Dropzone
+                              key={index}
+                              onFileChange={(file) => handleExhibitionImageUpload(file, `sub${index + 1}`)}
+                              className="aspect-square w-full"
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <Button type="submit" className="w-full">
+                        作成
+                      </Button>
+                    </form>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {exhibitions?.map((exhibition) => (
+                <Card key={exhibition.id} className="overflow-hidden">
+                  <CardContent className="p-0">
+                    <div className="aspect-[16/9] relative">
+                      <img
+                        src={exhibition.imageUrl}
+                        alt={exhibition.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-semibold mb-2">{exhibition.title}</h3>
+                      <p className="text-sm text-gray-500">
+                        {new Date(exhibition.startDate).toLocaleDateString()} 〜{' '}
+                        {new Date(exhibition.endDate).toLocaleDateString()}
+                      </p>
+                      <p className="text-sm">{exhibition.location}</p>
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </>
