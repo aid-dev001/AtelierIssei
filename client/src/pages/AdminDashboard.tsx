@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
@@ -113,22 +113,17 @@ const AdminDashboard = () => {
     },
   });
 
-  const handleInteriorDescriptionChange = useCallback((index: number, value: string) => {
+  const handleInteriorDescriptionChange = (index: number, value: string) => {
     if (!selectedArtwork) return;
-    const descriptions = Array.isArray(selectedArtwork.interiorImageDescriptions)
-      ? [...selectedArtwork.interiorImageDescriptions]
-      : Array(2).fill('');
-    descriptions[index] = value;
     
-    // バッチ更新を使用して状態更新を最適化
-    setSelectedArtwork(prevArtwork => {
-      if (!prevArtwork) return null;
-      return {
-        ...prevArtwork,
-        interiorImageDescriptions: descriptions,
-      };
+    const newDescriptions = [...(selectedArtwork.interiorImageDescriptions || [])];
+    newDescriptions[index] = value;
+    
+    setSelectedArtwork({
+      ...selectedArtwork,
+      interiorImageDescriptions: newDescriptions as string[],
     });
-  }, [selectedArtwork]);
+  };
 
   const handleInteriorImageUpload = async (file: File | null, index: number) => {
   if (!file) return;
