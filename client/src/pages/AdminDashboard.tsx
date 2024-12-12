@@ -553,14 +553,20 @@ const AdminDashboard = () => {
                       ? [...selectedArtwork.interiorImageDescriptions]
                       : ['', ''];
                     descriptions[0] = e.target.value;
-                    setSelectedArtwork(prev => ({
-                      ...prev,
-                      interiorImageDescriptions: descriptions,
-                    }));
+                    setSelectedArtwork(prev => {
+                      if (!prev) return null;
+                      return {
+                        ...prev,
+                        interiorImageDescriptions: descriptions,
+                      };
+                    });
                   }
                 }}
                 className="resize-none"
                 rows={4}
+                onFocus={e => {
+                  e.currentTarget.parentElement?.scrollIntoView({ behavior: 'smooth' });
+                }}
               />
             </div>
           </div>
