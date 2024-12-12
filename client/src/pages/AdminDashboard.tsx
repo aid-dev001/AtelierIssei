@@ -116,12 +116,14 @@ const AdminDashboard = () => {
   const handleInteriorDescriptionChange = (index: number, value: string) => {
     if (!selectedArtwork) return;
     
-    const newDescriptions = [...(selectedArtwork.interiorImageDescriptions || [])];
-    newDescriptions[index] = value;
-    
-    setSelectedArtwork({
-      ...selectedArtwork,
-      interiorImageDescriptions: newDescriptions as string[],
+    setSelectedArtwork(prevArtwork => {
+      if (!prevArtwork) return prevArtwork;
+      const newDescriptions = [...(prevArtwork.interiorImageDescriptions || [])];
+      newDescriptions[index] = value;
+      return {
+        ...prevArtwork,
+        interiorImageDescriptions: newDescriptions as string[],
+      };
     });
   };
 
@@ -461,12 +463,14 @@ const AdminDashboard = () => {
           className="w-full rounded-md border border-input bg-background px-3 py-2"
           value={selectedArtwork?.collectionId || ''}
           onChange={(e) => {
-            if (selectedArtwork) {
-              setSelectedArtwork({
-                ...selectedArtwork,
-                collectionId: Number(e.target.value) || null,
-              });
-            }
+            const newValue = e.target.value;
+            setSelectedArtwork(prevArtwork => {
+              if (!prevArtwork) return prevArtwork;
+              return {
+                ...prevArtwork,
+                collectionId: newValue ? Number(newValue) : null,
+              };
+            });
           }}
         >
           <option value="">コレクションを選択</option>
