@@ -55,34 +55,66 @@ const AdminDashboard = () => {
   const adminPath = window.location.pathname.split('/dashboard')[0];
 
   // Queries
-  const { data: collections, isLoading: isLoadingCollections } = useQuery<Collection[]>({
+  const { data: collections, isLoading: isLoadingCollections, error: collectionsError } = useQuery<Collection[]>({
     queryKey: ["collections"],
     queryFn: async () => {
-      const response = await fetch(`${adminPath}/api/collections`);
-      if (!response.ok) {
-        if (response.status === 401) {
-          setLocation(adminPath);
-          throw new Error('セッションが切れました。再度ログインしてください。');
+      try {
+        const response = await fetch("/api/collections");
+        if (!response.ok) {
+          if (response.status === 401) {
+            setLocation(adminPath);
+            throw new Error('セッションが切れました。再度ログインしてください。');
+          }
+          throw new Error('コレクションの取得に失敗しました');
         }
-        throw new Error('コレクションの取得に失敗しました');
+        const data = await response.json();
+        if (!Array.isArray(data)) {
+          console.error("Expected array of collections, got:", data);
+          return [];
+        }
+        return data;
+      } catch (error) {
+        console.error('Collections fetch error:', error);
+        toast({
+          variant: "destructive",
+          title: "エラー",
+          description: error instanceof Error ? error.message : "コレクションの取得に失敗しました",
+        });
+        return [];
       }
-      return response.json();
     },
+    retry: 1,
   });
 
-  const { data: artworks, isLoading: isLoadingArtworks } = useQuery<Artwork[]>({
+  const { data: artworks, isLoading: isLoadingArtworks, error: artworksError } = useQuery<Artwork[]>({
     queryKey: ["artworks"],
     queryFn: async () => {
-      const response = await fetch(`${adminPath}/api/artworks`);
-      if (!response.ok) {
-        if (response.status === 401) {
-          setLocation(adminPath);
-          throw new Error('セッションが切れました。再度ログインしてください。');
+      try {
+        const response = await fetch("/api/artworks");
+        if (!response.ok) {
+          if (response.status === 401) {
+            setLocation(adminPath);
+            throw new Error('セッションが切れました。再度ログインしてください。');
+          }
+          throw new Error('作品の取得に失敗しました');
         }
-        throw new Error('作品の取得に失敗しました');
+        const data = await response.json();
+        if (!Array.isArray(data)) {
+          console.error("Expected array of artworks, got:", data);
+          return [];
+        }
+        return data;
+      } catch (error) {
+        console.error('Artworks fetch error:', error);
+        toast({
+          variant: "destructive",
+          title: "エラー",
+          description: error instanceof Error ? error.message : "作品の取得に失敗しました",
+        });
+        return [];
       }
-      return response.json();
     },
+    retry: 1,
   });
 
   const { data: exhibitions, isLoading: isLoadingExhibitions } = useQuery<Exhibition[]>({
@@ -427,6 +459,30 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50/30">
+      <header className="bg-white shadow-sm">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <h1 className="text-2xl font-semibold">管理画面</h1>
+          <Button
+            variant="outline"
+            onClick={() => {
+              fetch(`${adminPath}/api/auth/logout`, { method: 'POST' })
+                .then(() => {
+                  setLocation(adminPath);
+                })
+                .catch((error) => {
+                  console.error('Logout failed:', error);
+                  toast({
+                    variant: "destructive",
+                    title: "エラー",
+                    description: "ログアウトに失敗しました",
+                  });
+                });
+            }}
+          >
+            ログアウト
+          </Button>
+        </div>
+      </header>
       <main className="container mx-auto py-8 px-4">
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as typeof activeTab)}>
           <TabsList className="mb-8">
@@ -469,7 +525,7 @@ const AdminDashboard = () => {
                         <Dropzone
                           existingImageUrl={imageData.preview || selectedArtwork?.imageUrl}
                           onFileChange={handleFileChange}
-                          className="aspect-square w-full h-[200px] mx-auto"
+                          className="aspect-square w-[200px] h-[200px] mx-auto"
                         />
                       </div>
                       <div className="space-y-4">
@@ -598,7 +654,15 @@ const AdminDashboard = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {isLoadingArtworks ? (
-                <div>Loading...</div>
+                [...Array(8)].map((_, i) => (
+                  <div key={i} className="border rounded-lg overflow-hidden animate-pulse">
+                    <div className="aspect-square bg-gray-200" />
+                    <div className="p-4 space-y-3">
+                      <div className="h-4 bg-gray-200 rounded w-3/4" />
+                      <div className="h-3 bg-gray-200 rounded w-1/2" />
+                    </div>
+                  </div>
+                ))
               ) : artworks?.map((artwork) => (
                 <div
                   key={artwork.id}
@@ -655,7 +719,7 @@ const AdminDashboard = () => {
                     新規コレクション
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[600px] z-[100]">
+                <DialogContent className="sm:max-w-[600px] z-[200] fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
                   <DialogHeader>
                     <DialogTitle>
                       {selectedCollection ? 'コレクションを編集' : '新規コレクション'}
@@ -667,8 +731,7 @@ const AdminDashboard = () => {
                     try {
                       const collectionData = {
                         title: formData.get('title'),
-                        description: formData.get('description'),
-                        year: parseInt(formData.get('year') as string),
+                        description: formData.get('description')
                       };
 
                       const response = await fetch(
@@ -713,16 +776,6 @@ const AdminDashboard = () => {
                         required
                       />
                     </div>
-                    <div className="space-y-4">
-                      <Label htmlFor="year">年</Label>
-                      <Input
-                        id="year"
-                        name="year"
-                        type="number"
-                        defaultValue={selectedCollection?.year || new Date().getFullYear()}
-                        required
-                      />
-                    </div>
                     <Button type="submit" className="w-full">
                       {selectedCollection ? '更新' : '作成'}
                     </Button>
@@ -733,28 +786,61 @@ const AdminDashboard = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {isLoadingCollections ? (
-                <div>Loading...</div>
+                [...Array(4)].map((_, i) => (
+                  <div key={i} className="border rounded-lg overflow-hidden animate-pulse">
+                    <div className="p-6 space-y-4">
+                      <div className="h-6 bg-gray-200 rounded w-3/4" />
+                      <div className="h-4 bg-gray-200 rounded w-full" />
+                      <div className="grid grid-cols-4 gap-2">
+                        {[...Array(4)].map((_, j) => (
+                          <div key={j} className="aspect-square bg-gray-200 rounded" />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))
               ) : collections?.map((collection) => (
                 <div
                   key={collection.id}
-                  className="border rounded-lg p-6 hover:shadow-lg transition-all"
+                  className="border rounded-lg overflow-hidden hover:shadow-lg transition-all"
                 >
-                  <h3 className="text-xl font-medium mb-2">{collection.title}</h3>
-                  <p className="text-gray-600 mb-4">{collection.description}</p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-500">{collection.year}年</span>
-                    <div className="space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedCollection(collection);
-                          setIsEditCollectionDialogOpen(true);
-                        }}
-                      >
-                        <PenLine className="w-4 h-4 mr-2" />
-                        編集
-                      </Button>
+                  <div className="p-6">
+                    <h3 className="text-xl font-medium mb-2">{collection.title}</h3>
+                    <p className="text-gray-600 mb-4">{collection.description}</p>
+                    <div className="grid grid-cols-4 gap-2 mb-4">
+                      {artworks?.filter(artwork => artwork.collectionId === collection.id)
+                        .slice(0, 4)
+                        .map((artwork) => (
+                          <div key={artwork.id} className="aspect-square rounded overflow-hidden">
+                            <img
+                              src={artwork.imageUrl}
+                              alt={artwork.title}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                const img = e.target as HTMLImageElement;
+                                img.src = '/placeholder.png';
+                              }}
+                            />
+                          </div>
+                        ))}
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-500">
+                        {artworks?.filter(artwork => artwork.collectionId === collection.id).length || 0} 作品
+                      </span>
+                      <div className="space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedCollection(collection);
+                            setIsEditCollectionDialogOpen(true);
+                          }}
+                        >
+                          <PenLine className="w-4 h-4 mr-2" />
+                          編集
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -777,7 +863,7 @@ const AdminDashboard = () => {
                     新規展示会を追加
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[800px] z-[100] relative">
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh] p-0 z-[200] fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
                   <DialogHeader>
                     <DialogTitle>
                       {selectedExhibition ? '展示会を編集' : '新規展示会を追加'}
