@@ -463,11 +463,7 @@ const AdminDashboard = () => {
               placeholder="1枚目の説明文を入力してください"
               value={selectedArtwork?.interiorImageDescriptions?.[0] ?? ''}
               onChange={e => handleInteriorDescriptionChange(0, e.target.value)}
-              className="h-20 resize-y min-h-[80px]"
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck="false"
-              onFocus={(e) => e.target.focus()}
+              className="min-h-[80px]"
             />
           </div>
           <div className="space-y-2">
@@ -480,11 +476,7 @@ const AdminDashboard = () => {
               placeholder="2枚目の説明文を入力してください"
               value={selectedArtwork?.interiorImageDescriptions?.[1] ?? ''}
               onChange={e => handleInteriorDescriptionChange(1, e.target.value)}
-              className="h-20 resize-y min-h-[80px]"
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck="false"
-              onFocus={(e) => e.target.focus()}
+              className="min-h-[80px]"
             />
           </div>
         </div>
