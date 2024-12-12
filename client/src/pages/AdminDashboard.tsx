@@ -201,29 +201,60 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleInteriorDescriptionChange = (index: number, description: string) => {
+  const handleInteriorDescriptionChange = async (index: number, description: string) => {
     if (!selectedArtwork) return;
 
-    // ローカルステートのみ即座に更新
-    setSelectedArtwork(prev => {
-      if (!prev) return null;
+    try {
+      // 現在の説明文配列を取得（存在しない場合は空の配列を作成）
+      let currentDescriptions = selectedArtwork.interiorImageDescriptions || [];
       
-      const currentDescriptions = Array.isArray(prev.interiorImageDescriptions) 
-        ? [...prev.interiorImageDescriptions]
-        : [];
-        
-      // 必要な長さまで配列を拡張
-      while (currentDescriptions.length <= index) {
-        currentDescriptions.push('');
+      // 配列が文字列の場合、新しい配列を作成
+      if (typeof currentDescriptions === 'string') {
+        currentDescriptions = [];
       }
       
-      currentDescriptions[index] = description;
+      // 配列をコピーして修正
+      const newDescriptions = [...currentDescriptions];
       
-      return {
-        ...prev,
-        interiorImageDescriptions: currentDescriptions
-      };
-    });
+      // インデックスが存在しない場合、必要な長さまで空文字で埋める
+      while (newDescriptions.length <= index) {
+        newDescriptions.push('');
+      }
+      
+      // 説明文を更新
+      newDescriptions[index] = description;
+
+      console.log('Updating description at index:', index);
+      console.log('New descriptions array:', newDescriptions);
+
+      // データベースの更新
+      await updateArtworkMutation.mutateAsync({
+        id: selectedArtwork.id,
+        data: {
+          interiorImageDescriptions: newDescriptions
+        }
+      });
+
+      // ローカルステートの更新
+      setSelectedArtwork(prev => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          interiorImageDescriptions: newDescriptions
+        };
+      });
+
+      toast({
+        title: "説明文を更新しました",
+      });
+    } catch (error) {
+      console.error('Error updating interior description:', error);
+      toast({
+        variant: "destructive",
+        title: "説明文の更新に失敗しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+      });
+    }
   };
 
   const handleInteriorImageUpload = async (file: File, index: number) => {
@@ -468,6 +499,15 @@ const AdminDashboard = () => {
                 onChange={e => handleInteriorDescriptionChange(0, e.target.value)}
                 className="resize-none"
                 rows={4}
+                autoComplete="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                onBlur={e => {
+                  const value = e.target.value;
+                  if (value !== selectedArtwork?.interiorImageDescriptions?.[0]) {
+                    handleInteriorDescriptionChange(0, value);
+                  }
+                }}
               />
             </div>
           </div>
@@ -486,6 +526,15 @@ const AdminDashboard = () => {
                 onChange={e => handleInteriorDescriptionChange(1, e.target.value)}
                 className="resize-none"
                 rows={4}
+                autoComplete="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                onBlur={e => {
+                  const value = e.target.value;
+                  if (value !== selectedArtwork?.interiorImageDescriptions?.[1]) {
+                    handleInteriorDescriptionChange(1, value);
+                  }
+                }}
               />
             </div>
           </div>
