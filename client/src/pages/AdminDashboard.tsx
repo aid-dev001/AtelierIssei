@@ -204,53 +204,26 @@ const AdminDashboard = () => {
   const handleInteriorDescriptionChange = (index: number, description: string) => {
     if (!selectedArtwork) return;
 
-    // ローカルステートを即座に更新
+    // ローカルステートのみ即座に更新
     setSelectedArtwork(prev => {
       if (!prev) return null;
       
-      const currentDescriptions = prev.interiorImageDescriptions || [];
-      const newDescriptions = [...currentDescriptions];
-      while (newDescriptions.length <= index) {
-        newDescriptions.push('');
+      const currentDescriptions = Array.isArray(prev.interiorImageDescriptions) 
+        ? [...prev.interiorImageDescriptions]
+        : [];
+        
+      // 必要な長さまで配列を拡張
+      while (currentDescriptions.length <= index) {
+        currentDescriptions.push('');
       }
-      newDescriptions[index] = description;
-
+      
+      currentDescriptions[index] = description;
+      
       return {
         ...prev,
-        interiorImageDescriptions: newDescriptions
+        interiorImageDescriptions: currentDescriptions
       };
     });
-
-    // APIを使用して更新（デバウンス処理付き）
-    const timeoutId = setTimeout(async () => {
-      try {
-        const currentArtwork = selectedArtwork;
-        if (!currentArtwork) return;
-
-        const currentDescriptions = currentArtwork.interiorImageDescriptions || [];
-        const newDescriptions = [...currentDescriptions];
-        while (newDescriptions.length <= index) {
-          newDescriptions.push('');
-        }
-        newDescriptions[index] = description;
-
-        await updateArtworkMutation.mutateAsync({
-          id: currentArtwork.id,
-          data: {
-            interiorImageDescriptions: newDescriptions
-          },
-        });
-      } catch (error) {
-        console.error('Error updating interior image description:', error);
-        toast({
-          variant: "destructive",
-          title: "説明文の更新に失敗しました",
-          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
-        });
-      }
-    }, 500); // 500ms後に更新
-
-    return () => clearTimeout(timeoutId);
   };
 
   const handleInteriorImageUpload = async (file: File, index: number) => {
@@ -487,20 +460,10 @@ const AdminDashboard = () => {
               className="h-[150px]"
             />
             <Textarea
-              placeholder="1枚目の説明文"
+              placeholder="1枚目の説明文を入力してください"
               value={selectedArtwork?.interiorImageDescriptions?.[0] ?? ''}
               onChange={e => handleInteriorDescriptionChange(0, e.target.value)}
-              onBlur={async () => {
-                if (selectedArtwork?.interiorImageDescriptions?.[0]) {
-                  await updateArtworkMutation.mutateAsync({
-                    id: selectedArtwork.id,
-                    data: {
-                      interiorImageDescriptions: selectedArtwork.interiorImageDescriptions
-                    },
-                  });
-                }
-              }}
-              className="h-20 resize-none"
+              className="h-20 resize-none min-h-[80px]"
             />
           </div>
           <div className="space-y-2">
@@ -510,20 +473,10 @@ const AdminDashboard = () => {
               className="h-[150px]"
             />
             <Textarea
-              placeholder="2枚目の説明文"
+              placeholder="2枚目の説明文を入力してください"
               value={selectedArtwork?.interiorImageDescriptions?.[1] ?? ''}
               onChange={e => handleInteriorDescriptionChange(1, e.target.value)}
-              onBlur={async () => {
-                if (selectedArtwork?.interiorImageDescriptions?.[1]) {
-                  await updateArtworkMutation.mutateAsync({
-                    id: selectedArtwork.id,
-                    data: {
-                      interiorImageDescriptions: selectedArtwork.interiorImageDescriptions
-                    },
-                  });
-                }
-              }}
-              className="h-20 resize-none"
+              className="h-20 resize-none min-h-[80px]"
             />
           </div>
         </div>
