@@ -18,6 +18,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { PenLine, Trash2 } from "lucide-react";
 
+interface InteriorImage {
+  file: File | null;
+  preview: string | null;
+  description: string;
+}
+
 const AdminDashboard = () => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -31,11 +37,7 @@ const AdminDashboard = () => {
     file: File | null;
     preview: string | null;
   }>({ file: null, preview: null });
-  const [interiorImages, setInteriorImages] = useState<Array<{
-    file: File | null;
-    preview: string | null;
-    description: string;
-  }>>([
+  const [interiorImages, setInteriorImages] = useState<InteriorImage[]>([
     { file: null, preview: null, description: '' },
     { file: null, preview: null, description: '' }
   ]);
@@ -53,12 +55,7 @@ const AdminDashboard = () => {
           }
           throw new Error('コレクションの取得に失敗しました');
         }
-        const data = await response.json();
-        if (!Array.isArray(data)) {
-          console.error("Expected array of collections, got:", data);
-          return [];
-        }
-        return data;
+        return response.json();
       } catch (error) {
         console.error('Collections fetch error:', error);
         toast({
@@ -83,12 +80,7 @@ const AdminDashboard = () => {
           }
           throw new Error('作品の取得に失敗しました');
         }
-        const data = await response.json();
-        if (!Array.isArray(data)) {
-          console.error("Expected array of artworks, got:", data);
-          return [];
-        }
-        return data;
+        return response.json();
       } catch (error) {
         console.error('Artworks fetch error:', error);
         toast({
@@ -108,8 +100,7 @@ const AdminDashboard = () => {
     });
   };
 
-  const handleInteriorImageChange = (index: number, file: File | null) => {
-    if (!file) return;
+  const handleInteriorImageChange = (index: number, file: File) => {
     setInteriorImages(prev => {
       const updated = [...prev];
       updated[index] = {
@@ -138,8 +129,8 @@ const AdminDashboard = () => {
     
     try {
       let mainImageUrl = selectedArtwork?.imageUrl;
-      let interiorImageUrls = selectedArtwork?.interiorImageUrls || [];
-      let interiorImageDescriptions = selectedArtwork?.interiorImageDescriptions || ['', ''];
+      const interiorImageUrls: string[] = [...(selectedArtwork?.interiorImageUrls || [])];
+      const interiorImageDescriptions: string[] = [...(selectedArtwork?.interiorImageDescriptions || ['', ''])];
 
       // Upload main image if changed
       if (imageData.file) {
@@ -156,35 +147,32 @@ const AdminDashboard = () => {
 
       // Upload interior images if changed
       for (let i = 0; i < interiorImages.length; i++) {
-        if (interiorImages[i].file) {
+        const currentImage = interiorImages[i];
+        if (currentImage.file) {
           const interiorImageFormData = new FormData();
-          interiorImageFormData.append('image', interiorImages[i].file);
+          interiorImageFormData.append('image', currentImage.file);
           const uploadResponse = await fetch(`/api/upload`, {
             method: 'POST',
             body: interiorImageFormData,
           });
           if (!uploadResponse.ok) throw new Error(`インテリア画像${i + 1}のアップロードに失敗しました`);
           const { imageUrl } = await uploadResponse.json();
-          if (Array.isArray(interiorImageUrls)) {
-            interiorImageUrls[i] = imageUrl;
-          }
+          interiorImageUrls[i] = imageUrl;
         }
-        if (Array.isArray(interiorImageDescriptions)) {
-          interiorImageDescriptions[i] = interiorImages[i].description;
-        }
+        interiorImageDescriptions[i] = currentImage.description;
       }
 
       const artworkData = {
-        title: formData.get('title'),
-        description: formData.get('description'),
+        title: formData.get('title') as string,
+        description: formData.get('description') as string,
         imageUrl: mainImageUrl,
-        price: formData.get('price'),
-        size: formData.get('size'),
-        status: formData.get('status'),
-        createdLocation: formData.get('createdLocation'),
-        storedLocation: formData.get('storedLocation'),
-        exhibitionLocation: formData.get('exhibitionLocation'),
-        collectionId: formData.get('collectionId'),
+        price: Number(formData.get('price')),
+        size: formData.get('size') as string,
+        status: formData.get('status') as string,
+        createdLocation: formData.get('createdLocation') as string,
+        storedLocation: formData.get('storedLocation') as string,
+        exhibitionLocation: formData.get('exhibitionLocation') as string,
+        collectionId: formData.get('collectionId') as string,
         interiorImageUrls,
         interiorImageDescriptions,
       };
@@ -267,7 +255,7 @@ const AdminDashboard = () => {
                     新規作品を追加
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[800px]">
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>
                       {selectedArtwork ? '作品を編集' : '新規作品を追加'}
@@ -278,7 +266,7 @@ const AdminDashboard = () => {
                       <Label htmlFor="image">作品画像</Label>
                       <div className="w-[200px] mx-auto">
                         <Dropzone
-                          existingImageUrl={imageData.preview || selectedArtwork?.imageUrl}
+                          existingImageUrl={selectedArtwork?.imageUrl || imageData.preview}
                           onFileChange={handleFileChange}
                           className="aspect-square w-full"
                         />
@@ -317,7 +305,7 @@ const AdminDashboard = () => {
                       <Input
                         id="size"
                         name="size"
-                        defaultValue={selectedArtwork?.size}
+                        defaultValue={selectedArtwork?.size || ''}
                         placeholder="例: F4(333mm x 242mm)"
                       />
                     </div>
@@ -355,7 +343,7 @@ const AdminDashboard = () => {
                       <Input
                         id="exhibitionLocation"
                         name="exhibitionLocation"
-                        defaultValue={selectedArtwork?.exhibitionLocation}
+                        defaultValue={selectedArtwork?.exhibitionLocation || ''}
                       />
                     </div>
                     <div className="space-y-4">
@@ -383,7 +371,7 @@ const AdminDashboard = () => {
                           <Label className="text-base">インテリアイメージ {index + 1}</Label>
                           <div className="w-full max-w-md mx-auto">
                             <Dropzone
-                              existingImageUrl={image.preview || selectedArtwork?.interiorImageUrls?.[index]}
+                              existingImageUrl={selectedArtwork?.interiorImageUrls?.[index] || image.preview}
                               onFileChange={(file) => handleInteriorImageChange(index, file)}
                               className="aspect-video w-full"
                             />
@@ -436,10 +424,10 @@ const AdminDashboard = () => {
                         file: null,
                       });
                       setInteriorImages(
-                        (artwork.interiorImageUrls || []).map((url, index) => ({
+                        (artwork.interiorImageUrls || []).map((url, i) => ({
                           file: null,
-                          preview: url || null,
-                          description: artwork.interiorImageDescriptions?.[index] || ''
+                          preview: url,
+                          description: artwork.interiorImageDescriptions?.[i] || ''
                         }))
                       );
                       setIsEditDialogOpen(true);
