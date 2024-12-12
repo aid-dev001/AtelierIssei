@@ -78,23 +78,27 @@ const ArtworkDetail = () => {
                   }}
                 />
               </div>
-              <div className="flex gap-4">
-                <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
-                  <Palette className="w-4 h-4 text-black" />
-                  作成: {artwork.createdLocation || '銀座'}
-                </div>
-                <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
-                  <Building2 className="w-4 h-4 text-black" />
-                  保管: {artwork.storedLocation || '銀座'}
-                </div>
-                <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
-                  サイズ: {artwork.size || 'F4(333mm x 242mm)'}
-                </div>
-                {artwork.exhibitionLocation && (
-                  <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
-                    展示履歴: {artwork.exhibitionLocation}
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-wrap gap-2">
+                  <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
+                    <Palette className="w-4 h-4 text-black" />
+                    作成: {artwork.createdLocation || '銀座'}
                   </div>
-                )}
+                  <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
+                    <Building2 className="w-4 h-4 text-black" />
+                    保管: {artwork.storedLocation || '銀座'}
+                  </div>
+                  <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
+                    サイズ: {artwork.size || 'F4(333mm x 242mm)'}
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {artwork.exhibitionLocation && (
+                    <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
+                      展示履歴: {artwork.exhibitionLocation}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
             
