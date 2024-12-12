@@ -72,18 +72,20 @@ const CollectionDetail = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8 lg:gap-12">
           {collectionArtworks?.map((artwork) => (
             <ScrollToTopLink key={artwork.id} href={`/artwork/${artwork.id}`}>
-              <div className="aspect-square overflow-hidden rounded-lg shadow-lg group relative">
-                <img
-                  src={artwork.imageUrl}
-                  alt={artwork.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  onError={(e) => {
-                    const img = e.target as HTMLImageElement;
-                    img.onerror = null;
-                    img.src = '/placeholder.png';
-                  }}
-                />
-                <div className="absolute inset-0 pointer-events-none bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+              <div className="aspect-square overflow-hidden rounded-lg shadow-lg group">
+                <div className="relative w-full h-full">
+                  <img
+                    src={artwork.imageUrl}
+                    alt={artwork.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    onError={(e) => {
+                      const img = e.target as HTMLImageElement;
+                      img.onerror = null;
+                      img.src = '/placeholder.png';
+                    }}
+                  />
+                  <div className="absolute inset-0 pointer-events-none bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+                </div>
               </div>
             </ScrollToTopLink>
           ))}

@@ -437,7 +437,7 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
         <Dropzone
           existingImageUrl={imageData.url || selectedArtwork?.imageUrl}
           onFileChange={handleFileChange}
-          className="aspect-square w-full max-w-[300px] mx-auto"
+          className="aspect-square w-full h-[200px] mx-auto"
         />
       </div>
       <div className="space-y-2">
@@ -524,7 +524,7 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
             <Dropzone
               existingImageUrl={selectedArtwork?.interiorImageUrls?.[0]}
               onFileChange={(file) => handleInteriorImageUpload(file, 0)}
-              className="aspect-square w-full"
+              className="aspect-square w-full h-[160px]"
             />
             <div className="space-y-2">
               <Label htmlFor="interior-desc-1">1枚目の説明文</Label>
@@ -556,7 +556,7 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
             <Dropzone
               existingImageUrl={selectedArtwork?.interiorImageUrls?.[1]}
               onFileChange={(file) => handleInteriorImageUpload(file, 1)}
-              className="aspect-square w-full"
+              className="aspect-square w-full h-[160px]"
             />
             <div className="space-y-2">
               <Label htmlFor="interior-desc-2">2枚目の説明文</Label>
@@ -680,7 +680,7 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
                     新規作品を追加
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto p-0">
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh] p-0">
                   <div className="sticky top-0 bg-background z-10 px-6 pt-6">
                     <DialogHeader>
                       <DialogTitle>
@@ -688,7 +688,7 @@ const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
                       </DialogTitle>
                     </DialogHeader>
                   </div>
-                  <div className="px-6 pb-6">
+                  <div className="px-6 pb-6 h-[calc(90vh-80px)] overflow-y-auto">
                     <ArtworkForm />
                   </div>
                 </DialogContent>
