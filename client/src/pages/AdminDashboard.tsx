@@ -203,26 +203,48 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleInteriorDescriptionChange = (index: number, description: string) => {
-    setSelectedArtwork(prev => {
-      if (!prev) return null;
-      
-      const currentDescriptions = Array.isArray(prev.interiorImageDescriptions)
-        ? [...prev.interiorImageDescriptions]
-        : [];
+  const handleInteriorDescriptionChange = async (index: number, description: string) => {
+    try {
+      if (!selectedArtwork) return;
 
+      let currentDescriptions = selectedArtwork.interiorImageDescriptions || [];
+      
+      // 文字列の場合は配列に変換
+      if (typeof currentDescriptions === 'string') {
+        currentDescriptions = [];
+      }
+      
       // 必要な長さまで配列を拡張
       while (currentDescriptions.length <= index) {
         currentDescriptions.push('');
       }
 
+      // インデックスの説明文を更新
       currentDescriptions[index] = description;
 
-      return {
-        ...prev,
+      // データベースの更新
+      await updateArtworkMutation.mutateAsync({
+        id: selectedArtwork.id,
+        data: {
+          ...selectedArtwork,
+          interiorImageDescriptions: currentDescriptions
+        }
+      });
+
+      // ローカルステートの更新
+      setSelectedArtwork({
+        ...selectedArtwork,
         interiorImageDescriptions: currentDescriptions
-      };
-    });
+      });
+
+    } catch (error) {
+      console.error('Error updating description:', error);
+      toast({
+        variant: "destructive",
+        title: "説明文の更新に失敗しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+      });
+    }
   };
 
   const handleInteriorImageUpload = async (file: File, index: number) => {
@@ -501,9 +523,19 @@ const AdminDashboard = () => {
                 id="interior-desc-1"
                 placeholder="1枚目の説明文を入力してください"
                 value={selectedArtwork?.interiorImageDescriptions?.[0] ?? ''}
-                onChange={e => handleInteriorDescriptionChange(0, e.target.value)}
+                onChange={e => {
+                  e.stopPropagation();
+                  const value = e.target.value;
+                  handleInteriorDescriptionChange(0, value);
+                }}
+                onKeyDown={e => {
+                  e.stopPropagation();
+                }}
                 className="resize-none"
                 rows={4}
+                autoComplete="off"
+                autoCapitalize="off"
+                spellCheck={false}
               />
             </div>
           </div>
@@ -519,9 +551,19 @@ const AdminDashboard = () => {
                 id="interior-desc-2"
                 placeholder="2枚目の説明文を入力してください"
                 value={selectedArtwork?.interiorImageDescriptions?.[1] ?? ''}
-                onChange={e => handleInteriorDescriptionChange(1, e.target.value)}
+                onChange={e => {
+                  e.stopPropagation();
+                  const value = e.target.value;
+                  handleInteriorDescriptionChange(1, value);
+                }}
+                onKeyDown={e => {
+                  e.stopPropagation();
+                }}
                 className="resize-none"
                 rows={4}
+                autoComplete="off"
+                autoCapitalize="off"
+                spellCheck={false}
               />
             </div>
           </div>
