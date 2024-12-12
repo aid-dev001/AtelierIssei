@@ -52,17 +52,15 @@ const AdminDashboard = () => {
     { file: null, preview: null, description: '' }
   ]);
 
-  const adminPath = window.location.pathname.split('/dashboard')[0];
-
   // Queries
   const { data: collections, isLoading: isLoadingCollections, error: collectionsError } = useQuery<Collection[]>({
     queryKey: ["collections"],
     queryFn: async () => {
       try {
-        const response = await fetch("/api/collections");
+        const response = await fetch("/api/admin/collections");
         if (!response.ok) {
           if (response.status === 401) {
-            setLocation(adminPath);
+            setLocation("/admin");
             throw new Error('セッションが切れました。再度ログインしてください。');
           }
           throw new Error('コレクションの取得に失敗しました');
@@ -80,17 +78,19 @@ const AdminDashboard = () => {
           title: "エラー",
           description: error instanceof Error ? error.message : "コレクションの取得に失敗しました",
         });
-        return [];
+        return [];  // Return empty array instead of throwing
       }
     },
     retry: 1,
+    refetchOnWindowFocus: false,
+    staleTime: 30000,
   });
 
   const { data: artworks, isLoading: isLoadingArtworks, error: artworksError } = useQuery<Artwork[]>({
     queryKey: ["artworks"],
     queryFn: async () => {
       try {
-        const response = await fetch("/api/artworks");
+        const response = await fetch("/api/admin/artworks");
         if (!response.ok) {
           if (response.status === 401) {
             setLocation(adminPath);
@@ -99,6 +99,7 @@ const AdminDashboard = () => {
           throw new Error('作品の取得に失敗しました');
         }
         const data = await response.json();
+        console.log('Fetched artworks:', data);
         if (!Array.isArray(data)) {
           console.error("Expected array of artworks, got:", data);
           return [];
@@ -111,16 +112,18 @@ const AdminDashboard = () => {
           title: "エラー",
           description: error instanceof Error ? error.message : "作品の取得に失敗しました",
         });
-        return [];
+        throw error;
       }
     },
     retry: 1,
+    refetchOnWindowFocus: false,
+    staleTime: 30000,
   });
 
   const { data: exhibitions, isLoading: isLoadingExhibitions } = useQuery<Exhibition[]>({
     queryKey: ["exhibitions"],
     queryFn: async () => {
-      const response = await fetch(`${adminPath}/api/exhibitions`);
+      const response = await fetch("/api/admin/exhibitions");
       if (!response.ok) throw new Error('展示会の取得に失敗しました');
       return response.json();
     },
@@ -134,7 +137,8 @@ const AdminDashboard = () => {
     });
   };
 
-  const handleInteriorImageChange = (index: number, file: File) => {
+  const handleInteriorImageChange = (index: number, file: File | null) => {
+    if (!file) return;
     setInteriorImages(prev => {
       const updated = [...prev];
       updated[index] = {
@@ -465,9 +469,9 @@ const AdminDashboard = () => {
           <Button
             variant="outline"
             onClick={() => {
-              fetch(`${adminPath}/api/auth/logout`, { method: 'POST' })
+              fetch("/api/auth/logout", { method: 'POST' })
                 .then(() => {
-                  setLocation(adminPath);
+                  setLocation("/admin");
                 })
                 .catch((error) => {
                   console.error('Logout failed:', error);
@@ -510,8 +514,9 @@ const AdminDashboard = () => {
                     新規作品を追加
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[800px] max-h-[90vh] p-0 z-[200] fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
-                  <div className="sticky top-0 bg-background z-10 px-6 pt-6">
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh] p-0">
+                  <div className="h-full overflow-y-auto">
+                    <div className="sticky top-0 bg-background z-10 px-6 pt-6">
                     <DialogHeader>
                       <DialogTitle>
                         {selectedArtwork ? '作品を編集' : '新規作品を追加'}
@@ -663,6 +668,14 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                 ))
+              ) : artworksError ? (
+                <div className="col-span-full text-center text-red-500">
+                  データの取得に失敗しました。ページを再読み込みしてください。
+                </div>
+              ) : !artworks?.length ? (
+                <div className="col-span-full text-center text-gray-500">
+                  作品がありません。新しい作品を追加してください。
+                </div>
               ) : artworks?.map((artwork) => (
                 <div
                   key={artwork.id}
@@ -719,7 +732,7 @@ const AdminDashboard = () => {
                     新規コレクション
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[600px] z-[200] fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+                <DialogContent className="sm:max-w-[600px]">
                   <DialogHeader>
                     <DialogTitle>
                       {selectedCollection ? 'コレクションを編集' : '新規コレクション'}
