@@ -454,7 +454,7 @@ const AdminDashboard = () => {
                     新規作品を追加
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[800px] max-h-[90vh] p-0 z-[100]">
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh] p-0 z-[200] fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
                   <div className="sticky top-0 bg-background z-10 px-6 pt-6">
                     <DialogHeader>
                       <DialogTitle>
@@ -564,11 +564,11 @@ const AdminDashboard = () => {
                       </div>
 
                       {/* Interior Images Section */}
-                      <div className="space-y-6">
-                        <h3 className="text-lg font-medium">インテリアイメージ</h3>
+                      <div className="space-y-6 mt-8">
+                        <h3 className="text-lg font-medium border-t pt-6">インテリアイメージ</h3>
                         {interiorImages.map((image, index) => (
-                          <div key={index} className="space-y-4 p-4 border rounded-lg">
-                            <Label>インテリアイメージ {index + 1}</Label>
+                          <div key={index} className="space-y-4 p-4 border rounded-lg bg-gray-50/50">
+                            <Label className="text-base">インテリアイメージ {index + 1}</Label>
                             <Dropzone
                               existingImageUrl={image.preview || selectedArtwork?.interiorImageUrls?.[index]}
                               onFileChange={(file) => handleInteriorImageChange(index, file)}
@@ -580,6 +580,7 @@ const AdminDashboard = () => {
                                 value={image.description || selectedArtwork?.interiorImageDescriptions?.[index] || ''}
                                 onChange={(e) => handleInteriorDescriptionChange(index, e.target.value)}
                                 placeholder="インテリアイメージの説明を入力"
+                                className="min-h-[100px]"
                               />
                             </div>
                           </div>
