@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Dropzone } from "@/components/ui/dropzone";
-import type { Artwork, Exhibition } from "@db/schema";
+import type { Artwork, Exhibition, Collection } from "@db/schema";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,26 +26,75 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { PenLine, Trash2, Plus } from "lucide-react";
+import { PenLine, Trash2 } from "lucide-react";
 
 const AdminDashboard = () => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const adminPath = window.location.pathname.split('/dashboard')[0];
   const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions'>('artworks');
-  const [selectedCollection, setSelectedCollection] = useState<any>(null);
+  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
+  const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
   const [selectedExhibition, setSelectedExhibition] = useState<Exhibition | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
   const [isEditExhibitionDialogOpen, setIsEditExhibitionDialogOpen] = useState(false);
-  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [imageData, setImageData] = useState<{
     file: File | null;
     preview: string | null;
   }>({ file: null, preview: null });
+  const [interiorImages, setInteriorImages] = useState<Array<{
+    file: File | null;
+    preview: string | null;
+    description: string;
+  }>>([
+    { file: null, preview: null, description: '' },
+    { file: null, preview: null, description: '' }
+  ]);
 
-  // Artworkの関連機能
+  const adminPath = window.location.pathname.split('/dashboard')[0];
+
+  // Queries
+  const { data: collections, isLoading: isLoadingCollections } = useQuery<Collection[]>({
+    queryKey: ["collections"],
+    queryFn: async () => {
+      const response = await fetch(`${adminPath}/api/collections`);
+      if (!response.ok) {
+        if (response.status === 401) {
+          setLocation(adminPath);
+          throw new Error('セッションが切れました。再度ログインしてください。');
+        }
+        throw new Error('コレクションの取得に失敗しました');
+      }
+      return response.json();
+    },
+  });
+
+  const { data: artworks, isLoading: isLoadingArtworks } = useQuery<Artwork[]>({
+    queryKey: ["artworks"],
+    queryFn: async () => {
+      const response = await fetch(`${adminPath}/api/artworks`);
+      if (!response.ok) {
+        if (response.status === 401) {
+          setLocation(adminPath);
+          throw new Error('セッションが切れました。再度ログインしてください。');
+        }
+        throw new Error('作品の取得に失敗しました');
+      }
+      return response.json();
+    },
+  });
+
+  const { data: exhibitions, isLoading: isLoadingExhibitions } = useQuery<Exhibition[]>({
+    queryKey: ["exhibitions"],
+    queryFn: async () => {
+      const response = await fetch(`${adminPath}/api/exhibitions`);
+      if (!response.ok) throw new Error('展示会の取得に失敗しました');
+      return response.json();
+    },
+  });
+
+
   const handleFileChange = (file: File) => {
     setImageData({
       file,
@@ -53,15 +102,71 @@ const AdminDashboard = () => {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleInteriorImageChange = (index: number, file: File) => {
+    setInteriorImages(prev => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        file,
+        preview: URL.createObjectURL(file)
+      };
+      return updated;
+    });
+  };
+
+  const handleInteriorDescriptionChange = (index: number, description: string) => {
+    setInteriorImages(prev => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        description
+      };
+      return updated;
+    });
+  };
+
+  const handleArtworkSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     
-    if (selectedArtwork) {
-      // Update existing artwork
-      const updatedData = {
+    try {
+      let mainImageUrl = selectedArtwork?.imageUrl;
+      let interiorImageUrls = selectedArtwork?.interiorImageUrls || [];
+      let interiorImageDescriptions = selectedArtwork?.interiorImageDescriptions || ['', ''];
+
+      // Upload main image if changed
+      if (imageData.file) {
+        const mainImageFormData = new FormData();
+        mainImageFormData.append('image', imageData.file);
+        const uploadResponse = await fetch(`${adminPath}/api/upload`, {
+          method: 'POST',
+          body: mainImageFormData,
+        });
+        if (!uploadResponse.ok) throw new Error('メイン画像のアップロードに失敗しました');
+        const { imageUrl } = await uploadResponse.json();
+        mainImageUrl = imageUrl;
+      }
+
+      // Upload interior images if changed
+      for (let i = 0; i < interiorImages.length; i++) {
+        if (interiorImages[i].file) {
+          const interiorImageFormData = new FormData();
+          interiorImageFormData.append('image', interiorImages[i].file);
+          const uploadResponse = await fetch(`${adminPath}/api/upload`, {
+            method: 'POST',
+            body: interiorImageFormData,
+          });
+          if (!uploadResponse.ok) throw new Error(`インテリア画像${i + 1}のアップロードに失敗しました`);
+          const { imageUrl } = await uploadResponse.json();
+          interiorImageUrls[i] = imageUrl;
+        }
+        interiorImageDescriptions[i] = interiorImages[i].description;
+      }
+
+      const artworkData = {
         title: formData.get('title'),
         description: formData.get('description'),
+        imageUrl: mainImageUrl,
         price: formData.get('price'),
         size: formData.get('size'),
         status: formData.get('status'),
@@ -69,110 +174,38 @@ const AdminDashboard = () => {
         storedLocation: formData.get('storedLocation'),
         exhibitionLocation: formData.get('exhibitionLocation'),
         collectionId: formData.get('collectionId'),
+        interiorImageUrls,
+        interiorImageDescriptions,
       };
 
-      try {
-        const response = await fetch(`${adminPath}/artworks/${selectedArtwork.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updatedData),
-        });
-
-        if (!response.ok) throw new Error('作品の更新に失敗しました');
-
-        if (imageData.file) {
-          const imageFormData = new FormData();
-          imageFormData.append('image', imageData.file);
-          const uploadResponse = await fetch(`${adminPath}/upload`, {
-            method: 'POST',
-            body: imageFormData,
-          });
-          if (!uploadResponse.ok) throw new Error('画像のアップロードに失敗しました');
-          
-          const { imageUrl } = await uploadResponse.json();
-          await fetch(`${adminPath}/artworks/${selectedArtwork.id}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ imageUrl }),
-          });
-        }
-
-        queryClient.invalidateQueries({ queryKey: ["artworks"] });
-        toast({ title: "作品を更新しました" });
-        setIsEditDialogOpen(false);
-      } catch (error) {
-        toast({
-          variant: "destructive",
-          title: "エラー",
-          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
-        });
-      }
-    } else {
-      // Create new artwork
-      try {
-        if (!imageData.file) {
-          toast({
-            variant: "destructive",
-            title: "エラー",
-            description: "画像を選択してください",
-          });
-          return;
-        }
-
-        const imageFormData = new FormData();
-        imageFormData.append('image', imageData.file);
-        const uploadResponse = await fetch(`${adminPath}/upload`, {
-          method: 'POST',
-          body: imageFormData,
-        });
-
-        if (!uploadResponse.ok) throw new Error('画像のアップロードに失敗しました');
-        
-        const { imageUrl } = await uploadResponse.json();
-        const artworkData = {
-          title: formData.get('title'),
-          description: formData.get('description'),
-          imageUrl,
-          price: formData.get('price'),
-          size: formData.get('size'),
-          status: formData.get('status'),
-          createdLocation: formData.get('createdLocation'),
-          storedLocation: formData.get('storedLocation'),
-          exhibitionLocation: formData.get('exhibitionLocation'),
-          collectionId: formData.get('collectionId'),
-        };
-
-        const response = await fetch(`${adminPath}/artworks`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+      const response = await fetch(
+        selectedArtwork 
+          ? `${adminPath}/api/artworks/${selectedArtwork.id}`
+          : `${adminPath}/api/artworks`,
+        {
+          method: selectedArtwork ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(artworkData),
-        });
+        }
+      );
 
-        if (!response.ok) throw new Error('作品の作成に失敗しました');
+      if (!response.ok) throw new Error('作品の保存に失敗しました');
 
-        queryClient.invalidateQueries({ queryKey: ["artworks"] });
-        toast({ title: "作品を作成しました" });
-        setIsEditDialogOpen(false);
-      } catch (error) {
-        toast({
-          variant: "destructive",
-          title: "エラー",
-          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
-        });
-      }
+      queryClient.invalidateQueries({ queryKey: ["artworks"] });
+      toast({ title: `作品を${selectedArtwork ? '更新' : '作成'}しました` });
+      setIsEditDialogOpen(false);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "エラー",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+      });
     }
   };
 
-  // Exhibitionの関連機能
   const createExhibitionMutation = useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await fetch(`${adminPath}/exhibitions`, {
+      const response = await fetch(`${adminPath}/api/exhibitions`, {
         method: 'POST',
         body: formData,
       });
@@ -195,7 +228,7 @@ const AdminDashboard = () => {
 
   const updateExhibitionMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<Exhibition> }) => {
-      const response = await fetch(`${adminPath}/exhibitions/${id}`, {
+      const response = await fetch(`${adminPath}/api/exhibitions/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -219,7 +252,7 @@ const AdminDashboard = () => {
 
   const deleteExhibitionMutation = useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`${adminPath}/exhibitions/${id}`, {
+      const response = await fetch(`${adminPath}/api/exhibitions/${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('展示会の削除に失敗しました');
@@ -237,47 +270,6 @@ const AdminDashboard = () => {
     },
   });
 
-  // Data Queries
-  const { data: collections, isLoading: isLoadingCollections } = useQuery({
-    queryKey: ["collections"],
-    queryFn: async () => {
-      const response = await fetch(`${adminPath}/collections`);
-      if (!response.ok) {
-        if (response.status === 401) {
-          setLocation(adminPath);
-          throw new Error('セッションが切れました。再度ログインしてください。');
-        }
-        throw new Error('コレクションデータの取得に失敗しました');
-      }
-      return response.json();
-    },
-  });
-
-  const { data: exhibitions, isLoading: isLoadingExhibitions } = useQuery<Exhibition[]>({
-    queryKey: ["exhibitions"],
-    queryFn: async () => {
-      const response = await fetch(`${adminPath}/exhibitions`);
-      if (!response.ok) throw new Error('展示会の取得に失敗しました');
-      return response.json();
-    },
-  });
-
-  const { data: artworks, isLoading: isLoadingArtworks } = useQuery({
-    queryKey: ["artworks"],
-    queryFn: async () => {
-      const response = await fetch(`${adminPath}/artworks`);
-      if (!response.ok) {
-        if (response.status === 401) {
-          setLocation(adminPath);
-          throw new Error('セッションが切れました。再度ログインしてください。');
-        }
-        throw new Error('作品データの取得に失敗しました');
-      }
-      return response.json();
-    },
-  });
-
-  // Exhibition Form Component
   const ExhibitionForm = () => {
     const [exhibitionImageData, setExhibitionImageData] = useState<{
       file: File | null;
@@ -311,7 +303,7 @@ const AdminDashboard = () => {
             if (exhibitionImageData.file) {
               const imageFormData = new FormData();
               imageFormData.append('image', exhibitionImageData.file);
-              const uploadResponse = await fetch(`${adminPath}/upload`, {
+              const uploadResponse = await fetch(`${adminPath}/api/upload`, {
                 method: 'POST',
                 body: imageFormData,
               });
@@ -337,7 +329,7 @@ const AdminDashboard = () => {
 
             const imageFormData = new FormData();
             imageFormData.append('image', exhibitionImageData.file);
-            const uploadResponse = await fetch(`${adminPath}/upload`, {
+            const uploadResponse = await fetch(`${adminPath}/api/upload`, {
               method: 'POST',
               body: imageFormData,
             });
@@ -453,13 +445,16 @@ const AdminDashboard = () => {
                     onClick={() => {
                       setSelectedArtwork(null);
                       setImageData({ file: null, preview: null });
-                      setIsEditDialogOpen(true);
+                      setInteriorImages([
+                        { file: null, preview: null, description: '' },
+                        { file: null, preview: null, description: '' }
+                      ]);
                     }}
                   >
                     新規作品を追加
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[800px] max-h-[90vh] p-0">
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh] p-0 z-[100]">
                   <div className="sticky top-0 bg-background z-10 px-6 pt-6">
                     <DialogHeader>
                       <DialogTitle>
@@ -468,7 +463,7 @@ const AdminDashboard = () => {
                     </DialogHeader>
                   </div>
                   <div className="px-6 pb-6 h-[calc(90vh-80px)] overflow-y-auto">
-                    <form onSubmit={handleSubmit} className="space-y-8">
+                    <form onSubmit={handleArtworkSubmit} className="space-y-8">
                       <div className="space-y-4">
                         <Label htmlFor="image">作品画像</Label>
                         <Dropzone
@@ -560,13 +555,37 @@ const AdminDashboard = () => {
                           className="w-full rounded-md border border-input bg-transparent px-3 py-2"
                         >
                           <option value="">コレクションを選択</option>
-                          {collections?.map((collection: any) => (
+                          {collections?.map((collection) => (
                             <option key={collection.id} value={collection.id}>
                               {collection.title}
                             </option>
                           ))}
                         </select>
                       </div>
+
+                      {/* Interior Images Section */}
+                      <div className="space-y-6">
+                        <h3 className="text-lg font-medium">インテリアイメージ</h3>
+                        {interiorImages.map((image, index) => (
+                          <div key={index} className="space-y-4 p-4 border rounded-lg">
+                            <Label>インテリアイメージ {index + 1}</Label>
+                            <Dropzone
+                              existingImageUrl={image.preview || selectedArtwork?.interiorImageUrls?.[index]}
+                              onFileChange={(file) => handleInteriorImageChange(index, file)}
+                              className="aspect-video w-full h-[150px]"
+                            />
+                            <div className="space-y-2">
+                              <Label>説明</Label>
+                              <Textarea
+                                value={image.description || selectedArtwork?.interiorImageDescriptions?.[index] || ''}
+                                onChange={(e) => handleInteriorDescriptionChange(index, e.target.value)}
+                                placeholder="インテリアイメージの説明を入力"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
                       <Button type="submit" className="w-full">
                         {selectedArtwork ? '更新' : '作成'}
                       </Button>
@@ -576,23 +595,30 @@ const AdminDashboard = () => {
               </Dialog>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {isLoadingArtworks ? (
                 <div>Loading...</div>
               ) : artworks?.map((artwork) => (
                 <div
                   key={artwork.id}
-                  className="border p-3 rounded-lg hover:shadow-lg transition-all cursor-pointer"
+                  className="border rounded-lg overflow-hidden hover:shadow-lg transition-all cursor-pointer"
                   onClick={() => {
                     setSelectedArtwork(artwork);
                     setImageData({
                       preview: artwork.imageUrl,
                       file: null,
                     });
+                    setInteriorImages(
+                      (artwork.interiorImageUrls || []).map((url, index) => ({
+                        file: null,
+                        preview: url,
+                        description: artwork.interiorImageDescriptions?.[index] || ''
+                      }))
+                    );
                     setIsEditDialogOpen(true);
                   }}
                 >
-                  <div className="aspect-square mb-2 overflow-hidden rounded-lg">
+                  <div className="aspect-square">
                     <img
                       src={artwork.imageUrl}
                       alt={artwork.title}
@@ -603,9 +629,11 @@ const AdminDashboard = () => {
                       }}
                     />
                   </div>
-                  <h3 className="font-medium text-sm truncate">{artwork.title}</h3>
-                  <p className="text-xs text-gray-600 line-clamp-1">{artwork.description}</p>
-                  <p className="text-xs text-gray-600 mt-1">¥{Number(artwork.price).toLocaleString()}</p>
+                  <div className="p-4">
+                    <h3 className="font-medium text-lg mb-2">{artwork.title}</h3>
+                    <p className="text-sm text-gray-600 line-clamp-2">{artwork.description}</p>
+                    <p className="text-sm text-gray-600 mt-2">¥{Number(artwork.price).toLocaleString()}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -617,16 +645,123 @@ const AdminDashboard = () => {
               <h2 className="text-2xl font-semibold">コレクション一覧</h2>
               <Dialog open={isEditCollectionDialogOpen} onOpenChange={setIsEditCollectionDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button>新規コレクション</Button>
+                  <Button
+                    onClick={() => {
+                      setSelectedCollection(null);
+                      setIsEditCollectionDialogOpen(true);
+                    }}
+                  >
+                    新規コレクション
+                  </Button>
                 </DialogTrigger>
-                <DialogContent>
-                  {/* Collection Form */}
+                <DialogContent className="sm:max-w-[600px] z-[100]">
+                  <DialogHeader>
+                    <DialogTitle>
+                      {selectedCollection ? 'コレクションを編集' : '新規コレクション'}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.currentTarget);
+                    try {
+                      const collectionData = {
+                        title: formData.get('title'),
+                        description: formData.get('description'),
+                        year: parseInt(formData.get('year') as string),
+                      };
+
+                      const response = await fetch(
+                        selectedCollection
+                          ? `${adminPath}/api/collections/${selectedCollection.id}`
+                          : `${adminPath}/api/collections`,
+                        {
+                          method: selectedCollection ? 'PUT' : 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify(collectionData),
+                        }
+                      );
+
+                      if (!response.ok) throw new Error('コレクションの保存に失敗しました');
+
+                      queryClient.invalidateQueries({ queryKey: ["collections"] });
+                      toast({ title: `コレクションを${selectedCollection ? '更新' : '作成'}しました` });
+                      setIsEditCollectionDialogOpen(false);
+                    } catch (error) {
+                      toast({
+                        variant: "destructive",
+                        title: "エラー",
+                        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+                      });
+                    }
+                  }} className="space-y-8">
+                    <div className="space-y-4">
+                      <Label htmlFor="title">タイトル</Label>
+                      <Input
+                        id="title"
+                        name="title"
+                        defaultValue={selectedCollection?.title}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-4">
+                      <Label htmlFor="description">説明</Label>
+                      <Textarea
+                        id="description"
+                        name="description"
+                        defaultValue={selectedCollection?.description}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-4">
+                      <Label htmlFor="year">年</Label>
+                      <Input
+                        id="year"
+                        name="year"
+                        type="number"
+                        defaultValue={selectedCollection?.year || new Date().getFullYear()}
+                        required
+                      />
+                    </div>
+                    <Button type="submit" className="w-full">
+                      {selectedCollection ? '更新' : '作成'}
+                    </Button>
+                  </form>
                 </DialogContent>
               </Dialog>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {isLoadingCollections ? (
+                <div>Loading...</div>
+              ) : collections?.map((collection) => (
+                <div
+                  key={collection.id}
+                  className="border rounded-lg p-6 hover:shadow-lg transition-all"
+                >
+                  <h3 className="text-xl font-medium mb-2">{collection.title}</h3>
+                  <p className="text-gray-600 mb-4">{collection.description}</p>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">{collection.year}年</span>
+                    <div className="space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedCollection(collection);
+                          setIsEditCollectionDialogOpen(true);
+                        }}
+                      >
+                        <PenLine className="w-4 h-4 mr-2" />
+                        編集
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </TabsContent>
 
-          {/* Exhibitions Tab */}
+          {/* Exhibitions Tab Content */}
           <TabsContent value="exhibitions">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-semibold">展示会一覧</h2>
@@ -641,7 +776,7 @@ const AdminDashboard = () => {
                     新規展示会を追加
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[800px]">
+                <DialogContent className="sm:max-w-[800px] z-[100] relative">
                   <DialogHeader>
                     <DialogTitle>
                       {selectedExhibition ? '展示会を編集' : '新規展示会を追加'}
