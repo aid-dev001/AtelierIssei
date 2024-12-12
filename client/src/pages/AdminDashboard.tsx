@@ -116,12 +116,16 @@ const AdminDashboard = () => {
   const handleInteriorDescriptionChange = (index: number, value: string) => {
     if (!selectedArtwork) return;
     
-    const newDescriptions = [...(selectedArtwork.interiorImageDescriptions || [])];
-    newDescriptions[index] = value;
-    
-    setSelectedArtwork({
-      ...selectedArtwork,
-      interiorImageDescriptions: newDescriptions as string[],
+    setSelectedArtwork(prev => {
+      if (!prev) return prev;
+      const descriptions = Array.isArray(prev.interiorImageDescriptions) 
+        ? [...prev.interiorImageDescriptions] 
+        : new Array(2).fill('');
+      descriptions[index] = value;
+      return {
+        ...prev,
+        interiorImageDescriptions: descriptions,
+      };
     });
   };
 
