@@ -17,6 +17,16 @@ const AdminDashboard = () => {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("exhibitions");
 
+  const { data: artworks } = useQuery({
+    queryKey: ["artworks"],
+    queryFn: () => fetch(`${adminPath}/artworks`).then(res => res.json()),
+  });
+
+  const { data: collections } = useQuery({
+    queryKey: ["collections"],
+    queryFn: () => fetch(`${adminPath}/collections`).then(res => res.json()),
+  });
+
   const { data: exhibitions } = useQuery<Exhibition[]>({
     queryKey: ["exhibitions"],
     queryFn: () => fetch(`${adminPath}/exhibitions`).then(res => res.json()),
@@ -41,10 +51,93 @@ const AdminDashboard = () => {
       </div>
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="mb-8">
-          <TabsTrigger value="exhibitions">展示会管理</TabsTrigger>
           <TabsTrigger value="artworks">作品管理</TabsTrigger>
           <TabsTrigger value="collections">コレクション管理</TabsTrigger>
+          <TabsTrigger value="exhibitions">展示会管理</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="artworks">
+          <div className="space-y-8">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold">作品一覧</h2>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>新規作品を追加</Button>
+                </DialogTrigger>
+                <DialogContent className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-3xl max-h-[90vh] overflow-y-auto z-50">
+                  <DialogHeader>
+                    <DialogTitle>新規作品を追加</DialogTitle>
+                  </DialogHeader>
+                  {/* 作品追加フォーム */}
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {artworks?.map((artwork) => (
+                <Card key={artwork.id} className="overflow-hidden">
+                  <div className="aspect-video relative">
+                    <img
+                      src={artwork.imageUrl}
+                      alt={artwork.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        img.src = '/placeholder.png';
+                      }}
+                    />
+                  </div>
+                  <div className="p-4 space-y-2">
+                    <h3 className="text-lg font-semibold">{artwork.title}</h3>
+                    <p className="text-sm text-gray-500">{artwork.description}</p>
+                    <p className="text-sm">¥{artwork.price?.toLocaleString()}</p>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="collections">
+          <div className="space-y-8">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold">コレクション一覧</h2>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>新規コレクションを追加</Button>
+                </DialogTrigger>
+                <DialogContent className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-3xl max-h-[90vh] overflow-y-auto z-50">
+                  <DialogHeader>
+                    <DialogTitle>新規コレクションを追加</DialogTitle>
+                  </DialogHeader>
+                  {/* コレクション追加フォーム */}
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {collections?.map((collection) => (
+                <Card key={collection.id} className="overflow-hidden">
+                  <div className="aspect-video relative">
+                    <img
+                      src={collection.imageUrl}
+                      alt={collection.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        img.src = '/placeholder.png';
+                      }}
+                    />
+                  </div>
+                  <div className="p-4 space-y-2">
+                    <h3 className="text-lg font-semibold">{collection.title}</h3>
+                    <p className="text-sm text-gray-500">{collection.description}</p>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </TabsContent>
 
         <TabsContent value="exhibitions">
           <div className="space-y-8">
@@ -54,7 +147,7 @@ const AdminDashboard = () => {
                 <DialogTrigger asChild>
                   <Button>新規展示会を追加</Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto z-50 relative">
+                <DialogContent className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-3xl max-h-[90vh] overflow-y-auto z-50">
                   <DialogHeader>
                     <DialogTitle>新規展示会を追加</DialogTitle>
                   </DialogHeader>
