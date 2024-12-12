@@ -478,7 +478,7 @@ const AdminDashboard = () => {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="exhibitionLocation">展示場所</Label>
+        <Label htmlFor="exhibitionLocation">展示履歴</Label>
         <Input
           id="exhibitionLocation"
           name="exhibitionLocation"

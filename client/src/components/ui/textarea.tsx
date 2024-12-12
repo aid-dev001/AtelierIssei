@@ -7,6 +7,10 @@ export interface TextareaProps
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, ...props }, ref) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      e.stopPropagation();
+    };
+
     return (
       <textarea
         className={cn(
@@ -14,6 +18,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           className
         )}
         ref={ref}
+        onKeyDown={handleKeyDown}
         {...props}
       />
     )
