@@ -466,7 +466,7 @@ const AdminDashboard = () => {
                 placeholder="1枚目の説明文を入力してください"
                 value={selectedArtwork?.interiorImageDescriptions?.[0] ?? ''}
                 onChange={e => handleInteriorDescriptionChange(0, e.target.value)}
-                onBlur={e => e.target.focus()}
+                className="resize-none"
                 rows={4}
               />
             </div>
@@ -484,7 +484,7 @@ const AdminDashboard = () => {
                 placeholder="2枚目の説明文を入力してください"
                 value={selectedArtwork?.interiorImageDescriptions?.[1] ?? ''}
                 onChange={e => handleInteriorDescriptionChange(1, e.target.value)}
-                onBlur={e => e.target.focus()}
+                className="resize-none"
                 rows={4}
               />
             </div>
@@ -585,13 +585,15 @@ const AdminDashboard = () => {
                     新規作品を追加
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[800px] h-[90vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>
-                      {selectedArtwork ? '作品を編集' : '新規作品を追加'}
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="p-6">
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto p-0">
+                  <div className="sticky top-0 bg-background z-10 px-6 pt-6">
+                    <DialogHeader>
+                      <DialogTitle>
+                        {selectedArtwork ? '作品を編集' : '新規作品を追加'}
+                      </DialogTitle>
+                    </DialogHeader>
+                  </div>
+                  <div className="px-6 pb-6">
                     <ArtworkForm />
                   </div>
                 </DialogContent>
