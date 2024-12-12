@@ -168,6 +168,8 @@ const AdminDashboard = () => {
           storedLocation: formData.get('storedLocation') as string,
           imageUrl: imageData.url || selectedArtwork.imageUrl,
           collectionId: formData.get('collectionId') ? parseInt(formData.get('collectionId') as string) : null,
+          interiorImageUrls: selectedArtwork.interiorImageUrls,
+          interiorImageDescriptions: selectedArtwork.interiorImageDescriptions,
         };
         
         await updateArtworkMutation.mutateAsync({
@@ -201,60 +203,26 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleInteriorDescriptionChange = async (index: number, description: string) => {
-    if (!selectedArtwork) return;
-
-    try {
-      // 現在の説明文配列を取得（存在しない場合は空の配列を作成）
-      let currentDescriptions = selectedArtwork.interiorImageDescriptions || [];
+  const handleInteriorDescriptionChange = (index: number, description: string) => {
+    setSelectedArtwork(prev => {
+      if (!prev) return null;
       
-      // 配列が文字列の場合、新しい配列を作成
-      if (typeof currentDescriptions === 'string') {
-        currentDescriptions = [];
+      const currentDescriptions = Array.isArray(prev.interiorImageDescriptions)
+        ? [...prev.interiorImageDescriptions]
+        : [];
+
+      // 必要な長さまで配列を拡張
+      while (currentDescriptions.length <= index) {
+        currentDescriptions.push('');
       }
-      
-      // 配列をコピーして修正
-      const newDescriptions = [...currentDescriptions];
-      
-      // インデックスが存在しない場合、必要な長さまで空文字で埋める
-      while (newDescriptions.length <= index) {
-        newDescriptions.push('');
-      }
-      
-      // 説明文を更新
-      newDescriptions[index] = description;
 
-      console.log('Updating description at index:', index);
-      console.log('New descriptions array:', newDescriptions);
+      currentDescriptions[index] = description;
 
-      // データベースの更新
-      await updateArtworkMutation.mutateAsync({
-        id: selectedArtwork.id,
-        data: {
-          interiorImageDescriptions: newDescriptions
-        }
-      });
-
-      // ローカルステートの更新
-      setSelectedArtwork(prev => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          interiorImageDescriptions: newDescriptions
-        };
-      });
-
-      toast({
-        title: "説明文を更新しました",
-      });
-    } catch (error) {
-      console.error('Error updating interior description:', error);
-      toast({
-        variant: "destructive",
-        title: "説明文の更新に失敗しました",
-        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
-      });
-    }
+      return {
+        ...prev,
+        interiorImageDescriptions: currentDescriptions
+      };
+    });
   };
 
   const handleInteriorImageUpload = async (file: File, index: number) => {
@@ -394,8 +362,45 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleArtworkUpdate = async (formData: FormData) => {
+    if (!selectedArtwork) return;
+
+    try {
+      const updatedData = {
+        title: formData.get('title') as string,
+        description: formData.get('description') as string,
+        price: parseFloat(formData.get('price') as string),
+        size: formData.get('size') as string,
+        status: formData.get('status') as string,
+        createdLocation: formData.get('createdLocation') as string,
+        storedLocation: formData.get('storedLocation') as string,
+        imageUrl: imageData.url || selectedArtwork.imageUrl,
+        collectionId: formData.get('collectionId') ? parseInt(formData.get('collectionId') as string) : null,
+        interiorImageUrls: selectedArtwork.interiorImageUrls,
+        interiorImageDescriptions: selectedArtwork.interiorImageDescriptions,
+      };
+
+      await updateArtworkMutation.mutateAsync({
+        id: selectedArtwork.id,
+        data: updatedData
+      });
+
+      toast({
+        title: "作品情報を更新しました",
+      });
+    } catch (error) {
+      console.error('Error updating artwork:', error);
+      toast({
+        variant: "destructive",
+        title: "更新に失敗しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+      });
+    }
+  };
+
+
   const ArtworkForm = () => (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form onSubmit={handleArtworkUpdate} className="space-y-8">
       <div className="space-y-4">
         <Label htmlFor="image">作品画像</Label>
         <Dropzone
@@ -499,15 +504,6 @@ const AdminDashboard = () => {
                 onChange={e => handleInteriorDescriptionChange(0, e.target.value)}
                 className="resize-none"
                 rows={4}
-                autoComplete="off"
-                autoCapitalize="off"
-                spellCheck={false}
-                onBlur={e => {
-                  const value = e.target.value;
-                  if (value !== selectedArtwork?.interiorImageDescriptions?.[0]) {
-                    handleInteriorDescriptionChange(0, value);
-                  }
-                }}
               />
             </div>
           </div>
@@ -526,15 +522,6 @@ const AdminDashboard = () => {
                 onChange={e => handleInteriorDescriptionChange(1, e.target.value)}
                 className="resize-none"
                 rows={4}
-                autoComplete="off"
-                autoCapitalize="off"
-                spellCheck={false}
-                onBlur={e => {
-                  const value = e.target.value;
-                  if (value !== selectedArtwork?.interiorImageDescriptions?.[1]) {
-                    handleInteriorDescriptionChange(1, value);
-                  }
-                }}
               />
             </div>
           </div>
