@@ -32,11 +32,6 @@ const AdminDashboard = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const adminPath = window.location.pathname.split('/dashboard')[0];
-const AdminDashboard = () => {
-  const [, setLocation] = useLocation();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const adminPath = window.location.pathname.split('/dashboard')[0];
 const createExhibitionMutation = useMutation({
   mutationFn: async (formData: FormData) => {
     const response = await fetch(`${adminPath}/exhibitions`, {
@@ -104,7 +99,24 @@ const deleteExhibitionMutation = useMutation({
   const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
   const [isEditExhibitionDialogOpen, setIsEditExhibitionDialogOpen] = useState(false);
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
-  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
+  const [selectedArtwork, setSelectedArtwork] = useState<{
+    title: string;
+    id: number;
+    size: string | null;
+    description: string;
+    imageUrl: string;
+    createdAt: Date;
+    updatedAt: Date;
+    status: string;
+    price: string;
+    createdLocation: string;
+    storedLocation: string;
+    exhibitionLocation: string | null;
+    interiorImageUrls: string[];
+    interiorImageDescriptions: string[];
+    isAvailable: boolean;
+    collectionId: number | null;
+  } | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [imageData, setImageData] = useState<{
     url: string;
@@ -298,18 +310,12 @@ const deleteExhibitionMutation = useMutation({
       if (!selectedArtwork) return;
 
       // 新しい説明文の配列を作成
-      const newDescriptions = Array.isArray(selectedArtwork.interiorImageDescriptions) 
+      const newDescriptions: string[] = Array.isArray(selectedArtwork.interiorImageDescriptions) 
         ? [...selectedArtwork.interiorImageDescriptions]
         : ['', ''];
 
       // インデックスの説明文を更新
       newDescriptions[index] = description;
-
-      // ローカルステートを先に更新
-      setSelectedArtwork({
-        ...selectedArtwork,
-        interiorImageDescriptions: newDescriptions
-      });
 
       // データベースの更新
       await updateArtworkMutation.mutateAsync({
@@ -318,6 +324,12 @@ const deleteExhibitionMutation = useMutation({
           interiorImageDescriptions: newDescriptions
         }
       });
+
+      // ローカルステートを更新
+      setSelectedArtwork({
+        ...selectedArtwork,
+        interiorImageDescriptions: newDescriptions
+      } as Artwork);
 
       toast({
         title: "説明文を更新しました",
@@ -502,7 +514,7 @@ const deleteExhibitionMutation = useMutation({
         data: updatedData
       });
 
-      toast({
+toast({
         title: "作品情報を更新しました",
       });
       setIsEditDialogOpen(false);
@@ -517,7 +529,30 @@ const deleteExhibitionMutation = useMutation({
   };
 
 
-  const ExhibitionForm = () => {
+  // 型定義
+interface Exhibition {
+  id: number;
+  title: string;
+  subtitle: string | null;
+  description: string;
+  details: string | null;
+  location: string;
+  address: string | null;
+  imageUrl: string;
+  subImageUrls: string[];
+  startDate: Date;
+  endDate: Date;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface ExhibitionFormProps {
+  selectedExhibition: Exhibition | null;
+  onSubmit: (formData: FormData) => Promise<void>;
+}
+
+const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onSubmit }) => {
     const [subImageFiles, setSubImageFiles] = useState<File[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
 
@@ -733,7 +768,7 @@ const deleteExhibitionMutation = useMutation({
             onChange={(e) => e.target.files && handleSubImagesUpload(e.target.files)}
             className="w-full"
           />
-          {selectedExhibition?.subImageUrls && (
+          {selectedExhibition?.subImageUrls && Array.isArray(selectedExhibition.subImageUrls) && (
             <div className="grid grid-cols-3 gap-4">
               {selectedExhibition.subImageUrls.map((url: string, index: number) => (
                 <div key={index} className="relative aspect-square">
@@ -904,10 +939,10 @@ const deleteExhibitionMutation = useMutation({
                       ? [...selectedArtwork.interiorImageDescriptions]
                       : ['', ''];
                     descriptions[1] = e.target.value;
-                    setSelectedArtwork(prev => ({
+                    setSelectedArtwork(prev => prev ? {
                       ...prev,
                       interiorImageDescriptions: descriptions,
-                    }));
+                    } : null);
                   }
                 }}
                 className="resize-none"
@@ -1142,7 +1177,29 @@ const deleteExhibitionMutation = useMutation({
                       {selectedExhibition ? '展示会を編集' : '新規展示会を追加'}
                     </DialogTitle>
                   </DialogHeader>
-                  <ExhibitionForm />
+                  <ExhibitionForm
+                    selectedExhibition={selectedExhibition}
+                    onSubmit={async (formData) => {
+                      try {
+                        if (selectedExhibition) {
+                          await updateExhibitionMutation.mutateAsync({
+                            id: selectedExhibition.id,
+                            data: Object.fromEntries(formData),
+                          });
+                        } else {
+                          await createExhibitionMutation.mutateAsync(formData);
+                        }
+                        setIsEditExhibitionDialogOpen(false);
+                      } catch (error) {
+                        console.error('Error submitting exhibition:', error);
+                        toast({
+                          variant: "destructive",
+                          title: "エラーが発生しました",
+                          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+                        });
+                      }
+                    }}
+                  />
                 </DialogContent>
               </Dialog>
             </div>
