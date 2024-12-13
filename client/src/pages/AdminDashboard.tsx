@@ -429,56 +429,79 @@ const deleteExhibitionMutation = useMutation({
 
   const handleFileChange = async (file: File) => {
     try {
-      const formData = new FormData();
-      formData.append('image', file);
+      if (!file) {
+        throw new Error('ファイルが選択されていません');
+      }
+
+      if (file.size > 30 * 1024 * 1024) {
+        throw new Error('ファイルサイズは30MB以下にしてください');
+      }
+
+      if (!file.type.startsWith('image/')) {
+        throw new Error('画像ファイルを選択してください');
+      }
 
       toast({
         title: "画像をアップロード中...",
         description: "AIによる説明文の生成を開始します",
       });
 
+      const formData = new FormData();
+      formData.append('image', file);
+
       const response = await fetch(`${adminPath}/generate-description`, {
         method: 'POST',
         body: formData,
       });
 
+      let data;
+      try {
+        const responseText = await response.text();
+        data = JSON.parse(responseText);
+      } catch (error) {
+        console.error('Error parsing response:', error);
+        throw new Error('サーバーからの応答を解析できませんでした');
+      }
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || '説明文の生成に失敗しました');
+        throw new Error(data.error || '画像のアップロードに失敗しました');
       }
 
-      const data = await response.json();
-      console.log('Generated data:', data);
-
-      if (!data.title || !data.description || !data.imageUrl) {
-        throw new Error('タイトルまたは説明文の生成に失敗しました');
+      if (!data.imageUrl || !data.title || !data.description) {
+        throw new Error('画像のアップロードまたは説明文の生成に失敗しました');
       }
 
+      // 状態を更新
       setImageData({
         url: data.imageUrl,
         generatedTitle: data.title,
         generatedDescription: data.description,
       });
 
+      // 編集モードの場合は選択された作品の情報も更新
+      if (selectedArtwork) {
+        setSelectedArtwork(prev => {
+          if (!prev) return null;
+          return {
+            ...prev,
+            imageUrl: data.imageUrl,
+            title: data.title,
+            description: data.description,
+          };
+        });
+      }
+
       toast({
         title: "作品の説明を生成しました",
         description: "生成されたタイトルと説明文を確認・編集してください",
       });
     } catch (error) {
-      console.error('Error generating description:', error);
-      if (error instanceof Error) {
-        toast({
-          variant: "destructive",
-          title: "説明の生成に失敗しました",
-          description: `エラー詳細: ${error.message}`,
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          title: "説明の生成に失敗しました",
-          description: "AIによる説明文の生成に失敗しました。手動で入力してください",
-        });
-      }
+      console.error('Error uploading file:', error);
+      toast({
+        variant: "destructive",
+        title: "エラーが発生しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+      });
     }
   };
 
@@ -601,6 +624,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
 
       setIsGenerating(true);
       try {
+        console.log('Generating content for:', formData);
         const response = await fetch(`${adminPath}/generate-exhibition-description`, {
           method: 'POST',
           headers: {
@@ -612,22 +636,35 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           }),
         });
 
+        const responseText = await response.text();
+        console.log('Server response:', responseText);
+
         if (!response.ok) {
           throw new Error('AI生成に失敗しました');
         }
 
-        const data = await response.json();
-        setFormData(prev => ({
-          ...prev,
+        const data = JSON.parse(responseText);
+        console.log('Parsed response data:', data);
+
+        if (!data.subtitle || !data.description) {
+          throw new Error('生成されたデータが不完全です');
+        }
+
+        const newFormData = {
+          ...formData,
           subtitle: data.subtitle,
           description: data.description,
-        }));
+        };
+        
+        console.log('Updating form data to:', newFormData);
+        setFormData(newFormData);
 
         toast({
           title: "AI生成が完了しました",
           description: "サブタイトルと概要が更新されました",
         });
       } catch (error) {
+        console.error('AI generation error:', error);
         toast({
           variant: "destructive",
           title: "AI生成に失敗しました",
@@ -647,64 +684,48 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
       setIsGenerating(true);
 
       try {
-        const form = e.currentTarget;
-        const formData = new FormData(form);
-        
-        // メイン画像のアップロード
-        const mainImageFile = formData.get('mainImage') as File;
-        if (mainImageFile.size > 0) {
-          const mainImageUrl = await handleMainImageUpload(mainImageFile);
-          if (!mainImageUrl) throw new Error('メイン画像のアップロードに失敗しました');
-          formData.set('imageUrl', mainImageUrl);
-        }
+        const submitData = {
+          ...formData,
+          imageUrl: mainImageUrl || '',
+          subImageUrls: [],
+          startDate: e.currentTarget.startDate.value,
+          endDate: e.currentTarget.endDate.value,
+          details: e.currentTarget.details.value,
+          address: e.currentTarget.address.value,
+        };
 
         // サブ画像のアップロード
-        const subImageUrls = [];
-        for (const file of subImageFiles) {
-          const imageUrl = await handleMainImageUpload(file);
-          if (imageUrl) subImageUrls.push(imageUrl);
-        }
-        formData.set('subImageUrls', JSON.stringify(subImageUrls));
-
-        // AIによる説明文生成
-        if (!selectedExhibition) {
-          const title = formData.get('title') as string;
-          const location = formData.get('location') as string;
-          
-          if (title && location) {
-            try {
-              const response = await fetch(`${adminPath}/generate-exhibition-description`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ title, location }),
-              });
-
-              if (!response.ok) throw new Error('説明文の生成に失敗しました');
-
-              const { subtitle, description } = await response.json();
-              formData.set('subtitle', subtitle);
-              formData.set('description', description);
-            } catch (error) {
-              console.error('Error generating description:', error);
-              toast({
-                variant: "destructive",
-                title: "説明文の生成に失敗しました",
-                description: "手動で入力してください",
-              });
-            }
+        if (subImageFiles.length > 0) {
+          const uploadedUrls = [];
+          for (const file of subImageFiles) {
+            const imageUrl = await handleMainImageUpload(file);
+            if (imageUrl) uploadedUrls.push(imageUrl);
           }
+          submitData.subImageUrls = uploadedUrls;
         }
 
         if (selectedExhibition) {
+          // 既存の展示会の更新
           await updateExhibitionMutation.mutateAsync({
             id: selectedExhibition.id,
-            data: Object.fromEntries(formData),
+            data: submitData,
           });
         } else {
-          await createExhibitionMutation.mutateAsync(formData);
+          // 新規作成
+          const formDataToSubmit = new FormData();
+          Object.entries(submitData).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+              formDataToSubmit.append(key, JSON.stringify(value));
+            } else if (value !== null && value !== undefined) {
+              formDataToSubmit.append(key, value.toString());
+            }
+          });
+          await createExhibitionMutation.mutateAsync(formDataToSubmit);
         }
+
+        toast({
+          title: selectedExhibition ? "展示会を更新しました" : "展示会を作成しました",
+        });
       } catch (error) {
         console.error('Error submitting exhibition:', error);
         toast({
