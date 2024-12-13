@@ -584,7 +584,21 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
       location: selectedExhibition?.location || '',
       subtitle: selectedExhibition?.subtitle || '',
       description: selectedExhibition?.description || '',
+      details: selectedExhibition?.details || '',
+      address: selectedExhibition?.address || '',
+      startDate: selectedExhibition?.startDate ? new Date(selectedExhibition.startDate).toISOString().slice(0, 16) : '',
+      endDate: selectedExhibition?.endDate ? new Date(selectedExhibition.endDate).toISOString().slice(0, 16) : '',
+      mainImageUrl: selectedExhibition?.imageUrl || null,
+      subImageUrls: selectedExhibition?.subImageUrls || [],
     });
+
+    // フォームデータの更新を処理する関数
+    const updateFormData = (field: string, value: string) => {
+      setFormData(prev => ({
+        ...prev,
+        [field]: value
+      }));
+    };
 
     const handleMainImageUpload = async (file: File) => {
       const formData = new FormData();
@@ -649,12 +663,6 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
         };
         
         setFormData(updatedFormData);
-
-        // サブタイトルと説明のフィールドを直接更新
-        const subtitleInput = document.getElementById('subtitle') as HTMLInputElement;
-        const descriptionInput = document.getElementById('description') as HTMLTextAreaElement;
-        if (subtitleInput) subtitleInput.value = data.subtitle;
-        if (descriptionInput) descriptionInput.value = data.description;
 
         toast({
           title: "AI生成が完了しました",

@@ -41,27 +41,13 @@ export async function generateCollectionDescription(title: string): Promise<stri
 
 export async function generateArtworkDescription(imageUrl: string): Promise<{ title: string; description: string }> {
   try {
+    console.log('Starting artwork description generation...');
     console.log('OpenAI API Key exists:', !!process.env.OPENAI_API_KEY);
-    console.log('Generating artwork description for image:', imageUrl);
 
     if (!process.env.OPENAI_API_KEY) {
+      console.error('OpenAI API key is missing');
       throw new Error('OpenAI APIキーが設定されていません');
     }
-
-    if (!imageUrl) {
-      throw new Error('画像URLが提供されていません');
-    }
-
-    // 画像データの取得を試みる
-    const imageResponse = await fetch(imageUrl);
-    if (!imageResponse.ok) {
-      throw new Error(`画像の取得に失敗しました: ${imageResponse.status} ${imageResponse.statusText}`);
-    }
-
-    const buffer = await imageResponse.arrayBuffer();
-    const base64Image = Buffer.from(buffer).toString('base64');
-    const imageUrlToUse = `data:image/jpeg;base64,${base64Image}`;
-    console.log('Successfully converted image to base64');
 
     // OpenAI APIにリクエストを送信
     console.log('Sending request to OpenAI API...');
@@ -69,22 +55,20 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
       model: "gpt-4",
       messages: [
         {
-          role: "user",
-          content: [
-            { 
-              type: "text", 
-              text: "この画像はアート作品です。この作品にふさわしいタイトルと説明文を日本語か英語で生成してください。タイトルは10文字程度、説明文は30文字程度でお願いします。必ずJSONフォーマットで返してください。例: {\"title\": \"青い静寂\", \"description\": \"深い青が織りなす静謐な世界\"}" 
-            },
-            {
-              type: "image_url",
-              image_url: {
-                url: imageUrlToUse,
-              },
-            },
-          ],
+          role: "system",
+          content: "あなたはアート作品の専門家です。芸術的な感性を持って、作品のタイトルと説明文を生成してください。"
         },
+        {
+          role: "user",
+          content: "新しいアート作品のタイトルと説明文を生成してください。以下の条件に従ってください：\n" +
+                  "1. タイトルは10文字程度で、作品の本質を捉えた印象的なものにする\n" +
+                  "2. 説明文は30文字程度で、作品の特徴や感情を表現する\n" +
+                  "3. 必ずJSONフォーマットで返す\n" +
+                  "例: {\"title\": \"青い静寂\", \"description\": \"深い青が織りなす静謐な世界\"}"
+        }
       ],
       max_tokens: 1000,
+      temperature: 0.7,
     });
 
     if (!openaiResponse.choices?.[0]?.message?.content) {
