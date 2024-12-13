@@ -624,7 +624,6 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
 
       setIsGenerating(true);
       try {
-        console.log('Generating content for:', formData);
         const response = await fetch(`${adminPath}/generate-exhibition-description`, {
           method: 'POST',
           headers: {
@@ -636,28 +635,26 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           }),
         });
 
-        const responseText = await response.text();
-        console.log('Server response:', responseText);
-
         if (!response.ok) {
           throw new Error('AI生成に失敗しました');
         }
 
-        const data = JSON.parse(responseText);
-        console.log('Parsed response data:', data);
-
-        if (!data.subtitle || !data.description) {
-          throw new Error('生成されたデータが不完全です');
-        }
-
-        const newFormData = {
+        const data = await response.json();
+        
+        // フォームデータを更新
+        const updatedFormData = {
           ...formData,
           subtitle: data.subtitle,
           description: data.description,
         };
         
-        console.log('Updating form data to:', newFormData);
-        setFormData(newFormData);
+        setFormData(updatedFormData);
+
+        // サブタイトルと説明のフィールドを直接更新
+        const subtitleInput = document.getElementById('subtitle') as HTMLInputElement;
+        const descriptionInput = document.getElementById('description') as HTMLTextAreaElement;
+        if (subtitleInput) subtitleInput.value = data.subtitle;
+        if (descriptionInput) descriptionInput.value = data.description;
 
         toast({
           title: "AI生成が完了しました",
