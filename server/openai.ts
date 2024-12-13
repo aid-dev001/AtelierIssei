@@ -13,11 +13,11 @@ export async function generateCollectionDescription(title: string): Promise<stri
     }
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4-vision-preview",
       messages: [
         {
           role: "system",
-          content: "あなたはアートギャラリーのキュレーターです。アートコレクションの説明文を生成してください。"
+          content: "あなたはアートギャラリーのキュレーターです。アート作品の説明文を生成してください。"
         },
         {
           role: "user",
