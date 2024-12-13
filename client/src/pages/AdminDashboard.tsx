@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { PenLine, Trash2 } from "lucide-react";
+import { PenLine, Trash2, Wand2, Loader2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -555,6 +555,13 @@ interface ExhibitionFormProps {
 const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onSubmit }) => {
     const [subImageFiles, setSubImageFiles] = useState<File[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [mainImageUrl, setMainImageUrl] = useState<string | null>(selectedExhibition?.imageUrl || null);
+    const [formData, setFormData] = useState({
+      title: selectedExhibition?.title || '',
+      location: selectedExhibition?.location || '',
+      subtitle: selectedExhibition?.subtitle || '',
+      description: selectedExhibition?.description || '',
+    });
 
     const handleMainImageUpload = async (file: File) => {
       const formData = new FormData();
@@ -571,6 +578,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
         }
 
         const data = await response.json();
+        setMainImageUrl(data.imageUrl);
         return data.imageUrl;
       } catch (error) {
         console.error('Error uploading image:', error);
@@ -579,6 +587,54 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           title: "画像のアップロードに失敗しました",
         });
         return null;
+      }
+    };
+
+    const handleGenerateAIContent = async () => {
+      if (!formData.title || !formData.location) {
+        toast({
+          variant: "destructive",
+          title: "タイトルと場所を入力してください",
+        });
+        return;
+      }
+
+      setIsGenerating(true);
+      try {
+        const response = await fetch(`${adminPath}/generate-exhibition-description`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title: formData.title,
+            location: formData.location,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('AI生成に失敗しました');
+        }
+
+        const data = await response.json();
+        setFormData(prev => ({
+          ...prev,
+          subtitle: data.subtitle,
+          description: data.description,
+        }));
+
+        toast({
+          title: "AI生成が完了しました",
+          description: "サブタイトルと概要が更新されました",
+        });
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "AI生成に失敗しました",
+          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+        });
+      } finally {
+        setIsGenerating(false);
       }
     };
 
@@ -666,26 +722,54 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
         <div className="space-y-4">
           <Label htmlFor="mainImage">メイン画像</Label>
           <Dropzone
-            existingImageUrl={selectedExhibition?.imageUrl}
-            onFileChange={file => {
-              const dataTransfer = new DataTransfer();
-              dataTransfer.items.add(file);
-              const input = document.querySelector('input[name="mainImage"]') as HTMLInputElement;
-              if (input) input.files = dataTransfer.files;
-            }}
+            existingImageUrl={mainImageUrl}
+            onFileChange={handleMainImageUpload}
             className="aspect-video w-full mx-auto"
           />
           <input type="file" name="mainImage" hidden />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="title">タイトル</Label>
-          <Input
-            id="title"
-            name="title"
-            defaultValue={selectedExhibition?.title}
-            required
-          />
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="title">タイトル</Label>
+            <Input
+              id="title"
+              name="title"
+              value={formData.title}
+              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="location">場所</Label>
+            <Input
+              id="location"
+              name="location"
+              value={formData.location}
+              onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+              required
+            />
+          </div>
+
+          <Button
+            type="button"
+            onClick={handleGenerateAIContent}
+            disabled={isGenerating}
+            className="w-full"
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                AI生成中...
+              </>
+            ) : (
+              <>
+                <Wand2 className="mr-2 h-4 w-4" />
+                AIでサブタイトルと概要を生成
+              </>
+            )}
+          </Button>
         </div>
 
         <div className="space-y-2">
@@ -693,7 +777,8 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           <Input
             id="subtitle"
             name="subtitle"
-            defaultValue={selectedExhibition?.subtitle}
+            value={formData.subtitle}
+            onChange={(e) => setFormData(prev => ({ ...prev, subtitle: e.target.value }))}
           />
         </div>
 
@@ -702,7 +787,8 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           <Textarea
             id="description"
             name="description"
-            defaultValue={selectedExhibition?.description}
+            value={formData.description}
+            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
             required
           />
         </div>
