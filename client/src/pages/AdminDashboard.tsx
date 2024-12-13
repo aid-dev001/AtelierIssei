@@ -99,24 +99,7 @@ const deleteExhibitionMutation = useMutation({
   const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
   const [isEditExhibitionDialogOpen, setIsEditExhibitionDialogOpen] = useState(false);
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
-  const [selectedArtwork, setSelectedArtwork] = useState<{
-    title: string;
-    id: number;
-    size: string | null;
-    description: string;
-    imageUrl: string;
-    createdAt: Date;
-    updatedAt: Date;
-    status: string;
-    price: string;
-    createdLocation: string;
-    storedLocation: string;
-    exhibitionLocation: string | null;
-    interiorImageUrls: string[];
-    interiorImageDescriptions: string[];
-    isAvailable: boolean;
-    collectionId: number | null;
-  } | null>(null);
+  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [imageData, setImageData] = useState<{
     url: string;

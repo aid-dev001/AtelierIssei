@@ -413,6 +413,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
       }
 
       const { subtitle, description } = await generateExhibitionDescription(title, location);
+      console.log('Generated exhibition content:', { subtitle, description });
       res.json({ subtitle, description });
     } catch (error) {
       console.error("Error generating exhibition description:", error);
