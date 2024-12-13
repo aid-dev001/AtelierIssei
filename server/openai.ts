@@ -138,39 +138,47 @@ export async function generateExhibitionDescription(
       messages: [
         {
           role: "system",
-          content: "あなたはアートギャラリーのキュレーターです。展示会の説明文を生成してください。"
+          content: "あなたはアートギャラリーのキュレーターです。展示会の説明文を生成してください。以下の形式で返してください：\n{\"subtitle\": \"サブタイトル\", \"description\": \"説明文\"}"
         },
         {
           role: "user",
-          content: `展示会「${title}」（開催場所: ${location}）のサブタイトル（20文字程度）と概要（50文字程度）を生成してください。必ずJSONフォーマットで返してください。例: {"subtitle": "色彩と光の饗宴", "description": "都市の喧騒を離れ、静謐な空間で色彩の織りなす物語に身を委ねる、特別な時間。"}`
+          content: `展示会「${title}」（開催場所: ${location}）のサブタイトル（20文字程度）と概要（50文字程度）を生成してください。芸術的で魅力的な表現を使用してください。`
         }
       ],
+      temperature: 0.7,
+      max_tokens: 200,
     });
 
     const content = response.choices[0]?.message?.content;
     if (!content) {
+      console.error('OpenAI response content is empty');
       throw new Error('説明文の生成に失敗しました');
     }
 
-    // Extract JSON from the response
-    const matches = content.match(/\{[^]*\}/);
-    if (!matches) {
-      throw new Error('JSONフォーマットの応答が見つかりませんでした');
-    }
+    console.log('Raw OpenAI response:', content);
 
-    const jsonString = matches[0];
-    const parsed = JSON.parse(jsonString) as { subtitle?: string; description?: string };
-    
-    if (!parsed.subtitle || !parsed.description) {
-      throw new Error('サブタイトルまたは説明文が見つかりません');
-    }
+    try {
+      const parsed = JSON.parse(content) as { subtitle?: string; description?: string };
+      
+      if (!parsed.subtitle || !parsed.description) {
+        console.error('Missing required fields in parsed response:', parsed);
+        throw new Error('生成された応答に必要なフィールドが含まれていません');
+      }
 
-    return {
-      subtitle: parsed.subtitle.trim(),
-      description: parsed.description.trim(),
-    };
+      return {
+        subtitle: parsed.subtitle.trim(),
+        description: parsed.description.trim(),
+      };
+    } catch (parseError) {
+      console.error('Failed to parse OpenAI response:', parseError);
+      console.error('Response content:', content);
+      throw new Error('生成された応答の解析に失敗しました');
+    }
   } catch (error) {
     console.error('Error generating exhibition description:', error);
-    throw error;
+    if (error instanceof Error) {
+      throw new Error(`展示会の説明文生成に失敗しました: ${error.message}`);
+    }
+    throw new Error('展示会の説明文生成に失敗しました');
   }
 }

@@ -672,6 +672,8 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
 
       setIsGenerating(true);
       try {
+        console.log('Generating AI content with:', { title: formData.title, location: formData.location });
+        
         const response = await fetch(`${adminPath}/generate-exhibition-description`, {
           method: 'POST',
           headers: {
@@ -688,15 +690,28 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
         }
 
         const data = await response.json();
+        console.log('Received AI generated content:', data);
+
+        if (!data.subtitle || !data.description) {
+          throw new Error('生成されたデータが不正です');
+        }
         
-        // フォームデータを更新
-        const updatedFormData = {
+        // 新しいフォームデータを作成
+        const newFormData = {
           ...formData,
           subtitle: data.subtitle,
           description: data.description,
         };
         
-        setFormData(updatedFormData);
+        console.log('Setting new form data:', newFormData);
+        setFormData(newFormData);
+
+        // 各フィールドの値を直接更新
+        const subtitleInput = document.getElementById('subtitle') as HTMLInputElement;
+        const descriptionTextarea = document.getElementById('description') as HTMLTextAreaElement;
+        
+        if (subtitleInput) subtitleInput.value = data.subtitle;
+        if (descriptionTextarea) descriptionTextarea.value = data.description;
 
         toast({
           title: "AI生成が完了しました",
@@ -940,7 +955,10 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
   };
 
   const ArtworkForm = () => (
-    <form onSubmit={handleArtworkUpdate} className="space-y-8">
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      handleSubmit(e);
+    }} className="space-y-8">
       <div className="space-y-4">
         <Label htmlFor="image">作品画像</Label>
         <Dropzone

@@ -39,6 +39,7 @@ app.use(session({
   }
 }));
 
+// リクエストロギングミドルウェア
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -69,38 +70,86 @@ app.use((req, res, next) => {
   next();
 });
 
-(async () => {
-  await initializeAdmin();
-  setupRoutes(app);
-  const server = createServer(app);
+// グローバルエラーハンドリングミドルウェア
+const errorHandler = (err: any, _req: Request, res: Response, _next: NextFunction) => {
+  const status = err.status || err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    console.error('Server error:', err);
-
-    if (err.code === 'EADDRINUSE') {
-      console.error('Port 5000 is already in use. Please make sure no other process is using this port.');
-      process.exit(1);
-    }
-
-    res.status(status).json({ message });
+  console.error('Server error details:', {
+    status,
+    message,
+    stack: err.stack,
+    code: err.code,
+    name: err.name
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
+  if (err.code === 'EADDRINUSE') {
+    console.error('Port 5000 is already in use. Please make sure no other process is using this port.');
+    process.exit(1);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client
-  const PORT = 5000;
-  server.listen(PORT, "0.0.0.0", () => {
-    log(`serving on port ${PORT}`);
+  res.status(status).json({ 
+    message,
+    error: process.env.NODE_ENV === 'development' ? err.stack : undefined 
   });
-})();
+};
+
+// サーバーの初期化と起動
+async function startServer() {
+  try {
+    console.log('Starting server initialization...');
+    
+    // 管理者の初期化
+    await initializeAdmin();
+    console.log('Admin initialized successfully');
+    
+    // ルートのセットアップ
+    setupRoutes(app);
+    console.log('Routes setup completed');
+    
+    // HTTPサーバーの作成
+    const server = createServer(app);
+    
+    // エラーハンドリングミドルウェアの登録
+    app.use(errorHandler);
+
+    // 環境に応じたセットアップ
+    console.log('Setting up server environment...');
+    if (app.get("env") === "development") {
+      console.log('Setting up Vite for development...');
+      await setupVite(app, server);
+      console.log('Vite setup completed');
+    } else {
+      console.log('Setting up static serving for production...');
+      serveStatic(app);
+      console.log('Static serving setup completed');
+    }
+
+    // サーバーの起動
+    const PORT = 5000;
+    await new Promise<void>((resolve, reject) => {
+      server.listen(PORT, "0.0.0.0", () => {
+        log(`Server successfully started and serving on port ${PORT}`);
+        resolve();
+      });
+
+      server.on('error', (error: any) => {
+        console.error('Server failed to start:', error);
+        if (error.code === 'EADDRINUSE') {
+          console.error(`Port ${PORT} is already in use. Please make sure no other process is using this port.`);
+        }
+        reject(error);
+      });
+    });
+
+  } catch (error) {
+    console.error('Critical server error:', error);
+    process.exit(1);
+  }
+}
+
+// サーバーの起動
+startServer().catch(error => {
+  console.error('Unhandled server initialization error:', error);
+  process.exit(1);
+});
