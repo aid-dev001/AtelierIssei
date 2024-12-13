@@ -264,6 +264,7 @@ const deleteExhibitionMutation = useMutation({
           status: formData.get('status') as string,
           createdLocation: formData.get('createdLocation') as string,
           storedLocation: formData.get('storedLocation') as string,
+          exhibitionLocation: formData.get('exhibitionLocation') as string,
           imageUrl: imageData.url || selectedArtwork.imageUrl,
           collectionId: formData.get('collectionId') ? parseInt(formData.get('collectionId') as string) : null,
         };
@@ -605,6 +606,8 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
       endDate: selectedExhibition?.endDate ? new Date(selectedExhibition.endDate).toISOString().slice(0, 16) : '',
       imageUrl: selectedExhibition?.imageUrl || '',
       subImageUrls: selectedExhibition?.subImageUrls || [],
+      details: selectedExhibition?.details || '',
+      address: selectedExhibition?.address || '',
     });
 
     useEffect(() => {
@@ -691,23 +694,14 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
         if (!data.subtitle || !data.description) {
           throw new Error('生成されたデータが不正です');
         }
-        
-        // 新しいフォームデータを作成
-        const newFormData = {
-          ...formData,
+
+        setFormData(prev => ({
+          ...prev,
           subtitle: data.subtitle,
           description: data.description,
-        };
-        
-        console.log('Setting new form data:', newFormData);
-        setFormData(newFormData);
+        }));
 
-        // 各フィールドの値を直接更新
-        const subtitleInput = document.getElementById('subtitle') as HTMLInputElement;
-        const descriptionTextarea = document.getElementById('description') as HTMLTextAreaElement;
-        
-        if (subtitleInput) subtitleInput.value = data.subtitle;
-        if (descriptionTextarea) descriptionTextarea.value = data.description;
+        console.log('Updated form data with AI content');
 
         toast({
           title: "AI生成が完了しました",
