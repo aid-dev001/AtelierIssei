@@ -427,16 +427,16 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
       
       const exhibitionData = {
         title: req.body.title,
-        subtitle: req.body.subtitle,
+        subtitle: req.body.subtitle || '',
         description: req.body.description,
-        details: req.body.details,
         location: req.body.location,
-        address: req.body.address,
         imageUrl: req.body.imageUrl,
-        subImageUrls,
+        subImageUrls: subImageUrls || [],
         startDate: new Date(req.body.startDate),
         endDate: new Date(req.body.endDate),
         isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       const [newExhibition] = await db.insert(exhibitions).values(exhibitionData).returning();

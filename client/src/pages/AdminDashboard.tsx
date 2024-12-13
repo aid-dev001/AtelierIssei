@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { PenLine, Trash2, Wand2, Loader2 } from "lucide-react";
 import {
@@ -601,13 +601,26 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
       location: selectedExhibition?.location || '',
       subtitle: selectedExhibition?.subtitle || '',
       description: selectedExhibition?.description || '',
-      details: selectedExhibition?.details || '',
-      address: selectedExhibition?.address || '',
       startDate: selectedExhibition?.startDate ? new Date(selectedExhibition.startDate).toISOString().slice(0, 16) : '',
       endDate: selectedExhibition?.endDate ? new Date(selectedExhibition.endDate).toISOString().slice(0, 16) : '',
-      mainImageUrl: selectedExhibition?.imageUrl || null,
+      imageUrl: selectedExhibition?.imageUrl || '',
       subImageUrls: selectedExhibition?.subImageUrls || [],
     });
+
+    useEffect(() => {
+      if (selectedExhibition) {
+        setFormData({
+          title: selectedExhibition.title,
+          location: selectedExhibition.location,
+          subtitle: selectedExhibition.subtitle || '',
+          description: selectedExhibition.description,
+          startDate: new Date(selectedExhibition.startDate).toISOString().slice(0, 16),
+          endDate: new Date(selectedExhibition.endDate).toISOString().slice(0, 16),
+          imageUrl: selectedExhibition.imageUrl,
+          subImageUrls: selectedExhibition.subImageUrls || [],
+        });
+      }
+    }, [selectedExhibition]);
 
     // フォームデータの更新を処理する関数
     const updateFormData = (field: string, value: string) => {
@@ -724,11 +737,9 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
         const submitData = {
           ...formData,
           imageUrl: mainImageUrl || '',
-          subImageUrls: [],
+          subImageUrls: formData.subImageUrls,
           startDate: e.currentTarget.startDate.value,
           endDate: e.currentTarget.endDate.value,
-          details: e.currentTarget.details.value,
-          address: e.currentTarget.address.value,
         };
 
         // サブ画像のアップロード
@@ -852,17 +863,6 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="details">詳細</Label>
-          <Textarea
-            id="details"
-            name="details"
-            value={formData.details}
-            onChange={(e) => updateFormData('details', e.target.value)}
-            rows={6}
-          />
-        </div>
-
-        <div className="space-y-2">
           <Label htmlFor="location">場所</Label>
           <Input
             id="location"
@@ -870,16 +870,6 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
             value={formData.location}
             onChange={(e) => updateFormData('location', e.target.value)}
             required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="address">住所</Label>
-          <Input
-            id="address"
-            name="address"
-            value={formData.address}
-            onChange={(e) => updateFormData('address', e.target.value)}
           />
         </div>
 
