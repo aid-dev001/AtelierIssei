@@ -734,6 +734,9 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
       setIsGenerating(true);
 
       try {
+        console.log('Form data before submission:', formData);
+        console.log('Main image URL:', mainImageUrl);
+        
         const submitData = {
           ...formData,
           imageUrl: mainImageUrl || '',
@@ -741,6 +744,8 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           startDate: e.currentTarget.startDate.value,
           endDate: e.currentTarget.endDate.value,
         };
+        
+        console.log('Submitting exhibition data:', submitData);
 
         // サブ画像のアップロード
         if (subImageFiles.length > 0) {

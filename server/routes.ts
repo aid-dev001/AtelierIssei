@@ -423,6 +423,9 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
 
   app.post(`/admin/${ADMIN_URL_PATH}/exhibitions`, requireAdmin, upload.array('subImages'), async (req, res) => {
     try {
+      console.log('Received exhibition data:', req.body);
+      console.log('Received files:', req.files);
+      
       const subImageUrls = req.files ? (req.files as Express.Multer.File[]).map(file => `/artworks/${file.filename}`) : [];
       
       const exhibitionData = {
@@ -439,11 +442,18 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         updatedAt: new Date(),
       };
 
+      console.log('Attempting to create exhibition with data:', exhibitionData);
+
       const [newExhibition] = await db.insert(exhibitions).values(exhibitionData).returning();
+      console.log('Successfully created exhibition:', newExhibition);
       res.json(newExhibition);
     } catch (error) {
       console.error("Error creating exhibition:", error);
-      res.status(500).json({ error: "展示会の作成に失敗しました" });
+      console.error("Error details:", error instanceof Error ? error.message : error);
+      res.status(500).json({ 
+        error: "展示会の作成に失敗しました",
+        details: error instanceof Error ? error.message : "不明なエラー"
+      });
     }
   });
 
