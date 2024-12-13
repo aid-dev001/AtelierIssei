@@ -258,20 +258,31 @@ const deleteExhibitionMutation = useMutation({
       const form = e.currentTarget;
       const formData = new FormData(form);
 
+      // 必須フィールドの検証
+      const title = formData.get('title') as string;
+      const description = formData.get('description') as string;
+      
+      if (!title || !description) {
+        toast({
+          variant: "destructive",
+          title: "必須項目を入力してください",
+          description: "タイトルと説明は必須です",
+        });
+        return;
+      }
+
       if (selectedArtwork) {
         // 更新の場合
         const updateData = {
-          title: formData.get('title') as string,
-          description: formData.get('description') as string,
-          price: parseFloat(formData.get('price') as string),
+          title,
+          description,
+          price: formData.get('price') ? parseFloat(formData.get('price') as string) : null,
           size: formData.get('size') as string,
           status: formData.get('status') as string,
           createdLocation: formData.get('createdLocation') as string,
           storedLocation: formData.get('storedLocation') as string,
           imageUrl: imageData.url || selectedArtwork.imageUrl,
           collectionId: formData.get('collectionId') ? parseInt(formData.get('collectionId') as string) : null,
-          interiorImageUrls: selectedArtwork.interiorImageUrls,
-          interiorImageDescriptions: selectedArtwork.interiorImageDescriptions,
         };
         
         await updateArtworkMutation.mutateAsync({
@@ -289,11 +300,34 @@ const deleteExhibitionMutation = useMutation({
         }
 
         // 画像データを追加
-        const imageResponse = await fetch(imageData.url);
-        const imageBlob = await imageResponse.blob();
-        formData.append('image', imageBlob);
+        try {
+          const imageResponse = await fetch(imageData.url);
+          const imageBlob = await imageResponse.blob();
+          formData.append('image', imageBlob);
+          
+          console.log('Submitting artwork with data:', {
+            title,
+            description,
+            imageUrl: imageData.url,
+          });
 
-        await createArtworkMutation.mutateAsync(formData);
+          await createArtworkMutation.mutateAsync(formData);
+          
+          // 成功後にフォームをリセット
+          setImageData({
+            url: '',
+            generatedTitle: '',
+            generatedDescription: '',
+          });
+          setIsEditDialogOpen(false);
+        } catch (imageError) {
+          console.error('Error processing image:', imageError);
+          toast({
+            variant: "destructive",
+            title: "画像の処理に失敗しました",
+            description: imageError instanceof Error ? imageError.message : "予期せぬエラーが発生しました",
+          });
+        }
       }
     } catch (error) {
       console.error('Form submission error:', error);
@@ -804,7 +838,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
             id="subtitle"
             name="subtitle"
             value={formData.subtitle}
-            onChange={(e) => setFormData(prev => ({ ...prev, subtitle: e.target.value }))}
+            onChange={(e) => updateFormData('subtitle', e.target.value)}
           />
         </div>
 
@@ -814,7 +848,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
             id="description"
             name="description"
             value={formData.description}
-            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+            onChange={(e) => updateFormData('description', e.target.value)}
             required
           />
         </div>
@@ -824,7 +858,8 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           <Textarea
             id="details"
             name="details"
-            defaultValue={selectedExhibition?.details}
+            value={formData.details}
+            onChange={(e) => updateFormData('details', e.target.value)}
             rows={6}
           />
         </div>
@@ -834,7 +869,8 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           <Input
             id="location"
             name="location"
-            defaultValue={selectedExhibition?.location}
+            value={formData.location}
+            onChange={(e) => updateFormData('location', e.target.value)}
             required
           />
         </div>
@@ -844,7 +880,8 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           <Input
             id="address"
             name="address"
-            defaultValue={selectedExhibition?.address}
+            value={formData.address}
+            onChange={(e) => updateFormData('address', e.target.value)}
           />
         </div>
 
