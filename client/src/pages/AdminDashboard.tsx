@@ -1615,7 +1615,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
               ))}
             </div>
           </>
-        )}
+        ) : null}
       </main>
     </div>
   );
