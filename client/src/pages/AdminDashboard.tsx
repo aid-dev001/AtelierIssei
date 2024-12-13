@@ -372,7 +372,7 @@ const deleteExhibitionMutation = useMutation({
       }
 
       // Create a new array with the correct length (2 for now)
-      const currentUrls = selectedArtwork?.interiorImageUrls || [];
+      const currentUrls = Array.isArray(selectedArtwork?.interiorImageUrls) ? selectedArtwork.interiorImageUrls : [];
       let newImageUrls = Array(2).fill(null);
       
       // Copy existing URLs
@@ -555,6 +555,56 @@ interface ExhibitionFormProps {
 const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onSubmit }) => {
     const [subImageFiles, setSubImageFiles] = useState<File[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [title, setTitle] = useState(selectedExhibition?.title || "");
+    const [location, setLocation] = useState(selectedExhibition?.location || "");
+    const [generatedText, setGeneratedText] = useState({
+      subtitle: selectedExhibition?.subtitle || "",
+      description: selectedExhibition?.description || ""
+    });
+
+    const handleAIGenerate = async () => {
+      if (!title.trim() || !location.trim()) {
+        toast({
+          variant: "destructive",
+          title: "エラー",
+          description: "タイトルと場所を入力してください"
+        });
+        return;
+      }
+
+      setIsGenerating(true);
+      try {
+        const response = await fetch(`${adminPath}/generate-exhibition-description`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ title, location }),
+        });
+
+        if (!response.ok) throw new Error('説明文の生成に失敗しました');
+
+        const data = await response.json();
+        setGeneratedText({
+          subtitle: data.subtitle,
+          description: data.description
+        });
+        
+        toast({
+          title: "説明文を生成しました",
+          description: "生成された文章を確認・編集してください",
+        });
+      } catch (error) {
+        console.error('Error generating description:', error);
+        toast({
+          variant: "destructive",
+          title: "説明文の生成に失敗しました",
+          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+        });
+      } finally {
+        setIsGenerating(false);
+      }
+    };
 
     const handleMainImageUpload = async (file: File) => {
       const formData = new FormData();
@@ -663,124 +713,134 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
 
     return (
       <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="space-y-4">
-          <Label htmlFor="mainImage">メイン画像</Label>
-          <Dropzone
-            existingImageUrl={selectedExhibition?.imageUrl}
-            onFileChange={file => {
-              const dataTransfer = new DataTransfer();
-              dataTransfer.items.add(file);
-              const input = document.querySelector('input[name="mainImage"]') as HTMLInputElement;
-              if (input) input.files = dataTransfer.files;
-            }}
-            className="aspect-video w-full mx-auto"
-          />
-          <input type="file" name="mainImage" hidden />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="title">タイトル</Label>
-          <Input
-            id="title"
-            name="title"
-            defaultValue={selectedExhibition?.title}
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="subtitle">サブタイトル</Label>
-          <Input
-            id="subtitle"
-            name="subtitle"
-            defaultValue={selectedExhibition?.subtitle}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="description">概要</Label>
-          <Textarea
-            id="description"
-            name="description"
-            defaultValue={selectedExhibition?.description}
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="details">詳細</Label>
-          <Textarea
-            id="details"
-            name="details"
-            defaultValue={selectedExhibition?.details}
-            rows={6}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="location">場所</Label>
-          <Input
-            id="location"
-            name="location"
-            defaultValue={selectedExhibition?.location}
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="address">住所</Label>
-          <Input
-            id="address"
-            name="address"
-            defaultValue={selectedExhibition?.address}
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="startDate">開始日時</Label>
-            <Input
-              id="startDate"
-              name="startDate"
-              type="datetime-local"
-              defaultValue={selectedExhibition?.startDate ? new Date(selectedExhibition.startDate).toISOString().slice(0, 16) : undefined}
-              required
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <Label htmlFor="mainImage">メイン画像</Label>
+            <Dropzone
+              existingImageUrl={selectedExhibition?.imageUrl}
+              onFileChange={file => {
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                const input = document.querySelector('input[name="mainImage"]') as HTMLInputElement;
+                if (input) input.files = dataTransfer.files;
+              }}
+              className="aspect-square w-full h-[200px] mx-auto"
             />
+            <input type="file" name="mainImage" hidden />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="endDate">終了日時</Label>
-            <Input
-              id="endDate"
-              name="endDate"
-              type="datetime-local"
-              defaultValue={selectedExhibition?.endDate ? new Date(selectedExhibition.endDate).toISOString().slice(0, 16) : undefined}
-              required
-            />
-          </div>
-        </div>
 
-        <div className="space-y-4">
-          <Label>サブ画像（複数選択可）</Label>
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={(e) => e.target.files && handleSubImagesUpload(e.target.files)}
-            className="w-full"
-          />
-          {selectedExhibition?.subImageUrls && Array.isArray(selectedExhibition.subImageUrls) && (
-            <div className="grid grid-cols-3 gap-4">
-              {selectedExhibition.subImageUrls.map((url: string, index: number) => (
-                <div key={index} className="relative aspect-square">
-                  <img
-                    src={url}
-                    alt={`サブ画像 ${index + 1}`}
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                </div>
-              ))}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">タイトル</Label>
+              <Input
+                id="title"
+                name="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
             </div>
-          )}
+
+            <div className="space-y-2">
+              <Label htmlFor="location">場所</Label>
+              <Input
+                id="location"
+                name="location"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                required
+              />
+            </div>
+
+            <Button
+              type="button"
+              onClick={handleAIGenerate}
+              disabled={isGenerating || !title.trim() || !location.trim()}
+              className="w-full mt-4"
+            >
+              {isGenerating ? "生成中..." : "AIで説明文を生成"}
+            </Button>
+          </div>
+        </div>
+
+        <div className="space-y-4 border-t pt-8 mt-8">
+          <div className="space-y-2">
+            <Label htmlFor="subtitle">サブタイトル</Label>
+            <Input
+              id="subtitle"
+              name="subtitle"
+              value={generatedText.subtitle}
+              onChange={(e) => setGeneratedText(prev => ({ ...prev, subtitle: e.target.value }))}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="description">概要</Label>
+            <Textarea
+              id="description"
+              name="description"
+              value={generatedText.description}
+              onChange={(e) => setGeneratedText(prev => ({ ...prev, description: e.target.value }))}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="details">詳細</Label>
+            <Textarea
+              id="details"
+              name="details"
+              defaultValue={selectedExhibition?.details || ""}
+              rows={6}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="startDate">開始日時</Label>
+              <Input
+                id="startDate"
+                name="startDate"
+                type="datetime-local"
+                defaultValue={selectedExhibition?.startDate ? new Date(selectedExhibition.startDate).toISOString().slice(0, 16) : undefined}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="endDate">終了日時</Label>
+              <Input
+                id="endDate"
+                name="endDate"
+                type="datetime-local"
+                defaultValue={selectedExhibition?.endDate ? new Date(selectedExhibition.endDate).toISOString().slice(0, 16) : undefined}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <Label>サブ画像（複数選択可）</Label>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={(e) => e.target.files && handleSubImagesUpload(e.target.files)}
+              className="w-full"
+            />
+            {selectedExhibition?.subImageUrls && (
+              <div className="grid grid-cols-3 gap-4">
+                {selectedExhibition.subImageUrls.map((url: string, index: number) => (
+                  <div key={index} className="relative aspect-square">
+                    <img
+                      src={url}
+                      alt={`サブ画像 ${index + 1}`}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <Button type="submit" className="w-full" disabled={isGenerating}>

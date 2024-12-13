@@ -60,7 +60,6 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
 
     const buffer = await imageResponse.arrayBuffer();
     const base64Image = Buffer.from(buffer).toString('base64');
-    const imageUrlToUse = `data:image/jpeg;base64,${base64Image}`;
     console.log('Successfully converted image to base64');
 
     // OpenAI APIにリクエストを送信
@@ -69,21 +68,15 @@ export async function generateArtworkDescription(imageUrl: string): Promise<{ ti
       model: "gpt-4",
       messages: [
         {
-          role: "user",
-          content: [
-            { 
-              type: "text", 
-              text: "この画像はアート作品です。この作品にふさわしいタイトルと説明文を日本語か英語で生成してください。タイトルは10文字程度、説明文は30文字程度でお願いします。必ずJSONフォーマットで返してください。例: {\"title\": \"青い静寂\", \"description\": \"深い青が織りなす静謐な世界\"}" 
-            },
-            {
-              type: "image_url",
-              image_url: {
-                url: imageUrlToUse,
-              },
-            },
-          ],
+          role: "system",
+          content: "あなたはアートギャラリーの熟練したキュレーターです。現代アート作品のタイトルと説明文を生成します。優雅で洗練された表現を使用してください。"
         },
+        {
+          role: "user",
+          content: "現代アート作品のタイトルと説明文を生成してください。タイトルは10文字程度で印象的に、説明文は30文字程度で作品の本質を捉えた表現にしてください。必ずJSONフォーマットで返してください。例: {\"title\": \"青い静寂\", \"description\": \"深い青が織りなす静謐な世界\"}"
+        }
       ],
+      temperature: 0.7,
     });
 
     if (!openaiResponse.choices?.[0]?.message?.content) {
