@@ -13,7 +13,7 @@ export async function generateCollectionDescription(title: string): Promise<stri
     }
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4-vision-preview",
+      model: "gpt-4",
       messages: [
         {
           role: "system",
