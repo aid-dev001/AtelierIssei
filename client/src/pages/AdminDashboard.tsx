@@ -17,7 +17,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
+import { Card } from "@/components/ui/card";
 import { Artwork, Exhibition, Voice } from "@db/schema";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -28,6 +30,125 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 const AdminDashboard = () => {
+  const { data: voices } = useQuery<Voice[]>({
+    queryKey: ["voices"],
+    queryFn: () => fetch("/api/voices").then(res => res.json()),
+  });
+
+  // Voice mutations
+  const createVoiceMutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      const response = await fetch(`${adminPath}/voices`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!response.ok) throw new Error('ボイスの作成に失敗しました');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["voices"] });
+      toast({ title: "ボイスを作成しました" });
+      setIsEditVoiceDialogOpen(false);
+      setSelectedVoice(null);
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "ボイスの作成に失敗しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+      });
+    },
+  });
+
+  const updateVoiceMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: FormData }) => {
+      const response = await fetch(`${adminPath}/voices/${id}`, {
+        method: 'PUT',
+        body: data,
+      });
+      if (!response.ok) throw new Error('ボイスの更新に失敗しました');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["voices"] });
+      toast({ title: "ボイスを更新しました" });
+      setIsEditVoiceDialogOpen(false);
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "ボイスの更新に失敗しました" });
+    },
+  });
+
+  const deleteVoiceMutation = useMutation({
+    mutationFn: async (voiceId: number) => {
+      const response = await fetch(`${adminPath}/voices/${voiceId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('ボイスの削除に失敗しました');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["voices"] });
+      toast({ title: "ボイスを削除しました" });
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "ボイスの削除に失敗しました" });
+    },
+  });
+
+  const handleVoiceSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData(e.currentTarget);
+      
+      if (selectedVoice) {
+  const handleVoiceImageUpload = async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch(`${adminPath}/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('画像のアップロードに失敗しました');
+      }
+
+      const data = await response.json();
+      if (selectedVoice) {
+        setSelectedVoice(prev => ({
+          ...prev!,
+          imageUrl: data.imageUrl
+        }));
+      }
+      return data.imageUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        variant: "destructive",
+        title: "画像のアップロードに失敗しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+      });
+      return null;
+    }
+  };
+        await updateVoiceMutation.mutateAsync({ 
+          id: selectedVoice.id, 
+          data: formData 
+        });
+      } else {
+        await createVoiceMutation.mutateAsync(formData);
+      }
+    } catch (error) {
+      console.error('Error submitting voice:', error);
+      toast({
+        variant: "destructive",
+        title: "エラーが発生しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+      });
+    }
+  };
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -94,6 +215,58 @@ const deleteExhibitionMutation = useMutation({
   },
 });
   const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions' | 'voices'>('artworks');
+  const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
+  const [isEditVoiceDialogOpen, setIsEditVoiceDialogOpen] = useState(false);
+  <div className="space-y-8">
+    <div className="flex justify-between items-center">
+      <h2 className="text-2xl font-bold">お客様の声一覧</h2>
+      <Button
+        onClick={() => {
+          setSelectedVoice(null);
+          setIsEditVoiceDialogOpen(true);
+        }}
+      >
+        新規ボイスを追加
+      </Button>
+    </div>
+    {voices && (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {voices.map((voice) => (
+          <Card key={voice.id} className="overflow-hidden">
+            <div className="aspect-square relative">
+              <img
+                src={voice.imageUrl}
+                alt={`Voice by ${voice.buyerName}`}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="p-4 space-y-4">
+              <h3 className="text-xl font-bold">{voice.buyerName}</h3>
+              <p className="text-gray-600">{voice.comment}</p>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setSelectedVoice(voice);
+                    setIsEditVoiceDialogOpen(true);
+                  }}
+                >
+                  編集
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => deleteVoiceMutation.mutate(voice.id)}
+                >
+                  削除
+                </Button>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+    )}
+  </div>
+)}
   const [selectedCollection, setSelectedCollection] = useState<{ id: number; title: string } | null>(null);
   const [selectedExhibition, setSelectedExhibition] = useState<Exhibition | null>(null);
   const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
@@ -915,6 +1088,68 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
                 AI生成中...
               </>
             ) : (
+<Dialog open={isEditVoiceDialogOpen} onOpenChange={setIsEditVoiceDialogOpen}>
+  <DialogContent className="max-w-2xl">
+    <DialogHeader>
+      <DialogTitle>{selectedVoice ? 'ボイスを編集' : '新規ボイスを追加'}</DialogTitle>
+    </DialogHeader>
+    <form onSubmit={handleVoiceSubmit} className="space-y-6">
+      <div className="space-y-4">
+        <Label>メイン画像</Label>
+        <Dropzone
+          existingImageUrl={selectedVoice?.imageUrl}
+          onFileChange={handleVoiceImageUpload}
+          className="aspect-square w-full mx-auto"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="buyerName">購入者名</Label>
+        <Input
+          id="buyerName"
+          name="buyerName"
+          defaultValue={selectedVoice?.buyerName}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="comment">コメント</Label>
+        <Textarea
+          id="comment"
+          name="comment"
+          defaultValue={selectedVoice?.comment}
+          required
+          rows={4}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="artworkId">購入した作品</Label>
+        <select
+          id="artworkId"
+          name="artworkId"
+          className="w-full rounded-md border border-input bg-background px-3 py-2"
+          defaultValue={selectedVoice?.artworkId}
+          required
+        >
+          <option value="">作品を選択してください</option>
+          {artworks?.map((artwork) => (
+            <option key={artwork.id} value={artwork.id}>
+              {artwork.title}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <DialogFooter>
+        <Button type="submit">
+          {selectedVoice ? '更新' : '作成'}
+        </Button>
+      </DialogFooter>
+    </form>
+  </DialogContent>
+</Dialog>
               <>
                 <Wand2 className="mr-2 h-4 w-4" />
                 AIでサブタイトルと概要を生成
@@ -1338,6 +1573,19 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
             >
               展示会管理
               {activeTab === 'exhibitions' && (
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
+              )}
+            </button>
+            <button
+              className={`px-4 py-2 font-medium transition-all relative ${
+                activeTab === 'voices'
+                  ? 'text-black font-semibold'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              onClick={() => setActiveTab('voices')}
+            >
+              お客様の声管理
+              {activeTab === 'voices' && (
                 <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
               )}
             </button>
