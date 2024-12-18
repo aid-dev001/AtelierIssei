@@ -97,6 +97,41 @@ export const contacts = pgTable("contacts", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const voices = pgTable("voices", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  imageUrl: text("image_url").notNull(),
+  buyerName: text("buyer_name").notNull(),
+  comment: text("comment").notNull(),
+  artworkId: integer("artwork_id").references(() => artworks.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const ateliers = pgTable("ateliers", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  location: text("location").notNull(),
+  startYear: integer("start_year").notNull(),
+  endYear: integer("end_year").notNull(),
+  description: text("description").notNull(),
+  imageUrl: text("image_url").notNull(),
+  subImageUrls: text("sub_image_urls").array(),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Export schemas for voices
+export const insertVoiceSchema = createInsertSchema(voices);
+export const selectVoiceSchema = createSelectSchema(voices);
+export type InsertVoice = z.infer<typeof insertVoiceSchema>;
+export type Voice = z.infer<typeof selectVoiceSchema>;
+
+// Export schemas for ateliers
+export const insertAtelierSchema = createInsertSchema(ateliers);
+export const selectAtelierSchema = createSelectSchema(ateliers);
+export type InsertAtelier = z.infer<typeof insertAtelierSchema>;
+export type Atelier = z.infer<typeof selectAtelierSchema>;
+
 // Export schemas and types
 export const insertAdminUserSchema = createInsertSchema(adminUsers);
 export const selectAdminUserSchema = createSelectSchema(adminUsers);
