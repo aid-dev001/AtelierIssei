@@ -342,10 +342,12 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         status: updateData.status,
         createdLocation: updateData.createdLocation,
         storedLocation: updateData.storedLocation,
-        exhibitionLocation: updateData.exhibitionLocation,
+        exhibitionLocation: updateData.exhibitionLocation || null,
         isAvailable: updateData.isAvailable,
         collectionId: updateData.collectionId,
-        interiorImageDescriptions: updateData.interiorImageDescriptions,
+        interiorImageDescriptions: Array.isArray(updateData.interiorImageDescriptions) 
+          ? updateData.interiorImageDescriptions 
+          : [],
         updatedAt: new Date(),
       };
 
