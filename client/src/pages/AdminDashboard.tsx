@@ -695,22 +695,19 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           throw new Error('生成されたデータが不正です');
         }
 
-        setFormData(prevData => ({
-          ...prevData,
+        const updatedData = {
+          ...formData,
           subtitle: data.subtitle,
           description: data.description
-        }));
-
-        // 入力フィールドの値を直接更新
-        const subtitleInput = document.getElementById('subtitle') as HTMLInputElement;
-        const descriptionInput = document.getElementById('description') as HTMLTextAreaElement;
-        if (subtitleInput) subtitleInput.value = data.subtitle;
-        if (descriptionInput) descriptionInput.value = data.description;
-
+        };
+        setFormData(updatedData);
+        
         toast({
           title: "AI生成が完了しました",
           description: "サブタイトルと概要が更新されました",
         });
+        
+        console.log('Updated form data:', updatedData);
 
         console.log('Updated form data with AI content');
 
@@ -873,13 +870,12 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="location">場所</Label>
+          <Label htmlFor="address">住所詳細</Label>
           <Input
-            id="location"
-            name="location"
-            value={formData.location}
-            onChange={(e) => updateFormData('location', e.target.value)}
-            required
+            id="address"
+            name="address"
+            value={formData.address}
+            onChange={(e) => updateFormData('address', e.target.value)}
           />
         </div>
 

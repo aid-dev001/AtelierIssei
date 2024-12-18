@@ -434,17 +434,18 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         title: req.body.title,
         subtitle: req.body.subtitle || '',
         description: req.body.description,
-        details: '',
         location: req.body.location,
         address: req.body.address || '',
         imageUrl: req.body.imageUrl,
         subImageUrls: subImageUrls,
-        startDate: new Date(req.body.startDate + 'T00:00:00Z'),
-        endDate: new Date(req.body.endDate + 'T00:00:00Z'),
+        startDate: new Date(req.body.startDate),
+        endDate: new Date(req.body.endDate),
         isActive: true,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
+
+      console.log('Attempting to create exhibition with cleaned data:', exhibitionData);
 
       console.log('Attempting to create exhibition with data:', exhibitionData);
 
