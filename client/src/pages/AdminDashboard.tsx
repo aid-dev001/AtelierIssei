@@ -94,6 +94,10 @@ const deleteExhibitionMutation = useMutation({
   },
 });
   const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions' | 'voices' | 'ateliers'>('artworks');
+  const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
+  const [selectedAtelier, setSelectedAtelier] = useState<Atelier | null>(null);
+  const [isEditVoiceDialogOpen, setIsEditVoiceDialogOpen] = useState(false);
+  const [isEditAtelierDialogOpen, setIsEditAtelierDialogOpen] = useState(false);
   const [selectedCollection, setSelectedCollection] = useState<{ id: number; title: string } | null>(null);
   const [selectedExhibition, setSelectedExhibition] = useState<Exhibition | null>(null);
   const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
@@ -856,26 +860,15 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="location">開催場所</Label>
-            <Input
-              id="location"
-              name="location"
-              value={formData.location}
-              onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="address">住所詳細</Label>
-            <Input
-              id="address"
-              name="address"
-              value={formData.address}
-              onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-            />
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="location">場所</Label>
+          <Input
+            id="location"
+            name="location"
+            value={formData.location}
+            onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+            required
+          />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -937,6 +930,299 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
       e.preventDefault();
       handleSubmit(e);
     }} className="space-y-8">
+const VoiceForm = () => {
+  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>('');
+
+  const handleImageUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const response = await fetch(`${adminPath}/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!response.ok) throw new Error('画像のアップロードに失敗しました');
+      const data = await response.json();
+      setImageUrl(data.imageUrl);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        variant: "destructive",
+        title: "画像のアップロードに失敗しました",
+      });
+    }
+  };
+
+  return (
+    <form onSubmit={async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      formData.append('imageUrl', imageUrl);
+
+      try {
+        await createVoiceMutation.mutateAsync(formData);
+        setIsEditVoiceDialogOpen(false);
+      } catch (error) {
+        console.error('Error creating voice:', error);
+        toast({
+          variant: "destructive",
+          title: "お客様の声の登録に失敗しました",
+        });
+      }
+    }} className="space-y-8">
+      <div className="space-y-4">
+        <Label htmlFor="image">メイン画像</Label>
+        <Dropzone
+          existingImageUrl={imageUrl}
+          onFileChange={handleImageUpload}
+          className="aspect-square w-full h-[200px] mx-auto"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="buyerName">購入者名</Label>
+        <Input
+          id="buyerName"
+          name="buyerName"
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="comment">コメント</Label>
+        <Textarea
+          id="comment"
+          name="comment"
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="artworkId">購入作品</Label>
+        <select
+          id="artworkId"
+          name="artworkId"
+          className="w-full p-2 border rounded"
+          required
+          onChange={(e) => {
+            const artwork = artworks?.find(a => a.id === parseInt(e.target.value));
+            setSelectedArtwork(artwork || null);
+          }}
+        >
+          <option value="">作品を選択</option>
+          {artworks?.map((artwork) => (
+            <option key={artwork.id} value={artwork.id}>
+              {artwork.title}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <Button type="submit" className="w-full">
+        登録
+      </Button>
+    </form>
+  );
+};
+
+const AtelierForm = () => {
+  const [imageUrl, setImageUrl] = useState<string>('');
+  const [subImageUrls, setSubImageUrls] = useState<string[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [description, setDescription] = useState('');
+
+  const handleMainImageUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const response = await fetch(`${adminPath}/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!response.ok) throw new Error('画像のアップロードに失敗しました');
+      const data = await response.json();
+      setImageUrl(data.imageUrl);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        variant: "destructive",
+        title: "画像のアップロードに失敗しました",
+      });
+    }
+  };
+
+  const handleSubImagesUpload = async (files: FileList) => {
+    const uploadedUrls = [];
+    for (const file of Array.from(files)) {
+      const formData = new FormData();
+      formData.append('image', file);
+      try {
+        const response = await fetch(`${adminPath}/upload`, {
+          method: 'POST',
+          body: formData,
+        });
+        if (!response.ok) throw new Error('画像のアップロードに失敗しました');
+        const data = await response.json();
+        uploadedUrls.push(data.imageUrl);
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    }
+    setSubImageUrls(prev => [...prev, ...uploadedUrls]);
+  };
+
+  const handleGenerateDescription = async (location: string) => {
+    if (!location) {
+      toast({
+        variant: "destructive",
+        title: "場所を入力してください",
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const response = await fetch(`${adminPath}/generate-atelier-description`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ location }),
+      });
+
+      if (!response.ok) throw new Error('説明文の生成に失敗しました');
+      const data = await response.json();
+      setDescription(data.description);
+      toast({
+        title: "説明文を生成しました",
+      });
+    } catch (error) {
+      console.error('Error generating description:', error);
+      toast({
+        variant: "destructive",
+        title: "説明文の生成に失敗しました",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <form onSubmit={async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('location', e.currentTarget.location.value);
+      formData.append('startYear', e.currentTarget.startYear.value);
+      formData.append('endYear', e.currentTarget.endYear.value);
+      formData.append('description', description);
+      formData.append('imageUrl', imageUrl);
+      subImageUrls.forEach(url => formData.append('subImageUrls', url));
+
+      try {
+        await createAtelierMutation.mutateAsync(formData);
+        setIsEditAtelierDialogOpen(false);
+      } catch (error) {
+        console.error('Error creating atelier:', error);
+        toast({
+          variant: "destructive",
+          title: "アトリエの登録に失敗しました",
+        });
+      }
+    }} className="space-y-8">
+      <div className="space-y-4">
+        <Label htmlFor="image">メイン画像</Label>
+        <Dropzone
+          existingImageUrl={imageUrl}
+          onFileChange={handleMainImageUpload}
+          className="aspect-square w-full h-[200px] mx-auto"
+        />
+      </div>
+
+      <div className="grid grid-cols-3 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="location">場所</Label>
+          <Input
+            id="location"
+            name="location"
+            required
+            onChange={(e) => {
+              if (e.target.value) {
+                handleGenerateDescription(e.target.value);
+              }
+            }}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="startYear">開始年</Label>
+          <Input
+            id="startYear"
+            name="startYear"
+            type="number"
+            required
+            min="1900"
+            max={new Date().getFullYear()}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="endYear">終了年</Label>
+          <Input
+            id="endYear"
+            name="endYear"
+            type="number"
+            required
+            min="1900"
+            max={new Date().getFullYear()}
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="description">説明</Label>
+        <Textarea
+          id="description"
+          name="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          required
+        />
+        {isGenerating && (
+          <div className="text-sm text-gray-500">
+            説明文を生成中...
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-4">
+        <Label>サブ画像（複数選択可）</Label>
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={(e) => e.target.files && handleSubImagesUpload(e.target.files)}
+          className="w-full"
+        />
+        {subImageUrls.length > 0 && (
+          <div className="grid grid-cols-3 gap-4">
+            {subImageUrls.map((url, index) => (
+              <div key={index} className="relative aspect-square">
+                <img
+                  src={url}
+                  alt={`サブ画像 ${index + 1}`}
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <Button type="submit" className="w-full">
+        登録
+      </Button>
+    </form>
+  );
+};
       <div className="space-y-4">
         <Label htmlFor="image">作品画像</Label>
         <Dropzone

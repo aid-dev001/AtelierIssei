@@ -501,6 +501,97 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     }
   });
 
+  // Voices endpoints
+  app.get("/api/voices", async (req, res) => {
+    try {
+      const allVoices = await db.select().from(voices).orderBy(desc(voices.updatedAt));
+      res.json(allVoices);
+    } catch (error) {
+      console.error("Failed to fetch voices:", error);
+      res.status(500).json({ error: "お客様の声の取得に失敗しました" });
+    }
+  });
+
+  app.post(`/admin/${ADMIN_URL_PATH}/voices`, requireAdmin, upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "画像がアップロードされていません" });
+      }
+
+      const imageUrl = `/artworks/${req.file.filename}`;
+      const voiceData = {
+        imageUrl,
+        buyerName: req.body.buyerName,
+        comment: req.body.comment,
+        artworkId: parseInt(req.body.artworkId),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const [newVoice] = await db.insert(voices).values(voiceData).returning();
+      res.json(newVoice);
+    } catch (error) {
+      console.error("Error creating voice:", error);
+      res.status(500).json({ error: "お客様の声の登録に失敗しました" });
+    }
+  });
+
+  // Ateliers endpoints
+  app.post(`/admin/${ADMIN_URL_PATH}/generate-atelier-description`, requireAdmin, async (req, res) => {
+    try {
+      const { location } = req.body;
+      if (!location) {
+        return res.status(400).json({ error: "場所が必要です" });
+      }
+
+      const description = await generateDescription(`アトリエ「${location}」について説明してください。`);
+      res.json({ description });
+    } catch (error) {
+      console.error("Error generating atelier description:", error);
+      res.status(500).json({ error: "説明文の生成に失敗しました" });
+    }
+  });
+
+  app.get("/api/ateliers", async (req, res) => {
+    try {
+      const allAteliers = await db.select().from(ateliers).orderBy(desc(ateliers.updatedAt));
+      res.json(allAteliers);
+    } catch (error) {
+      console.error("Failed to fetch ateliers:", error);
+      res.status(500).json({ error: "アトリエ情報の取得に失敗しました" });
+    }
+  });
+
+  app.post(`/admin/${ADMIN_URL_PATH}/ateliers`, requireAdmin, upload.array('images'), async (req, res) => {
+    try {
+      const files = req.files as Express.Multer.File[];
+      if (!files || files.length === 0) {
+        return res.status(400).json({ error: "画像がアップロードされていません" });
+      }
+
+      const mainImageUrl = `/artworks/${files[0].filename}`;
+      const subImageUrls = files.slice(1).map(file => `/artworks/${file.filename}`);
+
+      const atelierData = {
+        location: req.body.location,
+        startYear: parseInt(req.body.startYear),
+        endYear: parseInt(req.body.endYear),
+        description: req.body.description,
+        imageUrl: mainImageUrl,
+        subImageUrls,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const [newAtelier] = await db.insert(ateliers).values(atelierData).returning();
+      res.json(newAtelier);
+    } catch (error) {
+      console.error("Error creating atelier:", error);
+      res.status(500).json({ error: "アトリエの登録に失敗しました" });
+    }
+  });
+
   app.post("/api/contact", async (req, res) => {
     try {
       const contactData = {
