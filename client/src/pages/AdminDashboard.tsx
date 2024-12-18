@@ -602,8 +602,8 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
       location: selectedExhibition?.location || '',
       subtitle: selectedExhibition?.subtitle || '',
       description: selectedExhibition?.description || '',
-      startDate: selectedExhibition?.startDate ? new Date(selectedExhibition.startDate).toISOString().slice(0, 16) : '',
-      endDate: selectedExhibition?.endDate ? new Date(selectedExhibition.endDate).toISOString().slice(0, 16) : '',
+      startDate: selectedExhibition?.startDate ? new Date(selectedExhibition.startDate).toISOString().split('T')[0] : '',
+      endDate: selectedExhibition?.endDate ? new Date(selectedExhibition.endDate).toISOString().split('T')[0] : '',
       imageUrl: selectedExhibition?.imageUrl || '',
       subImageUrls: selectedExhibition?.subImageUrls || [],
       details: selectedExhibition?.details || '',
@@ -695,11 +695,22 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           throw new Error('生成されたデータが不正です');
         }
 
-        setFormData(prev => ({
-          ...prev,
+        setFormData(prevData => ({
+          ...prevData,
           subtitle: data.subtitle,
-          description: data.description,
+          description: data.description
         }));
+
+        // 入力フィールドの値を直接更新
+        const subtitleInput = document.getElementById('subtitle') as HTMLInputElement;
+        const descriptionInput = document.getElementById('description') as HTMLTextAreaElement;
+        if (subtitleInput) subtitleInput.value = data.subtitle;
+        if (descriptionInput) descriptionInput.value = data.description;
+
+        toast({
+          title: "AI生成が完了しました",
+          description: "サブタイトルと概要が更新されました",
+        });
 
         console.log('Updated form data with AI content');
 
@@ -878,8 +889,8 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
             <Input
               id="startDate"
               name="startDate"
-              type="datetime-local"
-              defaultValue={selectedExhibition?.startDate ? new Date(selectedExhibition.startDate).toISOString().slice(0, 16) : undefined}
+              type="date"
+              defaultValue={selectedExhibition?.startDate ? new Date(selectedExhibition.startDate).toISOString().split('T')[0] : undefined}
               required
             />
           </div>
@@ -888,8 +899,8 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
             <Input
               id="endDate"
               name="endDate"
-              type="datetime-local"
-              defaultValue={selectedExhibition?.endDate ? new Date(selectedExhibition.endDate).toISOString().slice(0, 16) : undefined}
+              type="date"
+              defaultValue={selectedExhibition?.endDate ? new Date(selectedExhibition.endDate).toISOString().split('T')[0] : undefined}
               required
             />
           </div>
