@@ -18,7 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Artwork, Exhibition } from "@db/schema";
+import { Artwork, Exhibition, Voice } from "@db/schema";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -93,7 +93,7 @@ const deleteExhibitionMutation = useMutation({
     toast({ variant: "destructive", title: "展示会の削除に失敗しました" });
   },
 });
-  const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions'>('artworks');
+  const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions' | 'voices'>('artworks');
   const [selectedCollection, setSelectedCollection] = useState<{ id: number; title: string } | null>(null);
   const [selectedExhibition, setSelectedExhibition] = useState<Exhibition | null>(null);
   const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
@@ -101,6 +101,81 @@ const deleteExhibitionMutation = useMutation({
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
+  const [isEditVoiceDialogOpen, setIsEditVoiceDialogOpen] = useState(false);
+
+  // Voice mutations
+  const createVoiceMutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      const response = await fetch(`${adminPath}/voices`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!response.ok) throw new Error('ボイスの作成に失敗しました');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["voices"] });
+      toast({ title: "ボイスを作成しました" });
+      setIsEditVoiceDialogOpen(false);
+      setSelectedVoice(null);
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "ボイスの作成に失敗しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+      });
+    },
+  });
+
+  const updateVoiceMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: FormData }) => {
+      const response = await fetch(`${adminPath}/voices/${id}`, {
+        method: 'PUT',
+        body: data,
+      });
+      if (!response.ok) throw new Error('ボイスの更新に失敗しました');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["voices"] });
+      toast({ title: "ボイスを更新しました" });
+      setIsEditVoiceDialogOpen(false);
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "ボイスの更新に失敗しました" });
+    },
+  });
+
+  const deleteVoiceMutation = useMutation({
+    mutationFn: async (voiceId: number) => {
+      const response = await fetch(`${adminPath}/voices/${voiceId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('ボイスの削除に失敗しました');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["voices"] });
+      toast({ title: "ボイスを削除しました" });
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "ボイスの削除に失敗しました" });
+    },
+  });
+
+  const handleVoiceSubmit = async (formData: FormData) => {
+    try {
+      if (selectedVoice) {
+        await updateVoiceMutation.mutateAsync({ id: selectedVoice.id, data: formData });
+      } else {
+        await createVoiceMutation.mutateAsync(formData);
+      }
+    } catch (error) {
+      console.error('Error submitting voice:', error);
+    }
+  };
+
   const [imageData, setImageData] = useState<{
     url: string;
     generatedTitle: string;
@@ -987,6 +1062,92 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
         <select
           id="status"
           name="status"
+          className="w-full"
+          defaultValue={selectedArtwork?.status || 'available'}
+        >
+          <option value="available">販売可能</option>
+          <option value="reserved">予約済み</option>
+          <option value="sold">売約済み</option>
+        </select>
+      </div>
+      <Button type="submit" className="w-full">
+        {selectedArtwork ? '更新' : '作成'}
+      </Button>
+    </form>
+  );
+
+  // Voice form component
+  const VoiceForm = () => {
+    const [selectedArtworkId, setSelectedArtworkId] = useState<number | null>(null);
+    const { data: availableArtworks } = useQuery({
+      queryKey: ["artworks"],
+      queryFn: async () => {
+        const response = await fetch("/api/artworks");
+        if (!response.ok) throw new Error('Failed to fetch artworks');
+        return response.json();
+      },
+    });
+
+    return (
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        if (selectedArtworkId) {
+          formData.append('artworkId', selectedArtworkId.toString());
+        }
+        handleVoiceSubmit(formData);
+      }} className="space-y-8">
+        <div className="space-y-4">
+          <Label htmlFor="image">写真</Label>
+          <Dropzone
+            onFileChange={(file) => {
+              const formData = new FormData();
+              formData.append('image', file);
+              handleVoiceImageUpload(formData);
+            }}
+            className="aspect-square w-full h-[200px] mx-auto"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="buyerName">購入者名</Label>
+          <Input
+            id="buyerName"
+            name="buyerName"
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="comment">コメント</Label>
+          <Textarea
+            id="comment"
+            name="comment"
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="artworkId">購入した作品</Label>
+          <select
+            id="artworkId"
+            name="artworkId"
+            className="w-full"
+            onChange={(e) => setSelectedArtworkId(parseInt(e.target.value))}
+            required
+          >
+            <option value="">作品を選択してください</option>
+            {availableArtworks?.map((artwork: any) => (
+              <option key={artwork.id} value={artwork.id}>
+                {artwork.title}
+              </option>
+            ))}
+          </select>
+        </div>
+        <Button type="submit" className="w-full">
+          作成
+        </Button>
+      </form>
+    );
+  };
+
           className="w-full rounded-md border border-input bg-background px-3 py-2"
           defaultValue={selectedArtwork?.status || 'available'}
           required
