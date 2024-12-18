@@ -96,22 +96,6 @@ export const contacts = pgTable("contacts", {
   message: text("message").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
-// Voices table for customer testimonials
-export const voices = pgTable("voices", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  imageUrl: text("image_url").notNull(),
-  buyerName: text("buyer_name").notNull(),
-  comment: text("comment").notNull(),
-  artworkId: integer("artwork_id").references(() => artworks.id),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export const insertVoiceSchema = createInsertSchema(voices);
-export const selectVoiceSchema = createSelectSchema(voices);
-export type InsertVoice = z.infer<typeof insertVoiceSchema>;
-export type Voice = z.infer<typeof selectVoiceSchema>;
-
 
 // Export schemas and types
 export const insertAdminUserSchema = createInsertSchema(adminUsers);
