@@ -606,7 +606,6 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
       endDate: selectedExhibition?.endDate ? new Date(selectedExhibition.endDate).toISOString().split('T')[0] : '',
       imageUrl: selectedExhibition?.imageUrl || '',
       subImageUrls: selectedExhibition?.subImageUrls || [],
-      details: selectedExhibition?.details || '',
       address: selectedExhibition?.address || '',
     });
 
@@ -671,8 +670,6 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
 
       setIsGenerating(true);
       try {
-        console.log('Generating AI content with:', { title: formData.title, location: formData.location });
-        
         const response = await fetch(`${adminPath}/generate-exhibition-description`, {
           method: 'POST',
           headers: {
@@ -695,21 +692,11 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           throw new Error('生成されたデータが不正です');
         }
 
-        const updatedData = {
-          ...formData,
+        setFormData(prev => ({
+          ...prev,
           subtitle: data.subtitle,
-          description: data.description
-        };
-        setFormData(updatedData);
-        
-        toast({
-          title: "AI生成が完了しました",
-          description: "サブタイトルと概要が更新されました",
-        });
-        
-        console.log('Updated form data:', updatedData);
-
-        console.log('Updated form data with AI content');
+          description: data.description,
+        }));
 
         toast({
           title: "AI生成が完了しました",
@@ -870,12 +857,23 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
         </div>
 
         <div className="space-y-2">
+          <Label htmlFor="location">場所</Label>
+          <Input
+            id="location"
+            name="location"
+            value={formData.location}
+            onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
           <Label htmlFor="address">住所詳細</Label>
           <Input
             id="address"
             name="address"
             value={formData.address}
-            onChange={(e) => updateFormData('address', e.target.value)}
+            onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
           />
         </div>
 
