@@ -609,6 +609,13 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
       address: selectedExhibition?.address || '',
     });
 
+    const handleInputChange = (key: string, value: string) => {
+      setFormData(prev => ({
+        ...prev,
+        [key]: value
+      }));
+    };
+
     useEffect(() => {
       if (selectedExhibition) {
         setFormData({
@@ -686,17 +693,21 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
         }
 
         const data = await response.json();
-        console.log('Received AI generated content:', data);
-
         if (!data.subtitle || !data.description) {
           throw new Error('生成されたデータが不正です');
         }
 
+        // フォームデータを更新
         setFormData(prev => ({
           ...prev,
           subtitle: data.subtitle,
           description: data.description,
         }));
+
+        console.log('AI生成結果を反映:', {
+          subtitle: data.subtitle,
+          description: data.description
+        });
 
         toast({
           title: "AI生成が完了しました",
@@ -723,18 +734,18 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
       setIsGenerating(true);
 
       try {
-        console.log('Form data before submission:', formData);
-        console.log('Main image URL:', mainImageUrl);
-        
+        if (!mainImageUrl) {
+          throw new Error('メイン画像を設定してください');
+        }
+
+        // フォームデータの準備
         const submitData = {
           ...formData,
-          imageUrl: mainImageUrl || '',
-          subImageUrls: formData.subImageUrls,
-          startDate: e.currentTarget.startDate.value,
-          endDate: e.currentTarget.endDate.value,
+          imageUrl: mainImageUrl,
+          startDate: formData.startDate,
+          endDate: formData.endDate,
+          subImageUrls: [],
         };
-        
-        console.log('Submitting exhibition data:', submitData);
 
         // サブ画像のアップロード
         if (subImageFiles.length > 0) {
@@ -745,6 +756,8 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           }
           submitData.subImageUrls = uploadedUrls;
         }
+
+        console.log('送信データ:', submitData);
 
         if (selectedExhibition) {
           // 既存の展示会の更新
@@ -768,6 +781,23 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
         toast({
           title: selectedExhibition ? "展示会を更新しました" : "展示会を作成しました",
         });
+
+        // フォームをリセット
+        if (!selectedExhibition) {
+          setFormData({
+            title: '',
+            location: '',
+            subtitle: '',
+            description: '',
+            startDate: '',
+            endDate: '',
+            imageUrl: '',
+            subImageUrls: [],
+            address: '',
+          });
+          setMainImageUrl(null);
+          setSubImageFiles([]);
+        }
       } catch (error) {
         console.error('Error submitting exhibition:', error);
         toast({
@@ -789,7 +819,6 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
             onFileChange={handleMainImageUpload}
             className="aspect-video w-full mx-auto"
           />
-          <input type="file" name="mainImage" hidden />
         </div>
 
         <div className="space-y-4">
@@ -799,7 +828,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
               id="title"
               name="title"
               value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              onChange={(e) => handleInputChange('title', e.target.value)}
               required
             />
           </div>
@@ -810,7 +839,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
               id="location"
               name="location"
               value={formData.location}
-              onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+              onChange={(e) => handleInputChange('location', e.target.value)}
               required
             />
           </div>
@@ -818,7 +847,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           <Button
             type="button"
             onClick={handleGenerateAIContent}
-            disabled={isGenerating}
+            disabled={isGenerating || !formData.title || !formData.location}
             className="w-full"
           >
             {isGenerating ? (
@@ -833,6 +862,37 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
               </>
             )}
           </Button>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="subtitle">サブタイトル</Label>
+          <Input
+            id="subtitle"
+            name="subtitle"
+            value={formData.subtitle}
+            onChange={(e) => handleInputChange('subtitle', e.target.value)}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="description">概要</Label>
+          <Textarea
+            id="description"
+            name="description"
+            value={formData.description}
+            onChange={(e) => handleInputChange('description', e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="address">住所詳細</Label>
+          <Input
+            id="address"
+            name="address"
+            value={formData.address}
+            onChange={(e) => handleInputChange('address', e.target.value)}
+          />
         </div>
 
         <div className="space-y-2">
