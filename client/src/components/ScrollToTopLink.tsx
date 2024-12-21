@@ -1,5 +1,6 @@
 import { Link } from "wouter";
-import { ComponentProps, useCallback, ReactNode } from "react";
+import { useCallback, ReactNode } from "react";
+import React from 'react'; // Added import statement
 
 type ScrollToTopLinkProps = {
   href: string;

@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 
 const { useState } = React;
 
+import React from 'react';
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
