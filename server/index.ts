@@ -115,14 +115,19 @@ async function startServer() {
 
     // 環境に応じたセットアップ
     console.log('Setting up server environment...');
-    if (app.get("env") === "development") {
-      console.log('Setting up Vite for development...');
-      await setupVite(app, server);
-      console.log('Vite setup completed');
-    } else {
-      console.log('Setting up static serving for production...');
-      serveStatic(app);
-      console.log('Static serving setup completed');
+    try {
+      if (process.env.NODE_ENV === "production") {
+        console.log('Setting up static serving for production...');
+        serveStatic(app);
+        console.log('Static serving setup completed');
+      } else {
+        console.log('Setting up Vite for development...');
+        await setupVite(app, server);
+        console.log('Vite setup completed');
+      }
+    } catch (error) {
+      console.error('Error during environment setup:', error);
+      throw error;
     }
 
     // サーバーの起動
