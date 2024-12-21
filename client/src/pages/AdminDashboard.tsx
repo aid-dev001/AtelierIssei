@@ -856,26 +856,14 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="location">開催場所</Label>
-            <Input
-              id="location"
-              name="location"
-              value={formData.location}
-              onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="address">住所詳細</Label>
-            <Input
-              id="address"
-              name="address"
-              value={formData.address}
-              onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-            />
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="address">住所</Label>
+          <Input
+            id="address"
+            name="address"
+            value={formData.address}
+            onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+          />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
