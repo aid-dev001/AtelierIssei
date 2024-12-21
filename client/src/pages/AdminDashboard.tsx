@@ -94,7 +94,7 @@ const deleteExhibitionMutation = useMutation({
   },
 });
   const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions'>('artworks');
-  const [selectedCollection, setSelectedCollection] = useState<{ id: number; title: string } | null>(null);
+  const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
   const [selectedExhibition, setSelectedExhibition] = useState<Exhibition | null>(null);
   const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
   const [isEditExhibitionDialogOpen, setIsEditExhibitionDialogOpen] = useState(false);
@@ -771,7 +771,7 @@ const ExhibitionForm = ({ selectedExhibition, onSubmit }: ExhibitionFormProps) =
             const imageUrl = await handleMainImageUpload(file);
             if (imageUrl) uploadedUrls.push(imageUrl);
           }
-          submitData.subImageUrls = uploadedUrls;
+          submitData.subImageUrls = uploadedUrls as string[];
         }
 
         console.log('送信データ:', submitData);
@@ -832,7 +832,7 @@ const ExhibitionForm = ({ selectedExhibition, onSubmit }: ExhibitionFormProps) =
         <div className="space-y-4">
           <Label htmlFor="mainImage">メイン画像</Label>
           <Dropzone
-            existingImageUrl={mainImageUrl}
+            existingImageUrl={mainImageUrl || undefined}
             onFileChange={handleMainImageUpload}
             className="aspect-video w-full mx-auto"
           />

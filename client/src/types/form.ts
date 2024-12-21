@@ -8,9 +8,16 @@ export const exhibitionFormSchema = z.object({
   endDate: z.string(),
   subtitle: z.string().optional(),
   address: z.string().optional(),
+  imageUrl: z.string(),
+  subImageUrls: z.array(z.string()).optional(),
 });
 
 export type ExhibitionFormData = z.infer<typeof exhibitionFormSchema>;
+
+export interface ExhibitionFormState extends ExhibitionFormData {
+  imageUrl: string;
+  subImageUrls: string[];
+}
 
 export interface Collection {
   id: number;
