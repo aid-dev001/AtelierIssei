@@ -593,6 +593,8 @@ interface ExhibitionFormProps {
   onSubmit: (formData: FormData) => Promise<void>;
 }
 
+};
+
 const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onSubmit }) => {
     const [subImageFiles, setSubImageFiles] = useState<File[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
