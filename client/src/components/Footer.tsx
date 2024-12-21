@@ -16,9 +16,8 @@ const Footer = () => {
           <div>
             <h4 className="text-sm font-semibold mb-4">CONTACT</h4>
             <address className="text-sm text-gray-600 not-italic">
-              〒000-0000<br />
               Tokyo, Japan<br />
-              contact@atelier-issei.com
+              isseiart2018@gmail.com
             </address>
           </div>
           <div>
