@@ -761,8 +761,8 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         const submitData: ExhibitionFormState = {
           ...formData,
           imageUrl: mainImageUrl || '',
-          startDate: formData.startDate,
-          endDate: formData.endDate,
+          startDate: typeof formData.startDate === 'string' ? formData.startDate : formData.startDate.toISOString(),
+          endDate: typeof formData.endDate === 'string' ? formData.endDate : formData.endDate.toISOString(),
           subImageUrls: [],
         };
 
