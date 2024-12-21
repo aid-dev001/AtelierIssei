@@ -19,6 +19,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Artwork, Exhibition } from "@db/schema";
+import { Collection } from "@/types/form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -611,6 +612,7 @@ interface ExhibitionFormProps {
 
 const ExhibitionForm = ({ selectedExhibition, onSubmit }: ExhibitionFormProps) => {
     const [subImageFiles, setSubImageFiles] = React.useState<File[]>([]);
+const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
     const [isGenerating, setIsGenerating] = React.useState(false);
     const [mainImageUrl, setMainImageUrl] = React.useState<string | null>(selectedExhibition?.imageUrl || null);
     const [formData, setFormData] = React.useState({
