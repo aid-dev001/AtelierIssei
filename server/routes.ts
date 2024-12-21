@@ -15,7 +15,6 @@ import {
   contacts,
   adminUsers,
   collections,
-  voices,
 } from "@db/schema";
 import { eq, desc } from "drizzle-orm";
 
@@ -499,46 +498,6 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     } catch (error) {
       console.error("Error deleting exhibition:", error);
       res.status(500).json({ error: "展示会の削除に失敗しました" });
-    }
-  });
-
-  // Voices endpoints
-  app.get("/api/voices", async (req, res) => {
-    try {
-      const allVoices = await db.select().from(voices).orderBy(desc(voices.createdAt));
-      res.json(allVoices);
-    } catch (error) {
-      console.error("Failed to fetch voices:", error);
-      res.status(500).json({ error: "お客様の声の取得に失敗しました" });
-    }
-  });
-
-  app.post(`/admin/${ADMIN_URL_PATH}/voices`, requireAdmin, async (req, res) => {
-    try {
-      const voiceData = {
-        customerName: req.body.customerName,
-        comment: req.body.comment,
-        imageUrl: req.body.imageUrl,
-        isActive: true,
-        createdAt: new Date(),
-      };
-
-      const [newVoice] = await db.insert(voices).values(voiceData).returning();
-      res.json(newVoice);
-    } catch (error) {
-      console.error("Error creating voice:", error);
-      res.status(500).json({ error: "お客様の声の作成に失敗しました" });
-    }
-  });
-
-  app.delete(`/admin/${ADMIN_URL_PATH}/voices/:id`, requireAdmin, async (req, res) => {
-    try {
-      await db.delete(voices)
-        .where(eq(voices.id, parseInt(req.params.id)));
-      res.json({ success: true });
-    } catch (error) {
-      console.error("Error deleting voice:", error);
-      res.status(500).json({ error: "お客様の声の削除に失敗しました" });
     }
   });
 

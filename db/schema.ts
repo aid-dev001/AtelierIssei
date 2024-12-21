@@ -88,20 +88,6 @@ export const news = pgTable("news", {
   publishedAt: timestamp("published_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
-export const voices = pgTable("voices", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  customerName: text("customer_name").notNull(),
-  comment: text("comment").notNull(),
-  imageUrl: text("image_url").notNull(),
-  isActive: boolean("is_active").default(true).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const insertVoiceSchema = createInsertSchema(voices);
-export const selectVoiceSchema = createSelectSchema(voices);
-export type InsertVoice = z.infer<typeof insertVoiceSchema>;
-export type Voice = z.infer<typeof selectVoiceSchema>;
-
 
 export const contacts = pgTable("contacts", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
