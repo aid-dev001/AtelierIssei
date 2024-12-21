@@ -50,16 +50,20 @@ const Contact = () => {
 
   return (
     <div className="space-y-12 max-w-2xl mx-auto">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">CONTACT</h1>
-        <p className="text-gray-600 mb-4">
-          作品のお問い合わせや展示についてのご相談は、
-          下記メールアドレスまで直接ご連絡ください。
-        </p>
-        <p className="text-lg font-semibold mb-8">
-          isseiart2018@gmail.com
-        </p>
-      </div>
+      <section className="bg-gray-50">
+        <div className="container mx-auto px-4 py-20">
+          <div className="text-center max-w-3xl mx-auto">
+            <h1 className="text-4xl font-bold mb-12 tracking-wider">CONTACT</h1>
+            <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-2xl mx-auto">
+              作品のお問い合わせや展示についてのご相談は、
+              下記メールアドレスまで直接ご連絡ください。
+            </p>
+            <p className="text-xl font-semibold mt-8">
+              isseiart2018@gmail.com
+            </p>
+          </div>
+        </div>
+      </section>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
