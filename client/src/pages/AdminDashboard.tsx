@@ -1614,6 +1614,15 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
                       return;
                     }
 
+                    if (!selectedCollection) {
+                      toast({
+                        variant: "destructive",
+                        title: "エラー",
+                        description: "コレクションが選択されていません"
+                      });
+                      return;
+                    }
+
                     try {
                       const response = await fetch(`${adminPath}/collections/${selectedCollection.id}`, {
                         method: 'PUT',
