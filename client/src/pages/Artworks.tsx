@@ -44,7 +44,7 @@ const Artworks = () => {
   );
 
   return (
-    <div className="space-y-12 container mx-auto px-4 py-8">
+    <div className="space-y-12">
       <section>
         <div className="text-center py-20 bg-white">
           <div className="container mx-auto px-4">
@@ -58,7 +58,8 @@ const Artworks = () => {
         </div>
       </section>
 
-      {isLoading ? (
+      <div className="container mx-auto px-4">
+        {isLoading ? (
         <LoadingSkeleton />
       ) : (
         <>
@@ -95,6 +96,7 @@ const Artworks = () => {
           )}
         </>
       )}
+      </div>
     </div>
   );
 };
