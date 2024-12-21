@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { PenLine, Trash2, Wand2, Loader2 } from "lucide-react";
 import {
@@ -593,11 +593,11 @@ interface ExhibitionFormProps {
   onSubmit: (formData: FormData) => Promise<void>;
 }
 
-const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onSubmit }) => {
-    const [subImageFiles, setSubImageFiles] = useState<File[]>([]);
-    const [isGenerating, setIsGenerating] = useState(false);
-    const [mainImageUrl, setMainImageUrl] = useState<string | null>(selectedExhibition?.imageUrl || null);
-    const [formData, setFormData] = useState<FormData>({
+const ExhibitionForm = ({ selectedExhibition, onSubmit }: ExhibitionFormProps) => {
+    const [subImageFiles, setSubImageFiles] = React.useState<File[]>([]);
+    const [isGenerating, setIsGenerating] = React.useState(false);
+    const [mainImageUrl, setMainImageUrl] = React.useState<string | null>(selectedExhibition?.imageUrl || null);
+    const [formData, setFormData] = React.useState({
       title: selectedExhibition?.title || '',
       location: selectedExhibition?.location || '',
       subtitle: selectedExhibition?.subtitle || '',
