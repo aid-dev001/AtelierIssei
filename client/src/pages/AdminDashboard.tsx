@@ -901,7 +901,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
             id="subtitle"
             name="subtitle"
             value={formData.subtitle}
-            onChange={(e) => updateFormData('subtitle', e.target.value)}
+            onChange={(e) => handleInputChange('subtitle', e.target.value)}
           />
         </div>
 
@@ -911,18 +911,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
             id="description"
             name="description"
             value={formData.description}
-            onChange={(e) => updateFormData('description', e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="location">場所</Label>
-          <Input
-            id="location"
-            name="location"
-            value={formData.location}
-            onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+            onChange={(e) => handleInputChange('description', e.target.value)}
             required
           />
         </div>
@@ -933,7 +922,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
             id="address"
             name="address"
             value={formData.address}
-            onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+            onChange={(e) => handleInputChange('address', e.target.value)}
           />
         </div>
 
