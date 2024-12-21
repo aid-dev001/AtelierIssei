@@ -93,7 +93,7 @@ const deleteExhibitionMutation = useMutation({
     toast({ variant: "destructive", title: "展示会の削除に失敗しました" });
   },
 });
-  const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions' | 'voices' | 'ateliers'>('artworks');
+  const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions'>('artworks');
   const [selectedCollection, setSelectedCollection] = useState<{ id: number; title: string } | null>(null);
   const [selectedExhibition, setSelectedExhibition] = useState<Exhibition | null>(null);
   const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
@@ -857,7 +857,18 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="address">住所</Label>
+          <Label htmlFor="location">場所</Label>
+          <Input
+            id="location"
+            name="location"
+            value={formData.location}
+            onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="address">住所詳細</Label>
           <Input
             id="address"
             name="address"
