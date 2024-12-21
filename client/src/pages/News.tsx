@@ -28,12 +28,16 @@ const News = () => {
 
   return (
     <div className="space-y-12">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">NEWS</h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          最新の展示情報や活動についてお知らせします。
-        </p>
-      </div>
+      <section className="bg-gray-50">
+        <div className="container mx-auto px-4 py-20">
+          <div className="text-center max-w-3xl mx-auto">
+            <h1 className="text-4xl font-bold mb-12 tracking-wider">NEWS</h1>
+            <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-2xl mx-auto">
+              最新の展示情報や活動についてお知らせします。
+            </p>
+          </div>
+        </div>
+      </section>
 
       <div className="grid gap-8 max-w-4xl mx-auto">
         {isLoading ? (

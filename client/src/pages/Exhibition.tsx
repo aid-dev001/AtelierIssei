@@ -40,27 +40,25 @@ const Exhibition = () => {
 
   return (
     <div className="space-y-20">
-      <section className="bg-gray-50/80">
+      <section className="bg-gray-50">
         <div className="container mx-auto px-4 py-20">
-          <div className="max-w-4xl mx-auto text-center space-y-12">
-            <div className="space-y-6">
-              <h1 className="text-4xl font-bold tracking-wider text-gray-800">EXHIBITION</h1>
-              <p className="text-xl text-gray-700 leading-relaxed max-w-2xl mx-auto">
-                世界各地で開催される展示会を通じて、
-                アートの持つ普遍的な力と美しさを伝えています。
-              </p>
-            </div>
-            <div className="aspect-video rounded-xl overflow-hidden shadow-2xl">
-              <iframe
-                width="100%"
-                height="100%"
-                src="https://www.youtube.com/embed/Xti4v4ayTnk"
-                title="ATELIER ISSEI Exhibition"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-              />
-            </div>
+          <div className="text-center max-w-3xl mx-auto">
+            <h1 className="text-4xl font-bold mb-12 tracking-wider">EXHIBITION</h1>
+            <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-2xl mx-auto">
+              世界各地で開催される展示会を通じて、
+              アートの持つ普遍的な力と美しさを伝えています。
+            </p>
+          </div>
+          <div className="aspect-video rounded-xl overflow-hidden shadow-2xl mt-12">
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/Xti4v4ayTnk"
+              title="ATELIER ISSEI Exhibition"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
+            />
           </div>
         </div>
       </section>

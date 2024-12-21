@@ -1,27 +1,36 @@
 const Profile = () => {
   return (
     <div className="space-y-20">
+      <section className="bg-gray-50">
+        <div className="container mx-auto px-4 py-20">
+          <div className="text-center max-w-3xl mx-auto">
+            <h1 className="text-4xl font-bold mb-12 tracking-wider">PROFILE</h1>
+            <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-2xl mx-auto">
+              アーティストisseiの創作活動と歩み。
+              芸術を通じて人々の心に寄り添い続けています。
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold mb-12 text-center">PROFILE</h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <img
-              src="/artworks/スクリーンショット 2024-12-07 12.26.30.png"
-              alt="Artist Profile"
-              className="rounded-lg shadow-lg"
-            />
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold">ISSEI</h2>
-              <p className="text-gray-600 leading-relaxed">
-                幼少期より芸術に囲まれた環境で育ち、祖父の油絵から深い影響を受ける。
-                心の機微を捉えた繊細な作風と、力強い色彩表現が特徴的な作品を生み出し続けています。
-              </p>
-              <p className="text-gray-600 leading-relaxed">
-                抽象画からスタートし、独自のスタイルを確立。
-                現在は、日本国内外で個展を開催し、
-                伝統と革新が融合する新たな表現の可能性を追求しています。
-              </p>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <img
+            src="/artworks/スクリーンショット 2024-12-07 12.26.30.png"
+            alt="Artist Profile"
+            className="rounded-lg shadow-lg"
+          />
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">ISSEI</h2>
+            <p className="text-gray-600 leading-relaxed">
+              幼少期より芸術に囲まれた環境で育ち、祖父の油絵から深い影響を受ける。
+              心の機微を捉えた繊細な作風と、力強い色彩表現が特徴的な作品を生み出し続けています。
+            </p>
+            <p className="text-gray-600 leading-relaxed">
+              抽象画からスタートし、独自のスタイルを確立。
+              現在は、日本国内外で個展を開催し、
+              伝統と革新が融合する新たな表現の可能性を追求しています。
+            </p>
           </div>
         </div>
       </section>
