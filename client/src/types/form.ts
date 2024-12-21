@@ -12,6 +12,17 @@ export const exhibitionFormSchema = z.object({
 
 export type ExhibitionFormData = z.infer<typeof exhibitionFormSchema>;
 
+export interface Collection {
+  id: number;
+  title: string;
+  description: string;
+  imageUrl?: string;
+  year?: number;
+  isActive?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 export interface ArtworkFormState {
   title: string;
   description: string;
