@@ -1041,6 +1041,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
           <option value="available">販売中</option>
           <option value="reserved">予約済</option>
           <option value="sold">売約済</option>
+          <option value="preparation">準備中</option>
         </select>
       </div>
       <div className="space-y-2">
