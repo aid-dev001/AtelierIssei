@@ -588,6 +588,22 @@ interface Exhibition {
   updatedAt: Date;
 }
 
+interface Artwork {
+  id: number;
+  title: string;
+  description: string;
+  imageUrl: string;
+  price: string;
+  size: string | null;
+  status: string;
+  createdLocation: string;
+  storedLocation: string;
+  exhibitionLocation: string | null;
+  collectionId: number | null;
+  interiorImageUrls?: string[];
+  interiorImageDescriptions: string[];
+}
+
 interface ExhibitionFormProps {
   selectedExhibition: Exhibition | null;
   onSubmit: (formData: FormData) => Promise<void>;
