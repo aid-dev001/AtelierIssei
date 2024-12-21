@@ -52,9 +52,12 @@ const Contact = () => {
     <div className="space-y-12 max-w-2xl mx-auto">
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4">CONTACT</h1>
-        <p className="text-gray-600">
-          作品のお問い合わせや展示についてのご相談など、
-          お気軽にご連絡ください。
+        <p className="text-gray-600 mb-4">
+          作品のお問い合わせや展示についてのご相談は、
+          下記メールアドレスまで直接ご連絡ください。
+        </p>
+        <p className="text-lg font-semibold mb-8">
+          isseiart2018@gmail.com
         </p>
       </div>
 
@@ -105,7 +108,7 @@ const Contact = () => {
           <Button
             type="submit"
             className="w-full"
-            disabled={mutation.isPending}
+            disabled={true}
           >
             {mutation.isPending ? "送信中..." : "送信する"}
           </Button>
