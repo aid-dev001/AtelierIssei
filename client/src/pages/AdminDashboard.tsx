@@ -19,7 +19,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Artwork, Exhibition } from "@db/schema";
-import { Collection } from "@/types/form";
+import { Collection, ExhibitionFormState } from "@/types/form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
