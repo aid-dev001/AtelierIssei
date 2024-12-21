@@ -48,7 +48,12 @@ const upload = multer({
   }
 });
 
+import contactRouter from './routes/contact';
+
 export default function setupRoutes(app: express.Express) {
+  // Contact routes
+  app.use('/api', contactRouter);
+
   // Public routes
   app.get("/api/artworks", async (req, res) => {
     try {

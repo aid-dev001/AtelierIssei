@@ -8,6 +8,8 @@ import { insertContactSchema, type InsertContact } from "@db/schema";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 
+const CONTACT_EMAIL = 'isseiart2018@gmail.com';
+
 const Contact = () => {
   const { toast } = useToast();
   const form = useForm<InsertContact>({
