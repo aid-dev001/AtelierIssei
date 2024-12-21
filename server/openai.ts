@@ -182,3 +182,43 @@ export async function generateExhibitionDescription(
     throw new Error('展示会の説明文生成に失敗しました');
   }
 }
+
+export async function generateAtelierDescription(location: string): Promise<string> {
+  try {
+    console.log('Generating atelier description for location:', location);
+
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error('OpenAI APIキーが設定されていません');
+    }
+
+    const response = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        {
+          role: "system",
+          content: "あなたはアートギャラリーのキュレーターです。アトリエの説明文を生成してください。"
+        },
+        {
+          role: "user",
+          content: `アトリエ「${location}」の説明文を50文字程度で生成してください。アトリエの雰囲気や特徴を優雅に表現してください。`
+        }
+      ],
+      temperature: 0.7,
+      max_tokens: 200,
+    });
+
+    const description = response.choices[0]?.message?.content;
+    if (!description) {
+      throw new Error('説明文の生成に失敗しました');
+    }
+
+    console.log('Generated atelier description:', description);
+    return description.trim();
+  } catch (error) {
+    console.error('Error generating atelier description:', error);
+    if (error instanceof Error) {
+      throw new Error(`アトリエの説明文生成に失敗しました: ${error.message}`);
+    }
+    throw new Error('アトリエの説明文生成に失敗しました');
+  }
+}

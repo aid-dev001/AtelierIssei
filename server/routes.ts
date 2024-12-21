@@ -3,7 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
-import { generateArtworkDescription, generateCollectionDescription, generateExhibitionDescription } from './openai';
+import { generateArtworkDescription, generateCollectionDescription, generateExhibitionDescription, generateAtelierDescription } from './openai';
 import { db } from "../db";
 import { ADMIN_URL_PATH, requireAdmin } from "./admin";
 import { 
@@ -15,6 +15,8 @@ import {
   contacts,
   adminUsers,
   collections,
+  voices,
+  ateliers,
 } from "@db/schema";
 import { eq, desc } from "drizzle-orm";
 
@@ -544,7 +546,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         return res.status(400).json({ error: "場所が必要です" });
       }
 
-      const description = await generateDescription(`アトリエ「${location}」について説明してください。`);
+      const description = await generateAtelierDescription(location);
       res.json({ description });
     } catch (error) {
       console.error("Error generating atelier description:", error);
