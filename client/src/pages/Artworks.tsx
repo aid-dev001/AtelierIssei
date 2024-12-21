@@ -44,7 +44,7 @@ const Artworks = () => {
   );
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-20">
       <section>
         <div className="text-center py-20 bg-white">
           <div className="container mx-auto px-4">
