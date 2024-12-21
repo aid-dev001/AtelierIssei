@@ -8,7 +8,7 @@ channel = "stable-24_05"
 [deployment]
 deploymentTarget = "cloudrun"
 build = ["npm", "run", "build"]
-run = ["sh", "-c", "cd client && vite"]
+run = ["sh", "-c", "npm run dev"]
 
 [[ports]]
 localPort = 5000
@@ -24,14 +24,10 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Client"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Server"
+args = "Start Full Stack App"
 
 [[workflows.workflow]]
-name = "Client"
+name = "Start Full Stack App"
 author = "agent"
 
 [workflows.workflow.metadata]
@@ -42,20 +38,5 @@ task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd client && vite"
-waitForPort = 5173
-
-[[workflows.workflow]]
-name = "Server"
-author = "agent"
-
-[workflows.workflow.metadata]
-agentRequireRestartOnSave = false
-
-[[workflows.workflow.tasks]]
-task = "packager.installForAll"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "tsx watch --clear-screen=false server/index.ts"
+args = "npm run dev"
 waitForPort = 5000
