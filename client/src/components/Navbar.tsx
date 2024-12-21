@@ -1,3 +1,4 @@
+
 import React from "react";
 import ScrollToTopLink from "./ScrollToTopLink";
 import { cn } from "@/lib/utils";
@@ -5,8 +6,6 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const { useState } = React;
-
-import React from 'react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
