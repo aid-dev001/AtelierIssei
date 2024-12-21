@@ -5,7 +5,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Artwork } from "@db/schema";
-import PageTransition from "@/components/PageTransition";
 
 const PAGE_SIZE = 12;
 
@@ -45,62 +44,60 @@ const Artworks = () => {
   );
 
   return (
-    <PageTransition>
-      <div className="space-y-12">
-        <section>
-          <div className="text-center py-20 bg-white">
-            <div className="container mx-auto px-4">
-              <h1 className="text-4xl font-bold mb-12 tracking-wider text-gray-800">ARTWORKS</h1>
-              {page === 1 && (
-                <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-2xl mx-auto">
-                  アーティストisseiが、時に感じる孤独な心に寄り添い描く希望のアート。優雅で鮮やかな色彩と力強い形が、温かな幸福感と光をもたらします。
-                </p>
-              )}
-            </div>
+    <div className="space-y-12">
+      <section>
+        <div className="text-center py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <h1 className="text-4xl font-bold mb-12 tracking-wider text-gray-800">ARTWORKS</h1>
+            {page === 1 && (
+              <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-2xl mx-auto">
+                アーティストisseiが、時に感じる孤独な心に寄り添い描く希望のアート。優雅で鮮やかな色彩と力強い形が、温かな幸福感と光をもたらします。
+              </p>
+            )}
           </div>
-        </section>
-
-        <div className="container mx-auto px-4">
-          {isLoading ? (
-            <LoadingSkeleton />
-          ) : (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8 lg:gap-12">
-                {paginatedArtworks?.map((artwork) => (
-                  <div key={artwork.id} className="flex flex-col">
-                    <ArtworkCard artwork={artwork} />
-                  </div>
-                ))}
-              </div>
-
-              {totalPages > 1 && (
-                <div className="flex justify-center items-center gap-4">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => handlePageChange(Math.max(1, page - 1))}
-                    disabled={page === 1}
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                  <div className="text-sm">
-                    {page} / {totalPages}
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
-                    disabled={page === totalPages}
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
-            </>
-          )}
         </div>
+      </section>
+
+      <div className="container mx-auto px-4">
+        {isLoading ? (
+        <LoadingSkeleton />
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8 lg:gap-12">
+            {paginatedArtworks?.map((artwork) => (
+              <div key={artwork.id} className="flex flex-col">
+                <ArtworkCard artwork={artwork} />
+              </div>
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-4">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handlePageChange(Math.max(1, page - 1))}
+                disabled={page === 1}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <div className="text-sm">
+                {page} / {totalPages}
+              </div>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
+                disabled={page === totalPages}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
+        </>
+      )}
       </div>
-    </PageTransition>
+    </div>
   );
 };
 
