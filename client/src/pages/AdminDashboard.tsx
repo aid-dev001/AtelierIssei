@@ -597,13 +597,13 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({ selectedExhibition, onS
     const [subImageFiles, setSubImageFiles] = useState<File[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
     const [mainImageUrl, setMainImageUrl] = useState<string | null>(selectedExhibition?.imageUrl || null);
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<FormData>({
       title: selectedExhibition?.title || '',
       location: selectedExhibition?.location || '',
       subtitle: selectedExhibition?.subtitle || '',
       description: selectedExhibition?.description || '',
-      startDate: selectedExhibition?.startDate ? new Date(selectedExhibition.startDate).toISOString().split('T')[0] : '',
-      endDate: selectedExhibition?.endDate ? new Date(selectedExhibition.endDate).toISOString().split('T')[0] : '',
+      startDate: selectedExhibition?.startDate || '',
+      endDate: selectedExhibition?.endDate || '',
       imageUrl: selectedExhibition?.imageUrl || '',
       subImageUrls: selectedExhibition?.subImageUrls || [],
       address: selectedExhibition?.address || '',
