@@ -22,7 +22,6 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import { ThemeProvider } from "./components/ThemeProvider";
 
 function Router() {
   return (
@@ -56,10 +55,8 @@ function Router() {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <Router />
-        <Toaster />
-      </ThemeProvider>
+      <Router />
+      <Toaster />
     </QueryClientProvider>
   </StrictMode>,
 );
