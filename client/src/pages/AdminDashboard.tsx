@@ -758,9 +758,9 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         }
 
         // フォームデータの準備
-        const submitData = {
+        const submitData: ExhibitionFormState = {
           ...formData,
-          imageUrl: mainImageUrl,
+          imageUrl: mainImageUrl || '',
           startDate: formData.startDate,
           endDate: formData.endDate,
           subImageUrls: [],

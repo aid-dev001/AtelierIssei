@@ -14,7 +14,7 @@ export const exhibitionFormSchema = z.object({
 
 export type ExhibitionFormData = z.infer<typeof exhibitionFormSchema>;
 
-export interface ExhibitionFormState extends ExhibitionFormData {
+export interface ExhibitionFormState extends Omit<ExhibitionFormData, 'subImageUrls'> {
   imageUrl: string;
   subImageUrls: string[];
 }
