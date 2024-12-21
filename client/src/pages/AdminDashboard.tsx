@@ -99,7 +99,7 @@ const deleteExhibitionMutation = useMutation({
   const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
   const [isEditExhibitionDialogOpen, setIsEditExhibitionDialogOpen] = useState(false);
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
-  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
+  const [selectedArtwork, setSelectedArtwork] = useState<(Artwork & { interiorImageDescriptions: string[] }) | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [imageData, setImageData] = useState<{
     url: string;
@@ -627,6 +627,7 @@ const ExhibitionForm = ({ selectedExhibition, onSubmit }: ExhibitionFormProps) =
           endDate: new Date(selectedExhibition.endDate).toISOString().slice(0, 16),
           imageUrl: selectedExhibition.imageUrl,
           subImageUrls: selectedExhibition.subImageUrls || [],
+          address: selectedExhibition.address || '',
         });
       }
     }, [selectedExhibition]);
