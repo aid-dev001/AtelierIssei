@@ -295,12 +295,14 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         description: req.body.description,
         price: req.body.price,
         size: req.body.size,
-        status: req.body.status,
-        createdLocation: req.body.createdLocation,
-        storedLocation: req.body.storedLocation,
-        imageUrl: req.body.imageUrl || imageUrl,
+        status: req.body.status || 'available',
+        createdLocation: req.body.createdLocation || '銀座',
+        storedLocation: req.body.storedLocation || '銀座',
+        imageUrl: imageUrl, // Always use the newly uploaded image URL
         updatedAt: new Date(),
       };
+
+      console.log('Creating artwork with data:', artworkData);
 
       await db.insert(artworks).values(artworkData);
       res.json({ success: true, ...artworkData });

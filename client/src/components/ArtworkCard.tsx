@@ -15,7 +15,7 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
         <Link href={`/artwork/${artwork.id}`}>
           <div className="w-full aspect-square overflow-hidden">
             <img
-              src={artwork.imageUrl.startsWith('/api/') ? artwork.imageUrl : `/artworks/${artwork.imageUrl}`}
+              src={artwork.imageUrl}
               alt={artwork.title}
               className="w-full h-full object-cover cursor-pointer transition-transform duration-500 group-hover:scale-105"
               onError={(e) => {
