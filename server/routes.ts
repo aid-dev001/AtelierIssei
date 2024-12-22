@@ -15,23 +15,12 @@ import {
   contacts,
   adminUsers,
   collections,
+  artwork_images
 } from "@db/schema";
 import { eq, desc } from "drizzle-orm";
 
 // Configure multer for handling file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = 'public/artworks';
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
+const storage = multer.memoryStorage();
 
 const upload = multer({ 
   storage: storage,
@@ -316,7 +305,16 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         return res.status(400).json({ error: "画像がアップロードされていません" });
       }
 
-      const imageUrl = `/artworks/${req.file.filename}`;
+      // 画像データをデータベースに保存
+      const [imageRecord] = await db.insert(artwork_images)
+        .values({
+          image_data: req.file.buffer.toString('base64'),
+          filename: req.file.originalname,
+          mime_type: req.file.mimetype,
+        })
+        .returning();
+
+      const imageUrl = `/api/images/${imageRecord.id}`;
       res.json({ imageUrl });
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -517,6 +515,28 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     } catch (error) {
       console.error("Error submitting contact form:", error);
       res.status(500).json({ error: "お問い合わせの送信に失敗しました" });
+    }
+  });
+
+  // 画像取得エンドポイント
+  app.get('/api/images/:id', async (req, res) => {
+    try {
+      const imageId = parseInt(req.params.id);
+      const [image] = await db.select()
+        .from(artwork_images)
+        .where(eq(artwork_images.id, imageId))
+        .limit(1);
+
+      if (!image) {
+        return res.status(404).json({ error: "画像が見つかりません" });
+      }
+
+      res.setHeader('Content-Type', image.mime_type);
+      const imageBuffer = Buffer.from(image.image_data, 'base64');
+      res.send(imageBuffer);
+    } catch (error) {
+      console.error("Error fetching image:", error);
+      res.status(500).json({ error: "画像の取得に失敗しました" });
     }
   });
 }

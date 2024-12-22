@@ -2,6 +2,8 @@ import { pgTable, text, integer, timestamp, numeric, boolean, varchar } from "dr
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
+import { pgTable, text, integer, timestamp, numeric, boolean } from "drizzle-orm/pg-core";
+import { varchar } from "drizzle-orm/pg-core";
 // Admin Users table for secure authentication
 export const adminUsers = pgTable("admin_users", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
@@ -94,6 +96,14 @@ export const contacts = pgTable("contacts", {
   name: text("name").notNull(),
   email: text("email").notNull(),
   message: text("message").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const artwork_images = pgTable("artwork_images", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  image_data: text("image_data").notNull(),
+  filename: text("filename").notNull(),
+  mime_type: text("mime_type").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
