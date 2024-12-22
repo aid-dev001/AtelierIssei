@@ -533,11 +533,12 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
 
   app.post("/api/voices", async (req, res) => {
     try {
+      console.log('Received voice data:', req.body);
       const voiceData = {
         name: req.body.name,
         content: req.body.content,
-        imageUrl: req.body.imageUrl,
-        rating: req.body.rating,
+        imageUrl: req.body.imageUrl || null,
+        rating: req.body.rating || 5,
         isActive: true,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -548,7 +549,10 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
       res.json(newVoice);
     } catch (error) {
       console.error("Error creating voice:", error);
-      res.status(500).json({ error: "メッセージの作成に失敗しました" });
+      res.status(500).json({ 
+        error: "メッセージの作成に失敗しました",
+        details: error instanceof Error ? error.message : "不明なエラー"
+      });
     }
   });
 

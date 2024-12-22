@@ -18,6 +18,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { Dropzone } from "@/components/ui/dropzone";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import type { 
   Artwork as DBArtwork, 
   Exhibition as DBExhibition,
@@ -26,45 +33,40 @@ import type {
 import type { Collection, ExhibitionFormState } from "@/types/form";
 
 // Frontend types with string dates for timestamps
-interface Artwork extends Omit<DBArtwork, 'createdAt' | 'updatedAt'> {
+type Artwork = Omit<DBArtwork, 'createdAt' | 'updatedAt'> & {
   createdAt: string;
   updatedAt: string;
-  interiorImageUrls?: string[];
+  interiorImageUrls: string[];
   interiorImageDescriptions: string[];
-}
+};
 
-interface Exhibition extends Omit<DBExhibition, 'createdAt' | 'updatedAt' | 'startDate' | 'endDate'> {
+type Exhibition = Omit<DBExhibition, 'createdAt' | 'updatedAt' | 'startDate' | 'endDate'> & {
   createdAt: string;
   updatedAt: string;
   startDate: string;
   endDate: string;
-}
+  subImageUrls: string[];
+};
 
-interface Voice extends Omit<DBVoice, 'createdAt' | 'updatedAt'> {
+type Voice = Omit<DBVoice, 'createdAt' | 'updatedAt'> & {
   createdAt: string;
   updatedAt: string;
-}
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { Dropzone } from "@/components/ui/dropzone";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+};
 
-import type { Voice as DBVoice } from "@db/schema";
-
-// Convert Date to string for frontend use
-interface Voice extends Omit<DBVoice, 'createdAt' | 'updatedAt'> {
-  createdAt: string;
-  updatedAt: string;
-}
+// 型定義はすでに上部で行われているため、重複を削除
 
 const AdminDashboard = () => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const adminPath = window.location.pathname.split('/dashboard')[0];
+
+  // Admin path validation
+  if (!adminPath) {
+    console.error('Admin path is not defined');
+    setLocation('/');
+    return null;
+  }
 
   // State management for different types of content
   const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions' | 'voices'>('artworks');
@@ -185,45 +187,7 @@ const AdminDashboard = () => {
     }),
   };
 
-  const createVoiceMutation = useMutation({
-    mutationFn: async (data: { name: string; content: string }) => {
-      const response = await fetch("/api/voices", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) throw new Error("Failed to create voice");
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["voices"] });
-      setIsEditVoiceDialogOpen(false);
-      toast({ title: "メッセージを作成しました" });
-    },
-    onError: () => {
-      toast({ variant: "destructive", title: "メッセージの作成に失敗しました" });
-    },
-  });
-
-  const updateVoiceMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: { name: string; content: string } }) => {
-      const response = await fetch(`/api/voices/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) throw new Error("Failed to update voice");
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["voices"] });
-      setIsEditVoiceDialogOpen(false);
-      toast({ title: "メッセージを更新しました" });
-    },
-    onError: () => {
-      toast({ variant: "destructive", title: "メッセージの更新に失敗しました" });
-    },
-  });
+  // Voiceのミューテーションは上部で定義済みのため削除
 
   const handleVoiceSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -237,12 +201,12 @@ const AdminDashboard = () => {
       };
 
       if (selectedVoice) {
-        await updateVoiceMutation.mutateAsync({
+        await voiceMutations.update.mutateAsync({
           id: selectedVoice.id,
           data: voiceData,
         });
       } else {
-        await createVoiceMutation.mutateAsync(voiceData);
+        await voiceMutations.create.mutateAsync(voiceData);
       }
     } catch (error) {
       console.error('Error submitting voice:', error);
@@ -300,8 +264,6 @@ const deleteExhibitionMutation = useMutation({
   },
 });
 
-  // State management
-  const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions' | 'voices'>('artworks');
   // Voices data and mutations
   const { data: voices } = useQuery<Voice[]>({
     queryKey: ["voices"],
