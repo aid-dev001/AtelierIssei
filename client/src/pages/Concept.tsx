@@ -44,7 +44,7 @@ const Concept = () => {
 
                 <div className="space-y-4">
                   <p className="text-xl text-gray-800/90 leading-relaxed tracking-wider font-medium text-center">
-                    その一枚一枚が、見る人の心にそっと寄り添い<br />
+                    その一枚一枚は、見る人の心にそっと寄り添い<br />
                     優雅で鮮やかな色彩と力強い形は<br />
                     温かな幸福感と希望の光をもたらします
                   </p>
