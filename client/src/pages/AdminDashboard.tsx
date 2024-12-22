@@ -18,8 +18,32 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Artwork, Exhibition, Voice } from "@db/schema";
-import { Collection, ExhibitionFormState } from "@/types/form";
+import type { 
+  Artwork as DBArtwork, 
+  Exhibition as DBExhibition,
+  Voice as DBVoice 
+} from "@db/schema";
+import type { Collection, ExhibitionFormState } from "@/types/form";
+
+// Frontend types with string dates for timestamps
+interface Artwork extends Omit<DBArtwork, 'createdAt' | 'updatedAt'> {
+  createdAt: string;
+  updatedAt: string;
+  interiorImageUrls?: string[];
+  interiorImageDescriptions: string[];
+}
+
+interface Exhibition extends Omit<DBExhibition, 'createdAt' | 'updatedAt' | 'startDate' | 'endDate'> {
+  createdAt: string;
+  updatedAt: string;
+  startDate: string;
+  endDate: string;
+}
+
+interface Voice extends Omit<DBVoice, 'createdAt' | 'updatedAt'> {
+  createdAt: string;
+  updatedAt: string;
+}
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -28,44 +52,138 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-interface Voice {
-  id: number;
-  name: string;
-  content: string;
+import type { Voice as DBVoice } from "@db/schema";
+
+// Convert Date to string for frontend use
+interface Voice extends Omit<DBVoice, 'createdAt' | 'updatedAt'> {
   createdAt: string;
   updatedAt: string;
 }
+
 const AdminDashboard = () => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const adminPath = window.location.pathname.split('/dashboard')[0];
-const createExhibitionMutation = useMutation({
-  mutationFn: async (formData: FormData) => {
-    const response = await fetch(`${adminPath}/exhibitions`, {
-      method: 'POST',
-      body: formData,
-    });
-    if (!response.ok) throw new Error('展示会の作成に失敗しました');
-    return response.json();
-  },
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ["exhibitions"] });
-    toast({ title: "展示会を作成しました" });
-    setIsEditExhibitionDialogOpen(false);
-    setSelectedExhibition(null);
-  },
+
+  // State management for different types of content
+  const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions' | 'voices'>('artworks');
+  
+  // Artwork states
+  const [selectedArtwork, setSelectedArtwork] = useState<(Artwork & { interiorImageDescriptions: string[] }) | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
+  
+  // Voice states
   const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
   const [isEditVoiceDialogOpen, setIsEditVoiceDialogOpen] = useState(false);
+  
+  // Collection states
+  const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
+  const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
+  
+  // Exhibition states
+  const [selectedExhibition, setSelectedExhibition] = useState<Exhibition | null>(null);
+  const [isEditExhibitionDialogOpen, setIsEditExhibitionDialogOpen] = useState(false);
 
+  // Voice data and mutations
   const { data: voices } = useQuery<Voice[]>({
     queryKey: ["voices"],
     queryFn: async () => {
       const response = await fetch("/api/voices");
-      if (!response.ok) throw new Error("Failed to fetch voices");
+      if (!response.ok) throw new Error("メッセージの取得に失敗しました");
       return response.json();
     },
   });
+
+  // Voice type definitions and mutations
+  type VoiceData = {
+    name: string;
+    content: string;
+    rating?: number;
+    imageUrl?: string | null;
+  };
+  
+  const voiceMutations = {
+    create: useMutation<Voice, Error, VoiceData>({
+      mutationFn: async (data) => {
+        const response = await fetch("/api/voices", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        if (!response.ok) {
+          const error = await response.text();
+          throw new Error(error || "メッセージの作成に失敗しました");
+        }
+        return response.json();
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["voices"] });
+        setIsEditVoiceDialogOpen(false);
+        setSelectedVoice(null);
+        toast({ title: "メッセージを作成しました" });
+      },
+      onError: (error) => {
+        toast({
+          variant: "destructive",
+          title: "メッセージの作成に失敗しました",
+          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+        });
+      },
+    }),
+
+    update: useMutation({
+      mutationFn: async ({ id, data }: { id: number; data: VoiceData }) => {
+        const response = await fetch(`/api/voices/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        if (!response.ok) {
+          const error = await response.text();
+          throw new Error(error || "メッセージの更新に失敗しました");
+        }
+        return response.json();
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["voices"] });
+        setIsEditVoiceDialogOpen(false);
+        setSelectedVoice(null);
+        toast({ title: "メッセージを更新しました" });
+      },
+      onError: (error) => {
+        toast({
+          variant: "destructive",
+          title: "メッセージの更新に失敗しました",
+          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+        });
+      },
+    }),
+
+    delete: useMutation({
+      mutationFn: async (voiceId: number) => {
+        const response = await fetch(`/api/voices/${voiceId}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) {
+          const error = await response.text();
+          throw new Error(error || "メッセージの削除に失敗しました");
+        }
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["voices"] });
+        toast({ title: "メッセージを削除しました" });
+      },
+      onError: (error) => {
+        toast({
+          variant: "destructive",
+          title: "メッセージの削除に失敗しました",
+          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+        });
+      },
+    }),
+  };
 
   const createVoiceMutation = useMutation({
     mutationFn: async (data: { name: string; content: string }) => {
@@ -181,111 +299,174 @@ const deleteExhibitionMutation = useMutation({
     toast({ variant: "destructive", title: "展示会の削除に失敗しました" });
   },
 });
+
+  // State management
   const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions' | 'voices'>('artworks');
   // Voices data and mutations
-  const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
-  const [isEditVoiceDialogOpen, setIsEditVoiceDialogOpen] = useState(false);
-
   const { data: voices } = useQuery<Voice[]>({
     queryKey: ["voices"],
     queryFn: async () => {
       const response = await fetch("/api/voices");
-      if (!response.ok) throw new Error("Failed to fetch voices");
+      if (!response.ok) throw new Error("メッセージの取得に失敗しました");
       return response.json();
     },
   });
 
-  const createVoiceMutation = useMutation({
-    mutationFn: async (data: { name: string; content: string }) => {
-      const response = await fetch("/api/voices", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) throw new Error("Failed to create voice");
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["voices"] });
-      setIsEditVoiceDialogOpen(false);
-      toast({ title: "メッセージを作成しました" });
-    },
-    onError: () => {
-      toast({ variant: "destructive", title: "メッセージの作成に失敗しました" });
-    },
-  });
-
-  const updateVoiceMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: { name: string; content: string } }) => {
-      const response = await fetch(`/api/voices/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) throw new Error("Failed to update voice");
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["voices"] });
-      setIsEditVoiceDialogOpen(false);
-      toast({ title: "メッセージを更新しました" });
-    },
-    onError: () => {
-      toast({ variant: "destructive", title: "メッセージの更新に失敗しました" });
-    },
-  });
-
-  const deleteVoiceMutation = useMutation({
-    mutationFn: async (voiceId: number) => {
-      const response = await fetch(`/api/voices/${voiceId}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) throw new Error('メッセージの削除に失敗しました');
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["voices"] });
-      toast({ title: "メッセージを削除しました" });
-    },
-    onError: () => {
-      toast({ variant: "destructive", title: "メッセージの削除に失敗しました" });
-    },
-  });
-
-  const handleVoiceSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      const form = e.currentTarget;
-      const formData = new FormData(form);
-      
-      const voiceData = {
-        name: formData.get('name') as string,
-        content: formData.get('content') as string,
-      };
-
-      if (selectedVoice) {
-        await updateVoiceMutation.mutateAsync({
-          id: selectedVoice.id,
-          data: voiceData,
-        });
-      } else {
-        await createVoiceMutation.mutateAsync(voiceData);
-      }
-    } catch (error) {
-      console.error('Error submitting voice:', error);
-      toast({
-        variant: "destructive",
-        title: "エラーが発生しました",
-        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
-      });
-    }
+  // Voice type definitions and mutations
+  type VoiceData = {
+    name: string;
+    content: string;
+    rating?: number;
+    imageUrl?: string | null;
   };
 
-  const handleDeleteVoice = async (voiceId: number) => {
-    try {
-      await deleteVoiceMutation.mutateAsync(voiceId);
-    } catch (error) {
-      console.error('Error deleting voice:', error);
-    }
+  type VoiceResponse = Voice;
+  
+  const voiceMutations = {
+    create: useMutation<VoiceResponse, Error, VoiceData>({
+      mutationFn: async (data) => {
+        const response = await fetch("/api/voices", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        if (!response.ok) {
+          const error = await response.text();
+          throw new Error(error || "メッセージの作成に失敗しました");
+        }
+        return response.json();
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["voices"] });
+        setIsEditVoiceDialogOpen(false);
+        setSelectedVoice(null);
+        toast({ title: "メッセージを作成しました" });
+      },
+      onError: (error) => {
+        toast({
+          variant: "destructive",
+          title: "メッセージの作成に失敗しました",
+          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+        });
+      },
+    }),
+
+    update: useMutation({
+      mutationFn: async ({ id, data }: { id: number; data: { name: string; content: string } }) => {
+        const response = await fetch(`/api/voices/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        if (!response.ok) {
+          const error = await response.text();
+          throw new Error(error || "メッセージの更新に失敗しました");
+        }
+        return response.json();
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["voices"] });
+        setIsEditVoiceDialogOpen(false);
+        setSelectedVoice(null);
+        toast({ title: "メッセージを更新しました" });
+      },
+      onError: (error) => {
+        toast({
+          variant: "destructive",
+          title: "メッセージの更新に失敗しました",
+          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+        });
+      },
+    }),
+
+    delete: useMutation({
+      mutationFn: async (voiceId: number) => {
+        const response = await fetch(`/api/voices/${voiceId}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) {
+          const error = await response.text();
+          throw new Error(error || "メッセージの削除に失敗しました");
+        }
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["voices"] });
+        toast({ title: "メッセージを削除しました" });
+      },
+      onError: (error) => {
+        toast({
+          variant: "destructive",
+          title: "メッセージの削除に失敗しました",
+          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+        });
+      },
+    }),
+  };
+
+  // Voice handlers
+  const voiceHandlers = {
+    submit: async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      try {
+        const form = e.currentTarget;
+        const formData = new FormData(form);
+        
+        const name = formData.get('name') as string;
+        const content = formData.get('content') as string;
+        
+        if (!name || !content) {
+          toast({
+            variant: "destructive",
+            title: "入力エラー",
+            description: "名前とメッセージ内容を入力してください",
+          });
+          return;
+        }
+
+        const voiceData = { name, content };
+
+        if (selectedVoice) {
+          await voiceMutations.update.mutateAsync({
+            id: selectedVoice.id,
+            data: voiceData,
+          });
+        } else {
+          await voiceMutations.create.mutateAsync(voiceData);
+        }
+
+        form.reset();
+      } catch (error) {
+        console.error('Error submitting voice:', error);
+        toast({
+          variant: "destructive",
+          title: "エラーが発生しました",
+          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+        });
+      }
+    },
+
+    delete: async (voiceId: number) => {
+      try {
+        await voiceMutations.delete.mutateAsync(voiceId);
+      } catch (error) {
+        console.error('Error deleting voice:', error);
+        toast({
+          variant: "destructive",
+          title: "削除に失敗しました",
+          description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+        });
+      }
+    },
+
+    edit: (voice: Voice) => {
+      setSelectedVoice(voice);
+      setIsEditVoiceDialogOpen(true);
+    },
+
+    cancel: () => {
+      setSelectedVoice(null);
+      setIsEditVoiceDialogOpen(false);
+    },
   };
   const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
   const [selectedExhibition, setSelectedExhibition] = useState<Exhibition | null>(null);
