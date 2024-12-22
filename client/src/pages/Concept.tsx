@@ -27,7 +27,7 @@ const Concept = () => {
               <div className="space-y-12">
                 <div className="space-y-4">
                   <p className="text-2xl text-gray-800/90 leading-relaxed tracking-wider font-medium text-center">
-                    アーティストisseiが、
+                    アーティストisseiの
                   </p>
                   <p className="text-xl text-gray-800/90 leading-relaxed tracking-wider font-medium text-center">
                     心が沈み、孤独を感じる瞬間<br />
@@ -37,7 +37,7 @@ const Concept = () => {
                 
                 <div className="space-y-4">
                   <p className="text-xl text-gray-800/90 leading-relaxed tracking-wider font-medium text-center">
-                    華やかさの中に漂うほのかな儚さが、<br />
+                    華やかさの中に漂うほのかな儚さは<br />
                     心の深淵を映し出しています
                   </p>
                 </div>
