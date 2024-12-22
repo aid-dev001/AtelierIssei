@@ -8,8 +8,9 @@ const getDatabaseUrl = () => {
   if (process.env.NODE_ENV === 'production') {
     const productionUrl = process.env.PRODUCTION_DATABASE_URL;
     if (!productionUrl) {
-      console.warn("PRODUCTION_DATABASE_URL is not set, falling back to DATABASE_URL");
-      return process.env.DATABASE_URL;
+      throw new Error(
+        "Production environment requires PRODUCTION_DATABASE_URL to be set"
+      );
     }
     console.log("Using production database");
     return productionUrl;

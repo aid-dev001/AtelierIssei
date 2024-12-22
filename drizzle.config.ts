@@ -3,10 +3,18 @@ import { defineConfig } from "drizzle-kit";
 // 開発環境と本番環境でデータベース接続を切り替え
 const getDatabaseUrl = () => {
   if (process.env.NODE_ENV === 'production') {
+    // 本番環境では明示的にPRODUCTION_DATABASE_URLが必要
     const productionUrl = process.env.PRODUCTION_DATABASE_URL;
     if (!productionUrl) {
-      console.warn("PRODUCTION_DATABASE_URL is not set, falling back to DATABASE_URL");
-      return process.env.DATABASE_URL;
+      throw new Error(
+        "Production environment requires PRODUCTION_DATABASE_URL to be set for migrations"
+      );
+    }
+    // 本番環境での意図しないマイグレーションを防ぐ
+    if (!process.env.ALLOW_PRODUCTION_MIGRATION) {
+      throw new Error(
+        "Production migrations are disabled. Set ALLOW_PRODUCTION_MIGRATION=true to enable"
+      );
     }
     console.log("Using production database for migrations");
     return productionUrl;
