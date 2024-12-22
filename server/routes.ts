@@ -219,13 +219,17 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         return res.status(400).json({ error: "画像がアップロードされていません" });
       }
 
-      // アップロードされたファイルが存在することを確認
-      if (!fs.existsSync(req.file.path)) {
-        return res.status(500).json({ error: "アップロードされた画像の保存に失敗しました" });
-      }
+      // 画像データをデータベースに保存
+      const [imageRecord] = await db.insert(artwork_images)
+        .values({
+          image_data: req.file.buffer.toString('base64'),
+          filename: req.file.originalname,
+          mime_type: req.file.mimetype,
+        })
+        .returning();
 
       // 画像の公開URLを生成
-      const imageUrl = `/artworks/${req.file.filename}`;
+      const imageUrl = `/api/images/${imageRecord.id}`;
       console.log('Generating description for image:', imageUrl);
 
       // OpenAI APIを使用して説明を生成
@@ -276,7 +280,16 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         return res.status(400).json({ error: "画像がアップロードされていません" });
       }
 
-      const imageUrl = `/artworks/${req.file.filename}`;
+      // 画像データをデータベースに保存
+      const [imageRecord] = await db.insert(artwork_images)
+        .values({
+          image_data: req.file.buffer.toString('base64'),
+          filename: req.file.originalname,
+          mime_type: req.file.mimetype,
+        })
+        .returning();
+
+      const imageUrl = `/api/images/${imageRecord.id}`;
       const artworkData = {
         title: req.body.title,
         description: req.body.description,
