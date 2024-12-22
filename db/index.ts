@@ -8,13 +8,14 @@ const getDatabaseUrl = () => {
   if (process.env.NODE_ENV === 'production') {
     const productionUrl = process.env.PRODUCTION_DATABASE_URL;
     if (!productionUrl) {
-      throw new Error(
-        "PRODUCTION_DATABASE_URL must be set in production environment",
-      );
+      console.warn("PRODUCTION_DATABASE_URL is not set, falling back to DATABASE_URL");
+      return process.env.DATABASE_URL;
     }
+    console.log("Using production database");
     return productionUrl;
   }
   // それ以外の場合は開発用データベースを使用
+  console.log("Using development database");
   return process.env.DATABASE_URL;
 };
 
