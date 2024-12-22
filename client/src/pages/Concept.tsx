@@ -24,9 +24,9 @@ const Concept = () => {
           
           <div className="relative container mx-auto px-4">
             <div className="max-w-3xl mx-auto bg-gradient-to-b from-white/80 to-white/60 backdrop-blur-md p-16 rounded-2xl space-y-8 shadow-2xl border border-white/20">
-              <div className="space-y-16">
-                <div className="space-y-6 bg-white/40 px-8 py-6 rounded-xl">
-                  <p className="text-3xl text-gray-800/90 leading-relaxed tracking-wider font-medium text-center">
+              <div className="space-y-12">
+                <div className="space-y-4">
+                  <p className="text-2xl text-gray-800/90 leading-relaxed tracking-wider font-medium text-center">
                     アーティストisseiが、
                   </p>
                   <p className="text-xl text-gray-800/90 leading-relaxed tracking-wider font-medium text-center">
@@ -35,14 +35,14 @@ const Concept = () => {
                   </p>
                 </div>
                 
-                <div className="space-y-4 bg-white/30 px-8 py-6 rounded-xl">
+                <div className="space-y-4">
                   <p className="text-xl text-gray-800/90 leading-relaxed tracking-wider font-medium text-center">
                     華やかさの中に漂うほのかな儚さが、<br />
                     心の深淵を映し出しています
                   </p>
                 </div>
 
-                <div className="space-y-4 bg-white/40 px-8 py-6 rounded-xl">
+                <div className="space-y-4">
                   <p className="text-xl text-gray-800/90 leading-relaxed tracking-wider font-medium text-center">
                     その一枚一枚が、見る人の心にそっと寄り添い<br />
                     優雅で鮮やかな色彩と力強い形は<br />
