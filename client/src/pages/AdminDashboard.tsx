@@ -390,9 +390,6 @@ const deleteExhibitionMutation = useMutation({
         throw new Error('画像URLの取得に失敗しました');
       }
 
-      // 画像URLのログを追加
-      console.log('Received image URL:', data.imageUrl);
-
       // Create a new array with the correct length (2 for now)
       const currentUrls = selectedArtwork?.interiorImageUrls || [];
       let newImageUrls = Array(2).fill(null);

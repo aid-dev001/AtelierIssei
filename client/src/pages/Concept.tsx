@@ -21,7 +21,7 @@ const Concept = () => {
             />
             <div className="absolute inset-0 bg-white/10" />
           </div>
-
+          
           <div className="relative container mx-auto px-4">
             <div className="max-w-3xl mx-auto bg-gradient-to-b from-white/80 to-white/60 backdrop-blur-md p-16 rounded-2xl space-y-8 shadow-2xl border border-white/20">
               <div className="space-y-12">
@@ -34,7 +34,7 @@ const Concept = () => {
                     自らを励ますために描く希望のアート
                   </p>
                 </div>
-
+                
                 <div className="space-y-4">
                   <p className="text-xl text-gray-800/90 leading-relaxed tracking-wider font-medium text-center">
                     華やかさの中に漂うほのかな儚さは<br />

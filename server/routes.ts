@@ -15,12 +15,23 @@ import {
   contacts,
   adminUsers,
   collections,
-  artwork_images
 } from "@db/schema";
 import { eq, desc } from "drizzle-orm";
 
 // Configure multer for handling file uploads
-const storage = multer.memoryStorage();
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = 'public/artworks';
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
 
 const upload = multer({ 
   storage: storage,
@@ -219,17 +230,13 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         return res.status(400).json({ error: "画像がアップロードされていません" });
       }
 
-      // 画像データをデータベースに保存
-      const [imageRecord] = await db.insert(artwork_images)
-        .values({
-          image_data: req.file.buffer.toString('base64'),
-          filename: req.file.originalname,
-          mime_type: req.file.mimetype,
-        })
-        .returning();
+      // アップロードされたファイルが存在することを確認
+      if (!fs.existsSync(req.file.path)) {
+        return res.status(500).json({ error: "アップロードされた画像の保存に失敗しました" });
+      }
 
       // 画像の公開URLを生成
-      const imageUrl = `/api/images/${imageRecord.id}`;
+      const imageUrl = `/artworks/${req.file.filename}`;
       console.log('Generating description for image:', imageUrl);
 
       // OpenAI APIを使用して説明を生成
@@ -280,32 +287,18 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         return res.status(400).json({ error: "画像がアップロードされていません" });
       }
 
-      // 画像データをデータベースに保存
-      const [imageRecord] = await db.insert(artwork_images)
-        .values({
-          image_data: req.file.buffer.toString('base64'),
-          filename: req.file.originalname,
-          mime_type: req.file.mimetype,
-        })
-        .returning();
-
-      // 画像のURLを生成（フルパスを使用）
-      const imageUrl = `/api/images/${imageRecord.id}`;
-      console.log('Generated image URL:', imageUrl);
-      
+      const imageUrl = `/artworks/${req.file.filename}`;
       const artworkData = {
         title: req.body.title,
         description: req.body.description,
         price: req.body.price,
         size: req.body.size,
-        status: req.body.status || 'available',
-        createdLocation: req.body.createdLocation || '銀座',
-        storedLocation: req.body.storedLocation || '銀座',
-        imageUrl: imageUrl, // Always use the newly uploaded image URL
+        status: req.body.status,
+        createdLocation: req.body.createdLocation,
+        storedLocation: req.body.storedLocation,
+        imageUrl: req.body.imageUrl || imageUrl,
         updatedAt: new Date(),
       };
-
-      console.log('Creating artwork with data:', artworkData);
 
       await db.insert(artworks).values(artworkData);
       res.json({ success: true, ...artworkData });
@@ -323,16 +316,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         return res.status(400).json({ error: "画像がアップロードされていません" });
       }
 
-      // 画像データをデータベースに保存
-      const [imageRecord] = await db.insert(artwork_images)
-        .values({
-          image_data: req.file.buffer.toString('base64'),
-          filename: req.file.originalname,
-          mime_type: req.file.mimetype,
-        })
-        .returning();
-
-      const imageUrl = `/api/images/${imageRecord.id}`;
+      const imageUrl = `/artworks/${req.file.filename}`;
       res.json({ imageUrl });
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -533,28 +517,6 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     } catch (error) {
       console.error("Error submitting contact form:", error);
       res.status(500).json({ error: "お問い合わせの送信に失敗しました" });
-    }
-  });
-
-  // 画像取得エンドポイント
-  app.get('/api/images/:id', async (req, res) => {
-    try {
-      const imageId = parseInt(req.params.id);
-      const [image] = await db.select()
-        .from(artwork_images)
-        .where(eq(artwork_images.id, imageId))
-        .limit(1);
-
-      if (!image) {
-        return res.status(404).json({ error: "画像が見つかりません" });
-      }
-
-      res.setHeader('Content-Type', image.mime_type);
-      const imageBuffer = Buffer.from(image.image_data, 'base64');
-      res.send(imageBuffer);
-    } catch (error) {
-      console.error("Error fetching image:", error);
-      res.status(500).json({ error: "画像の取得に失敗しました" });
     }
   });
 }
