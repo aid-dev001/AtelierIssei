@@ -15,6 +15,7 @@ import {
   contacts,
   adminUsers,
   collections,
+  voices,
 } from "@db/schema";
 import { eq, desc } from "drizzle-orm";
 
@@ -519,4 +520,59 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
       res.status(500).json({ error: "お問い合わせの送信に失敗しました" });
     }
   });
+  // Voices CRUD endpoints
+  app.get("/api/voices", async (req, res) => {
+    try {
+      const allVoices = await db.select().from(voices).orderBy(desc(voices.createdAt));
+      res.json(allVoices);
+    } catch (error) {
+      console.error("Failed to fetch voices:", error);
+      res.status(500).json({ error: "メッセージの取得に失敗しました" });
+    }
+  });
+
+  app.post("/api/voices", async (req, res) => {
+    try {
+      const voiceData = {
+        name: req.body.name,
+        content: req.body.content,
+        imageUrl: req.body.imageUrl,
+        rating: req.body.rating,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const [newVoice] = await db.insert(voices).values(voiceData).returning();
+      console.log('Voice created successfully:', newVoice);
+      res.json(newVoice);
+    } catch (error) {
+      console.error("Error creating voice:", error);
+      res.status(500).json({ error: "メッセージの作成に失敗しました" });
+    }
+  });
+
+  app.put("/api/voices/:id", async (req, res) => {
+    try {
+      const voiceId = parseInt(req.params.id);
+      const updateData = {
+        ...req.body,
+        updatedAt: new Date(),
+      };
+
+      await db.update(voices)
+        .set(updateData)
+        .where(eq(voices.id, voiceId));
+      
+      const updatedVoice = await db.query.voices.findFirst({
+        where: eq(voices.id, voiceId),
+      });
+      
+      res.json(updatedVoice);
+    } catch (error) {
+      console.error("Error updating voice:", error);
+      res.status(500).json({ error: "メッセージの更新に失敗しました" });
+    }
+  });
+
 }

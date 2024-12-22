@@ -79,6 +79,17 @@ export const atelierPosts = pgTable("atelier_posts", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const voices = pgTable("voices", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: text("name").notNull(),
+  content: text("content").notNull(),
+  imageUrl: text("image_url"),
+  rating: integer("rating"),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const news = pgTable("news", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: text("title").notNull(),
@@ -126,6 +137,11 @@ export type Testimonial = z.infer<typeof selectTestimonialSchema>;
 export const insertAtelierPostSchema = createInsertSchema(atelierPosts);
 export const selectAtelierPostSchema = createSelectSchema(atelierPosts);
 export type InsertAtelierPost = z.infer<typeof insertAtelierPostSchema>;
+export const insertVoiceSchema = createInsertSchema(voices);
+export const selectVoiceSchema = createSelectSchema(voices);
+export type InsertVoice = z.infer<typeof insertVoiceSchema>;
+export type Voice = z.infer<typeof selectVoiceSchema>;
+
 export type AtelierPost = z.infer<typeof selectAtelierPostSchema>;
 
 export const insertNewsSchema = createInsertSchema(news);
