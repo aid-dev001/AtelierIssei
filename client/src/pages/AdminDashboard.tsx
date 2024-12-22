@@ -18,7 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Artwork, Exhibition } from "@db/schema";
+import { Artwork, Exhibition, Voice } from "@db/schema";
 import { Collection, ExhibitionFormState } from "@/types/form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
+interface Voice {
+  id: number;
+  name: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
 const AdminDashboard = () => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -48,6 +55,86 @@ const createExhibitionMutation = useMutation({
     setIsEditExhibitionDialogOpen(false);
     setSelectedExhibition(null);
   },
+  const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
+  const [isEditVoiceDialogOpen, setIsEditVoiceDialogOpen] = useState(false);
+
+  const { data: voices } = useQuery<Voice[]>({
+    queryKey: ["voices"],
+    queryFn: async () => {
+      const response = await fetch("/api/voices");
+      if (!response.ok) throw new Error("Failed to fetch voices");
+      return response.json();
+    },
+  });
+
+  const createVoiceMutation = useMutation({
+    mutationFn: async (data: { name: string; content: string }) => {
+      const response = await fetch("/api/voices", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Failed to create voice");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["voices"] });
+      setIsEditVoiceDialogOpen(false);
+      toast({ title: "メッセージを作成しました" });
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "メッセージの作成に失敗しました" });
+    },
+  });
+
+  const updateVoiceMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: { name: string; content: string } }) => {
+      const response = await fetch(`/api/voices/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Failed to update voice");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["voices"] });
+      setIsEditVoiceDialogOpen(false);
+      toast({ title: "メッセージを更新しました" });
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "メッセージの更新に失敗しました" });
+    },
+  });
+
+  const handleVoiceSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const form = e.currentTarget;
+      const formData = new FormData(form);
+      
+      const voiceData = {
+        name: formData.get('name') as string,
+        content: formData.get('content') as string,
+      };
+
+      if (selectedVoice) {
+        await updateVoiceMutation.mutateAsync({
+          id: selectedVoice.id,
+          data: voiceData,
+        });
+      } else {
+        await createVoiceMutation.mutateAsync(voiceData);
+      }
+    } catch (error) {
+      console.error('Error submitting voice:', error);
+      toast({
+        variant: "destructive",
+        title: "エラーが発生しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+      });
+    }
+  };
   onError: (error) => {
     toast({
       variant: "destructive",
@@ -94,9 +181,138 @@ const deleteExhibitionMutation = useMutation({
     toast({ variant: "destructive", title: "展示会の削除に失敗しました" });
   },
 });
-  const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions'>('artworks');
+  const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions' | 'voices'>('artworks');
+  // Voices data and mutations
+  const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
+  const [isEditVoiceDialogOpen, setIsEditVoiceDialogOpen] = useState(false);
+
+  const { data: voices } = useQuery<Voice[]>({
+    queryKey: ["voices"],
+    queryFn: async () => {
+      const response = await fetch("/api/voices");
+      if (!response.ok) throw new Error("Failed to fetch voices");
+      return response.json();
+    },
+  });
+
+  const createVoiceMutation = useMutation({
+    mutationFn: async (data: { name: string; content: string }) => {
+      const response = await fetch("/api/voices", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Failed to create voice");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["voices"] });
+      setIsEditVoiceDialogOpen(false);
+      toast({ title: "メッセージを作成しました" });
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "メッセージの作成に失敗しました" });
+    },
+  });
+
+  const updateVoiceMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: { name: string; content: string } }) => {
+      const response = await fetch(`/api/voices/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Failed to update voice");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["voices"] });
+      setIsEditVoiceDialogOpen(false);
+      toast({ title: "メッセージを更新しました" });
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "メッセージの更新に失敗しました" });
+    },
+  });
+
+  const deleteVoiceMutation = useMutation({
+    mutationFn: async (voiceId: number) => {
+      const response = await fetch(`/api/voices/${voiceId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('メッセージの削除に失敗しました');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["voices"] });
+      toast({ title: "メッセージを削除しました" });
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "メッセージの削除に失敗しました" });
+    },
+  });
+
+  const handleVoiceSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const form = e.currentTarget;
+      const formData = new FormData(form);
+      
+      const voiceData = {
+        name: formData.get('name') as string,
+        content: formData.get('content') as string,
+      };
+
+      if (selectedVoice) {
+        await updateVoiceMutation.mutateAsync({
+          id: selectedVoice.id,
+          data: voiceData,
+        });
+      } else {
+        await createVoiceMutation.mutateAsync(voiceData);
+      }
+    } catch (error) {
+      console.error('Error submitting voice:', error);
+      toast({
+        variant: "destructive",
+        title: "エラーが発生しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+      });
+    }
+  };
+
+  const handleDeleteVoice = async (voiceId: number) => {
+    try {
+      await deleteVoiceMutation.mutateAsync(voiceId);
+    } catch (error) {
+      console.error('Error deleting voice:', error);
+    }
+  };
   const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
   const [selectedExhibition, setSelectedExhibition] = useState<Exhibition | null>(null);
+  const deleteVoiceMutation = useMutation({
+    mutationFn: async (voiceId: number) => {
+      const response = await fetch(`/api/voices/${voiceId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('メッセージの削除に失敗しました');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["voices"] });
+      toast({ title: "メッセージを削除しました" });
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "メッセージの削除に失敗しました" });
+    },
+  });
+
+  const handleDeleteVoice = async (voiceId: number) => {
+    try {
+      await deleteVoiceMutation.mutateAsync(voiceId);
+    } catch (error) {
+      console.error('Error deleting voice:', error);
+    }
+  };
+  });
   const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
   const [isEditExhibitionDialogOpen, setIsEditExhibitionDialogOpen] = useState(false);
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
@@ -213,7 +429,7 @@ const deleteExhibitionMutation = useMutation({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`${adminPath}/artworks`] });
       toast({ title: "作品を更新しました" });
-      setIsEditDialogOpen(false);
+  setIsEditDialogOpen(false);
     },
     onError: () => {
       toast({ variant: "destructive", title: "作品の更新に失敗しました" });
@@ -1247,12 +1463,119 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
                 <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
               )}
             </button>
+            <button
+              className={`px-4 py-2 font-medium transition-all relative ${
+                activeTab === 'voices'
+                  ? 'text-black font-semibold'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              onClick={() => setActiveTab('voices')}
+            >
+              メッセージ管理
+              {activeTab === 'voices' && (
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
+              )}
+            </button>
           </div>
         </div>
       </header>
 
       <main className="space-y-8">
         {activeTab === 'artworks' ? (
+            {activeTab === 'voices' && (
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-2xl font-bold">メッセージ管理</h2>
+                  <Dialog open={isEditVoiceDialogOpen} onOpenChange={setIsEditVoiceDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button onClick={() => setSelectedVoice(null)}>
+                        新規作成
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>
+                          {selectedVoice ? 'メッセージを編集' : 'メッセージを作成'}
+                        </DialogTitle>
+                      </DialogHeader>
+                      <form onSubmit={handleVoiceSubmit} className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="name">お名前</Label>
+                          <Input
+                            id="name"
+                            name="name"
+                            defaultValue={selectedVoice?.name || ''}
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="content">メッセージ内容</Label>
+                          <Textarea
+                            id="content"
+                            name="content"
+                            defaultValue={selectedVoice?.content || ''}
+                            required
+                          />
+                        </div>
+                        <Button type="submit">
+                          {selectedVoice ? '更新' : '作成'}
+                        </Button>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+
+                <div className="grid gap-4">
+                  {voices?.map((voice) => (
+                    <div
+                      key={voice.id}
+                      className="p-4 bg-white rounded-lg shadow flex justify-between items-start"
+                    >
+                      <div className="space-y-2">
+                        <h3 className="font-medium">{voice.name}</h3>
+                        <p className="text-gray-600">{voice.content}</p>
+                        <p className="text-sm text-gray-400">
+                          {new Date(voice.createdAt).toLocaleDateString('ja-JP')}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => {
+                            setSelectedVoice(voice);
+                            setIsEditVoiceDialogOpen(true);
+                          }}
+                        >
+                          <PenLine className="h-4 w-4" />
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="outline" size="icon">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>メッセージを削除しますか？</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                この操作は取り消せません。
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogAction
+                              onClick={() => handleDeleteVoice(voice.id)}
+                            >
+                              削除
+                            </AlertDialogAction>
+                            <AlertDialogCancel>キャンセル</AlertDialogCancel>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           <>
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-semibold">作品一覧</h2>
