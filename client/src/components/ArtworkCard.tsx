@@ -15,10 +15,11 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
         <Link href={`/artwork/${artwork.id}`}>
           <div className="w-full aspect-square overflow-hidden">
             <img
-              src={artwork.imageUrl}
+              src={artwork.imageUrl || '/placeholder.png'}
               alt={artwork.title}
               className="w-full h-full object-cover cursor-pointer transition-transform duration-500 group-hover:scale-105"
               onError={(e) => {
+                console.error('Image load error:', artwork.imageUrl);
                 const img = e.target as HTMLImageElement;
                 img.src = '/placeholder.png';
               }}

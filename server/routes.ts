@@ -289,7 +289,10 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         })
         .returning();
 
+      // 画像のURLを生成（フルパスを使用）
       const imageUrl = `/api/images/${imageRecord.id}`;
+      console.log('Generated image URL:', imageUrl);
+      
       const artworkData = {
         title: req.body.title,
         description: req.body.description,
