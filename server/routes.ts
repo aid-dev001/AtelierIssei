@@ -50,10 +50,13 @@ const upload = multer({
 });
 
 import contactRouter from './routes/contact';
+import voicesRouter from './routes/voices';
 
 export default function setupRoutes(app: express.Express) {
   // Contact routes
   app.use('/api', contactRouter);
+  // Voices routes
+  app.use('/api', voicesRouter);
 
   // Public routes
   app.get("/api/artworks", async (req, res) => {

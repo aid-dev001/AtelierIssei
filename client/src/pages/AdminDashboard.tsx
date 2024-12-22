@@ -223,8 +223,7 @@ const AdminDashboard = () => {
       title: "展示会の作成に失敗しました",
       description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
     });
-  },
-});
+  }
 
 const updateExhibitionMutation = useMutation({
   mutationFn: async ({ id, data }: { id: number; data: any }) => {
