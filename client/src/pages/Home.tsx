@@ -502,25 +502,25 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {[
             {
-              image: "/13452.jpg",
+              image: "/images/cat1.jpg",
               name: "ひょこあに ねこ",
               title: "地方中核産科病院院長夫人",
               quote: "色も色の組み合わせも可愛くて気に入っています。玄関で丸い顔が浮き上がっているのを見ると心も弾みます。"
             },
             {
-              image: "12653.jpg",
+              image: "/images/landscape1.jpg",
               name: "モンマルトル",
               title: "医療系記者",
               quote: "私はいつもモンマルトルが大好きで、特に母がモンマルトルで生まれています。ですのでこの絵は非常に特別な意味を持ちます。"
             },
             {
-              image: "12658.jpg",
+              image: "/images/eiffel1.png",
               name: "エッフェル塔 ねこ",
               title: "フランス美術評論家",
               quote: "日本画家の目を通してエッフェル塔を再発見できるのは素晴らしいことです。素敵！"
             },
             {
-              image: "/13452.jpg",
+              image: "/images/13452.jpg",
               name: "会社紹介",
               title: "著名な会社役員",
               quote: "この作品は当社のコーポレートアイデンティティを見事に表現しています。社内の雰囲気も明るくなりました。"
