@@ -124,9 +124,9 @@ const locations = [
     country: "フランス",
     description: "フランス郊外の静かな村での集中的な創作期間",
     images: [
-      "/images/atis_mons_1.jpg",
-      "/images/atis_mons_2.jpg",
-      "/images/atis_mons_3.jpg",
+      "/attached_assets/1928320.png",
+      "/attached_assets/23611_0.jpg",
+      "/attached_assets/23615_0.jpg",
     ],
   },
   {
@@ -147,7 +147,7 @@ const locations = [
     year: "2023",
     country: "フランス",
     description: "歴史と自然が織りなす風景からのインスピレーション",
-    images: ["/images/france_normandy_1.jpg"],
+    images: ["/images/Ludo-mediatheque-Etrepagny-Le-Patio--ML-Vittori-min-1200x900.jpg", "/images/12670.jpg", "/images/12671.jpg"],
   },
   {
     id: "france-chambord",
