@@ -62,16 +62,13 @@ const locationsData: Record<string, LocationData> = {
     
     特に印象的だったのは、早朝の静寂の中で見た光と影の美しい調和でした。西洋と東洋の美意識が融合する瞬間を探求し、そこから生まれる新しい美のかたちを模索しています。`,
     images: [
-      { url: '/images/12653.jpg', caption: '赤坂の朝霧に包まれた庭園' },
-      { url: '/images/12654.jpg', caption: '現代建築と伝統的な要素の対比' },
-      { url: '/images/12655.jpg', caption: '夕暮れ時の赤坂の都市風景' },
-      { url: '/images/12656.jpg', caption: '伝統的な日本建築の細部' },
-      { url: '/images/12657.jpg', caption: '秋の赤坂、落ち葉と現代建築' },
-      { url: '/images/12658.jpg', caption: '雨上がりの赤坂の石畳' }
+      { url: '/tokyo_akasaka_1.jpg', caption: '水色の髪の少女「POKO FACE」シリーズ' },
+      { url: '/tokyo_akasaka_2.jpg', caption: 'クラゲたちの群れ「POKO SEA」シリーズ' },
+      { url: '/tokyo_akasaka_3.jpg', caption: 'ピンクと青の顔「POKO FACE」シリーズ' }
     ],
     relatedLocations: [
-      { id: 'tokyo-shibuya', title: '東京・渋谷', image: '/images/12659.jpg' },
-      { id: 'kyoto', title: '京都', image: '/images/12660.jpg' }
+      { id: 'tokyo-okubo', title: '東京・大久保', image: '/tokyo_okubo_1.jpg' },
+      { id: 'tokyo-ikebukuro', title: '東京・池袋', image: '/tokyo_ikebukuro_1.jpg' }
     ]
   },
   'tokyo-shibuya': {
