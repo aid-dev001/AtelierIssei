@@ -3,6 +3,52 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 import { Button } from "@/components/ui/button";
 
+// 代表作品のデータ
+const featuredArtworks = [
+  { 
+    id: "girls", 
+    title: "Girls Collection", 
+    category: "女の子",
+    description: "女の子をテーマにした独自の世界観を表現したコレクション", 
+    image: "featured_artworks/girl_1.jpg"
+  },
+  { 
+    id: "digital", 
+    title: "Digital Art", 
+    category: "デジタルアート",
+    description: "デジタル技術を駆使した現代的な表現", 
+    image: "featured_artworks/digital_art_1.jpg"
+  },
+  { 
+    id: "poko-animal", 
+    title: "Poko Animal", 
+    category: "ひょこあに",
+    description: "愛らしい動物たちのユニークな表現", 
+    image: "featured_artworks/poko_animal_1.jpg"
+  },
+  { 
+    id: "abstract", 
+    title: "Abstract Collection", 
+    category: "抽象画",
+    description: "色彩と形の自由な探求", 
+    image: "featured_artworks/abstract_1.jpg"
+  },
+  { 
+    id: "landscape", 
+    title: "Landscape", 
+    category: "風景画",
+    description: "独自の視点で捉えた風景の詩的表現", 
+    image: "featured_artworks/landscape_1.jpg"
+  },
+  { 
+    id: "animal", 
+    title: "Animal Collection", 
+    category: "動物",
+    description: "動物たちの生命力と美しさを表現", 
+    image: "featured_artworks/animal_1.jpg"
+  }
+];
+
 // ロケーションデータ（Home.tsxと同じデータを使用）
 const locations = [
   { id: "hiroshima", label: "広島", year: "1998", country: "日本", description: "平和への祈りと再生をテーマにした作品の制作拠点", images: ["hiroshima_1.jpg", "hiroshima_2.jpg"] },
@@ -55,6 +101,34 @@ const Exhibition = () => {
               className="w-full h-full"
             />
           </div>
+        </div>
+      </section>
+      
+      {/* 代表作セクション */}
+      <section className="container mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold mb-12 text-center">代表作品</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {featuredArtworks.map((artwork) => (
+            <div key={artwork.id} className="group bg-white rounded-xl shadow-lg overflow-hidden">
+              <div className="aspect-square overflow-hidden">
+                <img
+                  src={artwork.image}
+                  alt={artwork.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  onError={(e) => {
+                    const img = e.target as HTMLImageElement;
+                    img.onerror = null;
+                    img.src = '/placeholder.png';
+                  }}
+                />
+              </div>
+              <div className="p-6">
+                <div className="text-sm font-medium text-primary mb-1">{artwork.category}</div>
+                <h3 className="text-xl font-bold mb-2">{artwork.title}</h3>
+                <p className="text-gray-600">{artwork.description}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
