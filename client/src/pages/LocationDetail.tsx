@@ -367,14 +367,14 @@ const locationsData: Record<string, LocationData> = {
       { id: 'normandy', title: 'フランス・ノルマンディー', image: '/france_normandy_1.jpg' }
     ]
   },
-  // サンティレースアンドレシス
+  // フランス・ティレーヌアンドレシス
   'saint-hilaire-andre': {
     id: 'saint-hilaire-andre',
-    title: 'サンティレースアンドレシス',
+    title: 'フランス・ティレーヌアンドレシス',
     country: 'フランス',
     year: '2018',
     description: '中世の面影を残す村での滞在制作',
-    longDescription: `サンティレースアンドレシスは中世の面影を色濃く残すフランスの小さな村で、時間がゆっくりと流れる静謐な環境が印象的な場所です。
+    longDescription: `フランス・ティレーヌアンドレシスは中世の面影を色濃く残すフランスの小さな村で、時間がゆっくりと流れる静謐な環境が印象的な場所です。
     
     石造りの古い家々、中世の教会、そして周囲に広がるぶどう畑や農地の風景は、歴史と自然が調和した独特の雰囲気を醸し出しています。
     
@@ -421,7 +421,7 @@ const locationsData: Record<string, LocationData> = {
       { url: '/2914.jpg', caption: '音楽祭「ブールジュの春」の様子' }
     ],
     relatedLocations: [
-      { id: 'saint-hilaire-andre', title: 'サンティレースアンドレシス', image: '/7853.jpg' },
+      { id: 'saint-hilaire-andre', title: 'フランス・ティレーヌアンドレシス', image: '/7853.jpg' },
       { id: 'chaumont', title: 'ショーモン城', image: '/2266.jpg' }
     ]
   },
