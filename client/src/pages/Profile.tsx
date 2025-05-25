@@ -35,11 +35,10 @@ const Profile = () => {
                 href="https://www.issei-kurahashi.com/" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="text-primary hover:underline"
+                className="block mt-4 text-primary hover:underline"
               >
-                公式サイト
+                プロフィール詳細ページはこちら
               </a>
-              でも作品をご覧いただけます。
             </p>
           </div>
         </div>
