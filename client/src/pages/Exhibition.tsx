@@ -25,7 +25,7 @@ const locations = [
   { id: "chaumont", label: "フランス・ショーモン城", year: "2024", country: "フランス", description: "歴史的な城での特別展示プロジェクト", images: ["chaumont_2024_1.jpg", "chaumont_2024_2.jpg"] },
   { id: "nice", label: "フランス・ニース", year: "2024", country: "フランス", description: "地中海の陽光に照らされた色彩の研究", images: ["nice_2024_1.jpg", "nice_2024_2.jpg", "nice_2024_3.jpg"] },
   { id: "fukuyama", label: "広島・福山", year: "2024", country: "日本", description: "福山こころの病院での愛と癒しをテーマにした作品展示", images: ["fukuyama_1.jpg", "fukuyama_2.jpg"] },
-  { id: "bourges", label: "ブールジュ", year: "2025", country: "フランス", description: "ゴシック建築に囲まれた創作体験", images: ["3446.jpg", "3525.jpg", "3730.jpg"] }
+  { id: "bourges", label: "フランス・ブールジュ", year: "2025", country: "フランス", description: "ゴシック建築に囲まれた創作体験", images: ["bourges_2025_1.jpg", "3525.jpg", "3730.jpg"] }
 ];
 
 const Exhibition = () => {
