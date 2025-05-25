@@ -338,12 +338,25 @@ const Home = () => {
             </div>
           </div>
           
+          <script dangerouslySetInnerHTML={{
+            __html: `
+              // ページ読み込み時に最初の場所を選択
+              document.addEventListener('DOMContentLoaded', function() {
+                // 最初のリスト項目をクリック
+                const firstLocation = document.querySelector('.bg-white.rounded-xl.shadow-md.overflow-hidden.mb-12.p-4 .grid > div');
+                if (firstLocation) {
+                  firstLocation.click();
+                }
+              });
+            `
+          }}></script>
+          
           {/* 選択された場所の詳細 */}
-          <div id="location-detail" className="bg-white rounded-xl shadow-lg p-8 mb-12 hidden">
+          <div id="location-detail" className="bg-white rounded-xl shadow-lg p-8 mb-12">
             <div className="border-b pb-6 mb-8">
               <div className="flex items-center gap-3">
-                <span id="selected-location-country" className="text-sm uppercase tracking-wider text-gray-500">日本</span>
                 <span id="selected-location-year" className="text-sm tracking-wider text-gray-500">2022</span>
+                <span id="selected-location-country" className="text-sm uppercase tracking-wider text-gray-500">日本</span>
               </div>
               <h2 id="selected-location-title" className="text-3xl font-bold tracking-wide mt-1">東京・赤坂</h2>
             </div>
