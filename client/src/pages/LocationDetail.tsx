@@ -310,7 +310,7 @@ const locationsData: Record<string, LocationData> = {
       { url: '/12671.jpg', caption: 'ノルマンディー上陸作戦のビーチ' }
     ],
     relatedLocations: [
-      { id: 'paris-second', title: 'パリ第二回', image: '/paris_second_1.jpg' },
+      { id: 'paris-second', title: 'パリ第二回', image: '/images/23601.jpg' },
       { id: 'france-savigny', title: 'フランス・サヴィニー', image: '/france_savigny_1.jpg' }
     ]
   },
