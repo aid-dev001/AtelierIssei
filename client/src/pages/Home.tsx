@@ -444,7 +444,7 @@ const Home = () => {
               <div className="flex justify-between items-center mt-1">
                 <h2 id="selected-location-title" className="text-3xl font-bold tracking-wide">東京・赤坂</h2>
                 <a 
-                  href="/world-locations" 
+                  href="/exhibition/location/tokyo-akasaka" 
                   className="inline-block px-4 py-2 bg-gray-100 text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
                 >
                   詳細ページへ
