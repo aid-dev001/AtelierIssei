@@ -58,75 +58,111 @@ const Exhibition = () => {
         </div>
       </section>
 
-      <section className="container mx-auto px-4 mb-20">
-        <h2 className="text-3xl font-bold mb-10 text-center">WORLD LOCATIONS</h2>
-        
-        <div className="space-y-12">
-          {locations.map((location) => (
-            <div key={location.id} className="bg-white rounded-xl shadow-lg overflow-hidden">
+      <section className="bg-gray-50 py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold mb-4 text-center tracking-wider">WORLD LOCATIONS</h2>
+          <p className="text-xl text-center mb-16 text-gray-700">世界各地で取り組んだプロジェクトとインスピレーションを得た場所</p>
+          
+          {/* 場所のリスト */}
+          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-12 p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2">
+              {locations.map((location, index) => (
+                <div 
+                  key={location.id}
+                  data-id={location.id}
+                  className={`cursor-pointer hover:bg-gray-50 transition-colors rounded px-3 py-2`}
+                  onClick={() => {
+                    const element = document.getElementById('location-detail');
+                    if (element) {
+                      document.getElementById('selected-location-title')!.textContent = location.label;
+                      document.getElementById('selected-location-country')!.textContent = location.country;
+                      document.getElementById('selected-location-year')!.textContent = location.year;
+                      document.getElementById('selected-location-description')!.textContent = location.description;
+                      
+                      // 詳細ページへのリンクを更新
+                      const linkWrapper = document.getElementById('location-detail-link-wrapper');
+                      if (linkWrapper) {
+                        linkWrapper.setAttribute('data-location-id', location.id);
+                      }
+                      
+                      // 画像の更新
+                      const imageContainer = document.getElementById('selected-location-images');
+                      if (imageContainer) {
+                        imageContainer.innerHTML = '';
+                        location.images.forEach((img, i) => {
+                          const imgEl = document.createElement('div');
+                          imgEl.className = "aspect-square bg-gray-100 rounded overflow-hidden group";
+                          imgEl.innerHTML = `<img src="${img}" alt="${location.label} - ${i+1}" class="w-full h-full object-cover transition duration-500 group-hover:scale-105" onerror="this.onerror=null;this.src='/placeholder.png';" />`;
+                          imageContainer.appendChild(imgEl);
+                        });
+                      }
+                      
+                      element.classList.remove('hidden');
+                    }
+                  }}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">{location.label}</span>
+                    <span className="text-sm text-gray-500">{location.year}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* 初期表示用の広島データ */}
+          <div id="initial-location-data" 
+            data-id="hiroshima"
+            data-label="広島" 
+            data-year="1998" 
+            data-country="日本" 
+            data-description="平和への祈りと再生をテーマにした作品の制作拠点"
+            data-images='["/images/hiroshima_1.jpg","/images/hiroshima_2.jpg"]'
+            className="hidden"
+          ></div>
+
+          {/* ロケーション詳細 */}
+          <div id="location-detail" className="hidden">
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
-                {/* 画像セクション */}
-                <div className="md:col-span-1 bg-gray-100 relative">
-                  <div className="aspect-square h-full">
-                    <img
-                      src={location.images[0]}
-                      alt={`${location.label} Exhibition`}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const img = e.target as HTMLImageElement;
-                        img.onerror = null;
-                        img.src = '/placeholder.png';
-                      }}
-                    />
+                <div className="md:col-span-1 bg-gray-100 p-8">
+                  <div className="space-y-6">
+                    <div>
+                      <h3 id="selected-location-title" className="text-2xl font-bold mb-2">広島</h3>
+                      <div className="flex items-center gap-3 mb-4">
+                        <span id="selected-location-country" className="text-sm font-medium text-gray-500">日本</span>
+                        <span id="selected-location-year" className="text-sm font-medium text-gray-500">1998</span>
+                      </div>
+                      <p id="selected-location-description" className="text-gray-700">
+                        平和への祈りと再生をテーマにした作品の制作拠点
+                      </p>
+                    </div>
+                    
+                    <div id="location-detail-link-wrapper" data-location-id="hiroshima">
+                      <ScrollToTopLink href={`/exhibition/location/hiroshima`}>
+                        <Button variant="outline" className="w-full justify-center hover:bg-gray-50">
+                          詳細ページへ
+                        </Button>
+                      </ScrollToTopLink>
+                    </div>
                   </div>
                 </div>
                 
-                {/* テキストセクション */}
-                <div className="md:col-span-2 p-8 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <span className="text-sm font-medium text-gray-500">{location.year}</span>
-                        <span className="text-sm font-medium text-gray-500">{location.country}</span>
-                      </div>
+                <div className="md:col-span-2 p-8">
+                  <h3 className="text-xl font-medium mb-6 text-gray-800">アーティスト活動の記録</h3>
+                  <div id="selected-location-images" className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* 初期表示用の画像 */}
+                    <div className="aspect-square bg-gray-100 rounded overflow-hidden group">
+                      <img src="/images/hiroshima_1.jpg" alt="広島 - 1" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" onError={(e) => { const img = e.target as HTMLImageElement; img.onerror = null; img.src = '/placeholder.png'; }} />
                     </div>
-                    <h3 className="text-2xl font-bold mb-3">{location.label}</h3>
-                    <p className="text-gray-700 mb-6">{location.description}</p>
-                  </div>
-                  
-                  <div className="flex justify-end">
-                    <ScrollToTopLink href={`/exhibition/location/${location.id}`}>
-                      <Button variant="outline" className="hover:bg-gray-50">
-                        詳細ページへ
-                      </Button>
-                    </ScrollToTopLink>
+                    <div className="aspect-square bg-gray-100 rounded overflow-hidden group">
+                      <img src="/images/hiroshima_2.jpg" alt="広島 - 2" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" onError={(e) => { const img = e.target as HTMLImageElement; img.onerror = null; img.src = '/placeholder.png'; }} />
+                    </div>
                   </div>
                 </div>
               </div>
-              
-              {/* サムネイル画像 (2枚目以降がある場合) */}
-              {location.images.length > 1 && (
-                <div className="px-8 pb-8 pt-0">
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-                    {location.images.slice(1).map((image, index) => (
-                      <div key={index} className="aspect-square bg-gray-100 rounded overflow-hidden">
-                        <img 
-                          src={image} 
-                          alt={`${location.label} - ${index + 2}`}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            const img = e.target as HTMLImageElement;
-                            img.onerror = null;
-                            img.src = '/placeholder.png';
-                          }}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
-          ))}
+          </div>
         </div>
       </section>
     </div>
