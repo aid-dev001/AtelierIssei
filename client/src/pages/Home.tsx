@@ -509,9 +509,7 @@ const Home = () => {
                   country: "イギリス",
                   description: "古典と現代が融合する街での芸術探求",
                   images: [
-                    "/images/10819.jpg",
-                    "/images/10820.jpg",
-                    "/images/10821.jpg",
+                    "/images/スクリーンショット 2025-05-25 23.21.59.png",
                   ],
                 },
                 {
