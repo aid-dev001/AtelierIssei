@@ -375,7 +375,7 @@ const Home = () => {
                 { id: "abu-dhabi", label: "アブダビ", year: "2019", country: "UAE", description: "砂漠の国で開催した個展での作品展示", images: ["/images/abu_dhabi_1.jpg"] },
                 { id: "tokyo-okubo", label: "東京・大久保", year: "2019", country: "日本", description: "多様な文化が混ざり合うギャラリーでの作品展示", images: ["/images/tokyo_okubo_1.jpg"] },
                 { id: "paris", label: "パリ第一回", year: "2019", country: "フランス", description: "芸術の都で開催した初個展での作品展示", images: ["/images/paris_1.jpg", "/images/paris_2.jpg", "/images/paris_3.jpg"] },
-                { id: "saint-hilaire-andre", label: "サンティレースアンドレシス", year: "2019", country: "フランス", description: "中世の面影を残す村での滞在制作", images: ["/images/7853.jpg", "/images/7855.jpg", "/images/8594.jpg"] },
+                { id: "saint-hilaire-andre", label: "フランス・ティレーヌアンドレシス", year: "2019", country: "フランス", description: "中世の面影を残す村での滞在制作", images: ["/images/tireine_1.jpg", "/images/tireine_2.jpg", "/images/7853.jpg"] },
                 { id: "tokyo-akasaka", label: "東京・赤坂", year: "2022", country: "日本", description: "伝統と革新が交差する街で生まれる新しい表現", images: ["/images/tokyo_akasaka_1.jpg", "/images/tokyo_akasaka_2.jpg", "/images/tokyo_akasaka_3.jpg"] },
                 { id: "london", label: "ロンドン", year: "2022", country: "イギリス", description: "古典と現代が融合する街での芸術探求", images: ["/images/10819.jpg", "/images/10820.jpg", "/images/10821.jpg"] },
                 { id: "paris-second", label: "パリ第二回", year: "2022", country: "フランス", description: "パリ中心部での2回目の個展「POKO FACE」シリーズ", images: ["/images/paris_second_1.jpg", "/images/paris_second_2.jpg", "/images/paris_second_3.jpg"] },
