@@ -613,9 +613,9 @@ const Home = () => {
                   country: "フランス",
                   description: "地中海の陽光に照らされた色彩の研究",
                   images: [
-                    "/images/nice_2024_1.jpg",
-                    "/images/nice_2024_2.jpg",
-                    "/images/nice_2024_3.jpg",
+                    "/images/スクリーンショット 2025-05-25 19.23.37.png",
+                    "/images/スクリーンショット 2025-05-25 19.23.54.png",
+                    "/images/スクリーンショット 2025-05-25 19.24.12.png",
                   ],
                 },
                 {
