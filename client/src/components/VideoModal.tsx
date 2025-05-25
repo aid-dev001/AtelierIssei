@@ -35,15 +35,15 @@ const VideoModal: React.FC<VideoModalProps> = ({ videoSrc, children }) => {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="w-full h-screen max-w-none border-none bg-black/95 p-0 m-0 backdrop-blur-sm">
+      <DialogContent className="sm:max-w-4xl border-none bg-black/90 p-0 backdrop-blur-sm">
         <div className="sr-only">
           <DialogTitle>アーティスト活動記録</DialogTitle>
         </div>
-        <div className="relative w-full h-full flex items-center justify-center">
+        <div className="relative w-full overflow-hidden rounded-lg">
           <video
             ref={videoRef}
             controls
-            className="max-h-full max-w-full"
+            className="w-full h-auto"
             preload="auto"
           >
             <source src={videoSrc} type="video/mp4" />
