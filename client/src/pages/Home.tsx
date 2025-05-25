@@ -212,43 +212,43 @@ const Home = () => {
       </section>
 
       <section className="container mx-auto px-4 mb-20">
-        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">EXHIBITION</h2>
+        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">代表作品</h2>
         
         {/* 代表作品を表示 - スマホは1列 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
           {[
             { 
-              src: "featured_artworks/girl_1.jpg", 
+              src: "/featured_artworks/girl_1.jpg", 
               category: "女の子", 
               title: "Girls Collection", 
               description: "女の子をテーマにした独自の世界観を表現" 
             },
             { 
-              src: "featured_artworks/digital_art_1.jpg", 
+              src: "/featured_artworks/digital_art_1.jpg", 
               category: "デジタルアート", 
               title: "Digital Art", 
               description: "デジタル技術を駆使した現代的な表現" 
             },
             { 
-              src: "featured_artworks/poko_animal_1.jpg", 
+              src: "/featured_artworks/poko_animal_1.jpg", 
               category: "ひょこあに", 
               title: "Poko Animal", 
               description: "愛らしい動物たちのユニークな表現" 
             },
             { 
-              src: "featured_artworks/abstract_1.jpg", 
+              src: "/featured_artworks/abstract_1.jpg", 
               category: "抽象画", 
               title: "Abstract Collection", 
               description: "色彩と形の自由な探求" 
             },
             { 
-              src: "featured_artworks/landscape_1.jpg", 
+              src: "/featured_artworks/landscape_1.jpg", 
               category: "風景画", 
               title: "Landscape", 
               description: "独自の視点で捉えた風景の詩的表現" 
             },
             { 
-              src: "featured_artworks/animal_1.jpg", 
+              src: "/featured_artworks/animal_1.jpg", 
               category: "動物", 
               title: "Animal Collection", 
               description: "動物たちの生命力と美しさを表現" 
