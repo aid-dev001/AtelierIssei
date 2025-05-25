@@ -135,8 +135,8 @@ const locationsData: Record<string, LocationData> = {
       { url: '/images/13456_0.jpg', caption: '福山こころの病院での作品贈呈の様子' }
     ],
     relatedLocations: [
-      { id: 'hiroshima', title: '広島', image: '/images/hiroshima_1.jpg' },
-      { id: 'tokyo-akasaka', title: '東京・赤坂', image: '/images/tokyo_akasaka_1.jpg' }
+      { id: 'hiroshima', title: '広島', image: '/images/S__9044006.jpg' },
+      { id: 'tokyo-akasaka', title: '東京・赤坂', image: '/images/akasaka_1.jpg' }
     ]
   },
   'london': {
@@ -304,8 +304,8 @@ const locationsData: Record<string, LocationData> = {
       { url: '/images/montmartre_2.jpg', caption: 'オンフルールの港町の風景' }
     ],
     relatedLocations: [
-      { id: 'paris-second', title: 'パリ第二回', image: '/paris_second_1.jpg' },
-      { id: 'france-savigny', title: 'フランス・サヴィニー', image: '/france_savigny_1.jpg' }
+      { id: 'paris-second', title: 'パリ第二回', image: '/images/paris2_1.jpg' },
+      { id: 'france-savigny', title: 'フランス・サヴィニー', image: '/images/landscape1.jpg' }
     ]
   },
   // アティスモンス
@@ -330,8 +330,8 @@ const locationsData: Record<string, LocationData> = {
       { url: '/attached_assets/23615_0.jpg', caption: '地元の方々との交流会の様子' }
     ],
     relatedLocations: [
-      { id: 'paris-second', title: 'パリ第二回', image: '/paris_second_1.jpg' },
-      { id: 'atis-mons-church', title: 'フランス・アティスモンス教会', image: '/atis_mons_church_2.jpg' }
+      { id: 'paris-second', title: 'パリ第二回', image: '/images/paris2_1.jpg' },
+      { id: 'atis-mons-church', title: 'フランス・アティスモンス教会', image: '/images/スクリーンショット 2025-05-25 23.14.20.png' }
     ]
   },
   
