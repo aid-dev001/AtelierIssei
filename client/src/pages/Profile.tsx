@@ -31,13 +31,16 @@ const Profile = () => {
               抽象画からスタートし、独自のスタイルを確立。
               現在は、日本国内外で個展を開催し、
               伝統と革新が融合する新たな表現の可能性を追求しています。
-              <a 
-                href="https://www.issei-kurahashi.com/" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="block mt-4 text-primary hover:underline"
+              <br></br>
+              <br></br>
+              <br></br>
+              <a
+                href="https://www.issei-kurahashi.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block mt-4 text-gray-600 hover:underline"
               >
-                プロフィール詳細ページはこちら
+                プロフィール詳細ページ
               </a>
             </p>
           </div>
