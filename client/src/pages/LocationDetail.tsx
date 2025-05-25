@@ -79,7 +79,7 @@ const locationsData: Record<string, LocationData> = {
     id: 'hiroshima',
     title: '広島',
     country: '日本',
-    year: '2020',
+    year: '1998',
     description: '平和と再生のメッセージを表現する街',
     longDescription: `広島は深い歴史的背景と平和への強い願いを持つ都市として、アーティストに特別な視点を提供します。
     
@@ -89,11 +89,8 @@ const locationsData: Record<string, LocationData> = {
     
     この対比が私の作品における「記憶と再生」というテーマの探求につながっています。広島滞在中に制作した作品では、過去を忘れずに未来に向かって歩む人間の強さを表現することを試みました。`,
     images: [
-      { url: '/images/12665.jpg', caption: '平和記念公園の朝の風景' },
-      { url: '/images/12666.jpg', caption: '原爆ドームと川の反射' },
-      { url: '/images/12667.jpg', caption: '現代的な広島の街並み' },
-      { url: '/images/12668.jpg', caption: '広島城と周辺の公園' },
-      { url: '/images/12669.jpg', caption: '夕暮れ時の平和記念公園' }
+      { url: '/images/hiroshima_1.jpg', caption: '静物画：茶色のバッグと花' },
+      { url: '/images/hiroshima_2.jpg', caption: '時計と黄色いレモンの静物画' }
     ],
     relatedLocations: [
       { id: 'fukuyama', title: '福山', image: '/images/12670.jpg' },
