@@ -441,12 +441,12 @@ const Home = () => {
               document.addEventListener('DOMContentLoaded', function() {
                 // データを直接設定
                 const firstLocation = {
-                  id: "tokyo-akasaka",
-                  label: "東京・赤坂",
-                  year: "2022",
+                  id: "hiroshima",
+                  label: "広島",
+                  year: "1998",
                   country: "日本",
-                  description: "伝統と革新が交差する街で生まれる新しい表現",
-                  images: ["/images/12653.jpg", "/images/12654.jpg", "/images/12655.jpg"]
+                  description: "平和への祈りと再生をテーマにした作品の制作拠点",
+                  images: ["/images/hiroshima_1.jpg", "/images/hiroshima_2.jpg"]
                 };
                 
                 // テキスト内容を設定
