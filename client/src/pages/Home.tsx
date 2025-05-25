@@ -211,8 +211,8 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="container mx-auto px-4 mb-20">
-        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">FEATURED WORKS</h2>
+      <section className="container mx-auto px-4 my-32">
+        <h2 className="text-4xl font-bold mb-20 text-center tracking-wider">FEATURED WORKS</h2>
         
         {/* 代表作品を表示 - スマホは1列 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
