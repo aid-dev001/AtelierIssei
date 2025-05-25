@@ -460,11 +460,15 @@ const locationsData: Record<string, LocationData> = {
 };
 
 const LocationDetail: React.FC = () => {
-  const params = useParams<{ locationId: string }>();
-  const locationId = params.locationId;
+  // URLからロケーションIDを直接取得
+  const path = window.location.pathname;
+  const pathSegments = path.split('/');
+  const locationId = pathSegments[pathSegments.length - 1];
+  
   const [location, setLocation] = useState<LocationData | null>(null);
   
-  console.log("LocationDetail - Current params:", params);
+  console.log("LocationDetail - URL path:", path);
+  console.log("LocationDetail - Extracted locationId from URL:", locationId);
 
   useEffect(() => {
     console.log("LocationDetail with locationId:", locationId);

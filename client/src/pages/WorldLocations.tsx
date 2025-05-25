@@ -261,6 +261,8 @@ const WorldLocations = () => {
                       
                       // 正しいルートへ遷移する
                       const url = `/exhibition/location/${locationId}`;
+                      console.log("Redirecting to URL:", url, "with locationId:", locationId);
+                      // URLを直接変更する代わりにLink要素を使用する
                       window.location.href = url;
                     }}
                   >
