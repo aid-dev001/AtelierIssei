@@ -349,6 +349,7 @@ const Home = () => {
                 { id: "normandy", label: "ノルマンディー", year: "2021", country: "フランス", description: "歴史と自然が織りなす風景からのインスピレーション", images: ["/12669.jpg", "/12670.jpg", "/12671.jpg"] },
                 { id: "tokyo-akasaka", label: "東京・赤坂", year: "2022", country: "日本", description: "伝統と革新が交差する街で生まれる新しい表現", images: ["/tokyo_akasaka_1.jpg", "/tokyo_akasaka_2.jpg", "/tokyo_akasaka_3.jpg"] },
                 { id: "london", label: "ロンドン", year: "2022", country: "イギリス", description: "古典と現代が融合する街での芸術探求", images: ["/10819.jpg", "/10820.jpg", "/10821.jpg"] },
+                { id: "spain-casamila", label: "スペイン・カサミラ", year: "2022", country: "スペイン", description: "ガウディ建築の傑作と現代アートの融合", images: ["/spain_casamila_1.jpg", "/spain_casamila_2.jpg", "/spain_casamila_3.jpg"] },
                 { id: "atis-mons", label: "アティスモンス", year: "2022", country: "フランス", description: "フランス郊外の静かな村での集中的な創作期間", images: ["/12666.jpg", "/12667.jpg", "/12668.jpg"] },
                 { id: "chaumont", label: "ショーモン城", year: "2022", country: "フランス", description: "歴史的な城での特別展示プロジェクト", images: ["/2266.jpg", "/2914.jpg", "/3316.jpg"] },
                 { id: "nice", label: "ニース", year: "2023", country: "フランス", description: "地中海の陽光に照らされた色彩の研究", images: ["/12663.jpg", "/12664.jpg", "/12665.jpg"] },

@@ -401,6 +401,30 @@ const locationsData: Record<string, LocationData> = {
       { id: 'chaumont', title: 'ショーモン城', image: '/images/2266.jpg' }
     ]
   },
+  // スペイン・カサミラ
+  'spain-casamila': {
+    id: 'spain-casamila',
+    title: 'スペイン・カサミラ',
+    country: 'スペイン',
+    year: '2022',
+    description: 'ガウディ建築の傑作と現代アートの融合',
+    longDescription: `バルセロナにあるカサ・ミラは、建築家アントニ・ガウディによって設計された世界遺産の建物です。その独創的な曲線美と有機的なデザインは、私の芸術観に大きな影響を与えました。
+
+    2022年、私はスペインのM.A.D.S. ART GALLERYが主催する国際アート展「LIQUID ARSENAL」に参加し、カサ・ミラの建築美からインスピレーションを得た作品を発表する機会に恵まれました。
+
+    展示では、私の代表作であるカラフルなキャラクターたちが大型スクリーンに投影され、ガウディの建築が持つ曲線と色彩の豊かさと共鳴するような展示となりました。展示会では「Diplōma Honorificus」を受賞し、スペインとイタリア（ミラノ）の両方で作品が紹介されました。
+
+    カサ・ミラの波打つようなファサードと、私の作品に登場する流動的なラインや色彩表現との間には、不思議な共通点があります。建築とアートの境界を超えた対話は、私の創作活動に新たな視点をもたらしてくれました。`,
+    images: [
+      { url: '/spain_casamila_1.jpg', caption: 'カサ・ミラ（ラ・ペドレラ）の外観' },
+      { url: '/spain_casamila_2.jpg', caption: 'M.A.D.S. ART GALLERYでの展示の様子' },
+      { url: '/spain_casamila_3.jpg', caption: '「LIQUID ARSENAL」国際アート展での受賞証書' }
+    ],
+    relatedLocations: [
+      { id: 'paris', title: 'パリ第一回', image: '/paris_1.jpg' },
+      { id: 'london', title: 'ロンドン', image: '/10819.jpg' }
+    ]
+  },
   // ショーモン城
   'chaumont': {
     id: 'chaumont',
