@@ -460,9 +460,11 @@ const locationsData: Record<string, LocationData> = {
 };
 
 const LocationDetail: React.FC = () => {
-  const params = useParams();
+  const params = useParams<{ locationId: string }>();
   const locationId = params.locationId;
   const [location, setLocation] = useState<LocationData | null>(null);
+  
+  console.log("LocationDetail - Current params:", params);
 
   useEffect(() => {
     console.log("LocationDetail with locationId:", locationId);
