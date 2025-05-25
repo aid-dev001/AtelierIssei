@@ -374,7 +374,7 @@ const locationsData: Record<string, LocationData> = {
     id: 'bourges',
     title: 'ブールジュ',
     country: 'フランス',
-    year: '2018',
+    year: '2025',
     description: 'ゴシック建築に囲まれた創作体験',
     longDescription: `ブールジュはフランス中部に位置する歴史的な都市で、特に壮麗なゴシック様式の大聖堂で知られています。
     
