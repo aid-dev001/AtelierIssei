@@ -110,12 +110,12 @@ const locationsData: Record<string, LocationData> = {
     
     この対比が私の作品における「記憶と再生」というテーマの探求につながっています。広島滞在中に制作した作品では、過去を忘れずに未来に向かって歩む人間の強さを表現することを試みました。`,
     images: [
-      { url: '/hiroshima_1.jpg', caption: '静物画：茶色のバッグと花' },
-      { url: '/hiroshima_2.jpg', caption: '時計と黄色いレモンの静物画' }
+      { url: '/images/hiroshima_1.jpg', caption: '静物画：茶色のバッグと花' },
+      { url: '/images/hiroshima_2.jpg', caption: '時計と黄色いレモンの静物画' }
     ],
     relatedLocations: [
-      { id: 'fukuyama', title: '福山', image: '/12670.jpg' },
-      { id: 'kyoto', title: '京都', image: '/12660.jpg' }
+      { id: 'fukuyama', title: '福山', image: '/images/12670.jpg' },
+      { id: 'kyoto', title: '京都', image: '/images/12660.jpg' }
     ]
   },
   'fukuyama': {
@@ -132,12 +132,12 @@ const locationsData: Record<string, LocationData> = {
     
     医療の現場にアートを取り入れることで、患者さんの心の支えとなり、また医療スタッフの方々の癒しの空間づくりにも貢献できることを実感しました。この経験は、アートの社会的役割について改めて考える貴重な機会となりました。`,
     images: [
-      { url: '/fukuyama_1.jpg', caption: '福山こころの病院での作品贈呈の様子' },
-      { url: '/fukuyama_2.jpg', caption: '愛と癒しをテーマにした「ハートアート」作品' }
+      { url: '/images/fukuyama_1.jpg', caption: '福山こころの病院での作品贈呈の様子' },
+      { url: '/images/fukuyama_2.jpg', caption: '愛と癒しをテーマにした「ハートアート」作品' }
     ],
     relatedLocations: [
-      { id: 'hiroshima', title: '広島', image: '/hiroshima_1.jpg' },
-      { id: 'tokyo-akasaka', title: '東京・赤坂', image: '/tokyo_akasaka_1.jpg' }
+      { id: 'hiroshima', title: '広島', image: '/images/hiroshima_1.jpg' },
+      { id: 'tokyo-akasaka', title: '東京・赤坂', image: '/images/tokyo_akasaka_1.jpg' }
     ]
   },
   'london': {

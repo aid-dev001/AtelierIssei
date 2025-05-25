@@ -369,7 +369,7 @@ const Home = () => {
           <div className="bg-white rounded-xl shadow-md overflow-hidden mb-12 p-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2">
               {[
-                { id: "hiroshima", label: "広島", year: "1998", country: "日本", description: "平和への祈りと再生をテーマにした作品の制作拠点", images: ["hiroshima_1.jpg", "hiroshima_2.jpg"] },
+                { id: "hiroshima", label: "広島", year: "1998", country: "日本", description: "平和への祈りと再生をテーマにした作品の制作拠点", images: ["/images/hiroshima_1.jpg", "/images/hiroshima_2.jpg"] },
                 { id: "tokyo-shinjuku", label: "東京・新宿", year: "2002", country: "日本", description: "都市の多様性と活気を色彩豊かに表現した作品", images: ["tokyo_shinjuku_1.jpg", "tokyo_shinjuku_2.jpg", "tokyo_shinjuku_3.jpg"] },
                 { id: "tokyo-ikebukuro", label: "東京・池袋", year: "2018", country: "日本", description: "都会の喧騒の中で見つけた静寂を表現するアトリエ", images: ["tokyo_ikebukuro_1.jpg", "tokyo_ikebukuro_2.jpg"] },
                 { id: "abu-dhabi", label: "アブダビ", year: "2019", country: "UAE", description: "砂漠の国で開催した個展での作品展示", images: ["abu_dhabi_1.jpg"] },
