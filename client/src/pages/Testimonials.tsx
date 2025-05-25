@@ -13,10 +13,10 @@ const testimonials = [
     imageUrl: "/images/dog1.jpg"
   },
   {
-    name: "Jean-Pierre Dubois",
-    title: "アートコレクター",
-    content: "日本の伝統と現代アートの融合が見事です。彼の作品は私のコレクションの中でも特別な存在となっています。",
-    location: "パリ",
+    name: "ひょこあに ねこ",
+    title: "地方中核産科病院院長夫人",
+    content: "色も色の組み合わせも可愛くて気に入っています。\n玄関で丸い顔が浮き上がっているのを見ると心も弾みます。",
+    location: "札幌",
     imageUrl: "/images/cat1.jpg"
   },
   {
@@ -82,12 +82,13 @@ const Testimonials = () => {
               className="testimonial-card opacity-0 translate-y-4 transition-all duration-700 ease-out hover:shadow-lg overflow-hidden bg-transparent"
             >
               <CardContent className="p-0">
-                <div className={`grid md:grid-cols-2 ${index % 2 === 0 ? 'md:grid-flow-col' : 'md:grid-flow-col-dense'}`}>
-                  <div className="relative aspect-square overflow-hidden">
+                <div className={`grid md:grid-cols-2 h-full ${index % 2 === 0 ? 'md:grid-flow-col' : 'md:grid-flow-col-dense'}`}>
+                  <div className="relative h-full overflow-hidden">
                     <img 
                       src={testimonial.imageUrl}
                       alt={`Artwork appreciated by ${testimonial.name}`}
                       className="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105"
+                      style={{ minHeight: '100%', maxHeight: '100%' }}
                       onError={(e) => {
                         const img = e.target as HTMLImageElement;
                         img.onerror = null;
