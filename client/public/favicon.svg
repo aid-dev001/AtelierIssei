@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- 背景円 -->
+  <circle cx="16" cy="16" r="16" fill="#ff6b9d"/>
+  
+  <!-- シンプルな顔 -->
+  <circle cx="10" cy="12" r="2" fill="#fff"/> <!-- 左目 -->
+  <circle cx="22" cy="12" r="2" fill="#fff"/> <!-- 右目 -->
+  <path d="M16 22c-2 0-4-1-4-2h8c0 1-2 2-4 2z" fill="#fff"/> <!-- 口 -->
+</svg>

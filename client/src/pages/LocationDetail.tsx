@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'wouter';
-import { Separator } from '@/components/ui/separator';
+import React, { useEffect, useState } from "react";
+import { useParams, useLocation } from "wouter";
+import { Separator } from "@/components/ui/separator";
 
 type LocationImage = {
   url: string;
@@ -24,12 +24,12 @@ type LocationData = {
 
 const locationsData: Record<string, LocationData> = {
   // 東京・新宿
-  'tokyo-shinjuku': {
-    id: 'tokyo-shinjuku',
-    title: '東京・新宿',
-    country: '日本',
-    year: '2002',
-    description: '都市の活力とエネルギーが交差する創造的空間',
+  "tokyo-shinjuku": {
+    id: "tokyo-shinjuku",
+    title: "東京・新宿",
+    country: "日本",
+    year: "2002",
+    description: "都市の活力とエネルギーが交差する創造的空間",
     longDescription: `新宿は、伝統と革新が共存する東京の中心地として、アーティストに刺激的な創作環境を提供します。
 
     2002年、私は新宿の多様性と活気からインスピレーションを得て、色彩豊かな抽象画シリーズを制作しました。日々変化する都市の表情と、そこに生きる人々の多様な物語が作品の根底にあります。
@@ -38,22 +38,39 @@ const locationsData: Record<string, LocationData> = {
 
     この時期に制作した作品では、都市の喧騒と孤独、人々の交流と分断といった現代社会の二面性を、鮮やかな色彩のコントラストと抽象的な形態で表現することを試みています。`,
     images: [
-      { url: '/images/tokyo_shinjuku_1.jpg', caption: '抽象画：都市の色彩と形' },
-      { url: '/images/tokyo_shinjuku_2.jpg', caption: '抽象的構成：円と曲線の調和' },
-      { url: '/images/tokyo_shinjuku_3.jpg', caption: '色彩の交差：ネオンカラーの抽象画' }
+      {
+        url: "/images/tokyo_shinjuku_1.jpg",
+        caption: "抽象画：都市の色彩と形",
+      },
+      {
+        url: "/images/tokyo_shinjuku_2.jpg",
+        caption: "抽象的構成：円と曲線の調和",
+      },
+      {
+        url: "/images/tokyo_shinjuku_3.jpg",
+        caption: "色彩の交差：ネオンカラーの抽象画",
+      },
     ],
     relatedLocations: [
-      { id: 'tokyo-ikebukuro', title: '東京・池袋', image: '/artworks/12648.jpg' },
-      { id: 'tokyo-okubo', title: '東京・大久保', image: '/artworks/12658.jpg' }
-    ]
+      {
+        id: "tokyo-ikebukuro",
+        title: "東京・池袋",
+        image: "/artworks/12648.jpg",
+      },
+      {
+        id: "tokyo-okubo",
+        title: "東京・大久保",
+        image: "/artworks/12658.jpg",
+      },
+    ],
   },
   // 東京・赤坂
-  'tokyo-akasaka': {
-    id: 'tokyo-akasaka',
-    title: '東京・赤坂',
-    country: '日本',
-    year: '2022',
-    description: '伝統と革新が交差する街で生まれる新しい表現',
+  "tokyo-akasaka": {
+    id: "tokyo-akasaka",
+    title: "東京・赤坂",
+    country: "日本",
+    year: "2022",
+    description: "伝統と革新が交差する街で生まれる新しい表現",
     longDescription: `赤坂は伝統的な日本文化と現代的な都市景観が交差する場所です。
     
     古くからの歴史と洗練された現代の要素が共存するこの地域は、アーティストにとって創造性を刺激する環境を提供しています。
@@ -62,21 +79,34 @@ const locationsData: Record<string, LocationData> = {
     
     特に印象的だったのは、早朝の静寂の中で見た光と影の美しい調和でした。西洋と東洋の美意識が融合する瞬間を探求し、そこから生まれる新しい美のかたちを模索しています。`,
     images: [
-      { url: '/images/akasaka_1.jpg', caption: '水色の髪の少女「POKO FACE」シリーズ' },
-      { url: '/images/akasaka_2.jpg', caption: '壁面展示されたPOKO FACEコレクション' },
-      { url: '/images/akasaka_3.jpg', caption: 'ピンクと青の顔「POKO FACE」シリーズ' }
+      {
+        url: "/images/akasaka_1.jpg",
+        caption: "水色の髪の少女「POKO FACE」シリーズ",
+      },
+      {
+        url: "/images/akasaka_2.jpg",
+        caption: "壁面展示されたPOKO FACEコレクション",
+      },
+      {
+        url: "/images/akasaka_3.jpg",
+        caption: "ピンクと青の顔「POKO FACE」シリーズ",
+      },
     ],
     relatedLocations: [
-      { id: 'tokyo-okubo', title: '東京・大久保', image: '/tokyo_okubo_1.jpg' },
-      { id: 'tokyo-ikebukuro', title: '東京・池袋', image: '/tokyo_ikebukuro_1.jpg' }
-    ]
+      { id: "tokyo-okubo", title: "東京・大久保", image: "/tokyo_okubo_1.jpg" },
+      {
+        id: "tokyo-ikebukuro",
+        title: "東京・池袋",
+        image: "/tokyo_ikebukuro_1.jpg",
+      },
+    ],
   },
-  'tokyo-shibuya': {
-    id: 'tokyo-shibuya',
-    title: '東京・渋谷',
-    country: '日本',
-    year: '2021',
-    description: '都市のエネルギーと若者文化の交差点',
+  "tokyo-shibuya": {
+    id: "tokyo-shibuya",
+    title: "東京・渋谷",
+    country: "日本",
+    year: "2021",
+    description: "都市のエネルギーと若者文化の交差点",
     longDescription: `渋谷は東京の若者文化と革新の中心地であり、常に変化し続ける都市の活力を体現しています。
     
     世界的に有名なスクランブル交差点、ファッションの最前線、音楽、アート、テクノロジーが融合する場所として、渋谷は刺激的な創造のエネルギーに満ちています。
@@ -85,23 +115,26 @@ const locationsData: Record<string, LocationData> = {
     
     特に夜の渋谷は、ネオンの光が織りなす抽象的な風景として、私の新しい色彩表現の源泉となりました。伝統と革新、秩序と混沌が同時に存在するこの場所は、現代社会の複雑さを表現する上で重要なインスピレーションを提供しています。`,
     images: [
-      { url: '/images/12659.jpg', caption: '夜のスクランブル交差点' },
-      { url: '/images/12660.jpg', caption: '渋谷の街並みと人々の流れ' },
-      { url: '/images/12661.jpg', caption: 'ネオンに彩られた渋谷の夜景' },
-      { url: '/images/12662.jpg', caption: '雨の日の渋谷、傘の風景' },
-      { url: '/images/12663.jpg', caption: '若者文化を象徴するストリートアート' }
+      { url: "/images/12659.jpg", caption: "夜のスクランブル交差点" },
+      { url: "/images/12660.jpg", caption: "渋谷の街並みと人々の流れ" },
+      { url: "/images/12661.jpg", caption: "ネオンに彩られた渋谷の夜景" },
+      { url: "/images/12662.jpg", caption: "雨の日の渋谷、傘の風景" },
+      {
+        url: "/images/12663.jpg",
+        caption: "若者文化を象徴するストリートアート",
+      },
     ],
     relatedLocations: [
-      { id: 'tokyo-akasaka', title: '東京・赤坂', image: '/images/12653.jpg' },
-      { id: 'osaka', title: '大阪', image: '/images/12664.jpg' }
-    ]
+      { id: "tokyo-akasaka", title: "東京・赤坂", image: "/images/12653.jpg" },
+      { id: "osaka", title: "大阪", image: "/images/12664.jpg" },
+    ],
   },
-  'hiroshima': {
-    id: 'hiroshima',
-    title: '広島',
-    country: '日本',
-    year: '1998',
-    description: '平和と再生のメッセージを表現する街',
+  hiroshima: {
+    id: "hiroshima",
+    title: "広島",
+    country: "日本",
+    year: "1998",
+    description: "平和と再生のメッセージを表現する街",
     longDescription: `広島は深い歴史的背景と平和への強い願いを持つ都市として、アーティストに特別な視点を提供します。
     
     過去の悲劇を乗り越え、平和と再生を象徴する街として発展した広島では、私は「記憶」と「希望」をテーマにした作品制作に取り組みました。
@@ -110,20 +143,20 @@ const locationsData: Record<string, LocationData> = {
     
     この対比が私の作品における「記憶と再生」というテーマの探求につながっています。広島滞在中に制作した作品では、過去を忘れずに未来に向かって歩む人間の強さを表現することを試みました。`,
     images: [
-      { url: '/images/S__9044006.jpg', caption: '静物画：茶色のバッグと花' },
-      { url: '/images/S__9044005.jpg', caption: '時計と黄色いレモンの静物画' }
+      { url: "/images/S__9044006.jpg", caption: "静物画：茶色のバッグと花" },
+      { url: "/images/S__9044005.jpg", caption: "時計と黄色いレモンの静物画" },
     ],
     relatedLocations: [
-      { id: 'fukuyama', title: '福山', image: '/images/12670.jpg' },
-      { id: 'kyoto', title: '京都', image: '/images/12660.jpg' }
-    ]
+      { id: "fukuyama", title: "福山", image: "/images/12670.jpg" },
+      { id: "kyoto", title: "京都", image: "/images/12660.jpg" },
+    ],
   },
-  'fukuyama': {
-    id: 'fukuyama',
-    title: '福山',
-    country: '日本',
-    year: '2024',
-    description: '福山こころの病院での愛と癒しをテーマにした作品展示',
+  fukuyama: {
+    id: "fukuyama",
+    title: "福山",
+    country: "日本",
+    year: "2024",
+    description: "福山こころの病院での愛と癒しをテーマにした作品展示",
     longDescription: `福山市は瀬戸内海に面した歴史ある街ですが、2024年には医療福祉の現場での芸術活動に焦点を当てた新たな取り組みを行いました。
     
     福山こころの病院との特別コラボレーションでは、愛と癒しをテーマにした「ハートアート」作品を制作・寄贈する機会に恵まれました。病院の医師やスタッフの方々と共に、アートの持つ癒しの力を医療現場に取り入れる意義について意見交換を行いました。
@@ -132,19 +165,26 @@ const locationsData: Record<string, LocationData> = {
     
     医療の現場にアートを取り入れることで、患者さんの心の支えとなり、また医療スタッフの方々の癒しの空間づくりにも貢献できることを実感しました。この経験は、アートの社会的役割について改めて考える貴重な機会となりました。`,
     images: [
-      { url: '/images/13456_0.jpg', caption: '福山こころの病院での作品贈呈の様子' }
+      {
+        url: "/images/13456_0.jpg",
+        caption: "福山こころの病院での作品贈呈の様子",
+      },
     ],
     relatedLocations: [
-      { id: 'hiroshima', title: '広島', image: '/images/hiroshima_1.jpg' },
-      { id: 'tokyo-akasaka', title: '東京・赤坂', image: '/images/tokyo_akasaka_1.jpg' }
-    ]
+      { id: "hiroshima", title: "広島", image: "/images/hiroshima_1.jpg" },
+      {
+        id: "tokyo-akasaka",
+        title: "東京・赤坂",
+        image: "/images/tokyo_akasaka_1.jpg",
+      },
+    ],
   },
-  'london': {
-    id: 'london',
-    title: 'ロンドン',
-    country: 'イギリス',
-    year: '2019',
-    description: '歴史と革新が共存する文化の中心地',
+  london: {
+    id: "london",
+    title: "ロンドン",
+    country: "イギリス",
+    year: "2019",
+    description: "歴史と革新が共存する文化の中心地",
     longDescription: `ロンドンは数世紀にわたる歴史と最先端の現代文化が共存する都市として、アーティストに無限のインスピレーションを提供します。
     
     テムズ川沿いの歴史的建造物から、ショーディッチやイーストロンドンの最新アートシーンまで、ロンドンの多様性は私の作品に新たな視点をもたらしました。
@@ -153,19 +193,22 @@ const locationsData: Record<string, LocationData> = {
     
     また、多文化共生社会であるロンドンの多様な人々との交流は、私の作品における「アイデンティティ」と「境界」の概念の探求に大きな影響を与えています。雨の日のロンドンの街並み、歴史的建築物の陰影、そして都市の喧騒と静寂の対比は、新しい表現方法の模索につながりました。`,
     images: [
-      { url: '/images/スクリーンショット 2025-05-25 23.21.59.png', caption: 'ロンドンの街並みと芸術作品' }
+      {
+        url: "/images/スクリーンショット 2025-05-25 23.21.59.png",
+        caption: "ロンドンの街並みと芸術作品",
+      },
     ],
     relatedLocations: [
-      { id: 'paris', title: 'パリ', image: '/images/12680.jpg' },
-      { id: 'abu-dhabi', title: 'アブダビ', image: '/images/12685.jpg' }
-    ]
+      { id: "paris", title: "パリ", image: "/images/12680.jpg" },
+      { id: "abu-dhabi", title: "アブダビ", image: "/images/12685.jpg" },
+    ],
   },
-  'paris': {
-    id: 'paris',
-    title: 'パリ第一回',
-    country: 'フランス',
-    year: '2019',
-    description: '芸術の都で開催した初個展での作品展示',
+  paris: {
+    id: "paris",
+    title: "パリ第一回",
+    country: "フランス",
+    year: "2019",
+    description: "芸術の都で開催した初個展での作品展示",
     longDescription: `パリは「光の都市」として知られ、芸術と文化の中心地として世界中のアーティストを魅了してきました。
     
     2019年、私はパリで念願の初個展を開催する機会に恵まれました。パリ市内のGallery Art.Cで「POKO FACE」シリーズを中心とした展示を行い、フランスと日本の文化的架け橋となる貴重な経験をすることができました。
@@ -176,21 +219,31 @@ const locationsData: Record<string, LocationData> = {
     
     パリでの初個展の成功は、私の創作活動における重要なマイルストーンとなり、その後の国際的な展開への確かな一歩となりました。`,
     images: [
-      { url: '/images/paris_1.jpg', caption: 'パリのGallery Art.C外観' },
-      { url: '/images/paris_2.jpg', caption: 'ギャラリーのウィンドウに展示された「POKO FACE」シリーズ' },
-      { url: '/images/paris_3.jpg', caption: 'ギャラリー内の壁面に展示された9枚の「POKO FACE」作品' }
+      { url: "/images/paris_1.jpg", caption: "パリのGallery Art.C外観" },
+      {
+        url: "/images/paris_2.jpg",
+        caption: "ギャラリーのウィンドウに展示された「POKO FACE」シリーズ",
+      },
+      {
+        url: "/images/paris_3.jpg",
+        caption: "ギャラリー内の壁面に展示された9枚の「POKO FACE」作品",
+      },
     ],
     relatedLocations: [
-      { id: 'london', title: 'ロンドン', image: '/images/12675.jpg' },
-      { id: 'nice', title: 'ニース', image: '/images/10820.jpg' }
-    ]
+      { id: "london", title: "ロンドン", image: "/images/12675.jpg" },
+      {
+        id: "nice",
+        title: "ニース",
+        image: "/images/スクリーンショット 2025-05-25 19.23.37.png",
+      },
+    ],
   },
-  'nice': {
-    id: 'nice',
-    title: 'ニース',
-    country: 'フランス',
-    year: '2018',
-    description: '地中海の光と色彩が融合する南仏の宝石',
+  nice: {
+    id: "nice",
+    title: "ニース",
+    country: "フランス",
+    year: "2018",
+    description: "地中海の光と色彩が融合する南仏の宝石",
     longDescription: `ニースは南フランスの地中海沿岸に位置し、独特の光と鮮やかな色彩で知られる都市です。
     
     マティスやシャガールなど多くの芸術家に影響を与えてきたこの地域の光は、私の色彩表現に新たな可能性をもたらしました。
@@ -199,23 +252,30 @@ const locationsData: Record<string, LocationData> = {
     
     また、マティス美術館やシャガール美術館を訪れることで、これらの巨匠たちがニースの光と風景からどのようにインスピレーションを得たかを理解し、自分自身の作品における光と色の関係性についての考察を深めることができました。`,
     images: [
-      { url: '/images/10820.jpg', caption: '地中海の青い海とプロムナード・デ・ザングレ' },
-      { url: '/images/10821.jpg', caption: 'ニース旧市街の色彩豊かな建物' },
-      { url: '/images/10822.jpg', caption: '丘の上からのニース全景' },
-      { url: '/images/10823.jpg', caption: '朝市の色とりどりの光景' },
-      { url: '/images/3316.jpg', caption: '夕日に染まるニースの港' }
+      {
+        url: "/images/スクリーンショット 2025-05-25 19.23.37.png",
+        caption: "地中海の青い海とプロムナード・デ・ザングレ",
+      },
+      {
+        url: "/images/スクリーンショット 2025-05-25 19.23.54.png",
+        caption: "ニース旧市街の色彩豊かな建物",
+      },
+      {
+        url: "/images/スクリーンショット 2025-05-25 19.24.12.png",
+        caption: "丘の上からのニース全景",
+      },
     ],
     relatedLocations: [
-      { id: 'paris', title: 'パリ', image: '/images/12680.jpg' },
-      { id: 'abu-dhabi', title: 'アブダビ', image: '/images/12685.jpg' }
-    ]
+      { id: "paris", title: "パリ", image: "/images/12680.jpg" },
+      { id: "abu-dhabi", title: "アブダビ", image: "/images/12685.jpg" },
+    ],
   },
-  'abu-dhabi': {
-    id: 'abu-dhabi',
-    title: 'アブダビ',
-    country: 'アラブ首長国連邦',
-    year: '2019',
-    description: '砂漠の国で開催した個展での作品展示',
+  "abu-dhabi": {
+    id: "abu-dhabi",
+    title: "アブダビ",
+    country: "アラブ首長国連邦",
+    year: "2019",
+    description: "砂漠の国で開催した個展での作品展示",
     longDescription: `アブダビは砂漠と海に囲まれた未来志向の都市として、伝統と革新の興味深い融合を見せています。
     
     2019年、私はアブダビで初めての個展を開催する機会に恵まれました。中東の文化と日本のポップアートを融合させた作品シリーズを展示し、多くの現地のアート愛好家や国際的な来場者からの反響を得ることができました。
@@ -226,20 +286,23 @@ const locationsData: Record<string, LocationData> = {
     
     また、この展示をきっかけに中東地域のアートコレクターとの繋がりが生まれ、継続的な文化交流の機会へと発展しています。`,
     images: [
-      { url: '/images/abu_dhabi_1.jpg', caption: 'アブダビでの個展にて「POKO FACE」シリーズと共に' }
+      {
+        url: "/images/abu_dhabi_1.jpg",
+        caption: "アブダビでの個展にて「POKO FACE」シリーズと共に",
+      },
     ],
     relatedLocations: [
-      { id: 'london', title: 'ロンドン', image: '/images/12675.jpg' },
-      { id: 'nice', title: 'ニース', image: '/images/10820.jpg' }
-    ]
+      { id: "london", title: "ロンドン", image: "/images/12675.jpg" },
+      { id: "nice", title: "ニース", image: "/images/10820.jpg" },
+    ],
   },
   // 東京・池袋
-  'tokyo-ikebukuro': {
-    id: 'tokyo-ikebukuro',
-    title: '東京・池袋',
-    country: '日本',
-    year: '2018',
-    description: '都会の喧騒の中で生まれるポップアートの世界',
+  "tokyo-ikebukuro": {
+    id: "tokyo-ikebukuro",
+    title: "東京・池袋",
+    country: "日本",
+    year: "2018",
+    description: "都会の喧騒の中で生まれるポップアートの世界",
     longDescription: `池袋は東京の主要な商業・エンターテイメント地区として、多様な文化が交差するクリエイティブな空間です。
 
     2018年、私は池袋で新しいスタイルのポップアートシリーズに取り組みました。鮮やかな色彩と愛らしいキャラクター表現を通じて、都市の中の癒しと遊び心を表現しています。
@@ -250,22 +313,28 @@ const locationsData: Record<string, LocationData> = {
     
     池袋のサブカルチャーシーンからも大きな影響を受け、アニメやマンガの表現手法を自分のアート言語として取り入れる実験的な試みも行いました。`,
     images: [
-      { url: '/images/tokyo_ikebukuro_1.jpg', caption: 'ピンクの世界に浮かぶ愛らしい表情' },
-      { url: '/images/tokyo_ikebukuro_2.jpg', caption: '色彩豊かな猫のポップアート' },
-      { url: '/images/tokyo_ikebukuro_3.jpg', caption: '鮮やかな抽象画作品' }
+      {
+        url: "/images/tokyo_ikebukuro_1.jpg",
+        caption: "ピンクの世界に浮かぶ愛らしい表情",
+      },
+      {
+        url: "/images/tokyo_ikebukuro_2.jpg",
+        caption: "色彩豊かな猫のポップアート",
+      },
+      { url: "/images/tokyo_ikebukuro_3.jpg", caption: "鮮やかな抽象画作品" },
     ],
     relatedLocations: [
-      { id: 'tokyo-akasaka', title: '東京・赤坂', image: '/images/12653.jpg' },
-      { id: 'tokyo-okubo', title: '東京・大久保', image: '/images/12658.jpg' }
-    ]
+      { id: "tokyo-akasaka", title: "東京・赤坂", image: "/images/12653.jpg" },
+      { id: "tokyo-okubo", title: "東京・大久保", image: "/images/12658.jpg" },
+    ],
   },
   // 東京・大久保
-  'tokyo-okubo': {
-    id: 'tokyo-okubo',
-    title: '東京・大久保',
-    country: '日本',
-    year: '2019',
-    description: '多様な文化が混ざり合うギャラリーでの作品展示',
+  "tokyo-okubo": {
+    id: "tokyo-okubo",
+    title: "東京・大久保",
+    country: "日本",
+    year: "2019",
+    description: "多様な文化が混ざり合うギャラリーでの作品展示",
     longDescription: `大久保は東京における国際色豊かな地域として知られ、多様な文化が共存する独特の雰囲気を持っています。
     
     2019年、私は大久保のアートギャラリーでポップアートシリーズの小規模展示を行いました。韓国や中国、東南アジアなど多様な文化背景を持つ来場者と交流することで、新しいアート表現の可能性を探ることができました。
@@ -276,20 +345,31 @@ const locationsData: Record<string, LocationData> = {
     
     この経験は私の作品における「親しみやすさ」と「普遍性」のテーマ探求に大きな影響を与え、文化の違いを超えた視覚言語としてのアートの可能性についての考察を深めるきっかけとなりました。`,
     images: [
-      { url: '/images/tokyo_okubo_1.jpg', caption: '大久保ギャラリーでの「POKO ANIMAL」シリーズ展示風景' }
+      {
+        url: "/images/tokyo_okubo_1.jpg",
+        caption: "大久保ギャラリーでの「POKO ANIMAL」シリーズ展示風景",
+      },
     ],
     relatedLocations: [
-      { id: 'tokyo-ikebukuro', title: '東京・池袋', image: '/images/tokyo_ikebukuro_1.jpg' },
-      { id: 'tokyo-shinjuku', title: '東京・新宿', image: '/images/tokyo_shinjuku_1.jpg' }
-    ]
+      {
+        id: "tokyo-ikebukuro",
+        title: "東京・池袋",
+        image: "/images/tokyo_ikebukuro_1.jpg",
+      },
+      {
+        id: "tokyo-shinjuku",
+        title: "東京・新宿",
+        image: "/images/tokyo_shinjuku_1.jpg",
+      },
+    ],
   },
   // ノルマンディー
-  'normandy': {
-    id: 'normandy',
-    title: 'フランス・ノルマンディー',
-    country: 'フランス',
-    year: '2023',
-    description: '歴史と自然が織りなす風景からのインスピレーション',
+  normandy: {
+    id: "normandy",
+    title: "フランス・ノルマンディー",
+    country: "フランス",
+    year: "2023",
+    description: "歴史と自然が織りなす風景からのインスピレーション",
     longDescription: `ノルマンディーはフランス北西部に位置し、豊かな歴史と印象的な自然景観を持つ地域です。2023年、私は歴史的な修道院を改装した文化施設でアート作品を展示する機会に恵まれました。
     
     石造りの美しい中庭を持つこの施設は、歴史と現代アートが融合する特別な空間でした。アーチ型の回廊に囲まれた中庭では、自然光と建築美が織りなす独特の雰囲気の中で作品展示が行われました。
@@ -300,21 +380,28 @@ const locationsData: Record<string, LocationData> = {
     
     また、地元の人々の日常生活や伝統的な市場の光景、そして季節ごとに変化する農村風景は、「ノスタルジア」と「永続性」についての考察を深める機会となりました。`,
     images: [
-      { url: '/images/montmartre_1.jpg', caption: '修道院を改装した文化施設の中庭' },
-      { url: '/images/montmartre_2.jpg', caption: 'オンフルールの港町の風景' }
+      {
+        url: "/images/montmartre_1.jpg",
+        caption: "修道院を改装した文化施設の中庭",
+      },
+      { url: "/images/montmartre_2.jpg", caption: "オンフルールの港町の風景" },
     ],
     relatedLocations: [
-      { id: 'paris-second', title: 'パリ第二回', image: '/paris_second_1.jpg' },
-      { id: 'france-savigny', title: 'フランス・サヴィニー', image: '/france_savigny_1.jpg' }
-    ]
+      { id: "paris-second", title: "パリ第二回", image: "/paris_second_1.jpg" },
+      {
+        id: "france-savigny",
+        title: "フランス・サヴィニー",
+        image: "/france_savigny_1.jpg",
+      },
+    ],
   },
   // アティスモンス
-  'atis-mons': {
-    id: 'atis-mons',
-    title: 'アティスモンス',
-    country: 'フランス',
-    year: '2022',
-    description: 'フランス郊外の静かな村での集中的な創作期間',
+  "atis-mons": {
+    id: "atis-mons",
+    title: "アティスモンス",
+    country: "フランス",
+    year: "2022",
+    description: "フランス郊外の静かな村での集中的な創作期間",
     longDescription: `アティスモンスはパリ郊外に位置する静かな町で、都会の喧騒を離れた集中的な創作環境を提供してくれました。
     
     歴史的な建造物と現代的な都市計画が共存するこの地域での滞在は、「都市と郊外」「中心と周縁」という概念について考察する貴重な機会となりました。
@@ -325,23 +412,36 @@ const locationsData: Record<string, LocationData> = {
     
     また、アティスモンスの小さな美術館や文化センターでの展示や地元のアーティストとの交流は、フランスにおける地方の文化活動の重要性を認識する機会となり、私自身のアーティストとしての役割についても再考する時間となりました。`,
     images: [
-      { url: '/attached_assets/1928320.png', caption: 'アティスモンスの文化センター外観' },
-      { url: '/attached_assets/23611_0.jpg', caption: '「POKO FACE」シリーズの展示風景' },
-      { url: '/attached_assets/23615_0.jpg', caption: '地元の方々との交流会の様子' }
+      {
+        url: "/attached_assets/1928320.png",
+        caption: "アティスモンスの文化センター外観",
+      },
+      {
+        url: "/attached_assets/23611_0.jpg",
+        caption: "「POKO FACE」シリーズの展示風景",
+      },
+      {
+        url: "/attached_assets/23615_0.jpg",
+        caption: "地元の方々との交流会の様子",
+      },
     ],
     relatedLocations: [
-      { id: 'paris-second', title: 'パリ第二回', image: '/paris_second_1.jpg' },
-      { id: 'atis-mons-church', title: 'フランス・アティスモンス教会', image: '/atis_mons_church_2.jpg' }
-    ]
+      { id: "paris-second", title: "パリ第二回", image: "/paris_second_1.jpg" },
+      {
+        id: "atis-mons-church",
+        title: "フランス・アティスモンス教会",
+        image: "/atis_mons_church_2.jpg",
+      },
+    ],
   },
-  
+
   // 東京・東新宿
-  'tokyo-higashi-shinjuku': {
-    id: 'tokyo-higashi-shinjuku',
-    title: '東京・東新宿',
-    country: '日本',
-    year: '2023',
-    description: '都市の夜景に映えるポップアートの展示',
+  "tokyo-higashi-shinjuku": {
+    id: "tokyo-higashi-shinjuku",
+    title: "東京・東新宿",
+    country: "日本",
+    year: "2023",
+    description: "都市の夜景に映えるポップアートの展示",
     longDescription: `東京・東新宿は、東京の中心部に位置する多様な文化とサブカルチャーが交差するエリアです。
     
     2023年、このエリアでポップアートを中心とした展示会を開催する機会に恵まれました。都市の夜景とネオンの輝きを背景に、「POKO FACE」シリーズの新作を展示し、多くの若いアート愛好家たちとの交流が生まれました。
@@ -352,22 +452,35 @@ const locationsData: Record<string, LocationData> = {
     
     若い世代のアーティストやクリエイターとの交流は、現代のデジタル文化とアートの関係性について新たな視点をもたらし、SNSを通じた作品の共有と拡散の可能性についても考える機会となりました。`,
     images: [
-      { url: '/attached_assets/LINE_ALBUM_20241124_250525_234.jpg', caption: '「Atelier Issei」のキャラクターデザイン' },
-      { url: '/attached_assets/LINE_ALBUM_20241124_250525_233.jpg', caption: '紫髪の少女とカラフルなリボンモチーフ' },
-      { url: '/attached_assets/LINE_ALBUM_20241124_250525_238.jpg', caption: '青髪の少女と「Atelier Issei」ロゴ' }
+      {
+        url: "/attached_assets/LINE_ALBUM_20241124_250525_234.jpg",
+        caption: "「Atelier Issei」のキャラクターデザイン",
+      },
+      {
+        url: "/attached_assets/LINE_ALBUM_20241124_250525_233.jpg",
+        caption: "紫髪の少女とカラフルなリボンモチーフ",
+      },
+      {
+        url: "/attached_assets/LINE_ALBUM_20241124_250525_238.jpg",
+        caption: "青髪の少女と「Atelier Issei」ロゴ",
+      },
     ],
     relatedLocations: [
-      { id: 'tokyo-shibuya', title: '東京・渋谷', image: '/images/12659.jpg' },
-      { id: 'tokyo-akasaka', title: '東京・赤坂', image: '/images/akasaka_1.jpg' }
-    ]
+      { id: "tokyo-shibuya", title: "東京・渋谷", image: "/images/12659.jpg" },
+      {
+        id: "tokyo-akasaka",
+        title: "東京・赤坂",
+        image: "/images/akasaka_1.jpg",
+      },
+    ],
   },
   // フランス・アティスモンス教会
-  'atis-mons-church': {
-    id: 'atis-mons-church',
-    title: 'フランス・アティスモンス教会',
-    country: 'フランス',
-    year: '2023',
-    description: '歴史的な教会を舞台にした特別展示会',
+  "atis-mons-church": {
+    id: "atis-mons-church",
+    title: "フランス・アティスモンス教会",
+    country: "フランス",
+    year: "2023",
+    description: "歴史的な教会を舞台にした特別展示会",
     longDescription: `2023年、私はアティスモンスの歴史的な教会を会場とした特別なアート展示会に参加する機会に恵まれました。この美しい石造りの教会は、現代アートと歴史的建造物が融合する独特の空間を提供してくれました。
     
     数世紀の歴史を持つこの教会は、現在はアート施設としても活用されており、古いステンドグラスが現代アートと共存する興味深い対比が生まれています。高い天井と神聖な雰囲気の中で、私の「POKO FACE」シリーズの作品は新たな文脈で捉えられる体験となりました。
@@ -378,22 +491,39 @@ const locationsData: Record<string, LocationData> = {
     
     この経験は、場所と作品の関係性、そして展示空間が鑑賞体験にもたらす影響について、より深く考察するきっかけとなりました。`,
     images: [
-      { url: '/images/1731420256.jpg', caption: 'アティスモンス教会での展示風景と「POKO FACE」バナー作品' },
-      { url: '/images/スクリーンショット 2025-05-25 23.14.20.png', caption: '石造りの歴史的な教会の外観' },
-      { url: '/images/スクリーンショット 2025-05-25 23.15.16.png', caption: '展示されたポートレート作品群' }
+      {
+        url: "/images/1731420256.jpg",
+        caption: "アティスモンス教会での展示風景と「POKO FACE」バナー作品",
+      },
+      {
+        url: "/images/スクリーンショット 2025-05-25 23.14.20.png",
+        caption: "石造りの歴史的な教会の外観",
+      },
+      {
+        url: "/images/スクリーンショット 2025-05-25 23.15.16.png",
+        caption: "展示されたポートレート作品群",
+      },
     ],
     relatedLocations: [
-      { id: 'atis-mons', title: 'アティスモンス', image: '/attached_assets/1928320.png' },
-      { id: 'normandy', title: 'フランス・ノルマンディー', image: '/images/montmartre_1.jpg' }
-    ]
+      {
+        id: "atis-mons",
+        title: "アティスモンス",
+        image: "/attached_assets/1928320.png",
+      },
+      {
+        id: "normandy",
+        title: "フランス・ノルマンディー",
+        image: "/images/montmartre_1.jpg",
+      },
+    ],
   },
   // フランス・ティレーヌアンドレシス
-  'saint-hilaire-andre': {
-    id: 'saint-hilaire-andre',
-    title: 'フランス・ティレーヌアンドレシス',
-    country: 'フランス',
-    year: '2018',
-    description: '中世の面影を残す村での滞在制作',
+  "saint-hilaire-andre": {
+    id: "saint-hilaire-andre",
+    title: "フランス・ティレーヌアンドレシス教会",
+    country: "フランス",
+    year: "2024",
+    description: "中世の面影を残す村での滞在制作",
     longDescription: `フランス・ティレーヌアンドレシスは中世の面影を色濃く残すフランスの小さな村で、時間がゆっくりと流れる静謐な環境が印象的な場所です。
     
     石造りの古い家々、中世の教会、そして周囲に広がるぶどう畑や農地の風景は、歴史と自然が調和した独特の雰囲気を醸し出しています。
@@ -404,24 +534,31 @@ const locationsData: Record<string, LocationData> = {
     
     また、地元の伝統的な祭りや日常的な農作業の風景は、コミュニティと創造性の関係、そして場所に根ざした芸術の意義について再考するきっかけとなりました。時にはぶどう畑で働く農家の方々や、パン屋、鍛冶屋など伝統的な職人との交流も、手仕事と芸術の深い関係性を感じさせるものでした。`,
     images: [
-      { url: '/images/tireine_1.jpg', caption: 'POKO FACEデザインのTシャツを着用したモデル' },
-      { url: '/images/tireine_2.jpg', caption: '展示会場の様子と作品を鑑賞する来場者たち' },
-      { url: '/images/7853.jpg', caption: '石造りの村の通り' },
-      { url: '/images/7855.jpg', caption: '中世の教会の内部' },
-      { url: '/images/2914.jpg', caption: '古い石造りの家の細部' }
+      {
+        url: "/images/1731420256.jpg",
+        caption: "教会での荘厳な展示",
+      },
+      {
+        url: "/images/スクリーンショット 2025-05-25 23.14.20.png",
+        caption: "じっくりと真剣に見る親子",
+      },
+      {
+        url: "/images/スクリーンショット 2025-05-25 23.15.16.png",
+        caption: "敬虔なクリスチャンの多いフランス人",
+      },
     ],
     relatedLocations: [
-      { id: 'atis-mons', title: 'アティスモンス', image: '/images/12666.jpg' },
-      { id: 'bourges', title: 'ブールジュ', image: '/images/3446.jpg' }
-    ]
+      { id: "atis-mons", title: "アティスモンス", image: "/images/12666.jpg" },
+      { id: "bourges", title: "ブールジュ", image: "/images/3446.jpg" },
+    ],
   },
   // ブールジュ
-  'bourges': {
-    id: 'bourges',
-    title: 'ブールジュ',
-    country: 'フランス',
-    year: '2025',
-    description: 'ゴシック建築に囲まれた創作体験',
+  bourges: {
+    id: "bourges",
+    title: "ブールジュ",
+    country: "フランス",
+    year: "2025",
+    description: "ゴシック建築に囲まれた創作体験",
     longDescription: `ブールジュはフランス中部に位置する歴史的な都市で、特に壮麗なゴシック様式の大聖堂で知られています。
     
     中世の面影を色濃く残す旧市街と、その中心に聳え立つサン・テティエンヌ大聖堂は、西洋建築の歴史と美を体現する壮大な存在です。
@@ -433,25 +570,23 @@ const locationsData: Record<string, LocationData> = {
     この地域での美術館訪問や現地のアーティストとの交流も刺激的で、特にブールジュの現代美術館での展示は、歴史的文脈における現代表現の位置づけについて再考するきっかけとなりました。
     
     毎年開催される音楽祭「ブールジュの春」に触れる機会もあり、音楽と視覚芸術の接点についても新たな視点を得ることができました。`,
-    images: [
-      { url: '/3446.jpg', caption: 'ブールジュ大聖堂の全景' },
-      { url: '/3525.jpg', caption: '大聖堂のステンドグラス' },
-      { url: '/3730.jpg', caption: '中世の旧市街の通り' },
-      { url: '/2266.jpg', caption: '木組みの伝統的な建物' },
-      { url: '/2914.jpg', caption: '音楽祭「ブールジュの春」の様子' }
-    ],
+    images: [{ url: "/images/13463.jpg", caption: "ブールジュ大聖堂の全景" }],
     relatedLocations: [
-      { id: 'saint-hilaire-andre', title: 'フランス・ティレーヌアンドレシス', image: '/7853.jpg' },
-      { id: 'chaumont', title: 'ショーモン城', image: '/2266.jpg' }
-    ]
+      {
+        id: "saint-hilaire-andre",
+        title: "フランス・ティレーヌアンドレシス",
+        image: "/7853.jpg",
+      },
+      { id: "chaumont", title: "ショーモン城", image: "/2266.jpg" },
+    ],
   },
   // パリ第二回
-  'paris-second': {
-    id: 'paris-second',
-    title: 'パリ第二回',
-    country: 'フランス',
-    year: '2022',
-    description: 'パリ中心部での2回目の個展「POKO FACE」シリーズ',
+  "paris-second": {
+    id: "paris-second",
+    title: "パリ第二回",
+    country: "フランス",
+    year: "2022",
+    description: "パリ中心部での2回目の個展「POKO FACE」シリーズ",
     longDescription: `2019年のパリでの初個展から3年後の2022年、再びパリの中心部で「POKO FACE」シリーズの新作を発表する機会に恵まれました。
 
     今回の展示会場はパリ市内の白を基調とした明るく開放的なギャラリーで、青い背景に様々な表情を持つカラフルな顔のモチーフを配した作品が、パリの街並みの中で鮮やかに映えました。
@@ -462,22 +597,36 @@ const locationsData: Record<string, LocationData> = {
 
     この経験は、国際的なアート活動を継続することの意義と、文化的背景の異なる人々との創造的な対話の重要性を改めて実感させてくれました。`,
     images: [
-      { url: '/images/paris2_1.jpg', caption: 'パリのギャラリーショーウィンドウに展示された「POKO FACE」シリーズ' },
-      { url: '/images/paris2_2.jpg', caption: 'ギャラリーを訪れたコレクターと交流する様子' },
-      { url: '/images/paris2_3.jpg', caption: 'パリの街並みの中にあるギャラリーの外観' }
+      {
+        url: "/images/paris2_1.jpg",
+        caption:
+          "パリのギャラリーショーウィンドウに展示された「POKO FACE」シリーズ",
+      },
+      {
+        url: "/images/paris2_2.jpg",
+        caption: "ギャラリーを訪れたコレクターと交流する様子",
+      },
+      {
+        url: "/images/paris2_3.jpg",
+        caption: "パリの街並みの中にあるギャラリーの外観",
+      },
     ],
     relatedLocations: [
-      { id: 'paris', title: 'パリ第一回', image: '/paris_1.jpg' },
-      { id: 'spain-casamila', title: 'スペイン・カサミラ', image: '/spain_casamila_1.jpg' }
-    ]
+      { id: "paris", title: "パリ第一回", image: "/paris_1.jpg" },
+      {
+        id: "spain-casamila",
+        title: "スペイン・カサミラ",
+        image: "/spain_casamila_1.jpg",
+      },
+    ],
   },
   // フランス・サヴィニー
-  'france-savigny': {
-    id: 'france-savigny',
-    title: 'フランス・サヴィニー',
-    country: 'フランス',
-    year: '2022',
-    description: 'フランス地方都市でのファッションとアートの融合展示',
+  "france-savigny": {
+    id: "france-savigny",
+    title: "フランス・サヴィニー",
+    country: "フランス",
+    year: "2022",
+    description: "フランス地方都市でのファッションとアートの融合展示",
     longDescription: `サヴィニーはフランスの地方都市で、2022年には地域文化の活性化を目的としたアートとファッションの融合イベントが開催されました。
 
     このイベントでは、私のアート作品「POKO FACE」シリーズがファッションデザインに取り入れられ、アパレル製品として展開する特別なコラボレーションが実現しました。ピンク色をベースにした特徴的なTシャツは、シンプルでありながらもインパクトのあるデザインとして来場者の注目を集めました。
@@ -486,21 +635,31 @@ const locationsData: Record<string, LocationData> = {
 
     地方都市での文化イベントという草の根的な取り組みは、大都市のギャラリーとはまた違った親密さと温かみがあり、地域の人々とアーティストの間に直接的な対話が生まれる貴重な場となりました。この経験は、アートの社会的役割とアクセシビリティについて考える重要な機会となりました。`,
     images: [
-      { url: '/france_savigny_1.jpg', caption: '「POKO FACE」デザインのTシャツを着用したモデル' },
-      { url: '/france_savigny_2.jpg', caption: 'サヴィニーでのファッションショーとアート展示の様子' }
+      {
+        url: "/attached_assets/s231sa.jpg",
+        caption: "「POKO FACE」デザインのTシャツを着用したモデル",
+      },
+      {
+        url: "/attached_assets/23671.jpg",
+        caption: "サヴィニーでのファッションショーとアート展示の様子",
+      },
     ],
     relatedLocations: [
-      { id: 'paris', title: 'パリ第一回', image: '/paris_1.jpg' },
-      { id: 'atis-mons', title: 'アティスモンス', image: '/12666.jpg' }
-    ]
+      { id: "paris", title: "パリ第一回", image: "/images/paris_1.jpg" },
+      {
+        id: "atis-mons",
+        title: "アティスモンス",
+        image: "/attached_assets/1928320.png",
+      },
+    ],
   },
   // スペイン・カサミラ
-  'spain-casamila': {
-    id: 'spain-casamila',
-    title: 'スペイン・カサミラ',
-    country: 'スペイン',
-    year: '2022',
-    description: 'ガウディ建築の傑作と現代アートの融合',
+  "spain-casamila": {
+    id: "spain-casamila",
+    title: "スペイン・カサミラ",
+    country: "スペイン",
+    year: "2022",
+    description: "ガウディ建築の傑作と現代アートの融合",
     longDescription: `バルセロナにあるカサ・ミラは、建築家アントニ・ガウディによって設計された世界遺産の建物です。その独創的な曲線美と有機的なデザインは、私の芸術観に大きな影響を与えました。
 
     2022年、私はスペインのM.A.D.S. ART GALLERYが主催する国際アート展「LIQUID ARSENAL」に参加し、カサ・ミラの建築美からインスピレーションを得た作品を発表する機会に恵まれました。
@@ -509,22 +668,31 @@ const locationsData: Record<string, LocationData> = {
 
     カサ・ミラの波打つようなファサードと、私の作品に登場する流動的なラインや色彩表現との間には、不思議な共通点があります。建築とアートの境界を超えた対話は、私の創作活動に新たな視点をもたらしてくれました。`,
     images: [
-      { url: '/spain_casamila_1.jpg', caption: 'カサ・ミラ（ラ・ペドレラ）の外観' },
-      { url: '/spain_casamila_2.jpg', caption: 'M.A.D.S. ART GALLERYでの展示の様子' },
-      { url: '/spain_casamila_3.jpg', caption: '「LIQUID ARSENAL」国際アート展での受賞証書' }
+      {
+        url: "/images/23624_0.jpg",
+        caption: "カサ・ミラ（ラ・ペドレラ）の外観",
+      },
+      {
+        url: "/images/23630_0.jpg",
+        caption: "M.A.D.S. ART GALLERYでの展示の様子",
+      },
+      {
+        url: "/images/heji3918.jpg",
+        caption: "「LIQUID ARSENAL」国際アート展での受賞証書",
+      },
     ],
     relatedLocations: [
-      { id: 'paris', title: 'パリ第一回', image: '/paris_1.jpg' },
-      { id: 'london', title: 'ロンドン', image: '/10819.jpg' }
-    ]
+      { id: "paris", title: "パリ第一回", image: "/paris_1.jpg" },
+      { id: "london", title: "ロンドン", image: "/10819.jpg" },
+    ],
   },
   // フランス・ショーモン城
-  'chaumont': {
-    id: 'chaumont',
-    title: 'フランス・ショーモン城',
-    country: 'フランス',
-    year: '2024',
-    description: '歴史的な城での特別展示プロジェクト',
+  chaumont: {
+    id: "chaumont",
+    title: "フランス・ショーモン城",
+    country: "フランス",
+    year: "2024",
+    description: "歴史的な城での特別展示プロジェクト",
     longDescription: `2024年、ショーモン城で新たな特別展示プロジェクトに参加しました。ロワール渓谷に位置するこの15世紀の城は、その歴史的な建築美と国際ガーデンフェスティバルで知られています。
     
     今回のプロジェクトでは、伝統的な城の建築に現代的な色彩解釈を加える実験的なアプローチを試みました。城内の様々な空間に、鮮やかな色彩のデジタルアートプロジェクションを展開し、歴史的建造物と現代テクノロジーの融合を探求しました。
@@ -535,21 +703,35 @@ const locationsData: Record<string, LocationData> = {
     
     このプロジェクトを通じて、伝統と革新、物理的な建築と仮想的な光の共演、歴史的文脈における現代表現の可能性など、多層的なテーマについて探究することができました。また、国際的なアーティストたちとの協働は、文化的背景や専門分野を超えた創造的対話の価値を再認識する機会となりました。`,
     images: [
-      { url: '/chaumont_2024_1.jpg', caption: 'ショーモン城の色彩デジタルアートプロジェクション' },
-      { url: '/chaumont_2024_2.jpg', caption: '現代的な色彩解釈を加えたショーモン城の風景' }
+      {
+        url: "/chaumont_2024_1.jpg",
+        caption: "ショーモン城の色彩デジタルアートプロジェクション",
+      },
+      {
+        url: "/chaumont_2024_2.jpg",
+        caption: "現代的な色彩解釈を加えたショーモン城の風景",
+      },
     ],
     relatedLocations: [
-      { id: 'france-chambord', title: 'フランス・シャンボール城', image: '/chambord_2023_1.jpg' },
-      { id: 'montmartre', title: 'フランス・モンマルトル', image: '/montmartre_1.jpg' }
-    ]
+      {
+        id: "france-chambord",
+        title: "フランス・シャンボール城",
+        image: "/chambord_2023_1.jpg",
+      },
+      {
+        id: "montmartre",
+        title: "フランス・モンマルトル",
+        image: "/montmartre_1.jpg",
+      },
+    ],
   },
   // シャンボール城
-  'chambord': {
-    id: 'chambord',
-    title: 'シャンボール城',
-    country: 'フランス',
-    year: '2022',
-    description: 'ルネサンス建築の傑作の中での芸術体験',
+  chambord: {
+    id: "chambord",
+    title: "シャンボール城",
+    country: "フランス",
+    year: "2022",
+    description: "ルネサンス建築の傑作の中での芸術体験",
     longDescription: `シャンボール城はフランス・ルネサンス建築の最高傑作の一つとして知られ、その壮大な規模と革新的なデザインは今なお多くの訪問者を魅了しています。
     
     フランソワ1世の命により16世紀に建設されたこの城は、レオナルド・ダ・ヴィンチの影響を受けたとされる二重螺旋階段など、当時の最先端の建築技術と芸術性を体現しています。
@@ -562,23 +744,27 @@ const locationsData: Record<string, LocationData> = {
     
     シャンボール城の持つ壮大さと繊細さの共存は、私の作品における「スケールの操作」や「細部と全体の関係」について再考するきっかけとなりました。`,
     images: [
-      { url: '/IMG_7161.jpg', caption: 'シャンボール城の壮大な外観' },
-      { url: '/IMG_7162.jpg', caption: '有名な二重螺旋階段' },
-      { url: '/IMG_7163.jpg', caption: '城を取り囲む庭園と森林' }
+      { url: "/IMG_7161.jpg", caption: "シャンボール城の壮大な外観" },
+      { url: "/IMG_7162.jpg", caption: "有名な二重螺旋階段" },
+      { url: "/IMG_7163.jpg", caption: "城を取り囲む庭園と森林" },
     ],
     relatedLocations: [
-      { id: 'chaumont', title: 'ショーモン城', image: '/2266.jpg' },
-      { id: 'france-chambord', title: 'フランス・シャンボール城', image: '/chambord_2023_1.jpg' }
-    ]
+      { id: "chaumont", title: "ショーモン城", image: "/2266.jpg" },
+      {
+        id: "france-chambord",
+        title: "フランス・シャンボール城",
+        image: "/chambord_2023_1.jpg",
+      },
+    ],
   },
-  
+
   // フランス・シャンボール城
-  'france-chambord': {
-    id: 'france-chambord',
-    title: 'フランス・シャンボール城',
-    country: 'フランス',
-    year: '2023',
-    description: 'フランス最大の城を描く野外アートプロジェクト',
+  "france-chambord": {
+    id: "france-chambord",
+    title: "フランス・シャンボール城",
+    country: "フランス",
+    year: "2023",
+    description: "フランス最大の城を描く野外アートプロジェクト",
     longDescription: `2023年、私はシャンボール城を再訪し、この歴史的建造物の壮大な美しさを描く野外アートプロジェクトに参加する機会に恵まれました。
     
     フランスで最も有名な城のひとつであるシャンボール城は、その壮麗なルネサンス建築と広大な自然公園で知られています。城の周囲に広がる水堀と森林に囲まれた環境は、アーティストにとって格別のインスピレーション源となりました。
@@ -589,22 +775,33 @@ const locationsData: Record<string, LocationData> = {
     
     この経験を通じて、歴史的建造物と自然環境の関係性、そして過去と現在の対話としての芸術表現について、新たな視点を得ることができました。`,
     images: [
-      { url: '/chambord_2023_1.jpg', caption: 'シャンボール城を描く様子' },
-      { url: '/chambord_2023_2.jpg', caption: '水面に映るシャンボール城と描きかけの作品' }
+      { url: "/chambord_2023_1.jpg", caption: "シャンボール城を描く様子" },
+      {
+        url: "/chambord_2023_2.jpg",
+        caption: "水面に映るシャンボール城と描きかけの作品",
+      },
     ],
     relatedLocations: [
-      { id: 'normandy', title: 'フランス・ノルマンディー', image: '/france_normandy_1.jpg' },
-      { id: 'montmartre', title: 'フランス・モンマルトル', image: '/montmartre_1.jpg' }
-    ]
+      {
+        id: "normandy",
+        title: "フランス・ノルマンディー",
+        image: "/france_normandy_1.jpg",
+      },
+      {
+        id: "montmartre",
+        title: "フランス・モンマルトル",
+        image: "/montmartre_1.jpg",
+      },
+    ],
   },
-  
+
   // フランス・モンマルトル
-  'montmartre': {
-    id: 'montmartre',
-    title: 'フランス・モンマルトル',
-    country: 'フランス',
-    year: '2023',
-    description: '芸術家の聖地で描く街角スケッチの旅',
+  montmartre: {
+    id: "montmartre",
+    title: "フランス・モンマルトル",
+    country: "フランス",
+    year: "2023",
+    description: "芸術家の聖地で描く街角スケッチの旅",
     longDescription: `2023年、私はパリの芸術家の聖地として知られるモンマルトルで、街角スケッチのプロジェクトに取り組みました。
 
     モンマルトルは、ピカソやヴァン・ゴッホ、モディリアーニなど多くの偉大な芸術家たちが創作活動を行った歴史的な地区です。石畳の道、階段、そして象徴的なサクレクール寺院の白亜のドームが特徴的なこの丘の上の地区は、今日も多くの芸術家たちの創作意欲を刺激し続けています。
@@ -615,14 +812,28 @@ const locationsData: Record<string, LocationData> = {
     
     地元の人々や観光客との自然な交流も、このプロジェクトの魅力の一つでした。時に会話が生まれ、時に静かに見守られる中での制作は、公共空間における芸術の役割について考えさせられる経験となりました。`,
     images: [
-      { url: '/montmartre_1.jpg', caption: 'モンマルトルの石畳の通りで絵を描く様子' },
-      { url: '/montmartre_2.jpg', caption: '赤いキャノピーのカフェと完成途中の作品' }
+      {
+        url: "/montmartre_1.jpg",
+        caption: "モンマルトルの石畳の通りで絵を描く様子",
+      },
+      {
+        url: "/montmartre_2.jpg",
+        caption: "赤いキャノピーのカフェと完成途中の作品",
+      },
     ],
     relatedLocations: [
-      { id: 'france-chambord', title: 'フランス・シャンボール城', image: '/images/chambord_2023_1.jpg' },
-      { id: 'paris-second', title: 'パリ第二回', image: '/images/paris_second_1.jpg' }
-    ]
-  }
+      {
+        id: "france-chambord",
+        title: "フランス・シャンボール城",
+        image: "/images/chambord_2023_1.jpg",
+      },
+      {
+        id: "paris-second",
+        title: "パリ第二回",
+        image: "/images/paris_second_1.jpg",
+      },
+    ],
+  },
 };
 
 const LocationDetail: React.FC = () => {
@@ -631,15 +842,15 @@ const LocationDetail: React.FC = () => {
   // exhibition/location/:locationId 形式から正確にlocationIdを抽出
   const match = path.match(/\/exhibition\/location\/([^\/]+)$/);
   const locationId = match ? match[1] : null;
-  
+
   const [location, setLocation] = useState<LocationData | null>(null);
-  
+
   console.log("LocationDetail - URL path:", path);
   console.log("LocationDetail - Extracted locationId from URL:", locationId);
 
   useEffect(() => {
     console.log("LocationDetail with locationId:", locationId);
-    
+
     if (locationId && locationsData[locationId]) {
       console.log("Found location data for:", locationId);
       setLocation(locationsData[locationId]);
@@ -664,29 +875,33 @@ const LocationDetail: React.FC = () => {
     <div className="container mx-auto px-4 py-12 min-h-screen">
       <div className="space-y-2 mb-6">
         <div className="flex items-center gap-3">
-          <span className="text-sm tracking-wider text-gray-500">{location.year}</span>
-          <span className="text-sm uppercase tracking-wider text-gray-500">{location.country}</span>
+          <span className="text-sm tracking-wider text-gray-500">
+            {location.year}
+          </span>
+          <span className="text-sm uppercase tracking-wider text-gray-500">
+            {location.country}
+          </span>
         </div>
         <h1 className="text-4xl font-bold tracking-tight">{location.title}</h1>
         <p className="text-xl text-gray-700">{location.description}</p>
       </div>
 
       <Separator className="my-8" />
-      
+
       {/* メインビジュアル */}
       <div className="aspect-[16/9] w-full overflow-hidden rounded-xl bg-gray-100 mb-12">
-        <img 
-          src={location.images[0]?.url || '/placeholder.png'} 
-          alt={location.images[0]?.caption || location.title} 
+        <img
+          src={location.images[0]?.url || "/placeholder.png"}
+          alt={location.images[0]?.caption || location.title}
           className="w-full h-full object-cover"
           onError={(e) => {
             const img = e.target as HTMLImageElement;
             img.onerror = null;
-            img.src = '/placeholder.png';
+            img.src = "/placeholder.png";
           }}
         />
       </div>
-      
+
       {/* サイドバー情報 - 上部に移動 */}
       <div className="mb-12">
         <h3 className="text-xl font-medium mb-4">詳細情報</h3>
@@ -705,31 +920,33 @@ const LocationDetail: React.FC = () => {
           </div>
         </dl>
       </div>
-        
+
       {/* 詳細文章 */}
       <div className="mb-16">
         <h2 className="text-2xl font-semibold mb-6">アーティスト活動の記録</h2>
         <div className="prose prose-lg max-w-none">
-          {location.longDescription.split('\n\n').map((paragraph, i) => (
-            <p key={i} className="mb-4">{paragraph.trim()}</p>
+          {location.longDescription.split("\n\n").map((paragraph, i) => (
+            <p key={i} className="mb-4">
+              {paragraph.trim()}
+            </p>
           ))}
         </div>
       </div>
-      
+
       {/* 写真ギャラリー */}
       <h2 className="text-2xl font-semibold mb-6">写真ギャラリー</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
         {location.images.map((image, index) => (
           <div key={index} className="group">
             <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-2">
-              <img 
-                src={image.url} 
-                alt={image.caption} 
+              <img
+                src={image.url}
+                alt={image.caption}
                 className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
                 onError={(e) => {
                   const img = e.target as HTMLImageElement;
                   img.onerror = null;
-                  img.src = '/placeholder.png';
+                  img.src = "/placeholder.png";
                 }}
               />
             </div>
@@ -737,7 +954,7 @@ const LocationDetail: React.FC = () => {
           </div>
         ))}
       </div>
-      
+
       {/* 関連する場所セクションは削除 */}
     </div>
   );

@@ -509,7 +509,7 @@ const Home = () => {
                   country: "フランス",
                   description:
                     "フランス地方都市でのファッションとアートの融合展示",
-                  images: ["/images/landscape1.jpg", "/images/cat1.jpg"],
+                  images: ["/images/s231sa.jpg", "/images/23671.jpg"],
                 },
                 {
                   id: "london",
