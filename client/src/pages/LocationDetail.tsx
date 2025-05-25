@@ -231,7 +231,7 @@ const locationsData: Record<string, LocationData> = {
     
     また、この展示をきっかけに中東地域のアートコレクターとの繋がりが生まれ、継続的な文化交流の機会へと発展しています。`,
     images: [
-      { url: '/abu_dhabi_1.jpg', caption: 'アブダビでの個展にて「POKO FACE」シリーズと共に' }
+      { url: '/images/abu_dhabi_1.jpg', caption: 'アブダビでの個展にて「POKO FACE」シリーズと共に' }
     ],
     relatedLocations: [
       { id: 'london', title: 'ロンドン', image: '/images/12675.jpg' },
@@ -255,12 +255,13 @@ const locationsData: Record<string, LocationData> = {
     
     池袋のサブカルチャーシーンからも大きな影響を受け、アニメやマンガの表現手法を自分のアート言語として取り入れる実験的な試みも行いました。`,
     images: [
-      { url: '/tokyo_ikebukuro_1.jpg', caption: 'ピンクの世界に浮かぶ愛らしい表情' },
-      { url: '/tokyo_ikebukuro_2.jpg', caption: '色彩豊かな猫のポップアート' }
+      { url: '/images/tokyo_ikebukuro_1.jpg', caption: 'ピンクの世界に浮かぶ愛らしい表情' },
+      { url: '/images/tokyo_ikebukuro_2.jpg', caption: '色彩豊かな猫のポップアート' },
+      { url: '/images/tokyo_ikebukuro_3.jpg', caption: '鮮やかな抽象画作品' }
     ],
     relatedLocations: [
-      { id: 'tokyo-akasaka', title: '東京・赤坂', image: '/12653.jpg' },
-      { id: 'tokyo-okubo', title: '東京・大久保', image: '/12658.jpg' }
+      { id: 'tokyo-akasaka', title: '東京・赤坂', image: '/images/12653.jpg' },
+      { id: 'tokyo-okubo', title: '東京・大久保', image: '/images/12658.jpg' }
     ]
   },
   // 東京・大久保
