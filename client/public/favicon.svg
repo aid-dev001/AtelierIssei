@@ -1,12 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-  <!-- パレット形状の背景 -->
-  <path d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14c1.8,0,3.5-1.6,3.5-3.5c0-0.9-0.4-1.7-1-2.4c-0.6-0.6-1-1.5-1-2.4
-    c0-1.9,1.6-3.5,3.5-3.5h4.1c4.4,0,8-3.6,8-8C29,8.3,23.3,2,16,2z" fill="#ff6b9d"/>
+  <!-- 背景 -->
+  <rect width="32" height="32" rx="4" fill="#ff6b9d"/>
   
-  <!-- 色のついた点々 (カラーパレット) -->
-  <circle cx="9" cy="10" r="2.5" fill="#ffcc00"/>
-  <circle cx="7" cy="16" r="2.5" fill="#55aaff"/>
-  <circle cx="10" cy="22" r="2.5" fill="#55cc55"/>
-  <circle cx="18" cy="8" r="2.5" fill="#ff5555"/>
-  <circle cx="22" cy="15" r="2.5" fill="#aa55ff"/>
+  <!-- "I" の文字 -->
+  <rect x="10" y="6" width="12" height="3" fill="white"/>
+  <rect x="14.5" y="6" width="3" height="20" fill="white"/>
+  <rect x="10" y="23" width="12" height="3" fill="white"/>
 </svg>
