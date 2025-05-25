@@ -401,7 +401,15 @@ const Home = () => {
                 <span id="selected-location-year" className="text-sm tracking-wider text-gray-500">2022</span>
                 <span id="selected-location-country" className="text-sm uppercase tracking-wider text-gray-500">日本</span>
               </div>
-              <h2 id="selected-location-title" className="text-3xl font-bold tracking-wide mt-1">東京・赤坂</h2>
+              <div className="flex justify-between items-center mt-1">
+                <h2 id="selected-location-title" className="text-3xl font-bold tracking-wide">東京・赤坂</h2>
+                <ScrollToTopLink 
+                  href="/exhibition/location/tokyo-akasaka" 
+                  className="text-sm text-primary hover:text-primary/80 transition-colors"
+                >
+                  詳細ページへ
+                </ScrollToTopLink>
+              </div>
             </div>
             
             <div className="flex flex-col lg:flex-row gap-12">
@@ -424,17 +432,7 @@ const Home = () => {
                   視点や感性に変化をもたらしました。
                 </p>
                 
-                <div className="mt-8">
-                  <ScrollToTopLink 
-                    href="/exhibition/location/tokyo-akasaka" 
-                    className="inline-flex items-center px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors"
-                  >
-                    詳細ページを見る
-                    <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </ScrollToTopLink>
-                </div>
+
               </div>
               
               <div className="lg:w-2/3">
