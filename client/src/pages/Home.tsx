@@ -502,7 +502,7 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             {
-              image: "12648.jpg",
+              image: "/13452.jpg",
               name: "ひょこあに ねこ",
               title: "地方中核産科病院院長夫人",
               quote: "色も色の組み合わせも可愛くて気に入っています。玄関で丸い顔が浮き上がっているのを見ると心も弾みます。"

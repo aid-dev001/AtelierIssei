@@ -259,9 +259,8 @@ const WorldLocations = () => {
                       const locationId = selectedLocation.id;
                       console.log(`Redirecting to location: ${locationId}`);
                       
-                      // 画面遷移時にIDを保持するため、URLを明示的に構築
-                      const url = `/exhibition/location/${locationId}`;
-                      window.location.href = url;
+                      // 正しい詳細ページにリダイレクト
+                      window.location.href = `/locations/${locationId}`;
                     }}
                   >
                     詳細ページへ
