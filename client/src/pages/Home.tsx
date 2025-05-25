@@ -368,10 +368,7 @@ const Home = () => {
                       // 詳細ページへのリンクを更新
                       const linkWrapper = document.getElementById('location-detail-link-wrapper');
                       if (linkWrapper) {
-                        const link = linkWrapper.querySelector('a');
-                        if (link) {
-                          link.setAttribute('href', `/exhibition/location/${location.id}`);
-                        }
+                        linkWrapper.setAttribute('data-location-id', location.id);
                       }
                       
                       // 画像の更新
@@ -424,10 +421,7 @@ const Home = () => {
                 // 詳細ページへのリンクを設定
                 const linkWrapper = document.getElementById('location-detail-link-wrapper');
                 if (linkWrapper) {
-                  const link = linkWrapper.querySelector('a');
-                  if (link) {
-                    link.setAttribute('href', '/exhibition/location/' + firstLocation.id);
-                  }
+                  linkWrapper.setAttribute('data-location-id', firstLocation.id);
                 }
                 
                 // 画像の更新
@@ -464,12 +458,19 @@ const Home = () => {
               <div className="flex justify-between items-center mt-1">
                 <h2 id="selected-location-title" className="text-3xl font-bold tracking-wide">東京・赤坂</h2>
                 <div id="location-detail-link-wrapper">
-                  <ScrollToTopLink 
-                    href="/exhibition/location/tokyo-akasaka" 
+                  <a 
+                    href="#"
                     className="text-sm text-primary hover:text-primary/80 transition-colors"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      // URLを取得（最初は東京・赤坂を表示）
+                      const locationId = document.getElementById('location-detail-link-wrapper')?.getAttribute('data-location-id') || 'tokyo-akasaka';
+                      // 詳細ページへ遷移
+                      window.location.href = `/exhibition/location/${locationId}`;
+                    }}
                   >
                     詳細ページへ
-                  </ScrollToTopLink>
+                  </a>
                 </div>
               </div>
             </div>
