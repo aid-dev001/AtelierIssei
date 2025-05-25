@@ -27,10 +27,10 @@ const testimonials = [
     imageUrl: "/images/landscape1.jpg"
   },
   {
-    name: "Sarah Thompson",
-    title: "ギャラリーオーナー",
-    content: "ISSEIの作品は、グローバルなアート市場で高い評価を受けています。その独特な視点と表現力は、世界中のコレクターを魅了しています。",
-    location: "ニューヨーク",
+    name: "くま",
+    title: "パリ郊外役所職員",
+    content: "Quand j'ai vu ce tableau pour la premiere fois il y a quelques temps il m'a tout de suite plu. Il est tres mignon et ses couleurs m'apaisent beaucoup.\n\n少し前にこの絵を初めて見たとき、すぐに気に入りました。 とても可愛くて、色合いもとても癒されます。",
+    location: "パリ郊外",
     imageUrl: "/images/bear1.jpg"
   },
   {
