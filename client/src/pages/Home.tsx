@@ -509,7 +509,7 @@ const Home = () => {
           <div id="location-detail" className="bg-white rounded-xl shadow-lg p-8 mb-12">
             <div className="border-b pb-6 mb-8">
               <div className="flex items-center gap-3">
-                <span id="selected-location-year" className="text-sm tracking-wider text-gray-500">2022</span>
+                <span id="selected-location-year" className="text-sm tracking-wider text-gray-500">1998</span>
                 <span id="selected-location-country" className="text-sm uppercase tracking-wider text-gray-500">日本</span>
               </div>
               <div className="flex justify-between items-center mt-1">
