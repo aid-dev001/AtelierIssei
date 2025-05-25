@@ -121,34 +121,48 @@ const Exhibition = () => {
             className="hidden"
           ></div>
 
-          {/* ロケーション詳細 */}
+          {/* 選択された場所の詳細 */}
           <div id="location-detail" className="hidden">
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
-                <div className="md:col-span-1 bg-gray-100 p-8">
-                  <div className="space-y-6">
-                    <div>
-                      <h3 id="selected-location-title" className="text-2xl font-bold mb-2">広島</h3>
-                      <div className="flex items-center gap-3 mb-4">
-                        <span id="selected-location-country" className="text-sm font-medium text-gray-500">日本</span>
-                        <span id="selected-location-year" className="text-sm font-medium text-gray-500">1998</span>
-                      </div>
-                      <p id="selected-location-description" className="text-gray-700">
-                        平和への祈りと再生をテーマにした作品の制作拠点
-                      </p>
-                    </div>
-                    
-                    <div id="location-detail-link-wrapper" data-location-id="hiroshima">
-                      <ScrollToTopLink href={`/exhibition/location/hiroshima`}>
-                        <Button variant="outline" className="w-full justify-center hover:bg-gray-50">
-                          詳細ページへ
-                        </Button>
-                      </ScrollToTopLink>
-                    </div>
+            <div id="location-detail" className="bg-white rounded-xl shadow-lg p-8 mb-12">
+              <div className="border-b pb-6 mb-8">
+                <div className="flex items-center gap-3">
+                  <span id="selected-location-year" className="text-sm tracking-wider text-gray-500">1998</span>
+                  <span id="selected-location-country" className="text-sm uppercase tracking-wider text-gray-500">日本</span>
+                </div>
+                <div className="flex justify-between items-center mt-1">
+                  <h2 id="selected-location-title" className="text-3xl font-bold tracking-wide">広島</h2>
+                  <div id="location-detail-link-wrapper" data-location-id="hiroshima">
+                    <ScrollToTopLink href={`/exhibition/location/hiroshima`}>
+                      <span className="text-base font-medium text-gray-800 hover:text-primary transition-colors">
+                        詳細ページへ
+                      </span>
+                    </ScrollToTopLink>
                   </div>
                 </div>
+              </div>
+              
+              <div className="flex flex-col lg:flex-row gap-12">
+                <div className="lg:w-1/3">
+                  <p id="selected-location-description" className="text-lg text-gray-700 leading-relaxed">
+                    平和への祈りと再生をテーマにした作品の制作拠点
+                  </p>
+                  
+                  <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                    風景や文化、人々の表情から生まれるインスピレーションは、
+                    作品の色彩や構図、テーマに深く影響しています。
+                    特にこの地域で感じた光と影のコントラスト、
+                    自然と都市の共存する風景は、
+                    新たな表現方法を模索するきっかけとなりました。
+                  </p>
+                  
+                  <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                    この場所での体験は、制作活動における
+                    重要な転機となり、以降の作品における
+                    視点や感性に変化をもたらしました。
+                  </p>
+                </div>
                 
-                <div className="md:col-span-2 p-8">
+                <div className="lg:w-2/3">
                   <h3 className="text-xl font-medium mb-6 text-gray-800">アーティスト活動の記録</h3>
                   <div id="selected-location-images" className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* 初期表示用の画像 */}
