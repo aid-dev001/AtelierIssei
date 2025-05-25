@@ -341,7 +341,6 @@ const Home = () => {
                 { id: "hiroshima", label: "広島", year: "1998", country: "日本", description: "平和への祈りと再生をテーマにした作品の制作拠点", images: ["/hiroshima_1.jpg", "/hiroshima_2.jpg"] },
                 { id: "tokyo-shinjuku", label: "東京・新宿", year: "2002", country: "日本", description: "都市の多様性と活気を色彩豊かに表現した作品", images: ["/tokyo_shinjuku_1.jpg", "/tokyo_shinjuku_2.jpg", "/tokyo_shinjuku_3.jpg"] },
                 { id: "tokyo-ikebukuro", label: "東京・池袋", year: "2018", country: "日本", description: "都会の喧騒の中で見つけた静寂を表現するアトリエ", images: ["/tokyo_ikebukuro_1.jpg", "/tokyo_ikebukuro_2.jpg"] },
-                { id: "fukuyama", label: "福山", year: "2018", country: "日本", description: "瀬戸内の光と風を感じる穏やかな創作空間", images: ["/12675.jpg", "/12676.jpg", "/12677.jpg"] },
                 { id: "abu-dhabi", label: "アブダビ", year: "2019", country: "UAE", description: "砂漠の国で開催した個展での作品展示", images: ["/abu_dhabi_1.jpg"] },
                 { id: "tokyo-okubo", label: "東京・大久保", year: "2019", country: "日本", description: "多様な文化が混ざり合うギャラリーでの作品展示", images: ["/tokyo_okubo_1.jpg"] },
                 { id: "paris", label: "パリ第一回", year: "2019", country: "フランス", description: "芸術の都で開催した初個展での作品展示", images: ["/paris_1.jpg", "/paris_2.jpg", "/paris_3.jpg"] },
@@ -353,6 +352,7 @@ const Home = () => {
                 { id: "atis-mons", label: "アティスモンス", year: "2022", country: "フランス", description: "フランス郊外の静かな村での集中的な創作期間", images: ["/12666.jpg", "/12667.jpg", "/12668.jpg"] },
                 { id: "chaumont", label: "ショーモン城", year: "2022", country: "フランス", description: "歴史的な城での特別展示プロジェクト", images: ["/2266.jpg", "/2914.jpg", "/3316.jpg"] },
                 { id: "nice", label: "ニース", year: "2023", country: "フランス", description: "地中海の陽光に照らされた色彩の研究", images: ["/12663.jpg", "/12664.jpg", "/12665.jpg"] },
+                { id: "fukuyama", label: "福山", year: "2024", country: "日本", description: "福山こころの病院での愛と癒しをテーマにした作品展示", images: ["/fukuyama_1.jpg", "/fukuyama_2.jpg"] },
                 { id: "chambord", label: "シャンボール城", year: "2022", country: "フランス", description: "ルネサンス建築の傑作の中での芸術体験", images: ["/IMG_7161.jpg", "/IMG_7162.jpg", "/IMG_7163.jpg"] }
               ].map((location, index) => (
                 <div 
