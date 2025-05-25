@@ -28,9 +28,9 @@ const testimonials = [
   },
   {
     name: "パリ雑誌メディア経営者・実業家",
-    title: "パリ",
+    title: "フランス　ディジョン",
     content: "Ce matin je partage mon petit-dejeuner avec le \"coeur\" d'Issei. Le petit chien nous nourrissent de leur confiance dans la vie! Ils attendent la bonne surprise du jour... a moi d'ouvrir l'oeil!\n\nisseiの\"心\"とともに朝食を。\n子犬は生きる自信をくれます！",
-    location: "パリ",
+    location: "フランス　ディジョン",
     imageUrl: "/images/dog1.jpg"
   },
   {
@@ -41,29 +41,29 @@ const testimonials = [
     imageUrl: "/13456.jpg"
   },
   {
-    name: "ひょこあに ねこ",
-    title: "地方中核産科病院院長夫人",
+    name: "地方中核産科病院院長夫人",
+    title: "広島",
     content: "色も色の組み合わせも可愛くて気に入っています。\n玄関で丸い顔が浮き上がっているのを見ると心も弾みます。",
     location: "広島",
     imageUrl: "/images/cat1.jpg"
   },
   {
-    name: "モンマルトル",
-    title: "医療系記者",
+    name: "医療系記者",
+    title: "パリ",
     content: "J'aime Montmartre depuis toujours d'autaut plus que ma mere est nee la-bas. Ce tableau revet donc un sens tout particulier.\n\n私はいつもモンマルトルが大好きで、特に母がモンマルトルで生まれています。ですのでこの絵は非常に特別な意味を持ちます。",
     location: "パリ",
     imageUrl: "/images/landscape1.jpg"
   },
   {
-    name: "くま",
-    title: "パリ郊外役所職員",
+    name: "パリ郊外役所職員",
+    title: "パリ郊外",
     content: "Quand j'ai vu ce tableau pour la premiere fois il y a quelques temps il m'a tout de suite plu. Il est tres mignon et ses couleurs m'apaisent beaucoup.\n\n少し前にこの絵を初めて見たとき、すぐに気に入りました。 とても可愛くて、色合いもとても癒されます。",
     location: "パリ郊外",
     imageUrl: "/images/bear1.jpg"
   },
   {
-    name: "エッフェル塔 ねこ",
-    title: "フランス美術評論家",
+    name: "フランス美術評論家",
+    title: "パリ",
     content: "c'est trop mignon!!\n\nとにかくかわいい！！\n\nc'est formidable de redecouvrir notre Tour Eiffel a travers les yeux d'un peintre japonais. Magnifique!\n\n日本画家の目を通してエッフェル塔を再発見できるのは素晴らしいことです。素敵！",
     location: "パリ",
     imageUrl: "/images/eiffel1.png"

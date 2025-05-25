@@ -522,7 +522,7 @@ const Home = () => {
             {
               image: "/images/dog1.jpg",
               name: "パリ雑誌メディア経営者・実業家",
-              title: "パリ",
+              title: "フランス　ディジョン",
               quote: "isseiの\"心\"とともに朝食を。子犬は生きる自信をくれます！"
             }
           ].map((voice, index) => (
