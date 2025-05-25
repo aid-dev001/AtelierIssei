@@ -607,8 +607,8 @@ const Home = () => {
                   country: "フランス",
                   description: "歴史的な城での特別展示プロジェクト",
                   images: [
-                    "/images/chaumont_2024_1.jpg",
-                    "/images/chaumont_2024_2.jpg",
+                    "/images/LINE_ALBUM_20241124_250525_242.jpg",
+                    "/images/LINE_ALBUM_20241124_250525_243.jpg",
                   ],
                 },
                 {
