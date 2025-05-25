@@ -3,52 +3,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 import { Button } from "@/components/ui/button";
 
-// 代表作品のデータ
-const featuredArtworks = [
-  { 
-    id: "girls", 
-    title: "Girls Collection", 
-    category: "女の子",
-    description: "女の子をテーマにした独自の世界観を表現したコレクション", 
-    image: "/images/girl_artwork.jpg"
-  },
-  { 
-    id: "digital", 
-    title: "Digital Art", 
-    category: "デジタルアート",
-    description: "デジタル技術を駆使した現代的な表現", 
-    image: "/images/digital_artwork.jpg"
-  },
-  { 
-    id: "poko-animal", 
-    title: "Poko Animal", 
-    category: "ひょこあに",
-    description: "愛らしい動物たちのユニークな表現", 
-    image: "/images/poko_artwork.jpg"
-  },
-  { 
-    id: "abstract", 
-    title: "Abstract Collection", 
-    category: "抽象画",
-    description: "色彩と形の自由な探求", 
-    image: "/images/abstract_artwork.jpg"
-  },
-  { 
-    id: "landscape", 
-    title: "Landscape", 
-    category: "風景画",
-    description: "独自の視点で捉えた風景の詩的表現", 
-    image: "/images/landscape_artwork.jpg"
-  },
-  { 
-    id: "animal", 
-    title: "Animal Collection", 
-    category: "動物",
-    description: "動物たちの生命力と美しさを表現", 
-    image: "/images/animal_artwork.jpg"
-  }
-];
-
 // ロケーションデータ（Home.tsxと同じデータを使用）
 const locations = [
   { id: "hiroshima", label: "広島", year: "1998", country: "日本", description: "平和への祈りと再生をテーマにした作品の制作拠点", images: ["/images/hiroshima_1.jpg", "/images/hiroshima_2.jpg"] },
@@ -57,12 +11,11 @@ const locations = [
   { id: "abu-dhabi", label: "アブダビ", year: "2019", country: "UAE", description: "砂漠の国で開催した個展での作品展示", images: ["/images/abu_dhabi_1.jpg"] },
   { id: "tokyo-okubo", label: "東京・大久保", year: "2019", country: "日本", description: "多様な文化が混ざり合うギャラリーでの作品展示", images: ["/images/tokyo_okubo_1.jpg"] },
   { id: "paris", label: "パリ第一回", year: "2019", country: "フランス", description: "芸術の都で開催した初個展での作品展示", images: ["/images/paris_1.jpg", "/images/paris_2.jpg", "/images/paris_3.jpg"] },
-  { id: "saint-hilaire-andre", label: "サンティレースアンドレシス", year: "2019", country: "フランス", description: "中世の面影を残す村での滞在制作", images: ["/images/7853.jpg", "/images/7855.jpg", "/images/8594.jpg"] },
-  { id: "tokyo-akasaka", label: "東京・赤坂", year: "2022", country: "日本", description: "伝統と革新が交差する街で生まれる新しい表現", images: ["/images/tokyo_akasaka_1.jpg", "/images/tokyo_akasaka_2.jpg", "/images/tokyo_akasaka_3.jpg"] },
+  { id: "france-savigny", label: "フランス・サヴィニー地方", year: "2019", country: "フランス", description: "フランス地方都市でのファッションとアートの融合展示", images: ["/attached_assets/s231sa.jpg", "/attached_assets/23671.jpg"] },
+  { id: "tokyo-akasaka", label: "東京・赤坂", year: "2022", country: "日本", description: "伝統と革新が交差する街で生まれる新しい表現", images: ["/images/akasaka_1.jpg", "/images/akasaka_2.jpg", "/images/akasaka_3.jpg"] },
   { id: "london", label: "ロンドン", year: "2022", country: "イギリス", description: "古典と現代が融合する街での芸術探求", images: ["/images/10819.jpg", "/images/10820.jpg", "/images/10821.jpg"] },
-  { id: "paris-second", label: "パリ第二回", year: "2022", country: "フランス", description: "パリ中心部での2回目の個展「POKO FACE」シリーズ", images: ["/images/paris_second_1.jpg", "/images/paris_second_2.jpg", "/images/paris_second_3.jpg"] },
+  { id: "paris-second", label: "パリ第二回", year: "2022", country: "フランス", description: "パリ中心部での2回目の個展「POKO FACE」シリーズ", images: ["/attached_assets/23601.jpg", "/attached_assets/23622_0.jpg", "/attached_assets/1662819546.jpg"] },
   { id: "spain-casamila", label: "スペイン・カサミラ", year: "2022", country: "スペイン", description: "ガウディ建築の傑作と現代アートの融合", images: ["/images/spain_casamila_1.jpg", "/images/spain_casamila_2.jpg", "/images/spain_casamila_3.jpg"] },
-  { id: "france-savigny", label: "フランス・サヴィニー地方", year: "2022", country: "フランス", description: "フランス地方都市でのファッションとアートの融合展示", images: ["/images/france_savigny_1.jpg", "/images/france_savigny_2.jpg"] },
   { id: "atis-mons", label: "アティスモンス", year: "2022", country: "フランス", description: "フランス郊外の静かな村での集中的な創作期間", images: ["/images/atis_mons_1.jpg", "/images/atis_mons_2.jpg", "/images/atis_mons_3.jpg"] },
   { id: "atis-mons-church", label: "フランス・アティスモンス教会", year: "2023", country: "フランス", description: "歴史的な教会を舞台にした特別展示会", images: ["/images/atis_mons_church_1.jpg", "/images/atis_mons_church_2.jpg", "/images/atis_mons_church_3.jpg"] },
   { id: "normandy", label: "フランス・ノルマンディー", year: "2023", country: "フランス", description: "歴史と自然が織りなす風景からのインスピレーション", images: ["/images/france_normandy_1.jpg", "/images/12670.jpg", "/images/12671.jpg"] },
@@ -71,7 +24,8 @@ const locations = [
   { id: "chaumont", label: "フランス・ショーモン城", year: "2024", country: "フランス", description: "歴史的な城での特別展示プロジェクト", images: ["/images/chaumont_2024_1.jpg", "/images/chaumont_2024_2.jpg"] },
   { id: "nice", label: "フランス・ニース", year: "2024", country: "フランス", description: "地中海の陽光に照らされた色彩の研究", images: ["/images/nice_2024_1.jpg", "/images/nice_2024_2.jpg", "/images/nice_2024_3.jpg"] },
   { id: "fukuyama", label: "広島・福山", year: "2024", country: "日本", description: "福山こころの病院での愛と癒しをテーマにした作品展示", images: ["/images/fukuyama_1.jpg", "/images/fukuyama_2.jpg"] },
-  { id: "bourges", label: "フランス・ブールジュ", year: "2025", country: "フランス", description: "ゴシック建築に囲まれた創作体験", images: ["/images/bourges_2025_1.jpg", "/images/bourges_2025_2.jpg", "/images/bourges_2025_3.jpg"] }
+  { id: "saint-hilaire-andre", label: "フランス・ティレーヌアンドレシス", year: "2024", country: "フランス", description: "中世の面影を残す村での滞在制作", images: ["/images/tireine_1.jpg", "/images/tireine_2.jpg"] },
+  { id: "bourges", label: "フランス・ブールジュ", year: "2025", country: "フランス", description: "ゴシック建築に囲まれた創作体験", images: ["/images/bourges_2025_1.jpg", "/images/3525.jpg", "/images/3730.jpg"] }
 ];
 
 const Exhibition = () => {
@@ -103,37 +57,9 @@ const Exhibition = () => {
           </div>
         </div>
       </section>
-      
-      {/* 代表作セクション */}
-      <section className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold mb-12 text-center">代表作品</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredArtworks.map((artwork) => (
-            <div key={artwork.id} className="group bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="aspect-square overflow-hidden">
-                <img
-                  src={artwork.image}
-                  alt={artwork.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  onError={(e) => {
-                    const img = e.target as HTMLImageElement;
-                    img.onerror = null;
-                    img.src = '/placeholder.png';
-                  }}
-                />
-              </div>
-              <div className="p-6">
-                <div className="text-sm font-medium text-primary mb-1">{artwork.category}</div>
-                <h3 className="text-xl font-bold mb-2">{artwork.title}</h3>
-                <p className="text-gray-600">{artwork.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
 
       <section className="container mx-auto px-4 mb-20">
-        <h2 className="text-3xl font-bold mb-10 text-center">世界各地での展示歴</h2>
+        <h2 className="text-3xl font-bold mb-10 text-center">WORLD LOCATIONS</h2>
         
         <div className="space-y-12">
           {locations.map((location) => (
