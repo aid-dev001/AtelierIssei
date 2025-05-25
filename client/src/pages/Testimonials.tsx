@@ -83,11 +83,11 @@ const Testimonials = () => {
             >
               <CardContent className="p-0">
                 <div className={`grid md:grid-cols-2 ${index % 2 === 0 ? 'md:grid-flow-col' : 'md:grid-flow-col-dense'}`}>
-                  <div className="relative aspect-[4/3] overflow-hidden">
+                  <div className="relative aspect-square overflow-hidden">
                     <img 
                       src={testimonial.imageUrl}
                       alt={`Artwork appreciated by ${testimonial.name}`}
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                      className="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105"
                       onError={(e) => {
                         const img = e.target as HTMLImageElement;
                         img.onerror = null;
