@@ -17,21 +17,40 @@ const VideoHero: React.FC<VideoHeroProps> = ({
     const videoElement = videoRef.current;
     if (!videoElement) return;
 
-    // ユーザー操作後に動画を再生する
+    // 動画のロード状態をチェックして再生を試みる
     const attemptPlay = () => {
+      // 動画のロードが完了していない場合は、ロード完了時のイベントを設定
+      if (videoElement.readyState < 3) { // HAVE_FUTURE_DATA = 3
+        videoElement.addEventListener('canplay', handleCanPlay);
+      } else {
+        // 既にロード済みの場合は直接再生
+        startPlayback();
+      }
+    };
+
+    // 動画が再生可能になった時の処理
+    const handleCanPlay = () => {
+      videoElement.removeEventListener('canplay', handleCanPlay);
+      startPlayback();
+    };
+
+    // 再生開始関数
+    const startPlayback = () => {
       videoElement.play()
         .catch(error => {
           console.log("自動再生できませんでした: ", error);
         });
     };
 
-    // ページが十分に読み込まれた後に再生を試みる
-    if (document.readyState === 'complete') {
-      attemptPlay();
-    } else {
-      window.addEventListener('load', attemptPlay);
-      return () => window.removeEventListener('load', attemptPlay);
-    }
+    // 即時実行
+    attemptPlay();
+
+    // クリーンアップ関数
+    return () => {
+      if (videoElement) {
+        videoElement.removeEventListener('canplay', handleCanPlay);
+      }
+    };
   }, []);
 
   return (
@@ -46,6 +65,7 @@ const VideoHero: React.FC<VideoHeroProps> = ({
           playsInline 
           className="w-full h-full object-cover opacity-80"
           poster={posterSrc || '/images/12653.jpg'}
+          preload="auto"
         >
           <source src={videoSrc} type="video/mp4" />
           Your browser does not support the video tag.

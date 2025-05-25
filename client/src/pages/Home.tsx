@@ -246,11 +246,13 @@ const Home = () => {
       </section>
 
       {/* Video Section */}
-      <VideoHero 
-        videoSrc="/videos/movie.mp4" 
-        posterSrc="/images/12653.jpg" 
-        title="世界各地での創作活動" 
-      />
+      <div className="my-24">
+        <VideoHero 
+          videoSrc={`/videos/movie.mp4?v=${new Date().getTime()}`}
+          posterSrc="/images/12653.jpg" 
+          title="世界各地での創作活動" 
+        />
+      </div>
 
       {/* Art Concept Section */}
       <section className="relative overflow-hidden" style={{ height: '80vh' }}>
