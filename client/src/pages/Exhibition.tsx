@@ -91,7 +91,7 @@ const locations = [
     year: "2022",
     country: "イギリス",
     description: "古典と現代が融合する街での芸術探求",
-    images: [],
+    images: ["/images/スクリーンショット 2025-05-25 23.21.59.png"],
   },
   {
     id: "paris-second",
@@ -173,7 +173,10 @@ const locations = [
     year: "2024",
     country: "フランス",
     description: "歴史的な城での特別展示プロジェクト",
-    images: ["/images/LINE_ALBUM_20241124_250525_242.jpg", "/images/LINE_ALBUM_20241124_250525_243.jpg"],
+    images: [
+      "/images/LINE_ALBUM_20241124_250525_242.jpg",
+      "/images/LINE_ALBUM_20241124_250525_243.jpg",
+    ],
   },
   {
     id: "nice",
@@ -204,7 +207,7 @@ const locations = [
     images: [
       "/images/1731420256.jpg",
       "/images/スクリーンショット 2025-05-25 23.14.20.png",
-      "/images/スクリーンショット 2025-05-25 23.15.16.png"
+      "/images/スクリーンショット 2025-05-25 23.15.16.png",
     ],
   },
   {
@@ -213,11 +216,7 @@ const locations = [
     year: "2025",
     country: "フランス",
     description: "ゴシック建築に囲まれた創作体験",
-    images: [
-      "/images/13463.jpg",
-      "/images/3525.jpg",
-      "/images/3730.jpg",
-    ],
+    images: ["/images/13463.jpg"],
   },
 ];
 

@@ -428,10 +428,7 @@ const Home = () => {
                   year: "1998",
                   country: "日本",
                   description: "平和への祈りと再生をテーマにした作品の制作拠点",
-                  images: [
-                    "/images/S__9044006.jpg",
-                    "/images/S__9044005.jpg",
-                  ],
+                  images: ["/images/S__9044006.jpg", "/images/S__9044005.jpg"],
                 },
                 {
                   id: "tokyo-shinjuku",
@@ -636,7 +633,7 @@ const Home = () => {
                   images: [
                     "/images/1731420256.jpg",
                     "/images/スクリーンショット 2025-05-25 23.14.20.png",
-                    "/images/スクリーンショット 2025-05-25 23.15.16.png"
+                    "/images/スクリーンショット 2025-05-25 23.15.16.png",
                   ],
                 },
                 {
@@ -645,11 +642,7 @@ const Home = () => {
                   year: "2025",
                   country: "フランス",
                   description: "ゴシック建築に囲まれた創作体験",
-                  images: [
-                    "/images/13463.jpg",
-                    "/images/3525.jpg",
-                    "/images/3730.jpg",
-                  ],
+                  images: ["/images/13463.jpg"],
                 },
               ].map((location, index) => (
                 <div
