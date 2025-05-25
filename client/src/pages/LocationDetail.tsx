@@ -290,13 +290,13 @@ const locationsData: Record<string, LocationData> = {
   // ノルマンディー
   'normandy': {
     id: 'normandy',
-    title: 'ノルマンディー',
+    title: 'フランス・ノルマンディー',
     country: 'フランス',
-    year: '2019',
+    year: '2023',
     description: '歴史と自然が織りなす風景からのインスピレーション',
-    longDescription: `ノルマンディーはフランス北西部に位置し、豊かな歴史と印象的な自然景観を持つ地域です。
+    longDescription: `ノルマンディーはフランス北西部に位置し、豊かな歴史と印象的な自然景観を持つ地域です。2023年、私は歴史的な修道院を改装した文化施設でアート作品を展示する機会に恵まれました。
     
-    断崖絶壁の海岸線、緑豊かな田園風景、そして第二次世界大戦の歴史的な遺跡が点在するこの地域は、アーティストにとって多層的なインスピレーション源となっています。
+    石造りの美しい中庭を持つこの施設は、歴史と現代アートが融合する特別な空間でした。アーチ型の回廊に囲まれた中庭では、自然光と建築美が織りなす独特の雰囲気の中で作品展示が行われました。
     
     ノルマンディー滞在中、私は特に自然と人間の歴史との関係性に注目しました。エトルタの荘厳な白亜の崖や、オンフルールの絵画的な港町、そしてノルマンディー上陸作戦のビーチなど、時間と記憶が刻まれた風景は、私の作品における「時間」と「記憶」のテーマ探求に深い影響を与えています。
     
@@ -304,15 +304,13 @@ const locationsData: Record<string, LocationData> = {
     
     また、地元の人々の日常生活や伝統的な市場の光景、そして季節ごとに変化する農村風景は、「ノスタルジア」と「永続性」についての考察を深める機会となりました。`,
     images: [
-      { url: '/images/12669.jpg', caption: 'エトルタの断崖と自然のアーチ' },
-      { url: '/images/12670.jpg', caption: 'オンフルールの港町の風景' },
-      { url: '/images/12671.jpg', caption: 'ノルマンディー上陸作戦のビーチ' },
-      { url: '/images/2266.jpg', caption: '霧に包まれた田園風景' },
-      { url: '/images/2914.jpg', caption: '伝統的な農家の建物' }
+      { url: '/france_normandy_1.jpg', caption: '修道院を改装した文化施設の中庭' },
+      { url: '/12670.jpg', caption: 'オンフルールの港町の風景' },
+      { url: '/12671.jpg', caption: 'ノルマンディー上陸作戦のビーチ' }
     ],
     relatedLocations: [
-      { id: 'paris', title: 'パリ', image: '/images/12680.jpg' },
-      { id: 'nice', title: 'ニース', image: '/images/10820.jpg' }
+      { id: 'paris-second', title: 'パリ第二回', image: '/paris_second_1.jpg' },
+      { id: 'france-savigny', title: 'フランス・サヴィニー', image: '/france_savigny_1.jpg' }
     ]
   },
   // アティスモンス
