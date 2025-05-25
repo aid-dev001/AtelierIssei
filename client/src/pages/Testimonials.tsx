@@ -8,7 +8,7 @@ const testimonials = [
     title: "美術館キュレーター",
     content: "ISSEIの作品には魂が宿っています。観る者の心に直接語りかけてくるような力強さと繊細さを持ち合わせており、多くの来館者から感動の声をいただいています。",
     location: "東京都現代美術館",
-    imageUrl: "attached_assets/23313_0-2.jpg"
+    imageUrl: "/images/testimonials/23313_0-2.jpg"
   },
   {
     name: "Jean-Pierre Dubois",
