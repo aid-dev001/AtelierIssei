@@ -1011,7 +1011,7 @@ const Home = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
           <img
-            src="/artworks/スクリーンショット 2024-12-07 12.26.30.png"
+            src="/profile-image.png"
             alt="Artist ISSEI"
             className="rounded-lg shadow-lg w-full h-auto"
             onError={(e) => {
@@ -1033,7 +1033,7 @@ const Home = () => {
             </p>
             <div className="pt-4">
               <ScrollToTopLink href="/profile">
-                <div className="inline-block px-6 py-3 bg-primary/90 text-white rounded-md hover:bg-primary transition-colors cursor-pointer">
+                <div className="inline-block text-gray-700 hover:text-primary transition-colors cursor-pointer border-b border-gray-300 hover:border-primary pb-1">
                   詳細プロフィールへ
                 </div>
               </ScrollToTopLink>
