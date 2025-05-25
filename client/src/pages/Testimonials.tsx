@@ -27,8 +27,8 @@ const testimonials = [
     imageUrl: "/13454.jpg"
   },
   {
-    name: "ビーグル ブルドッグ",
-    title: "パリ雑誌メディア経営者・実業家",
+    name: "パリ雑誌メディア経営者・実業家",
+    title: "パリ",
     content: "Ce matin je partage mon petit-dejeuner avec le \"coeur\" d'Issei. Le petit chien nous nourrissent de leur confiance dans la vie! Ils attendent la bonne surprise du jour... a moi d'ouvrir l'oeil!\n\nisseiの\"心\"とともに朝食を。\n子犬は生きる自信をくれます！",
     location: "パリ",
     imageUrl: "/images/dog1.jpg"

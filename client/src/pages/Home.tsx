@@ -499,25 +499,31 @@ const Home = () => {
       {/* Voices Section */}
       <section className="container mx-auto px-4 py-20">
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">VOICES</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {[
             {
-              image: "12648.jpg",
-              name: "ひょこあに ねこ",
-              title: "地方中核産科病院院長夫人",
-              quote: "色も色の組み合わせも可愛くて気に入っています。玄関で丸い顔が浮き上がっているのを見ると心も弾みます。"
+              image: "/13452.jpg",
+              name: "小島 和人",
+              title: "高砂熱学工業株式会社　代表取締役社長",
+              quote: "社内に飾られているのをみてとても好きになりました。よく息子と水族館に行ったので思い入れもあります。"
             },
             {
-              image: "12653.jpg",
-              name: "モンマルトル",
-              title: "医療系記者",
-              quote: "私はいつもモンマルトルが大好きで、特に母がモンマルトルで生まれています。ですのでこの絵は非常に特別な意味を持ちます。"
+              image: "/13457.jpg",
+              name: "千本倖生",
+              title: "KDDI／ワイモバイル設立者・連続起業家",
+              quote: "大変素晴らしい絵をありがとう。いつも見ていて心が和みます。別荘ができたら飾ります。"
             },
             {
-              image: "12658.jpg",
-              name: "エッフェル塔 ねこ",
-              title: "フランス美術評論家",
-              quote: "日本画家の目を通してエッフェル塔を再発見できるのは素晴らしいことです。素敵！"
+              image: "/13454.jpg",
+              name: "資産家・投資家",
+              title: "",
+              quote: "どれもおしゃれで気に入りました。特に女の子可愛いです。エジソンのような天才が描いた絵！将来1億円になるかもしれないですね。"
+            },
+            {
+              image: "/images/dog1.jpg",
+              name: "パリ雑誌メディア経営者・実業家",
+              title: "パリ",
+              quote: "isseiの\"心\"とともに朝食を。子犬は生きる自信をくれます！"
             }
           ].map((voice, index) => (
             <ScrollToTopLink href="/voices" key={index}>
