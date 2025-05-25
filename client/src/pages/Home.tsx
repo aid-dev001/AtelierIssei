@@ -460,7 +460,7 @@ const Home = () => {
                 <div id="location-detail-link-wrapper">
                   <a 
                     href="#"
-                    className="text-sm font-medium text-gray-800 hover:text-primary transition-colors"
+                    className="text-base font-medium text-gray-800 hover:text-primary transition-colors"
                     onClick={(e) => {
                       e.preventDefault();
                       // URLを取得（最初は東京・赤坂を表示）
