@@ -3,9 +3,14 @@ import React, { useEffect, useRef } from 'react';
 interface VideoHeroProps {
   videoSrc: string;
   posterSrc?: string;
+  title?: string;
 }
 
-const VideoHero: React.FC<VideoHeroProps> = ({ videoSrc, posterSrc }) => {
+const VideoHero: React.FC<VideoHeroProps> = ({ 
+  videoSrc, 
+  posterSrc,
+  title = "アーティスト活動記録"
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -30,7 +35,7 @@ const VideoHero: React.FC<VideoHeroProps> = ({ videoSrc, posterSrc }) => {
   }, []);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full overflow-hidden" style={{ minHeight: '80vh' }}>
       {/* 動画背景 */}
       <div className="absolute inset-0 bg-black">
         <video 
@@ -39,7 +44,7 @@ const VideoHero: React.FC<VideoHeroProps> = ({ videoSrc, posterSrc }) => {
           muted 
           loop 
           playsInline 
-          className="w-full h-full object-cover opacity-75"
+          className="w-full h-full object-cover opacity-80"
           poster={posterSrc || '/images/12653.jpg'}
         >
           <source src={videoSrc} type="video/mp4" />
@@ -52,21 +57,14 @@ const VideoHero: React.FC<VideoHeroProps> = ({ videoSrc, posterSrc }) => {
       
       {/* コンテンツ */}
       <div className="relative h-full flex items-center">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-6xl md:text-8xl font-bold mb-12 tracking-[0.2em] text-white">
-              ATELIER ISSEI
-            </h1>
-            <p className="text-xl md:text-3xl font-light mb-16 tracking-[0.3em] text-gray-100">
-              心に寄り添うアートを
+        <div className="container mx-auto px-4 py-24">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold mb-8 tracking-wide text-white">
+              {title}
+            </h2>
+            <p className="text-xl text-gray-100 max-w-2xl">
+              各地での創作活動と展示の様子をご覧ください。世界各地での活動を通じて得た経験と感性が、作品に表現されています。
             </p>
-            <div className="max-w-2xl mx-auto space-y-8">
-              <p className="text-lg tracking-[0.15em] leading-relaxed font-medium text-gray-200">
-                私たちは、日常の中に特別な瞬間を創造します。
-                光と影、色彩と形が織りなす物語を通じて、
-                見る人の心に静かな感動を届けます。
-              </p>
-            </div>
           </div>
         </div>
       </div>
