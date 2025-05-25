@@ -384,10 +384,10 @@ const locationsData: Record<string, LocationData> = {
     
     また、地元の伝統的な祭りや日常的な農作業の風景は、コミュニティと創造性の関係、そして場所に根ざした芸術の意義について再考するきっかけとなりました。時にはぶどう畑で働く農家の方々や、パン屋、鍛冶屋など伝統的な職人との交流も、手仕事と芸術の深い関係性を感じさせるものでした。`,
     images: [
+      { url: '/images/tireine_1.jpg', caption: 'POKO FACEデザインのTシャツを着用したモデル' },
+      { url: '/images/tireine_2.jpg', caption: '展示会場の様子と作品を鑑賞する来場者たち' },
       { url: '/images/7853.jpg', caption: '石造りの村の通り' },
       { url: '/images/7855.jpg', caption: '中世の教会の内部' },
-      { url: '/images/8594.jpg', caption: '村を囲むぶどう畑の風景' },
-      { url: '/images/3730.jpg', caption: '伝統的な村の祭りの様子' },
       { url: '/images/2914.jpg', caption: '古い石造りの家の細部' }
     ],
     relatedLocations: [
@@ -442,9 +442,9 @@ const locationsData: Record<string, LocationData> = {
 
     この経験は、国際的なアート活動を継続することの意義と、文化的背景の異なる人々との創造的な対話の重要性を改めて実感させてくれました。`,
     images: [
-      { url: '/paris_second_1.jpg', caption: 'パリのギャラリーショーウィンドウに展示された「POKO FACE」シリーズ' },
-      { url: '/paris_second_2.jpg', caption: 'ギャラリーを訪れたアートコレクターとの交流' },
-      { url: '/paris_second_3.jpg', caption: 'パリの街並みと調和したギャラリー外観' }
+      { url: '/images/paris2_1.jpg', caption: 'パリのギャラリーショーウィンドウに展示された「POKO FACE」シリーズ' },
+      { url: '/images/paris2_2.jpg', caption: 'ギャラリーを訪れたコレクターと交流する様子' },
+      { url: '/images/paris2_3.jpg', caption: 'パリの街並みの中にあるギャラリーの外観' }
     ],
     relatedLocations: [
       { id: 'paris', title: 'パリ第一回', image: '/paris_1.jpg' },
