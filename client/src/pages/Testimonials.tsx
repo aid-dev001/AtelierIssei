@@ -41,13 +41,6 @@ const testimonials = [
     imageUrl: "/13457.jpg"
   },
   {
-    name: "千本倖生",
-    title: "KDDI／ワイモバイル設立者・連続起業家",
-    content: "大変素晴らしい絵をありがとう。いつも見ていて心が和みます。別荘ができたら飾ります。",
-    location: "東京",
-    imageUrl: "/images/landscape1.jpg"
-  },
-  {
     name: "ひょこあに ねこ",
     title: "地方中核産科病院院長夫人",
     content: "色も色の組み合わせも可愛くて気に入っています。\n玄関で丸い顔が浮き上がっているのを見ると心も弾みます。",
