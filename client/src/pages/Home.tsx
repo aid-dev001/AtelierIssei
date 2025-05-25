@@ -236,7 +236,7 @@ const Home = () => {
                 />
               </div>
               <div className="space-y-1 px-1">
-                <h3 className="font-medium text-lg transition-colors duration-300 group-hover:text-primary">{image.title}</h3>
+                <h3 className="font-medium text-lg">{image.title}</h3>
                 <p className="text-sm text-gray-600">{image.description}</p>
               </div>
             </div>
