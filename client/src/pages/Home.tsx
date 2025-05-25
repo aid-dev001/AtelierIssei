@@ -281,29 +281,53 @@ const Home = () => {
           <h2 className="text-4xl font-bold mb-4 text-center tracking-wider">WORLD LOCATIONS</h2>
           <p className="text-xl text-center mb-16 text-gray-700">世界各地で取り組んだプロジェクトとインスピレーションを得た場所</p>
           
+          {/* 場所のリスト */}
           <div className="bg-white rounded-xl shadow-md overflow-hidden mb-12 p-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2">
               {[
-                { id: "tokyo-akasaka", label: "東京・赤坂", year: "2022" },
-                { id: "tokyo-ikebukuro", label: "東京・池袋", year: "2020" },
-                { id: "tokyo-okubo", label: "東京・大久保", year: "2021" },
-                { id: "hiroshima", label: "広島", year: "2019" },
-                { id: "fukuyama", label: "福山", year: "2018" },
-                { id: "abu-dhabi", label: "アブダビ", year: "2023" },
-                { id: "london", label: "ロンドン", year: "2022" },
-                { id: "paris", label: "パリ", year: "2021" },
-                { id: "nice", label: "ニース", year: "2023" },
-                { id: "atis-mons", label: "アティスモンス", year: "2022" },
-                { id: "normandy", label: "ノルマンディー", year: "2021" },
-                { id: "saint-hilaire-andre", label: "サンティレースアンドレシス", year: "2019" },
-                { id: "bourges", label: "ブールジュ", year: "2020" },
-                { id: "chaumont", label: "ショーモン城", year: "2022" },
-                { id: "chambord", label: "シャンボール城", year: "2022" }
-              ].map((location) => (
+                { id: "tokyo-akasaka", label: "東京・赤坂", year: "2022", country: "日本", description: "伝統と革新が交差する街で生まれる新しい表現", images: ["/artworks/12653.jpg", "/artworks/12654.jpg", "/artworks/12655.jpg"] },
+                { id: "tokyo-ikebukuro", label: "東京・池袋", year: "2020", country: "日本", description: "都会の喧騒の中で見つけた静寂を表現するアトリエ", images: ["/artworks/12648.jpg", "/artworks/12649.jpg", "/artworks/12650.jpg"] },
+                { id: "tokyo-okubo", label: "東京・大久保", year: "2021", country: "日本", description: "多様な文化が混ざり合う場所からインスピレーションを得る", images: ["/artworks/12658.jpg", "/artworks/12659.jpg", "/artworks/12660.jpg"] },
+                { id: "hiroshima", label: "広島", year: "2019", country: "日本", description: "平和への祈りと再生をテーマにした作品の制作拠点", images: ["/12672.jpg", "/12673.jpg", "/12674.jpg"] },
+                { id: "fukuyama", label: "福山", year: "2018", country: "日本", description: "瀬戸内の光と風を感じる穏やかな創作空間", images: ["/12675.jpg", "/12676.jpg", "/12677.jpg"] },
+                { id: "abu-dhabi", label: "アブダビ", year: "2023", country: "UAE", description: "砂漠の国で出会った光と影のコントラスト", images: ["/12678.jpg", "/12679.jpg", "/12680.jpg"] },
+                { id: "london", label: "ロンドン", year: "2022", country: "イギリス", description: "古典と現代が融合する街での芸術探求", images: ["/10819.jpg", "/10820.jpg", "/10821.jpg"] },
+                { id: "paris", label: "パリ", year: "2021", country: "フランス", description: "芸術の都で培われた感性と表現", images: ["/10822.jpg", "/10823.jpg", "/12662.jpg"] },
+                { id: "nice", label: "ニース", year: "2023", country: "フランス", description: "地中海の陽光に照らされた色彩の研究", images: ["/12663.jpg", "/12664.jpg", "/12665.jpg"] },
+                { id: "atis-mons", label: "アティスモンス", year: "2022", country: "フランス", description: "フランス郊外の静かな村での集中的な創作期間", images: ["/12666.jpg", "/12667.jpg", "/12668.jpg"] },
+                { id: "normandy", label: "ノルマンディー", year: "2021", country: "フランス", description: "歴史と自然が織りなす風景からのインスピレーション", images: ["/12669.jpg", "/12670.jpg", "/12671.jpg"] },
+                { id: "saint-hilaire-andre", label: "サンティレースアンドレシス", year: "2019", country: "フランス", description: "中世の面影を残す村での滞在制作", images: ["/7853.jpg", "/7855.jpg", "/8594.jpg"] },
+                { id: "bourges", label: "ブールジュ", year: "2020", country: "フランス", description: "ゴシック建築に囲まれた創作体験", images: ["/3446.jpg", "/3525.jpg", "/3730.jpg"] },
+                { id: "chaumont", label: "ショーモン城", year: "2022", country: "フランス", description: "歴史的な城での特別展示プロジェクト", images: ["/2266.jpg", "/2914.jpg", "/3316.jpg"] },
+                { id: "chambord", label: "シャンボール城", year: "2022", country: "フランス", description: "ルネサンス建築の傑作の中での芸術体験", images: ["/IMG_7161.jpg", "/IMG_7162.jpg", "/IMG_7163.jpg"] }
+              ].map((location, index) => (
                 <div 
                   key={location.id}
-                  className="cursor-pointer hover:bg-gray-50 transition-colors rounded px-3 py-2"
-                  onClick={() => window.location.href = "/world-locations"}
+                  className={`cursor-pointer hover:bg-gray-50 transition-colors rounded px-3 py-2`}
+                  onClick={() => {
+                    const element = document.getElementById('location-detail');
+                    if (element) {
+                      document.getElementById('selected-location-title')!.textContent = location.label;
+                      document.getElementById('selected-location-country')!.textContent = location.country;
+                      document.getElementById('selected-location-year')!.textContent = location.year;
+                      document.getElementById('selected-location-description')!.textContent = location.description;
+                      
+                      // 画像の更新
+                      const imageContainer = document.getElementById('selected-location-images');
+                      if (imageContainer) {
+                        imageContainer.innerHTML = '';
+                        location.images.forEach((img, i) => {
+                          const imgEl = document.createElement('div');
+                          imgEl.className = "aspect-square bg-gray-100 rounded overflow-hidden group";
+                          imgEl.innerHTML = `<img src="${img}" alt="${location.label} - ${i+1}" class="w-full h-full object-cover transition duration-500 group-hover:scale-105" onerror="this.onerror=null;this.src='/placeholder.png';" />`;
+                          imageContainer.appendChild(imgEl);
+                        });
+                      }
+                      
+                      element.classList.remove('hidden');
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-medium">{location.label}</span>
@@ -314,17 +338,44 @@ const Home = () => {
             </div>
           </div>
           
-          <div className="flex justify-center">
-            <Button 
-              asChild 
-              variant="outline" 
-              className="px-8 py-6 text-sm tracking-[0.2em] rounded-lg border-black/80 hover:border-black bg-white/80 hover:bg-white transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-0.5 group relative overflow-hidden"
-            >
-              <ScrollToTopLink href="/world-locations" className="relative z-10 flex items-center justify-center gap-2">
-                すべての場所を見る
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </ScrollToTopLink>
-            </Button>
+          {/* 選択された場所の詳細 */}
+          <div id="location-detail" className="bg-white rounded-xl shadow-lg p-8 mb-12 hidden">
+            <div className="border-b pb-6 mb-8">
+              <div className="flex items-center gap-3">
+                <span id="selected-location-country" className="text-sm uppercase tracking-wider text-gray-500">日本</span>
+                <span id="selected-location-year" className="text-sm tracking-wider text-gray-500">2022</span>
+              </div>
+              <h2 id="selected-location-title" className="text-3xl font-bold tracking-wide mt-1">東京・赤坂</h2>
+            </div>
+            
+            <div className="flex flex-col lg:flex-row gap-12">
+              <div className="lg:w-1/3">
+                <p id="selected-location-description" className="text-lg text-gray-700 leading-relaxed">
+                  伝統と革新が交差する街で生まれる新しい表現
+                </p>
+                
+                <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                  風景や文化、人々の表情から生まれるインスピレーションは、
+                  作品の色彩や構図、テーマに深く影響しています。
+                  特にこの地域で感じた光と影のコントラスト、
+                  自然と都市の共存する風景は、
+                  新たな表現方法を模索するきっかけとなりました。
+                </p>
+                
+                <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                  この場所での体験は、制作活動における
+                  重要な転機となり、以降の作品における
+                  視点や感性に変化をもたらしました。
+                </p>
+              </div>
+              
+              <div className="lg:w-2/3">
+                <h3 className="text-xl font-medium mb-6 text-gray-800">アーティスト活動の記録</h3>
+                <div id="selected-location-images" className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* 画像はJavaScriptで動的に挿入 */}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
