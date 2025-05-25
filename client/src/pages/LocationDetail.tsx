@@ -575,7 +575,37 @@ const LocationDetail: React.FC = () => {
         ))}
       </div>
       
-
+      {/* 関連する場所 */}
+      {location.relatedLocations && location.relatedLocations.length > 0 && (
+        <>
+          <h2 className="text-2xl font-semibold mb-6">関連する場所</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {location.relatedLocations.map((related, index) => (
+              <a 
+                key={index} 
+                href={`/exhibition/location/${related.id}`}
+                className="group bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+              >
+                <div className="aspect-[4/3] bg-gray-100 overflow-hidden">
+                  <img 
+                    src={related.image} 
+                    alt={related.title} 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    onError={(e) => {
+                      const img = e.target as HTMLImageElement;
+                      img.onerror = null;
+                      img.src = '/placeholder.png';
+                    }}
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="font-medium">{related.title}</h3>
+                </div>
+              </a>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 };

@@ -223,26 +223,7 @@ const WorldLocations = () => {
                 <span className="text-sm uppercase tracking-wider text-gray-500">{selectedLocation.country}</span>
                 <span className="text-sm tracking-wider text-gray-500">2022</span>
               </div>
-              <div className="flex items-center justify-between mt-1">
-                <h2 className="text-3xl font-bold tracking-wide">{selectedLocation.label}</h2>
-                <a 
-                  href="#"
-                  className="inline-block px-4 py-2 bg-gray-100 text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    // 選択されたロケーションのIDを確保
-                    const locationId = selectedLocation.id;
-                    console.log(`Redirecting to location: ${locationId}`);
-                    
-                    // 正しいルートへ遷移する
-                    const url = `/exhibition/location/${locationId}`;
-                    console.log("Redirecting to URL:", url, "with locationId:", locationId);
-                    window.location.href = url;
-                  }}
-                >
-                  詳細ページへ
-                </a>
-              </div>
+              <h2 className="text-3xl font-bold tracking-wide mt-1">{selectedLocation.label}</h2>
             </div>
             
             <div className="flex flex-col lg:flex-row gap-12">
@@ -268,7 +249,26 @@ const WorldLocations = () => {
                   視点や感性に変化をもたらしました。
                 </p>
                 
-
+                <div className="mt-8">
+                  <a 
+                    href="#"
+                    className="inline-block px-4 py-2 bg-gray-100 text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      // 選択されたロケーションのIDを確保
+                      const locationId = selectedLocation.id;
+                      console.log(`Redirecting to location: ${locationId}`);
+                      
+                      // 正しいルートへ遷移する
+                      const url = `/exhibition/location/${locationId}`;
+                      console.log("Redirecting to URL:", url, "with locationId:", locationId);
+                      // URLを直接変更する代わりにLink要素を使用する
+                      window.location.href = url;
+                    }}
+                  >
+                    詳細ページへ
+                  </a>
+                </div>
               </div>
               
               <div className="lg:w-2/3">
