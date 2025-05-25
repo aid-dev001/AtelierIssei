@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'wouter';
+import { useParams, useLocation } from 'wouter';
 import { Separator } from '@/components/ui/separator';
 
 type LocationImage = {
@@ -460,21 +460,24 @@ const locationsData: Record<string, LocationData> = {
 };
 
 const LocationDetail: React.FC = () => {
-  const { locationId } = useParams();
+  const [locationPath] = useLocation();
+  const params = locationPath.split('/');
+  const actualLocationId = params[params.length - 1];
   const [location, setLocation] = useState<LocationData | null>(null);
 
   useEffect(() => {
-    console.log("LocationDetail locationId:", locationId);
+    console.log("URL Path:", locationPath);
+    console.log("Extracted LocationId:", actualLocationId);
     
-    if (locationId && locationsData[locationId]) {
-      console.log("Found location data for:", locationId);
-      setLocation(locationsData[locationId]);
+    if (actualLocationId && locationsData[actualLocationId]) {
+      console.log("Found location data for:", actualLocationId);
+      setLocation(locationsData[actualLocationId]);
       window.scrollTo(0, 0);
     } else {
-      console.log("No location data found for:", locationId);
+      console.log("No location data found for:", actualLocationId);
       console.log("Available locations:", Object.keys(locationsData));
     }
-  }, [locationId]);
+  }, [actualLocationId, locationPath]);
 
   if (!location) {
     return (
