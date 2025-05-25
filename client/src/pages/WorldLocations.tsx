@@ -239,6 +239,15 @@ const WorldLocations = () => {
                   重要な転機となり、以降の作品における
                   視点や感性に変化をもたらしました。
                 </p>
+                
+                <div className="mt-8">
+                  <a 
+                    href={`/exhibition/location/${selectedLocation.id}`} 
+                    className="inline-flex items-center text-primary hover:underline text-lg"
+                  >
+                    <span>詳細ページへ</span>
+                  </a>
+                </div>
               </div>
               
               <div className="lg:w-2/3">
