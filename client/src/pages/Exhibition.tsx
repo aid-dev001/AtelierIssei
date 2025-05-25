@@ -63,119 +63,70 @@ const Exhibition = () => {
           <h2 className="text-4xl font-bold mb-4 text-center tracking-wider">WORLD LOCATIONS</h2>
           <p className="text-xl text-center mb-16 text-gray-700">世界各地で取り組んだプロジェクトとインスピレーションを得た場所</p>
           
-          {/* 場所のリスト */}
-          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-12 p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2">
-              {locations.map((location, index) => (
-                <div 
-                  key={location.id}
-                  data-id={location.id}
-                  className={`cursor-pointer hover:bg-gray-50 transition-colors rounded px-3 py-2`}
-                  onClick={() => {
-                    const element = document.getElementById('location-detail');
-                    if (element) {
-                      document.getElementById('selected-location-title')!.textContent = location.label;
-                      document.getElementById('selected-location-country')!.textContent = location.country;
-                      document.getElementById('selected-location-year')!.textContent = location.year;
-                      document.getElementById('selected-location-description')!.textContent = location.description;
-                      
-                      // 詳細ページへのリンクを更新
-                      const linkWrapper = document.getElementById('location-detail-link-wrapper');
-                      if (linkWrapper) {
-                        linkWrapper.setAttribute('data-location-id', location.id);
-                      }
-                      
-                      // 画像の更新
-                      const imageContainer = document.getElementById('selected-location-images');
-                      if (imageContainer) {
-                        imageContainer.innerHTML = '';
-                        location.images.forEach((img, i) => {
-                          const imgEl = document.createElement('div');
-                          imgEl.className = "aspect-square bg-gray-100 rounded overflow-hidden group";
-                          imgEl.innerHTML = `<img src="${img}" alt="${location.label} - ${i+1}" class="w-full h-full object-cover transition duration-500 group-hover:scale-105" onerror="this.onerror=null;this.src='/placeholder.png';" />`;
-                          imageContainer.appendChild(imgEl);
-                        });
-                      }
-                      
-                      element.classList.remove('hidden');
-                    }
-                  }}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">{location.label}</span>
-                    <span className="text-sm text-gray-500">{location.year}</span>
+          {/* すべてのロケーションを詳細カードで表示 */}
+          <div className="space-y-16">
+            {locations.map((location) => (
+              <div key={location.id} className="bg-white rounded-xl shadow-lg p-8 mb-12">
+                <div className="border-b pb-6 mb-8">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm tracking-wider text-gray-500">{location.year}</span>
+                    <span className="text-sm uppercase tracking-wider text-gray-500">{location.country}</span>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          {/* 初期表示用の広島データ */}
-          <div id="initial-location-data" 
-            data-id="hiroshima"
-            data-label="広島" 
-            data-year="1998" 
-            data-country="日本" 
-            data-description="平和への祈りと再生をテーマにした作品の制作拠点"
-            data-images='["/images/hiroshima_1.jpg","/images/hiroshima_2.jpg"]'
-            className="hidden"
-          ></div>
-
-          {/* 選択された場所の詳細 */}
-          <div id="location-detail" className="hidden">
-            <div id="location-detail" className="bg-white rounded-xl shadow-lg p-8 mb-12">
-              <div className="border-b pb-6 mb-8">
-                <div className="flex items-center gap-3">
-                  <span id="selected-location-year" className="text-sm tracking-wider text-gray-500">1998</span>
-                  <span id="selected-location-country" className="text-sm uppercase tracking-wider text-gray-500">日本</span>
-                </div>
-                <div className="flex justify-between items-center mt-1">
-                  <h2 id="selected-location-title" className="text-3xl font-bold tracking-wide">広島</h2>
-                  <div id="location-detail-link-wrapper" data-location-id="hiroshima">
-                    <ScrollToTopLink href={`/exhibition/location/hiroshima`}>
-                      <span className="text-base font-medium text-gray-800 hover:text-primary transition-colors">
-                        詳細ページへ
-                      </span>
-                    </ScrollToTopLink>
+                  <div className="flex justify-between items-center mt-1">
+                    <h2 className="text-3xl font-bold tracking-wide">{location.label}</h2>
+                    <div>
+                      <ScrollToTopLink href={`/exhibition/location/${location.id}`}>
+                        <span className="text-base font-medium text-gray-800 hover:text-primary transition-colors">
+                          詳細ページへ
+                        </span>
+                      </ScrollToTopLink>
+                    </div>
                   </div>
-                </div>
-              </div>
-              
-              <div className="flex flex-col lg:flex-row gap-12">
-                <div className="lg:w-1/3">
-                  <p id="selected-location-description" className="text-lg text-gray-700 leading-relaxed">
-                    平和への祈りと再生をテーマにした作品の制作拠点
-                  </p>
-                  
-                  <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                    風景や文化、人々の表情から生まれるインスピレーションは、
-                    作品の色彩や構図、テーマに深く影響しています。
-                    特にこの地域で感じた光と影のコントラスト、
-                    自然と都市の共存する風景は、
-                    新たな表現方法を模索するきっかけとなりました。
-                  </p>
-                  
-                  <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                    この場所での体験は、制作活動における
-                    重要な転機となり、以降の作品における
-                    視点や感性に変化をもたらしました。
-                  </p>
                 </div>
                 
-                <div className="lg:w-2/3">
-                  <h3 className="text-xl font-medium mb-6 text-gray-800">アーティスト活動の記録</h3>
-                  <div id="selected-location-images" className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* 初期表示用の画像 */}
-                    <div className="aspect-square bg-gray-100 rounded overflow-hidden group">
-                      <img src="/images/hiroshima_1.jpg" alt="広島 - 1" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" onError={(e) => { const img = e.target as HTMLImageElement; img.onerror = null; img.src = '/placeholder.png'; }} />
-                    </div>
-                    <div className="aspect-square bg-gray-100 rounded overflow-hidden group">
-                      <img src="/images/hiroshima_2.jpg" alt="広島 - 2" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" onError={(e) => { const img = e.target as HTMLImageElement; img.onerror = null; img.src = '/placeholder.png'; }} />
+                <div className="flex flex-col lg:flex-row gap-12">
+                  <div className="lg:w-1/3">
+                    <p className="text-lg text-gray-700 leading-relaxed">
+                      {location.description}
+                    </p>
+                    
+                    <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                      風景や文化、人々の表情から生まれるインスピレーションは、
+                      作品の色彩や構図、テーマに深く影響しています。
+                      特にこの地域で感じた光と影のコントラスト、
+                      自然と都市の共存する風景は、
+                      新たな表現方法を模索するきっかけとなりました。
+                    </p>
+                    
+                    <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                      この場所での体験は、制作活動における
+                      重要な転機となり、以降の作品における
+                      視点や感性に変化をもたらしました。
+                    </p>
+                  </div>
+                  
+                  <div className="lg:w-2/3">
+                    <h3 className="text-xl font-medium mb-6 text-gray-800">アーティスト活動の記録</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {location.images.map((img, i) => (
+                        <div key={i} className="aspect-square bg-gray-100 rounded overflow-hidden group">
+                          <img 
+                            src={img} 
+                            alt={`${location.label} - ${i+1}`} 
+                            className="w-full h-full object-cover transition duration-500 group-hover:scale-105" 
+                            onError={(e) => { 
+                              const img = e.target as HTMLImageElement; 
+                              img.onerror = null; 
+                              img.src = '/placeholder.png'; 
+                            }} 
+                          />
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
