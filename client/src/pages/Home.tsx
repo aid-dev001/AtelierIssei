@@ -499,31 +499,25 @@ const Home = () => {
       {/* Voices Section */}
       <section className="container mx-auto px-4 py-20">
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">VOICES</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             {
-              image: "/images/cat1.jpg",
+              image: "12648.jpg",
               name: "ひょこあに ねこ",
               title: "地方中核産科病院院長夫人",
               quote: "色も色の組み合わせも可愛くて気に入っています。玄関で丸い顔が浮き上がっているのを見ると心も弾みます。"
             },
             {
-              image: "/images/landscape1.jpg",
+              image: "12653.jpg",
               name: "モンマルトル",
               title: "医療系記者",
               quote: "私はいつもモンマルトルが大好きで、特に母がモンマルトルで生まれています。ですのでこの絵は非常に特別な意味を持ちます。"
             },
             {
-              image: "/images/eiffel1.png",
+              image: "12658.jpg",
               name: "エッフェル塔 ねこ",
               title: "フランス美術評論家",
               quote: "日本画家の目を通してエッフェル塔を再発見できるのは素晴らしいことです。素敵！"
-            },
-            {
-              image: "/images/dog1.jpg",
-              name: "ビーグル ブルドッグ",
-              title: "パリ雑誌メディア経営者・実業家",
-              quote: "isseiの\"心\"とともに朝食を。子犬は生きる自信をくれます！"
             }
           ].map((voice, index) => (
             <ScrollToTopLink href="/voices" key={index}>

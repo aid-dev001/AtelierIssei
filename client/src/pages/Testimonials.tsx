@@ -6,18 +6,11 @@ import { Quote } from "lucide-react";
 
 const testimonials = [
   {
-    name: "大学病院長",
-    title: "小児科教授",
-    content: "子供たちが病院を訪れる際の不安を和らげるのにこの作品が大きく貢献しています。\n\n明るい色彩と優しいモチーフが子供たちの笑顔を引き出し、診療環境も和やかになりました。\n\nアートが持つ癒しの力を実感しています。",
-    location: "東京",
-    imageUrl: "/images/director.jpg"
-  },
-  {
-    name: "デザイン事務所代表",
-    title: "クリエイティブディレクター",
-    content: "これらの作品は私たちのオフィス空間に新たな創造性をもたらしてくれました。\n\n来客からも好評で、ミーティング中の会話のきっかけにもなっています。\n\n色彩の使い方とモチーフの選択が独創的で、私たち自身の創作意欲も刺激されます。",
-    location: "大阪",
-    imageUrl: "/images/artworks.jpg"
+    name: "ビーグル ブルドッグ",
+    title: "パリ雑誌メディア経営者・実業家",
+    content: "Ce matin je partage mon petit-dejeuner avec le \"coeur\" d'Issei. Le petit chien nous nourrissent de leur confiance dans la vie! Ils attendent la bonne surprise du jour... a moi d'ouvrir l'oeil!\n\nisseiの\"心\"とともに朝食を。\n子犬は生きる自信をくれます！",
+    location: "パリ",
+    imageUrl: "/images/dog1.jpg"
   },
   {
     name: "ひょこあに ねこ",
