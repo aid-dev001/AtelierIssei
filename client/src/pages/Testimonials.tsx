@@ -8,7 +8,7 @@ const testimonials = [
   {
     name: "ビーグル ブルドッグ",
     title: "パリ雑誌メディア経営者・実業家",
-    content: "Ce matin je partage mon petit-dejeuner avec le \"coeur\" d'Issei. Le petit chien nous nourrissent de leur confiance dans la vie! Ils attendent la bonne surprise du jour... a moi d'ouvrir l'oeil! (isseiの\"心\"とともに朝食を。子犬は生きる自信をくれます！)",
+    content: "Ce matin je partage mon petit-dejeuner avec le \"coeur\" d'Issei. Le petit chien nous nourrissent de leur confiance dans la vie! Ils attendent la bonne surprise du jour... a moi d'ouvrir l'oeil!\n\nisseiの\"心\"とともに朝食を。\n子犬は生きる自信をくれます！",
     location: "パリ",
     imageUrl: "/images/dog1.jpg"
   },
@@ -98,9 +98,13 @@ const Testimonials = () => {
                   </div>
                   <div className="p-8 space-y-6 flex flex-col justify-center bg-white">
                     <Quote className="w-8 h-8 text-gray-300" />
-                    <p className="text-lg leading-relaxed text-gray-700">
-                      "{testimonial.content}"
-                    </p>
+                    <div className="text-lg leading-relaxed text-gray-700">
+                      {testimonial.content.split('\n').map((line, i) => (
+                        <p key={i} className="mb-2">
+                          {line}
+                        </p>
+                      ))}
+                    </div>
                     <div className="space-y-2">
                       <div className="font-semibold text-gray-700 text-lg">{testimonial.name}</div>
                       <div className="text-gray-600">{testimonial.title}</div>
