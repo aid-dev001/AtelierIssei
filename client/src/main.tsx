@@ -17,6 +17,7 @@ import Testimonials from "./pages/Testimonials";
 import Concept from "./pages/Concept";
 import Exhibition from "./pages/Exhibition";
 import ExhibitionDetail from "./pages/ExhibitionDetail";
+import LocationDetail from "./pages/LocationDetail";
 import Collections from "./pages/Collections";
 import CollectionDetail from "./pages/CollectionDetail";
 import AdminLogin from "./pages/AdminLogin";
@@ -40,8 +41,9 @@ function Router() {
           <Route path="/ateliers" component={Ateliers} />
           <Route path="/world-locations" component={WorldLocations} />
           <Route path="/concept" component={Concept} />
-          <Route path="/exhibition" component={Exhibition} />
+          <Route path="/exhibition/location/:locationId" component={LocationDetail} />
           <Route path="/exhibition/:id" component={ExhibitionDetail} />
+          <Route path="/exhibition" component={Exhibition} />
           <Route path="/collections" component={Collections} />
           <Route path="/collections/:id" component={CollectionDetail} />
           <Route path="/admin/:adminPath" component={AdminLogin} />
