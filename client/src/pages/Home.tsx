@@ -215,17 +215,17 @@ const Home = () => {
         {/* フラットなデザインの代表的な写真6枚を表示 - スマホは1列 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
           {[
-            { src: "12662.jpg", title: "色彩の旋律", description: "抽象的な色彩の中に見える秩序と調和" },
-            { src: "12669.jpg", title: "都市の記憶", description: "現代都市に残る過去の痕跡を描く" },
-            { src: "10821.jpg", title: "光の旅路", description: "朝の光が作り出す一瞬の風景" },
-            { src: "3446.jpg", title: "抽象研究 #4", description: "形と色の関係性を探求する実験的作品" },
-            { src: "2266.jpg", title: "幾何学的視覚", description: "線と面が織りなす視覚的リズム" },
-            { src: "7855.jpg", title: "静寂の瞬間", description: "日常の中に隠れた美しさを切り取る" }
+            { src: "/assets/images/12662.jpg", title: "色彩の旋律", description: "抽象的な色彩の中に見える秩序と調和" },
+            { src: "/assets/images/12669.jpg", title: "都市の記憶", description: "現代都市に残る過去の痕跡を描く" },
+            { src: "/assets/images/10821.jpg", title: "光の旅路", description: "朝の光が作り出す一瞬の風景" },
+            { src: "/assets/images/3446.jpg", title: "抽象研究 #4", description: "形と色の関係性を探求する実験的作品" },
+            { src: "/assets/images/2266.jpg", title: "幾何学的視覚", description: "線と面が織りなす視覚的リズム" },
+            { src: "/assets/images/7855.jpg", title: "静寂の瞬間", description: "日常の中に隠れた美しさを切り取る" }
           ].map((image, index) => (
             <div key={index} className="space-y-3">
               <div className="aspect-square bg-gray-100 overflow-hidden">
                 <img 
-                  src={`/${image.src}`} 
+                  src={image.src} 
                   alt={image.title} 
                   className="w-full h-full object-cover"
                   onError={(e) => {
