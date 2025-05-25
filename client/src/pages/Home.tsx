@@ -360,7 +360,7 @@ const Home = () => {
       </section>
 
       {/* World Locations */}
-      <section className="bg-gray-50 py-20">
+      <section className="bg-gray-50 py-20 mb-36">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold mb-4 text-center tracking-wider">WORLD LOCATIONS</h2>
           <p className="text-xl text-center mb-16 text-gray-700">世界各地で取り組んだプロジェクトとインスピレーションを得た場所</p>
