@@ -341,6 +341,32 @@ const locationsData: Record<string, LocationData> = {
     ]
   },
   
+  // 東京・東新宿
+  'tokyo-higashi-shinjuku': {
+    id: 'tokyo-higashi-shinjuku',
+    title: '東京・東新宿',
+    country: '日本',
+    year: '2023',
+    description: '都市の夜景に映えるポップアートの展示',
+    longDescription: `東京・東新宿は、東京の中心部に位置する多様な文化とサブカルチャーが交差するエリアです。
+    
+    2023年、このエリアでポップアートを中心とした展示会を開催する機会に恵まれました。都市の夜景とネオンの輝きを背景に、「POKO FACE」シリーズの新作を展示し、多くの若いアート愛好家たちとの交流が生まれました。
+    
+    この展示では特に、紫とピンクのトーンを基調とした宇宙的な背景に浮かぶキャラクターや、黒地に浮かぶカラフルなモチーフを用いた作品が注目を集めました。東新宿のアンダーグラウンドな雰囲気と都市の活気が、作品の鮮やかな色彩と絶妙にマッチしていました。
+    
+    夜の東新宿を彩るネオンサインや看板の光は、私の作品における色彩の輝きと都市の美学を探求する上で重要なインスピレーション源となりました。都市の持つエネルギーと創造性を反映した展示は、予想以上の反響を得ることができました。
+    
+    若い世代のアーティストやクリエイターとの交流は、現代のデジタル文化とアートの関係性について新たな視点をもたらし、SNSを通じた作品の共有と拡散の可能性についても考える機会となりました。`,
+    images: [
+      { url: '/attached_assets/LINE_ALBUM_20241124_250525_234.jpg', caption: '「Atelier Issei」のキャラクターデザイン' },
+      { url: '/attached_assets/LINE_ALBUM_20241124_250525_233.jpg', caption: '紫髪の少女とカラフルなリボンモチーフ' },
+      { url: '/attached_assets/LINE_ALBUM_20241124_250525_238.jpg', caption: '青髪の少女と「Atelier Issei」ロゴ' }
+    ],
+    relatedLocations: [
+      { id: 'tokyo-shibuya', title: '東京・渋谷', image: '/images/12659.jpg' },
+      { id: 'tokyo-akasaka', title: '東京・赤坂', image: '/images/akasaka_1.jpg' }
+    ]
+  },
   // フランス・アティスモンス教会
   'atis-mons-church': {
     id: 'atis-mons-church',

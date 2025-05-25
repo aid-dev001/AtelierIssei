@@ -137,9 +137,9 @@ const locations = [
     country: "日本",
     description: "都市の夜景に映えるポップアートの展示",
     images: [
-      "/images/LINE_ALBUM_20241124_250525_234.jpg",
-      "/images/LINE_ALBUM_20241124_250525_233.jpg",
-      "/images/LINE_ALBUM_20241124_250525_238.jpg",
+      "/attached_assets/LINE_ALBUM_20241124_250525_234.jpg",
+      "/attached_assets/LINE_ALBUM_20241124_250525_233.jpg",
+      "/attached_assets/LINE_ALBUM_20241124_250525_238.jpg",
     ],
   },
   {
