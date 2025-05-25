@@ -450,6 +450,7 @@ const Home = () => {
                   description: "都会の喧騒の中で見つけた静寂を表現するアトリエ",
                   images: [
                     "/images/LINE_ALBUM_20241124_250525_65.jpg",
+                    "/images/スクリーンショット 2025-05-25 23.25.39.png",
                     "/images/5427.jpg",
                   ],
                 },
