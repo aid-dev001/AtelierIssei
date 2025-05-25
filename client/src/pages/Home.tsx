@@ -342,10 +342,40 @@ const Home = () => {
             __html: `
               // ページ読み込み時に最初の場所を選択
               document.addEventListener('DOMContentLoaded', function() {
-                // 最初のリスト項目をクリック
-                const firstLocation = document.querySelector('.bg-white.rounded-xl.shadow-md.overflow-hidden.mb-12.p-4 .grid > div');
-                if (firstLocation) {
-                  firstLocation.click();
+                // データを直接設定
+                const firstLocation = {
+                  label: "東京・赤坂",
+                  year: "2022",
+                  country: "日本",
+                  description: "伝統と革新が交差する街で生まれる新しい表現",
+                  images: ["/artworks/12653.jpg", "/artworks/12654.jpg", "/artworks/12655.jpg"]
+                };
+                
+                // テキスト内容を設定
+                document.getElementById('selected-location-title').textContent = firstLocation.label;
+                document.getElementById('selected-location-country').textContent = firstLocation.country;
+                document.getElementById('selected-location-year').textContent = firstLocation.year;
+                document.getElementById('selected-location-description').textContent = firstLocation.description;
+                
+                // 画像の更新
+                const imageContainer = document.getElementById('selected-location-images');
+                if (imageContainer) {
+                  imageContainer.innerHTML = '';
+                  firstLocation.images.forEach((img, i) => {
+                    const imgEl = document.createElement('div');
+                    imgEl.className = "aspect-square bg-gray-100 rounded overflow-hidden group";
+                    imgEl.innerHTML = \`<img src="\${img}" alt="\${firstLocation.label} - \${i+1}" class="w-full h-full object-cover transition duration-500 group-hover:scale-105" onerror="this.onerror=null;this.src='/placeholder.png';" />\`;
+                    imageContainer.appendChild(imgEl);
+                  });
+                }
+                
+                // 詳細カードを表示
+                document.getElementById('location-detail').classList.remove('hidden');
+                
+                // 最初のリスト項目にも選択状態のスタイルを適用
+                const firstListItem = document.querySelector('.bg-white.rounded-xl.shadow-md.overflow-hidden.mb-12.p-4 .grid > div');
+                if (firstListItem) {
+                  firstListItem.classList.add('bg-gray-100');
                 }
               });
             `
