@@ -445,7 +445,7 @@ const Home = () => {
                 <h2 id="selected-location-title" className="text-3xl font-bold tracking-wide">東京・赤坂</h2>
                 <ScrollToTopLink 
                   href="/exhibition/location/tokyo-akasaka" 
-                  className="text-sm text-primary hover:text-primary/80 transition-colors"
+                  className="inline-block px-4 py-2 bg-gray-100 text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
                 >
                   詳細ページへ
                 </ScrollToTopLink>
