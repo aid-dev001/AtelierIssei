@@ -196,50 +196,50 @@ const WorldLocations = () => {
           </div>
         </div>
 
-        {/* 選択された場所の詳細情報 */}
+        {/* 選択された場所の詳細情報 - シンプルでおしゃれなデザイン */}
         {selectedLocation && (
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <div className="flex flex-col lg:flex-row gap-8">
+          <div className="bg-white rounded-xl shadow-lg p-8 mb-12">
+            <div className="border-b pb-6 mb-8">
+              <span className="text-sm uppercase tracking-wider text-gray-500">{selectedLocation.country}</span>
+              <h2 className="text-3xl font-bold tracking-wide mt-1">{selectedLocation.label}</h2>
+            </div>
+            
+            <div className="flex flex-col lg:flex-row gap-12">
               <div className="lg:w-1/3">
-                <div className="flex items-center gap-3 mb-4">
-                  <Globe className="w-6 h-6 text-gray-500" />
-                  <span className="text-xl text-gray-600">{selectedLocation.country}</span>
-                </div>
-                <h2 className="text-3xl font-bold tracking-wide mb-6">{selectedLocation.label}</h2>
+                <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                  {selectedLocation.description || `${selectedLocation.label}でのアーティスト活動や訪問を通じて得られた
+                  インスピレーションや文化的な影響が作品に反映されています。
+                  この地域特有の雰囲気や景観、人々との交流が
+                  創作プロセスに大きな影響を与えています。`}
+                </p>
                 
-                <div className="prose max-w-none">
-                  <p className="text-lg text-gray-700 leading-relaxed">
-                    {selectedLocation.description || `${selectedLocation.label}でのアーティスト活動や訪問を通じて得られた
-                    インスピレーションや文化的な影響が作品に反映されています。
-                    この地域特有の雰囲気や景観、人々との交流が
-                    創作プロセスに大きな影響を与えています。`}
-                  </p>
+                <div className="text-sm text-gray-500 space-y-2">
+                  <div>訪問時期: 2022年</div>
+                  <div>滞在期間: 約3ヶ月</div>
                 </div>
               </div>
               
               <div className="lg:w-2/3">
-                <h3 className="flex items-center gap-2 text-2xl font-bold mb-6">
-                  <Navigation className="w-5 h-5" />
-                  {selectedLocation.label}でのアーティスト活動
-                </h3>
-                
                 {LOCATION_IMAGES[selectedLocation.id] && LOCATION_IMAGES[selectedLocation.id].length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {LOCATION_IMAGES[selectedLocation.id].map((image, i) => (
-                      <div 
-                        key={i} 
-                        className="aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-md group"
-                      >
-                        <img 
-                          src={image} 
-                          alt={`${selectedLocation.label} - ${i+1}`}
-                          className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
-                        />
-                      </div>
-                    ))}
+                  <div>
+                    <h3 className="text-xl font-medium mb-6 text-gray-800">アーティスト活動の記録</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {LOCATION_IMAGES[selectedLocation.id].map((image, i) => (
+                        <div 
+                          key={i} 
+                          className="aspect-square bg-gray-100 rounded overflow-hidden group"
+                        >
+                          <img 
+                            src={image} 
+                            alt={`${selectedLocation.label} - ${i+1}`}
+                            className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ) : (
-                  <div className="bg-gray-50 rounded-lg p-6 text-center text-gray-500">
+                  <div className="bg-gray-50 rounded p-6 text-center text-gray-500">
                     この場所の画像はまだ追加されていません
                   </div>
                 )}
