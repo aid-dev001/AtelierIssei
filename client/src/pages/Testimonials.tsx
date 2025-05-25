@@ -82,7 +82,7 @@ const Testimonials = () => {
               className="testimonial-card opacity-0 translate-y-4 transition-all duration-700 ease-out hover:shadow-lg overflow-hidden bg-transparent"
             >
               <CardContent className="p-0">
-                <div className={`grid md:grid-cols-2 h-full ${index % 2 === 0 ? 'md:grid-flow-col' : 'md:grid-flow-col-dense'}`}>
+                <div className={`grid grid-cols-1 md:grid-cols-2 h-full ${index % 2 === 0 ? 'md:grid-flow-col' : 'md:grid-flow-col-dense'}`}>
                   <div className="relative h-full overflow-hidden">
                     <img 
                       src={testimonial.imageUrl}
