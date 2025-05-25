@@ -27,8 +27,8 @@ const testimonials = [
     imageUrl: "/images/dog1.jpg"
   },
   {
-    name: "福山こころの病院",
-    title: "医療法人 大林会",
+    name: "大林芳明",
+    title: "福山こころの病院　院長",
     content: "優しい色彩と温かみのあるデザインで、患者さんに癒しを与えてくれる素晴らしい作品です。病院内に飾ることで、心の安らぎを感じていただける環境づくりに一役買っています。",
     location: "福山",
     imageUrl: "/13456.jpg"
