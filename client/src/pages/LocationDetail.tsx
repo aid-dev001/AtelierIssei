@@ -401,6 +401,32 @@ const locationsData: Record<string, LocationData> = {
       { id: 'chaumont', title: 'ショーモン城', image: '/2266.jpg' }
     ]
   },
+  // パリ第二回
+  'paris-second': {
+    id: 'paris-second',
+    title: 'パリ第二回',
+    country: 'フランス',
+    year: '2022',
+    description: 'パリ中心部での2回目の個展「POKO FACE」シリーズ',
+    longDescription: `2019年のパリでの初個展から3年後の2022年、再びパリの中心部で「POKO FACE」シリーズの新作を発表する機会に恵まれました。
+
+    今回の展示会場はパリ市内の白を基調とした明るく開放的なギャラリーで、青い背景に様々な表情を持つカラフルな顔のモチーフを配した作品が、パリの街並みの中で鮮やかに映えました。
+
+    ギャラリーのショーウィンドウには特大サイズの「POKO FACE」バナーを掲示し、通りがかりの人々の目を引くディスプレイとなりました。店内では様々なサイズの作品を展示し、オリジナルグッズの販売も行いました。
+
+    前回の個展から時間が経ち、パリのアートシーンにも少しずつ認知されるようになった手応えを感じました。フランス人アートコレクターやギャラリストとの対話を通じて、日本とフランスの文化的な感性の違いや共通点について考える貴重な機会となりました。
+
+    この経験は、国際的なアート活動を継続することの意義と、文化的背景の異なる人々との創造的な対話の重要性を改めて実感させてくれました。`,
+    images: [
+      { url: '/paris_second_1.jpg', caption: 'パリのギャラリーショーウィンドウに展示された「POKO FACE」シリーズ' },
+      { url: '/paris_second_2.jpg', caption: 'ギャラリーを訪れたアートコレクターとの交流' },
+      { url: '/paris_second_3.jpg', caption: 'パリの街並みと調和したギャラリー外観' }
+    ],
+    relatedLocations: [
+      { id: 'paris', title: 'パリ第一回', image: '/paris_1.jpg' },
+      { id: 'spain-casamila', title: 'スペイン・カサミラ', image: '/spain_casamila_1.jpg' }
+    ]
+  },
   // フランス・サヴィニー
   'france-savigny': {
     id: 'france-savigny',
