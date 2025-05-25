@@ -281,11 +281,11 @@ const locationsData: Record<string, LocationData> = {
     
     この経験は私の作品における「親しみやすさ」と「普遍性」のテーマ探求に大きな影響を与え、文化の違いを超えた視覚言語としてのアートの可能性についての考察を深めるきっかけとなりました。`,
     images: [
-      { url: '/tokyo_okubo_1.jpg', caption: '大久保ギャラリーでの「POKO ANIMAL」シリーズ展示風景' }
+      { url: '/images/tokyo_okubo_1.jpg', caption: '大久保ギャラリーでの「POKO ANIMAL」シリーズ展示風景' }
     ],
     relatedLocations: [
-      { id: 'tokyo-ikebukuro', title: '東京・池袋', image: '/tokyo_ikebukuro_1.jpg' },
-      { id: 'tokyo-shinjuku', title: '東京・新宿', image: '/tokyo_shinjuku_1.jpg' }
+      { id: 'tokyo-ikebukuro', title: '東京・池袋', image: '/images/tokyo_ikebukuro_1.jpg' },
+      { id: 'tokyo-shinjuku', title: '東京・新宿', image: '/images/tokyo_shinjuku_1.jpg' }
     ]
   },
   // ノルマンディー
