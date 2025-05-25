@@ -513,15 +513,15 @@ const Home = () => {
                 <span id="selected-location-country" className="text-sm uppercase tracking-wider text-gray-500">日本</span>
               </div>
               <div className="flex justify-between items-center mt-1">
-                <h2 id="selected-location-title" className="text-3xl font-bold tracking-wide">東京・赤坂</h2>
+                <h2 id="selected-location-title" className="text-3xl font-bold tracking-wide">広島</h2>
                 <div id="location-detail-link-wrapper">
                   <a 
                     href="#"
                     className="text-base font-medium text-gray-800 hover:text-primary transition-colors"
                     onClick={(e) => {
                       e.preventDefault();
-                      // URLを取得（最初は東京・赤坂を表示）
-                      const locationId = document.getElementById('location-detail-link-wrapper')?.getAttribute('data-location-id') || 'tokyo-akasaka';
+                      // URLを取得（最初は広島を表示）
+                      const locationId = document.getElementById('location-detail-link-wrapper')?.getAttribute('data-location-id') || 'hiroshima';
                       // 詳細ページへ遷移
                       window.location.href = `/exhibition/location/${locationId}`;
                     }}
