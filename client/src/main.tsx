@@ -12,7 +12,7 @@ import Profile from "./pages/Profile";
 import News from "./pages/News";
 import Contact from "./pages/Contact";
 import Ateliers from "./pages/Ateliers";
-import WorldLocations from "./pages/WorldLocations";
+// World Locationsページは削除
 import Testimonials from "./pages/Testimonials";
 import Concept from "./pages/Concept";
 import Exhibition from "./pages/Exhibition";
@@ -39,7 +39,7 @@ function Router() {
           <Route path="/voices" component={Testimonials} />
           <Route path="/contact" component={Contact} />
           <Route path="/ateliers" component={Ateliers} />
-          <Route path="/world-locations" component={WorldLocations} />
+          {/* World Locationsページは削除 */}
           <Route path="/concept" component={Concept} />
           <Route path="/exhibition/location/:locationId" component={LocationDetail} />
           <Route path="/location/:locationId" component={LocationDetail} />
