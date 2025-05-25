@@ -245,6 +245,13 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Video Section */}
+      <VideoHero 
+        videoSrc="/videos/movie.mp4" 
+        posterSrc="/images/12653.jpg" 
+        title="世界各地での創作活動" 
+      />
+
       {/* Art Concept Section */}
       <section className="relative overflow-hidden" style={{ height: '80vh' }}>
         <div className="absolute inset-0">
