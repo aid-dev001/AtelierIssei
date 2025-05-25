@@ -38,9 +38,9 @@ const locationsData: Record<string, LocationData> = {
 
     この時期に制作した作品では、都市の喧騒と孤独、人々の交流と分断といった現代社会の二面性を、鮮やかな色彩のコントラストと抽象的な形態で表現することを試みています。`,
     images: [
-      { url: '/tokyo_shinjuku_1.jpg', caption: '抽象画：都市の色彩と形' },
-      { url: '/tokyo_shinjuku_2.jpg', caption: '抽象的構成：円と曲線の調和' },
-      { url: '/tokyo_shinjuku_3.jpg', caption: '色彩の交差：ネオンカラーの抽象画' }
+      { url: '/images/tokyo_shinjuku_1.jpg', caption: '抽象画：都市の色彩と形' },
+      { url: '/images/tokyo_shinjuku_2.jpg', caption: '抽象的構成：円と曲線の調和' },
+      { url: '/images/tokyo_shinjuku_3.jpg', caption: '色彩の交差：ネオンカラーの抽象画' }
     ],
     relatedLocations: [
       { id: 'tokyo-ikebukuro', title: '東京・池袋', image: '/artworks/12648.jpg' },
@@ -110,8 +110,8 @@ const locationsData: Record<string, LocationData> = {
     
     この対比が私の作品における「記憶と再生」というテーマの探求につながっています。広島滞在中に制作した作品では、過去を忘れずに未来に向かって歩む人間の強さを表現することを試みました。`,
     images: [
-      { url: '/images/hiroshima_1.jpg', caption: '静物画：茶色のバッグと花' },
-      { url: '/images/hiroshima_2.jpg', caption: '時計と黄色いレモンの静物画' }
+      { url: '/images/S__9044006.jpg', caption: '静物画：茶色のバッグと花' },
+      { url: '/images/S__9044005.jpg', caption: '時計と黄色いレモンの静物画' }
     ],
     relatedLocations: [
       { id: 'fukuyama', title: '福山', image: '/images/12670.jpg' },
@@ -132,8 +132,7 @@ const locationsData: Record<string, LocationData> = {
     
     医療の現場にアートを取り入れることで、患者さんの心の支えとなり、また医療スタッフの方々の癒しの空間づくりにも貢献できることを実感しました。この経験は、アートの社会的役割について改めて考える貴重な機会となりました。`,
     images: [
-      { url: '/images/fukuyama_1.jpg', caption: '福山こころの病院での作品贈呈の様子' },
-      { url: '/images/fukuyama_2.jpg', caption: '愛と癒しをテーマにした「ハートアート」作品' }
+      { url: '/images/13456_0.jpg', caption: '福山こころの病院での作品贈呈の様子' }
     ],
     relatedLocations: [
       { id: 'hiroshima', title: '広島', image: '/images/hiroshima_1.jpg' },
@@ -154,11 +153,7 @@ const locationsData: Record<string, LocationData> = {
     
     また、多文化共生社会であるロンドンの多様な人々との交流は、私の作品における「アイデンティティ」と「境界」の概念の探求に大きな影響を与えています。雨の日のロンドンの街並み、歴史的建築物の陰影、そして都市の喧騒と静寂の対比は、新しい表現方法の模索につながりました。`,
     images: [
-      { url: '/images/12675.jpg', caption: '霧に包まれたテムズ川とビッグベン' },
-      { url: '/images/12676.jpg', caption: 'ショーディッチのストリートアート' },
-      { url: '/images/12677.jpg', caption: 'テート・モダンからの眺め' },
-      { url: '/images/12678.jpg', caption: '雨の日のロンドン橋' },
-      { url: '/images/12679.jpg', caption: 'ノッティングヒルのカラフルな建物' }
+      { url: '/images/スクリーンショット 2025-05-25 23.21.59.png', caption: 'ロンドンの街並みと芸術作品' }
     ],
     relatedLocations: [
       { id: 'paris', title: 'パリ', image: '/images/12680.jpg' },
@@ -305,9 +300,8 @@ const locationsData: Record<string, LocationData> = {
     
     また、地元の人々の日常生活や伝統的な市場の光景、そして季節ごとに変化する農村風景は、「ノスタルジア」と「永続性」についての考察を深める機会となりました。`,
     images: [
-      { url: '/france_normandy_1.jpg', caption: '修道院を改装した文化施設の中庭' },
-      { url: '/12670.jpg', caption: 'オンフルールの港町の風景' },
-      { url: '/12671.jpg', caption: 'ノルマンディー上陸作戦のビーチ' }
+      { url: '/images/montmartre_1.jpg', caption: '修道院を改装した文化施設の中庭' },
+      { url: '/images/montmartre_2.jpg', caption: 'オンフルールの港町の風景' }
     ],
     relatedLocations: [
       { id: 'paris-second', title: 'パリ第二回', image: '/paris_second_1.jpg' },

@@ -571,6 +571,18 @@ const Home = () => {
                   ],
                 },
                 {
+                  id: "tokyo-higashi-shinjuku",
+                  label: "東京・東新宿",
+                  year: "2023",
+                  country: "日本",
+                  description: "都市の夜景に映えるポップアートの展示",
+                  images: [
+                    "/attached_assets/LINE_ALBUM_20241124_250525_234.jpg",
+                    "/attached_assets/LINE_ALBUM_20241124_250525_233.jpg",
+                    "/attached_assets/LINE_ALBUM_20241124_250525_238.jpg",
+                  ],
+                },
+                {
                   id: "atis-mons-church",
                   label: "フランス・アティスモンス教会",
                   year: "2023",
