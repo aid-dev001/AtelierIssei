@@ -390,15 +390,38 @@ const locationsData: Record<string, LocationData> = {
     
     毎年開催される音楽祭「ブールジュの春」に触れる機会もあり、音楽と視覚芸術の接点についても新たな視点を得ることができました。`,
     images: [
-      { url: '/images/3446.jpg', caption: 'ブールジュ大聖堂の全景' },
-      { url: '/images/3525.jpg', caption: '大聖堂のステンドグラス' },
-      { url: '/images/3730.jpg', caption: '中世の旧市街の通り' },
-      { url: '/images/2266.jpg', caption: '木組みの伝統的な建物' },
-      { url: '/images/2914.jpg', caption: '音楽祭「ブールジュの春」の様子' }
+      { url: '/3446.jpg', caption: 'ブールジュ大聖堂の全景' },
+      { url: '/3525.jpg', caption: '大聖堂のステンドグラス' },
+      { url: '/3730.jpg', caption: '中世の旧市街の通り' },
+      { url: '/2266.jpg', caption: '木組みの伝統的な建物' },
+      { url: '/2914.jpg', caption: '音楽祭「ブールジュの春」の様子' }
     ],
     relatedLocations: [
-      { id: 'saint-hilaire-andre', title: 'サンティレースアンドレシス', image: '/images/7853.jpg' },
-      { id: 'chaumont', title: 'ショーモン城', image: '/images/2266.jpg' }
+      { id: 'saint-hilaire-andre', title: 'サンティレースアンドレシス', image: '/7853.jpg' },
+      { id: 'chaumont', title: 'ショーモン城', image: '/2266.jpg' }
+    ]
+  },
+  // フランス・サヴィニー
+  'france-savigny': {
+    id: 'france-savigny',
+    title: 'フランス・サヴィニー',
+    country: 'フランス',
+    year: '2022',
+    description: 'フランス地方都市でのファッションとアートの融合展示',
+    longDescription: `サヴィニーはフランスの地方都市で、2022年には地域文化の活性化を目的としたアートとファッションの融合イベントが開催されました。
+
+    このイベントでは、私のアート作品「POKO FACE」シリーズがファッションデザインに取り入れられ、アパレル製品として展開する特別なコラボレーションが実現しました。ピンク色をベースにした特徴的なTシャツは、シンプルでありながらもインパクトのあるデザインとして来場者の注目を集めました。
+
+    ファッションショーでは、私のデザインを身につけたモデルがランウェイを歩き、アートとファッションの境界を超えた新しい表現の可能性を示しました。また、会場ではアート作品の展示とともに、デザイン製品の販売も行われ、多くの方々がアートを身近に感じる機会となりました。
+
+    地方都市での文化イベントという草の根的な取り組みは、大都市のギャラリーとはまた違った親密さと温かみがあり、地域の人々とアーティストの間に直接的な対話が生まれる貴重な場となりました。この経験は、アートの社会的役割とアクセシビリティについて考える重要な機会となりました。`,
+    images: [
+      { url: '/france_savigny_1.jpg', caption: '「POKO FACE」デザインのTシャツを着用したモデル' },
+      { url: '/france_savigny_2.jpg', caption: 'サヴィニーでのファッションショーとアート展示の様子' }
+    ],
+    relatedLocations: [
+      { id: 'paris', title: 'パリ第一回', image: '/paris_1.jpg' },
+      { id: 'atis-mons', title: 'アティスモンス', image: '/12666.jpg' }
     ]
   },
   // スペイン・カサミラ
