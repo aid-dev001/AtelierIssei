@@ -198,10 +198,8 @@ const WorldLocations = () => {
                 onClick={() => setSelectedLocation(location)}
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <span className="font-medium">{location.label}</span>
-                    <span className="text-sm text-gray-500 ml-2">2022</span>
-                  </div>
+                  <span className="font-medium">{location.label}</span>
+                  <span className="text-sm text-gray-500">2022</span>
                 </div>
               </div>
             ))}
@@ -212,7 +210,10 @@ const WorldLocations = () => {
         {selectedLocation && (
           <div className="bg-white rounded-xl shadow-lg p-8 mb-12">
             <div className="border-b pb-6 mb-8">
-              <span className="text-sm uppercase tracking-wider text-gray-500">{selectedLocation.country}</span>
+              <div className="flex items-center gap-3">
+                <span className="text-sm uppercase tracking-wider text-gray-500">{selectedLocation.country}</span>
+                <span className="text-sm tracking-wider text-gray-500">2022</span>
+              </div>
               <h2 className="text-3xl font-bold tracking-wide mt-1">{selectedLocation.label}</h2>
             </div>
             
