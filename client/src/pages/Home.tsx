@@ -626,10 +626,10 @@ const Home = () => {
                 },
                 {
                   id: "saint-hilaire-andre",
-                  label: "フランス・ティレーヌアンドレシス",
+                  label: "フランス・ティレーヌアンドレシス教会",
                   year: "2024",
                   country: "フランス",
-                  description: "中世の面影を残す村での滞在制作",
+                  description: "中世の面影を残す村の教会での滞在制作",
                   images: [
                     "/images/1731420256.jpg",
                     "/images/スクリーンショット 2025-05-25 23.14.20.png",
