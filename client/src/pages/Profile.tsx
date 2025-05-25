@@ -35,51 +35,6 @@ const Profile = () => {
         </div>
       </section>
 
-      <section className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">EXHIBITIONS</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          <div className="bg-white/95 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-            <h3 className="text-2xl font-bold mb-3">2024</h3>
-            <div className="space-y-4">
-              <div>
-                <p className="text-lg mb-2 text-gray-700">「光と調和」個展</p>
-                <p className="text-sm text-gray-600">Nice Art Gallery</p>
-              </div>
-              <div>
-                <p className="text-lg mb-2 text-gray-700">「祈りと芸術」展</p>
-                <p className="text-sm text-gray-600">Bali Sacred Art Space</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white/95 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-            <h3 className="text-2xl font-bold mb-3">2023</h3>
-            <div className="space-y-4">
-              <div>
-                <p className="text-lg mb-2 text-gray-700">「記憶の風景」パリ個展</p>
-                <p className="text-sm text-gray-600">Galerie Paris Modern</p>
-              </div>
-              <div>
-                <p className="text-lg mb-2 text-gray-700">「現代アートの潮流」グループ展</p>
-                <p className="text-sm text-gray-600">Tokyo Contemporary</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white/95 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-            <h3 className="text-2xl font-bold mb-3">2022</h3>
-            <div className="space-y-4">
-              <div>
-                <p className="text-lg mb-2 text-gray-700">「内なる宇宙」パリ個展</p>
-                <p className="text-sm text-gray-600">Espace d'Art Paris</p>
-              </div>
-              <div>
-                <p className="text-lg mb-2 text-gray-700">「アートとテクノロジー」展</p>
-                <p className="text-sm text-gray-600">Digital Art Space Tokyo</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section className="bg-gray-50/80 py-20">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">ARTIST JOURNEY</h2>

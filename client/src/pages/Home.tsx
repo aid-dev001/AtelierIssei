@@ -1033,9 +1033,9 @@ const Home = () => {
             </p>
             <div className="pt-4">
               <ScrollToTopLink href="/profile">
-                <a className="inline-block px-6 py-3 bg-primary/90 text-white rounded-md hover:bg-primary transition-colors">
+                <div className="inline-block px-6 py-3 bg-primary/90 text-white rounded-md hover:bg-primary transition-colors cursor-pointer">
                   詳細プロフィールへ
-                </a>
+                </div>
               </ScrollToTopLink>
             </div>
           </div>
