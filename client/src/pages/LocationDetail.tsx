@@ -117,8 +117,8 @@ const locationsData: Record<string, LocationData> = {
       { url: '/hiroshima_2.jpg', caption: '時計と黄色いレモンの静物画' }
     ],
     relatedLocations: [
-      { id: 'fukuyama', title: '福山', image: '/images/12670.jpg' },
-      { id: 'kyoto', title: '京都', image: '/images/12660.jpg' }
+      { id: 'fukuyama', title: '福山', image: '/12670.jpg' },
+      { id: 'kyoto', title: '京都', image: '/12660.jpg' }
     ]
   },
   'fukuyama': {
@@ -269,8 +269,8 @@ const locationsData: Record<string, LocationData> = {
       { url: '/tokyo_ikebukuro_2.jpg', caption: '色彩豊かな猫のポップアート' }
     ],
     relatedLocations: [
-      { id: 'tokyo-akasaka', title: '東京・赤坂', image: '/images/12653.jpg' },
-      { id: 'tokyo-okubo', title: '東京・大久保', image: '/images/12658.jpg' }
+      { id: 'tokyo-akasaka', title: '東京・赤坂', image: '/12653.jpg' },
+      { id: 'tokyo-okubo', title: '東京・大久保', image: '/12658.jpg' }
     ]
   },
   // 東京・大久保
