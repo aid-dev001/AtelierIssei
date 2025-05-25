@@ -361,7 +361,7 @@ const Home = () => {
                   year: "2022",
                   country: "日本",
                   description: "伝統と革新が交差する街で生まれる新しい表現",
-                  images: ["/12653.jpg", "/12654.jpg", "/12655.jpg"]
+                  images: ["/assets/images/12653.jpg", "/assets/images/12654.jpg", "/assets/images/12655.jpg"]
                 };
                 
                 // テキスト内容を設定
