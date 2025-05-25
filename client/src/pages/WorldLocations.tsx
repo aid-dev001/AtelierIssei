@@ -250,12 +250,22 @@ const WorldLocations = () => {
                 </p>
                 
                 <div className="mt-8">
-                  <Link
-                    to={`/location/${selectedLocation.id}`}
+                  <a 
+                    href="#"
                     className="inline-block px-4 py-2 bg-gray-100 text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      // 選択されたロケーションのIDを確保
+                      const locationId = selectedLocation.id;
+                      console.log(`Redirecting to location: ${locationId}`);
+                      
+                      // 正しいルートへ遷移する
+                      const url = `/location/${locationId}`;
+                      window.location.href = url;
+                    }}
                   >
                     詳細ページへ
-                  </Link>
+                  </a>
                 </div>
               </div>
               

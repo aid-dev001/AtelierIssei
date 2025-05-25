@@ -41,7 +41,7 @@ function Router() {
           <Route path="/ateliers" component={Ateliers} />
           <Route path="/world-locations" component={WorldLocations} />
           <Route path="/concept" component={Concept} />
-          <Route path="/location/:locationId" component={LocationDetail} />
+          <Route path="/exhibition/location/:locationId" component={LocationDetail} />
           <Route path="/exhibition/:id" component={ExhibitionDetail} />
           <Route path="/exhibition" component={Exhibition} />
           <Route path="/collections" component={Collections} />

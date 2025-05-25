@@ -576,7 +576,7 @@ const LocationDetail: React.FC = () => {
             {location.relatedLocations.map((related, index) => (
               <a 
                 key={index} 
-                href={`/location/${related.id}`}
+                href={`/exhibition/location/${related.id}`}
                 className="group bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow"
               >
                 <div className="aspect-[4/3] bg-gray-100 overflow-hidden">
