@@ -492,6 +492,16 @@ const Home = () => {
                   images: ["/images/landscape1.jpg", "/images/cat1.jpg"],
                 },
                 {
+                  id: "london",
+                  label: "ロンドン",
+                  year: "2021",
+                  country: "イギリス",
+                  description: "古典と現代が融合する街での芸術探求",
+                  images: [
+                    "/images/スクリーンショット 2025-05-25 23.21.59.png",
+                  ],
+                },
+                {
                   id: "tokyo-akasaka",
                   label: "東京・赤坂",
                   year: "2022",
@@ -503,16 +513,7 @@ const Home = () => {
                     "/images/akasaka_3.jpg",
                   ],
                 },
-                {
-                  id: "london",
-                  label: "ロンドン",
-                  year: "2021",
-                  country: "イギリス",
-                  description: "古典と現代が融合する街での芸術探求",
-                  images: [
-                    "/images/スクリーンショット 2025-05-25 23.21.59.png",
-                  ],
-                },
+
                 {
                   id: "paris-second",
                   label: "パリ第二回",
@@ -874,7 +875,7 @@ const Home = () => {
                   </div>
                   <div className="aspect-square bg-gray-100 rounded overflow-hidden group">
                     <img
-                      src="/images/hiroshima_2.jpg"
+                      src="/images/S__9044005.jpg"
                       alt="広島 - 2"
                       className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
                       onError={(e) => {
