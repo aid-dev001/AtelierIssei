@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MapPin, Globe, Navigation } from "lucide-react";
@@ -135,12 +135,22 @@ const LOCATION_IMAGES: Record<string, string[]> = {
 const COUNTRIES = Array.from(new Set(LOCATIONS.map(loc => loc.country)));
 
 const WorldLocations = () => {
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+  // デフォルトで最初のロケーションを選択状態にする
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(LOCATIONS[0]);
   const [selectedCountry, setSelectedCountry] = useState<string>("all");
   
   const filteredLocations = selectedCountry === "all" 
     ? LOCATIONS 
     : LOCATIONS.filter(loc => loc.country === selectedCountry);
+    
+  // 国が変更されたとき、その国の最初のロケーションを選択する
+  useEffect(() => {
+    if (filteredLocations.length > 0) {
+      setSelectedLocation(filteredLocations[0]);
+    } else {
+      setSelectedLocation(null);
+    }
+  }, [selectedCountry, filteredLocations]);
 
   // 国別にグループ化した場所のリストを作成
   const locationsByCountry = LOCATIONS.reduce((acc, location) => {
@@ -188,8 +198,10 @@ const WorldLocations = () => {
                 onClick={() => setSelectedLocation(location)}
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-medium">{location.label}</span>
-                  <span className="text-sm text-gray-500 ml-2">2022</span>
+                  <div className="flex items-center">
+                    <span className="font-medium">{location.label}</span>
+                    <span className="text-sm text-gray-500 ml-2">2022</span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -206,17 +218,26 @@ const WorldLocations = () => {
             
             <div className="flex flex-col lg:flex-row gap-12">
               <div className="lg:w-1/3">
-                <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                <p className="text-lg text-gray-700 leading-relaxed">
                   {selectedLocation.description || `${selectedLocation.label}でのアーティスト活動や訪問を通じて得られた
                   インスピレーションや文化的な影響が作品に反映されています。
                   この地域特有の雰囲気や景観、人々との交流が
                   創作プロセスに大きな影響を与えています。`}
                 </p>
                 
-                <div className="text-sm text-gray-500 space-y-2">
-                  <div>訪問時期: 2022年</div>
-                  <div>滞在期間: 約3ヶ月</div>
-                </div>
+                <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                  風景や文化、人々の表情から生まれるインスピレーションは、
+                  作品の色彩や構図、テーマに深く影響しています。
+                  特にこの地域で感じた光と影のコントラスト、
+                  自然と都市の共存する風景は、
+                  新たな表現方法を模索するきっかけとなりました。
+                </p>
+                
+                <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                  この場所での体験は、制作活動における
+                  重要な転機となり、以降の作品における
+                  視点や感性に変化をもたらしました。
+                </p>
               </div>
               
               <div className="lg:w-2/3">
