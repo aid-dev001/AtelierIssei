@@ -666,36 +666,32 @@ const LocationDetail: React.FC = () => {
         />
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-16">
-        {/* 詳細文章 */}
-        <div className="lg:col-span-2">
-          <h2 className="text-2xl font-semibold mb-6">アーティスト活動の記録</h2>
-          <div className="prose prose-lg max-w-none">
-            {location.longDescription.split('\n\n').map((paragraph, i) => (
-              <p key={i} className="mb-4">{paragraph.trim()}</p>
-            ))}
+      {/* サイドバー情報 - 上部に移動 */}
+      <div className="mb-12">
+        <h3 className="text-xl font-medium mb-4">詳細情報</h3>
+        <dl className="space-y-2 max-w-md">
+          <div className="flex justify-between">
+            <dt className="text-gray-600">場所</dt>
+            <dd className="font-medium">{location.title}</dd>
           </div>
-        </div>
+          <div className="flex justify-between">
+            <dt className="text-gray-600">国</dt>
+            <dd className="font-medium">{location.country}</dd>
+          </div>
+          <div className="flex justify-between">
+            <dt className="text-gray-600">訪問年</dt>
+            <dd className="font-medium">{location.year}</dd>
+          </div>
+        </dl>
+      </div>
         
-        {/* サイドバー情報 */}
-        <div className="space-y-8">
-          <div>
-            <h3 className="text-xl font-medium mb-4">詳細情報</h3>
-            <dl className="space-y-2">
-              <div className="flex justify-between">
-                <dt className="text-gray-600">場所</dt>
-                <dd className="font-medium">{location.title}</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-gray-600">国</dt>
-                <dd className="font-medium">{location.country}</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-gray-600">訪問年</dt>
-                <dd className="font-medium">{location.year}</dd>
-              </div>
-            </dl>
-          </div>
+      {/* 詳細文章 */}
+      <div className="mb-16">
+        <h2 className="text-2xl font-semibold mb-6">アーティスト活動の記録</h2>
+        <div className="prose prose-lg max-w-none">
+          {location.longDescription.split('\n\n').map((paragraph, i) => (
+            <p key={i} className="mb-4">{paragraph.trim()}</p>
+          ))}
         </div>
       </div>
       

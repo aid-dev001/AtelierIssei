@@ -338,27 +338,27 @@ const Home = () => {
           <div className="bg-white rounded-xl shadow-md overflow-hidden mb-12 p-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2">
               {[
-                { id: "hiroshima", label: "広島", year: "1998", country: "日本", description: "平和への祈りと再生をテーマにした作品の制作拠点", images: ["/hiroshima_1.jpg", "/hiroshima_2.jpg"] },
-                { id: "tokyo-shinjuku", label: "東京・新宿", year: "2002", country: "日本", description: "都市の多様性と活気を色彩豊かに表現した作品", images: ["/tokyo_shinjuku_1.jpg", "/tokyo_shinjuku_2.jpg", "/tokyo_shinjuku_3.jpg"] },
-                { id: "tokyo-ikebukuro", label: "東京・池袋", year: "2018", country: "日本", description: "都会の喧騒の中で見つけた静寂を表現するアトリエ", images: ["/tokyo_ikebukuro_1.jpg", "/tokyo_ikebukuro_2.jpg"] },
-                { id: "abu-dhabi", label: "アブダビ", year: "2019", country: "UAE", description: "砂漠の国で開催した個展での作品展示", images: ["/abu_dhabi_1.jpg"] },
-                { id: "tokyo-okubo", label: "東京・大久保", year: "2019", country: "日本", description: "多様な文化が混ざり合うギャラリーでの作品展示", images: ["/tokyo_okubo_1.jpg"] },
-                { id: "paris", label: "パリ第一回", year: "2019", country: "フランス", description: "芸術の都で開催した初個展での作品展示", images: ["/paris_1.jpg", "/paris_2.jpg", "/paris_3.jpg"] },
-                { id: "saint-hilaire-andre", label: "サンティレースアンドレシス", year: "2019", country: "フランス", description: "中世の面影を残す村での滞在制作", images: ["/7853.jpg", "/7855.jpg", "/8594.jpg"] },
-                { id: "bourges", label: "ブールジュ", year: "2025", country: "フランス", description: "ゴシック建築に囲まれた創作体験", images: ["/3446.jpg", "/3525.jpg", "/3730.jpg"] },
-                { id: "normandy", label: "フランス・ノルマンディー", year: "2023", country: "フランス", description: "歴史と自然が織りなす風景からのインスピレーション", images: ["/france_normandy_1.jpg", "/12670.jpg", "/12671.jpg"] },
-                { id: "tokyo-akasaka", label: "東京・赤坂", year: "2022", country: "日本", description: "伝統と革新が交差する街で生まれる新しい表現", images: ["/tokyo_akasaka_1.jpg", "/tokyo_akasaka_2.jpg", "/tokyo_akasaka_3.jpg"] },
-                { id: "london", label: "ロンドン", year: "2022", country: "イギリス", description: "古典と現代が融合する街での芸術探求", images: ["/10819.jpg", "/10820.jpg", "/10821.jpg"] },
-                { id: "paris-second", label: "パリ第二回", year: "2022", country: "フランス", description: "パリ中心部での2回目の個展「POKO FACE」シリーズ", images: ["/paris_second_1.jpg", "/paris_second_2.jpg", "/paris_second_3.jpg"] },
-                { id: "spain-casamila", label: "スペイン・カサミラ", year: "2022", country: "スペイン", description: "ガウディ建築の傑作と現代アートの融合", images: ["/spain_casamila_1.jpg", "/spain_casamila_2.jpg", "/spain_casamila_3.jpg"] },
-                { id: "france-savigny", label: "フランス・サヴィニー地方", year: "2022", country: "フランス", description: "フランス地方都市でのファッションとアートの融合展示", images: ["/france_savigny_1.jpg", "/france_savigny_2.jpg"] },
-                { id: "atis-mons", label: "アティスモンス", year: "2022", country: "フランス", description: "フランス郊外の静かな村での集中的な創作期間", images: ["/atis_mons_1.jpg", "/atis_mons_2.jpg", "/atis_mons_3.jpg"] },
-                { id: "atis-mons-church", label: "フランス・アティスモンス教会", year: "2023", country: "フランス", description: "歴史的な教会を舞台にした特別展示会", images: ["/atis_mons_church_1.jpg", "/atis_mons_church_2.jpg", "/atis_mons_church_3.jpg"] },
-                { id: "chaumont", label: "フランス・ショーモン城", year: "2024", country: "フランス", description: "歴史的な城での特別展示プロジェクト", images: ["/chaumont_2024_1.jpg", "/chaumont_2024_2.jpg"] },
-                { id: "nice", label: "フランス・ニース", year: "2024", country: "フランス", description: "地中海の陽光に照らされた色彩の研究", images: ["/nice_2024_1.jpg", "/nice_2024_2.jpg", "/nice_2024_3.jpg"] },
-                { id: "fukuyama", label: "広島・福山", year: "2024", country: "日本", description: "福山こころの病院での愛と癒しをテーマにした作品展示", images: ["/fukuyama_1.jpg", "/fukuyama_2.jpg"] },
-                { id: "france-chambord", label: "フランス・シャンボール城", year: "2023", country: "フランス", description: "フランス最大の城を描く野外アートプロジェクト", images: ["/chambord_2023_1.jpg", "/chambord_2023_2.jpg"] },
-                { id: "montmartre", label: "フランス・モンマルトル", year: "2023", country: "フランス", description: "芸術家の聖地で描く街角スケッチの旅", images: ["/montmartre_1.jpg", "/montmartre_2.jpg"] }
+                { id: "hiroshima", label: "広島", year: "1998", country: "日本", description: "平和への祈りと再生をテーマにした作品の制作拠点", images: ["hiroshima_1.jpg", "hiroshima_2.jpg"] },
+                { id: "tokyo-shinjuku", label: "東京・新宿", year: "2002", country: "日本", description: "都市の多様性と活気を色彩豊かに表現した作品", images: ["tokyo_shinjuku_1.jpg", "tokyo_shinjuku_2.jpg", "tokyo_shinjuku_3.jpg"] },
+                { id: "tokyo-ikebukuro", label: "東京・池袋", year: "2018", country: "日本", description: "都会の喧騒の中で見つけた静寂を表現するアトリエ", images: ["tokyo_ikebukuro_1.jpg", "tokyo_ikebukuro_2.jpg"] },
+                { id: "abu-dhabi", label: "アブダビ", year: "2019", country: "UAE", description: "砂漠の国で開催した個展での作品展示", images: ["abu_dhabi_1.jpg"] },
+                { id: "tokyo-okubo", label: "東京・大久保", year: "2019", country: "日本", description: "多様な文化が混ざり合うギャラリーでの作品展示", images: ["tokyo_okubo_1.jpg"] },
+                { id: "paris", label: "パリ第一回", year: "2019", country: "フランス", description: "芸術の都で開催した初個展での作品展示", images: ["paris_1.jpg", "paris_2.jpg", "paris_3.jpg"] },
+                { id: "saint-hilaire-andre", label: "サンティレースアンドレシス", year: "2019", country: "フランス", description: "中世の面影を残す村での滞在制作", images: ["7853.jpg", "7855.jpg", "8594.jpg"] },
+                { id: "tokyo-akasaka", label: "東京・赤坂", year: "2022", country: "日本", description: "伝統と革新が交差する街で生まれる新しい表現", images: ["tokyo_akasaka_1.jpg", "tokyo_akasaka_2.jpg", "tokyo_akasaka_3.jpg"] },
+                { id: "london", label: "ロンドン", year: "2022", country: "イギリス", description: "古典と現代が融合する街での芸術探求", images: ["10819.jpg", "10820.jpg", "10821.jpg"] },
+                { id: "paris-second", label: "パリ第二回", year: "2022", country: "フランス", description: "パリ中心部での2回目の個展「POKO FACE」シリーズ", images: ["paris_second_1.jpg", "paris_second_2.jpg", "paris_second_3.jpg"] },
+                { id: "spain-casamila", label: "スペイン・カサミラ", year: "2022", country: "スペイン", description: "ガウディ建築の傑作と現代アートの融合", images: ["spain_casamila_1.jpg", "spain_casamila_2.jpg", "spain_casamila_3.jpg"] },
+                { id: "france-savigny", label: "フランス・サヴィニー地方", year: "2022", country: "フランス", description: "フランス地方都市でのファッションとアートの融合展示", images: ["france_savigny_1.jpg", "france_savigny_2.jpg"] },
+                { id: "atis-mons", label: "アティスモンス", year: "2022", country: "フランス", description: "フランス郊外の静かな村での集中的な創作期間", images: ["atis_mons_1.jpg", "atis_mons_2.jpg", "atis_mons_3.jpg"] },
+                { id: "atis-mons-church", label: "フランス・アティスモンス教会", year: "2023", country: "フランス", description: "歴史的な教会を舞台にした特別展示会", images: ["atis_mons_church_1.jpg", "atis_mons_church_2.jpg", "atis_mons_church_3.jpg"] },
+                { id: "normandy", label: "フランス・ノルマンディー", year: "2023", country: "フランス", description: "歴史と自然が織りなす風景からのインスピレーション", images: ["france_normandy_1.jpg", "12670.jpg", "12671.jpg"] },
+                { id: "france-chambord", label: "フランス・シャンボール城", year: "2023", country: "フランス", description: "フランス最大の城を描く野外アートプロジェクト", images: ["chambord_2023_1.jpg", "chambord_2023_2.jpg"] },
+                { id: "montmartre", label: "フランス・モンマルトル", year: "2023", country: "フランス", description: "芸術家の聖地で描く街角スケッチの旅", images: ["montmartre_1.jpg", "montmartre_2.jpg"] },
+                { id: "chaumont", label: "フランス・ショーモン城", year: "2024", country: "フランス", description: "歴史的な城での特別展示プロジェクト", images: ["chaumont_2024_1.jpg", "chaumont_2024_2.jpg"] },
+                { id: "nice", label: "フランス・ニース", year: "2024", country: "フランス", description: "地中海の陽光に照らされた色彩の研究", images: ["nice_2024_1.jpg", "nice_2024_2.jpg", "nice_2024_3.jpg"] },
+                { id: "fukuyama", label: "広島・福山", year: "2024", country: "日本", description: "福山こころの病院での愛と癒しをテーマにした作品展示", images: ["fukuyama_1.jpg", "fukuyama_2.jpg"] },
+                { id: "bourges", label: "ブールジュ", year: "2025", country: "フランス", description: "ゴシック建築に囲まれた創作体験", images: ["3446.jpg", "3525.jpg", "3730.jpg"] }
               ].map((location, index) => (
                 <div 
                   key={location.id}
