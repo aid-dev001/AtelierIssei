@@ -222,12 +222,12 @@ const Home = () => {
             { src: "/images/2266.jpg", title: "幾何学的視覚", description: "線と面が織りなす視覚的リズム" },
             { src: "/images/7855.jpg", title: "静寂の瞬間", description: "日常の中に隠れた美しさを切り取る" }
           ].map((image, index) => (
-            <div key={index} className="space-y-3">
-              <div className="aspect-square bg-gray-100 overflow-hidden">
+            <div key={index} className="space-y-3 group">
+              <div className="aspect-square bg-gray-100 overflow-hidden rounded shadow-sm">
                 <img 
                   src={image.src} 
                   alt={image.title} 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:brightness-110"
                   onError={(e) => {
                     const img = e.target as HTMLImageElement;
                     img.onerror = null;
@@ -236,7 +236,7 @@ const Home = () => {
                 />
               </div>
               <div className="space-y-1 px-1">
-                <h3 className="font-medium text-lg">{image.title}</h3>
+                <h3 className="font-medium text-lg transition-colors duration-300 group-hover:text-primary">{image.title}</h3>
                 <p className="text-sm text-gray-600">{image.description}</p>
               </div>
             </div>
@@ -423,6 +423,18 @@ const Home = () => {
                   重要な転機となり、以降の作品における
                   視点や感性に変化をもたらしました。
                 </p>
+                
+                <div className="mt-8">
+                  <ScrollToTopLink 
+                    href="/exhibition/location/tokyo-akasaka" 
+                    className="inline-flex items-center px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors"
+                  >
+                    詳細ページを見る
+                    <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </ScrollToTopLink>
+                </div>
               </div>
               
               <div className="lg:w-2/3">
