@@ -316,7 +316,7 @@ const Home = () => {
       </div>
 
       {/* Art Concept Section */}
-      <section className="relative overflow-hidden" style={{ height: '80vh' }}>
+      <section className="relative overflow-hidden mb-36" style={{ height: '80vh' }}>
         <div className="absolute inset-0">
           <img
             src="/artworks/12648.jpg"
