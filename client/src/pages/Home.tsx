@@ -268,7 +268,7 @@ const Home = () => {
                 />
               </div>
               <div className="space-y-1 px-1">
-                <div className="text-sm font-medium text-primary">{artwork.category}</div>
+                <div className="text-sm font-bold text-gray-800">{artwork.category}</div>
                 <h3 className="font-medium text-lg">{artwork.title}</h3>
                 <p className="text-sm text-gray-600">{artwork.description}</p>
               </div>
