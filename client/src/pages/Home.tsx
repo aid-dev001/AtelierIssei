@@ -211,6 +211,40 @@ const Home = () => {
 
       <section className="container mx-auto px-4">
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">EXHIBITION</h2>
+        
+        {/* 代表的な写真6枚を表示 */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-12">
+          {[
+            { src: "/12662.jpg", title: "Harmony in Blue", year: "2022" },
+            { src: "/12669.jpg", title: "Urban Reflections", year: "2021" },
+            { src: "/10821.jpg", title: "Morning Light", year: "2023" },
+            { src: "/3446.jpg", title: "Abstract Study #4", year: "2020" },
+            { src: "/2266.jpg", title: "Geometric Vision", year: "2022" },
+            { src: "/IMG_7161.jpg", title: "Renaissance Memory", year: "2021" }
+          ].map((image, index) => (
+            <div 
+              key={index} 
+              className="group relative aspect-square overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+            >
+              <img 
+                src={image.src} 
+                alt={image.title} 
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                onError={(e) => {
+                  const img = e.target as HTMLImageElement;
+                  img.onerror = null;
+                  img.src = '/placeholder.png';
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                <h3 className="text-white font-medium">{image.title}</h3>
+                <p className="text-white/80 text-sm">{image.year}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        {/* 展示会場情報 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {locations.map((location, index) => (
             <ScrollToTopLink href={`/exhibition/${location.city.toLowerCase()}`} key={index}>
@@ -221,13 +255,6 @@ const Home = () => {
               </div>
             </ScrollToTopLink>
           ))}
-        </div>
-        <div className="aspect-[16/9] w-full overflow-hidden rounded-xl shadow-xl">
-          <img
-            src="/artworks/image.png"
-            alt="Exhibition Map"
-            className="w-full h-full object-cover"
-          />
         </div>
       </section>
 
@@ -348,7 +375,7 @@ const Home = () => {
                   year: "2022",
                   country: "日本",
                   description: "伝統と革新が交差する街で生まれる新しい表現",
-                  images: ["/artworks/12653.jpg", "/artworks/12654.jpg", "/artworks/12655.jpg"]
+                  images: ["/12653.jpg", "/12654.jpg", "/12655.jpg"]
                 };
                 
                 // テキスト内容を設定
