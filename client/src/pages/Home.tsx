@@ -596,8 +596,8 @@ const Home = () => {
                   country: "フランス",
                   description: "芸術家の聖地で描く街角スケッチの旅",
                   images: [
-                    "/images/montmartre_1.jpg",
-                    "/images/montmartre_2.jpg",
+                    "/images/23704_0.jpg",
+                    "/images/23703_0.jpg",
                   ],
                 },
                 {
