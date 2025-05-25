@@ -62,9 +62,9 @@ const locationsData: Record<string, LocationData> = {
     
     特に印象的だったのは、早朝の静寂の中で見た光と影の美しい調和でした。西洋と東洋の美意識が融合する瞬間を探求し、そこから生まれる新しい美のかたちを模索しています。`,
     images: [
-      { url: '/tokyo_akasaka_1.jpg', caption: '水色の髪の少女「POKO FACE」シリーズ' },
-      { url: '/tokyo_akasaka_2.jpg', caption: 'クラゲたちの群れ「POKO SEA」シリーズ' },
-      { url: '/tokyo_akasaka_3.jpg', caption: 'ピンクと青の顔「POKO FACE」シリーズ' }
+      { url: '/images/akasaka_1.jpg', caption: '水色の髪の少女「POKO FACE」シリーズ' },
+      { url: '/images/akasaka_2.jpg', caption: '壁面展示されたPOKO FACEコレクション' },
+      { url: '/images/akasaka_3.jpg', caption: 'ピンクと青の顔「POKO FACE」シリーズ' }
     ],
     relatedLocations: [
       { id: 'tokyo-okubo', title: '東京・大久保', image: '/tokyo_okubo_1.jpg' },
