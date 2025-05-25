@@ -407,6 +407,26 @@ const Home = () => {
           </div>
         </div>
       </section>
+      {/* Exhibition Link Section */}
+      <section className="container mx-auto px-4 py-20">
+        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">
+          EXHIBITION
+        </h2>
+        <div className="relative overflow-hidden rounded-lg shadow-lg">
+          <a href="/exhibition" className="block group">
+            <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
+              <img
+                src="/images/スクリーンショット 2025-05-25 19.23.37.png"
+                alt="EXHIBITIONS"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-0 transition-opacity duration-300 group-hover:bg-opacity-20 flex flex-col items-center justify-center">
+                <span className="text-white text-3xl md:text-4xl font-bold mb-4"></span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </section>
 
       {/* World Locations */}
       <section className="bg-gray-50 py-20">
@@ -536,6 +556,18 @@ const Home = () => {
                     "/images/23624_0.jpg",
                     "/images/23630_0.jpg",
                     "/images/heji3918.jpg",
+                  ],
+                },
+                {
+                  id: "tokyo-higashi-shinjuku",
+                  label: "東京・東新宿",
+                  year: "2023",
+                  country: "日本",
+                  description: "都市の夜景に映えるポップアートの展示",
+                  images: [
+                    "/attached_assets/LINE_ALBUM_20241124_250525_234.jpg",
+                    "/attached_assets/LINE_ALBUM_20241124_250525_233.jpg",
+                    "/attached_assets/LINE_ALBUM_20241124_250525_238.jpg",
                   ],
                 },
                 {
@@ -890,27 +922,6 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Exhibition Link Section */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="relative overflow-hidden rounded-lg shadow-lg">
-          <a href="/exhibition" className="block group">
-            <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
-              <img 
-                src="/attached_assets/スクリーンショット 2025-05-25 19.23.37.png" 
-                alt="展示会場の様子" 
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-30 transition-opacity duration-300 group-hover:bg-opacity-20 flex flex-col items-center justify-center">
-                <span className="text-white text-3xl md:text-4xl font-bold mb-4">展示会場を見る</span>
-                <div className="px-6 py-3 bg-white bg-opacity-90 rounded-full text-gray-900 font-medium">
-                  詳細ページへ
-                </div>
-              </div>
-            </div>
-          </a>
         </div>
       </section>
 
