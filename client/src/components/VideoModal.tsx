@@ -3,6 +3,7 @@ import {
   Dialog,
   DialogContent,
   DialogTrigger,
+  DialogTitle,
 } from "@/components/ui/dialog";
 
 interface VideoModalProps {
@@ -34,8 +35,11 @@ const VideoModal: React.FC<VideoModalProps> = ({ videoSrc, children }) => {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-4xl border-none bg-transparent p-0">
-        <div className="relative w-full overflow-hidden bg-black rounded-lg">
+      <DialogContent className="sm:max-w-4xl border-none bg-black/90 p-0 backdrop-blur-sm">
+        <div className="sr-only">
+          <DialogTitle>アーティスト活動記録</DialogTitle>
+        </div>
+        <div className="relative w-full overflow-hidden rounded-lg">
           <video
             ref={videoRef}
             controls
