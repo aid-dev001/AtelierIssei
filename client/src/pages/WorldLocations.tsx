@@ -176,30 +176,24 @@ const WorldLocations = () => {
           </TabsList>
         </Tabs>
         
-        {/* シンプルなリスト表示 */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden mb-12">
-          <ul className="divide-y">
+        {/* 超シンプルなリスト表示 - PC表示で複数列 */}
+        <div className="bg-white rounded-xl shadow-md overflow-hidden mb-12 p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2">
             {filteredLocations.map((location) => (
-              <li 
+              <div 
                 key={location.id}
-                className={`cursor-pointer hover:bg-gray-50 transition-colors ${
+                className={`cursor-pointer hover:bg-gray-50 transition-colors rounded px-3 py-2 ${
                   selectedLocation?.id === location.id ? 'bg-gray-100' : ''
                 }`}
                 onClick={() => setSelectedLocation(location)}
               >
-                <div className="flex items-center justify-between p-4">
-                  <div className="flex items-center gap-4">
-                    <MapPin className="w-5 h-5 text-gray-400" />
-                    <div>
-                      <div className="font-medium">{location.label}</div>
-                      <div className="text-sm text-gray-500">{location.country}</div>
-                    </div>
-                  </div>
-                  <div className="text-sm text-gray-500">2020 - 2024</div>
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">{location.label}</span>
+                  <span className="text-sm text-gray-500 ml-2">2022</span>
                 </div>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
 
         {/* 選択された場所の詳細情報 */}
