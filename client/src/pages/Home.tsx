@@ -214,21 +214,51 @@ const Home = () => {
       <section className="container mx-auto px-4 mb-20">
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">EXHIBITION</h2>
         
-        {/* フラットなデザインの代表的な写真6枚を表示 - スマホは1列 */}
+        {/* 代表作品を表示 - スマホは1列 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
           {[
-            { src: "/12662.jpg", title: "色彩の旋律", description: "抽象的な色彩の中に見える秩序と調和" },
-            { src: "/12669.jpg", title: "都市の記憶", description: "現代都市に残る過去の痕跡を描く" },
-            { src: "/10821.jpg", title: "光の旅路", description: "朝の光が作り出す一瞬の風景" },
-            { src: "/3446.jpg", title: "抽象研究 #4", description: "形と色の関係性を探求する実験的作品" },
-            { src: "/2266.jpg", title: "幾何学的視覚", description: "線と面が織りなす視覚的リズム" },
-            { src: "/7855.jpg", title: "静寂の瞬間", description: "日常の中に隠れた美しさを切り取る" }
-          ].map((image, index) => (
+            { 
+              src: "featured_artworks/girl_1.jpg", 
+              category: "女の子", 
+              title: "Girls Collection", 
+              description: "女の子をテーマにした独自の世界観を表現" 
+            },
+            { 
+              src: "featured_artworks/digital_art_1.jpg", 
+              category: "デジタルアート", 
+              title: "Digital Art", 
+              description: "デジタル技術を駆使した現代的な表現" 
+            },
+            { 
+              src: "featured_artworks/poko_animal_1.jpg", 
+              category: "ひょこあに", 
+              title: "Poko Animal", 
+              description: "愛らしい動物たちのユニークな表現" 
+            },
+            { 
+              src: "featured_artworks/abstract_1.jpg", 
+              category: "抽象画", 
+              title: "Abstract Collection", 
+              description: "色彩と形の自由な探求" 
+            },
+            { 
+              src: "featured_artworks/landscape_1.jpg", 
+              category: "風景画", 
+              title: "Landscape", 
+              description: "独自の視点で捉えた風景の詩的表現" 
+            },
+            { 
+              src: "featured_artworks/animal_1.jpg", 
+              category: "動物", 
+              title: "Animal Collection", 
+              description: "動物たちの生命力と美しさを表現" 
+            }
+          ].map((artwork, index) => (
             <div key={index} className="space-y-3 group">
               <div className="aspect-square bg-gray-100 overflow-hidden rounded shadow-sm">
                 <img 
-                  src={image.src} 
-                  alt={image.title} 
+                  src={artwork.src} 
+                  alt={artwork.title} 
                   className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:brightness-110"
                   onError={(e) => {
                     const img = e.target as HTMLImageElement;
@@ -238,8 +268,9 @@ const Home = () => {
                 />
               </div>
               <div className="space-y-1 px-1">
-                <h3 className="font-medium text-lg">{image.title}</h3>
-                <p className="text-sm text-gray-600">{image.description}</p>
+                <div className="text-sm font-medium text-primary">{artwork.category}</div>
+                <h3 className="font-medium text-lg">{artwork.title}</h3>
+                <p className="text-sm text-gray-600">{artwork.description}</p>
               </div>
             </div>
           ))}
