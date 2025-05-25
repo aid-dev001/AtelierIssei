@@ -505,7 +505,7 @@ const Home = () => {
                 {
                   id: "london",
                   label: "ロンドン",
-                  year: "2022",
+                  year: "2021",
                   country: "イギリス",
                   description: "古典と現代が融合する街での芸術探求",
                   images: [
