@@ -598,8 +598,8 @@ const locationsData: Record<string, LocationData> = {
       { url: '/montmartre_2.jpg', caption: '赤いキャノピーのカフェと完成途中の作品' }
     ],
     relatedLocations: [
-      { id: 'france-chambord', title: 'フランス・シャンボール城', image: '/chambord_2023_1.jpg' },
-      { id: 'paris-second', title: 'パリ第二回', image: '/paris_second_1.jpg' }
+      { id: 'france-chambord', title: 'フランス・シャンボール城', image: '/images/chambord_2023_1.jpg' },
+      { id: 'paris-second', title: 'パリ第二回', image: '/images/paris_second_1.jpg' }
     ]
   }
 };

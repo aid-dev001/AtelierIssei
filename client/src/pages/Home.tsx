@@ -393,6 +393,7 @@ const Home = () => {
               ].map((location, index) => (
                 <div 
                   key={location.id}
+                  data-id={location.id}
                   className={`cursor-pointer hover:bg-gray-50 transition-colors rounded px-3 py-2`}
                   onClick={() => {
                     const element = document.getElementById('location-detail');
@@ -438,7 +439,7 @@ const Home = () => {
           <script dangerouslySetInnerHTML={{
             __html: `
               // ページ読み込み時に最初の場所を選択
-              document.addEventListener('DOMContentLoaded', function() {
+              window.addEventListener('load', function() {
                 // データを直接設定
                 const firstLocation = {
                   id: "hiroshima",
@@ -476,10 +477,10 @@ const Home = () => {
                 // 詳細カードを表示
                 document.getElementById('location-detail').classList.remove('hidden');
                 
-                // 最初のリスト項目にも選択状態のスタイルを適用
-                const firstListItem = document.querySelector('.bg-white.rounded-xl.shadow-md.overflow-hidden.mb-12.p-4 .grid > div');
-                if (firstListItem) {
-                  firstListItem.classList.add('bg-gray-100');
+                // 広島のリスト項目に選択状態のスタイルを適用
+                const hiroshimaItem = document.querySelector('.bg-white.rounded-xl.shadow-md.overflow-hidden.mb-12.p-4 .grid > div[data-id="hiroshima"]');
+                if (hiroshimaItem) {
+                  hiroshimaItem.classList.add('bg-gray-100');
                 }
               });
             `
