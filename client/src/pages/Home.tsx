@@ -536,9 +536,9 @@ const Home = () => {
                   country: "スペイン",
                   description: "ガウディ建築の傑作と現代アートの融合",
                   images: [
-                    "/images/spain_casamila_1.jpg",
-                    "/images/spain_casamila_2.jpg",
-                    "/images/spain_casamila_3.jpg",
+                    "/images/23624_0.jpg",
+                    "/images/23630_0.jpg",
+                    "/images/heji3918.jpg",
                   ],
                 },
                 {
