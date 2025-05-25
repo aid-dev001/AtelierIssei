@@ -20,74 +20,57 @@ const WorldMap = ({ markers, onMarkerClick, selectedMarker }: WorldMapProps) => 
 
   return (
     <div className="relative w-full h-[600px] bg-gray-100 rounded-lg overflow-hidden">
-      <div className="absolute inset-0">
-        <svg width="100%" height="100%" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
-          <rect width="1200" height="600" fill="#f8f9fa"/>
-          <g fill="#e9ecef" stroke="#dee2e6" strokeWidth="1">
-            {/* 北アメリカ */}
-            <path d="M150,150 C250,100 350,120 450,150 C500,180 520,250 500,300 C480,350 430,380 380,400 C330,420 280,410 230,390 C180,370 150,330 130,280 C110,230 100,200 150,150 Z"/>
-            {/* 南アメリカ */}
-            <path d="M300,400 C350,380 400,390 430,440 C460,490 470,540 450,580 C430,620 380,630 330,610 C280,590 260,540 270,490 C280,440 300,420 300,400 Z"/>
-            {/* ヨーロッパ */}
-            <path d="M550,150 C600,130 650,120 700,130 C750,140 780,170 790,220 C800,270 790,320 760,360 C730,400 680,420 630,410 C580,400 550,370 530,320 C510,270 510,220 550,150 Z"/>
-            {/* アフリカ */}
-            <path d="M550,300 C600,280 650,290 690,320 C730,350 750,400 740,450 C730,500 700,540 650,560 C600,580 550,570 510,540 C470,510 450,460 460,410 C470,360 500,320 550,300 Z"/>
-            {/* アジア */}
-            <path d="M700,150 C750,130 800,120 850,130 C900,140 950,170 980,220 C1010,270 1020,330 1000,380 C980,430 940,470 890,490 C840,510 790,500 750,470 C710,440 690,390 680,340 C670,290 670,240 700,150 Z"/>
-            {/* オーストラリア */}
-            <path d="M900,450 C950,430 1000,440 1030,480 C1060,520 1070,570 1050,610 C1030,650 980,670 930,650 C880,630 850,590 850,540 C850,490 870,450 900,450 Z"/>
-          </g>
-          
-          {/* マーカーを直接SVG内に配置 */}
-          {markers.map((marker) => (
-            <g 
-              key={marker.id}
-              transform={`translate(${marker.x * 12}, ${marker.y * 6})`}
-              onClick={() => onMarkerClick && onMarkerClick(marker)}
-              onMouseEnter={() => setHoveredMarker(marker.id)}
-              onMouseLeave={() => setHoveredMarker(null)}
-              className="cursor-pointer"
-            >
-              <circle 
-                r="6" 
-                fill={selectedMarker === marker.id ? "#ff4081" : "#2196f3"} 
-                stroke="#fff"
-                strokeWidth="1.5"
-                className="transition-all duration-300"
-                style={{
-                  transform: selectedMarker === marker.id || hoveredMarker === marker.id ? 'scale(1.5)' : 'scale(1)',
-                }}
-              />
-              
-              {(hoveredMarker === marker.id || selectedMarker === marker.id) && (
-                <g>
-                  <rect
-                    x="10"
-                    y="-20"
-                    rx="4"
-                    ry="4"
-                    width={marker.label.length * 7 + 20}
-                    height="24"
-                    fill="white"
-                    stroke="#ccc"
-                    strokeWidth="1"
-                  />
-                  <text
-                    x="20"
-                    y="-4"
-                    fontFamily="sans-serif"
-                    fontSize="12"
-                    fill="#333"
-                  >
-                    {marker.label}
-                  </text>
-                </g>
-              )}
-            </g>
-          ))}
-        </svg>
+      <div className="relative w-full h-full">
+        {/* 世界地図の簡易背景 */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-full h-full bg-blue-50">
+            <div className="absolute w-[20%] h-[30%] bg-green-100 rounded-lg left-[10%] top-[25%]">
+              {/* 北米 */}
+            </div>
+            <div className="absolute w-[10%] h-[25%] bg-green-100 rounded-lg left-[22%] top-[55%]">
+              {/* 南米 */}
+            </div>
+            <div className="absolute w-[10%] h-[15%] bg-green-100 rounded-lg left-[42%] top-[20%]">
+              {/* ヨーロッパ */}
+            </div>
+            <div className="absolute w-[15%] h-[25%] bg-green-100 rounded-lg left-[45%] top-[40%]">
+              {/* アフリカ */}
+            </div>
+            <div className="absolute w-[20%] h-[25%] bg-green-100 rounded-lg left-[60%] top-[25%]">
+              {/* アジア */}
+            </div>
+            <div className="absolute w-[10%] h-[15%] bg-green-100 rounded-lg left-[70%] top-[60%]">
+              {/* オーストラリア */}
+            </div>
+          </div>
+        </div>
+
+        {/* マーカー */}
+        {markers.map((marker) => (
+          <div
+            key={marker.id}
+            className="absolute cursor-pointer group"
+            style={{
+              left: `${marker.x}%`,
+              top: `${marker.y}%`,
+              transform: 'translate(-50%, -50%)'
+            }}
+            onClick={() => onMarkerClick && onMarkerClick(marker)}
+            onMouseEnter={() => setHoveredMarker(marker.id)}
+            onMouseLeave={() => setHoveredMarker(null)}
+          >
+            <div 
+              className={`w-4 h-4 rounded-full ${selectedMarker === marker.id ? 'bg-red-500' : 'bg-blue-500'} transition-all duration-300 group-hover:scale-125 shadow-md`}
+            ></div>
+            
+            {(hoveredMarker === marker.id || selectedMarker === marker.id) && (
+              <div className="absolute z-10 bg-white p-2 rounded shadow-lg -translate-y-full -translate-x-1/2 whitespace-nowrap bottom-6">
+                {marker.label}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/5" />
     </div>
   );
 };
