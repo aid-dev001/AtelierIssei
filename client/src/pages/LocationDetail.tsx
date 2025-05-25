@@ -225,7 +225,7 @@ const locationsData: Record<string, LocationData> = {
     id: 'abu-dhabi',
     title: 'アブダビ',
     country: 'アラブ首長国連邦',
-    year: '2017',
+    year: '2019',
     description: '伝統と未来が交差する砂漠の現代都市',
     longDescription: `アブダビは砂漠と海に囲まれた未来志向の都市として、伝統と革新の興味深い融合を見せています。
     
@@ -237,11 +237,11 @@ const locationsData: Record<string, LocationData> = {
     
     アラブ首長国連邦の多文化社会における伝統と現代の共存は、私の作品テーマにおける「アイデンティティ」と「変容」の探求にも重要な示唆を与えています。`,
     images: [
-      { url: '/images/12685.jpg', caption: 'シェイク・ザイード・グランドモスクの夕景' },
-      { url: '/images/3446.jpg', caption: 'ルーブル・アブダビの特徴的な屋根と光の演出' },
-      { url: '/images/3525.jpg', caption: '砂漠の風景と近代的な建築の対比' },
-      { url: '/images/3730.jpg', caption: 'コーニッシュからのアブダビのスカイライン' },
-      { url: '/images/2914.jpg', caption: '伝統的なアラビアンマーケット' }
+      { url: '/12685.jpg', caption: 'シェイク・ザイード・グランドモスクの夕景' },
+      { url: '/3446.jpg', caption: 'ルーブル・アブダビの特徴的な屋根と光の演出' },
+      { url: '/3525.jpg', caption: '砂漠の風景と近代的な建築の対比' },
+      { url: '/3730.jpg', caption: 'コーニッシュからのアブダビのスカイライン' },
+      { url: '/2914.jpg', caption: '伝統的なアラビアンマーケット' }
     ],
     relatedLocations: [
       { id: 'london', title: 'ロンドン', image: '/images/12675.jpg' },
