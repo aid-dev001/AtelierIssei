@@ -181,9 +181,9 @@ const locationsData: Record<string, LocationData> = {
     
     パリでの初個展の成功は、私の創作活動における重要なマイルストーンとなり、その後の国際的な展開への確かな一歩となりました。`,
     images: [
-      { url: '/paris_1.jpg', caption: 'パリのGallery Art.C外観' },
-      { url: '/paris_2.jpg', caption: 'ギャラリーのウィンドウに展示された「POKO FACE」シリーズ' },
-      { url: '/paris_3.jpg', caption: 'ギャラリー内の壁面に展示された9枚の「POKO FACE」作品' }
+      { url: '/images/paris_1.jpg', caption: 'パリのGallery Art.C外観' },
+      { url: '/images/paris_2.jpg', caption: 'ギャラリーのウィンドウに展示された「POKO FACE」シリーズ' },
+      { url: '/images/paris_3.jpg', caption: 'ギャラリー内の壁面に展示された9枚の「POKO FACE」作品' }
     ],
     relatedLocations: [
       { id: 'london', title: 'ロンドン', image: '/images/12675.jpg' },
