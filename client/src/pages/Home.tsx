@@ -407,6 +407,7 @@ const Home = () => {
               document.addEventListener('DOMContentLoaded', function() {
                 // データを直接設定
                 const firstLocation = {
+                  id: "tokyo-akasaka",
                   label: "東京・赤坂",
                   year: "2022",
                   country: "日本",
@@ -419,6 +420,15 @@ const Home = () => {
                 document.getElementById('selected-location-country').textContent = firstLocation.country;
                 document.getElementById('selected-location-year').textContent = firstLocation.year;
                 document.getElementById('selected-location-description').textContent = firstLocation.description;
+                
+                // 詳細ページへのリンクを設定
+                const linkWrapper = document.getElementById('location-detail-link-wrapper');
+                if (linkWrapper) {
+                  const link = linkWrapper.querySelector('a');
+                  if (link) {
+                    link.setAttribute('href', '/exhibition/location/' + firstLocation.id);
+                  }
+                }
                 
                 // 画像の更新
                 const imageContainer = document.getElementById('selected-location-images');
