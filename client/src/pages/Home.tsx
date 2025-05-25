@@ -247,11 +247,41 @@ const Home = () => {
 
       {/* Video Section */}
       <div className="my-24">
-        <VideoHero 
-          videoSrc={`/videos/movie.mp4?v=${new Date().getTime()}`}
-          posterSrc="/images/12653.jpg" 
-          title="世界各地での創作活動" 
-        />
+        <section className="relative w-full overflow-hidden" style={{ minHeight: '80vh' }}>
+          <div className="absolute inset-0 bg-black">
+            <img
+              src="/images/12653.jpg"
+              alt="創作活動"
+              className="w-full h-full object-cover opacity-80"
+            />
+            <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+          </div>
+          
+          <div className="relative h-full flex items-center">
+            <div className="container mx-auto px-4 py-24">
+              <div className="max-w-4xl mx-auto">
+                <h2 className="text-4xl md:text-5xl font-bold mb-8 tracking-wide text-white">
+                  世界各地での創作活動
+                </h2>
+                <p className="text-xl text-gray-100 max-w-2xl mb-8">
+                  各地での創作活動と展示の様子をご覧ください。世界各地での活動を通じて得た経験と感性が、作品に表現されています。
+                </p>
+                
+                <a 
+                  href="/videos/movie.mp4" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 hover:bg-white/30 text-white rounded-full backdrop-blur-sm transition-all duration-300"
+                >
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                  <span>動画を見る</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
 
       {/* Art Concept Section */}
