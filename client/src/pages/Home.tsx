@@ -625,7 +625,7 @@ const Home = () => {
                   country: "日本",
                   description:
                     "福山こころの病院での愛と癒しをテーマにした作品展示",
-                  images: ["/images/fukuyama_1.jpg", "/images/fukuyama_2.jpg"],
+                  images: ["/images/13456_0.jpg"],
                 },
                 {
                   id: "saint-hilaire-andre",
