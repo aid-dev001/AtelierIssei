@@ -34,18 +34,25 @@ const testimonials = [
     imageUrl: "/images/dog1.jpg"
   },
   {
-    name: "川村 明美",
-    title: "地方中核産科病院院長夫人",
-    content: "夫の病院に飾られた作品が、多くの妊婦さんや新米ママたちに元気を与えています。特に明るい色使いと優しいタッチが、不安を抱える方々の心を和ませてくれる素晴らしいアートです。",
-    location: "広島",
-    imageUrl: "/attached_assets/image2.jpeg"
+    name: "大林芳明",
+    title: "福山こころの病院　院長",
+    content: "優しい色彩と温かみのあるデザインで、患者さんに癒しを与えてくれる素晴らしい作品です。病院内に飾ることで、心の安らぎを感じていただける環境づくりに一役買っています。",
+    location: "福山",
+    imageUrl: "/13456.jpg"
   },
   {
-    name: "佐々木 健一",
-    title: "医療系専門誌記者",
-    content: "医療施設におけるアートの癒し効果に関する取材で訪れた病院で初めて作品に出会いました。患者さんとスタッフの双方から高い評価を得ており、医療環境の質向上に貢献している好例です。",
-    location: "東京",
-    imageUrl: "/attached_assets/dkajeiow92.png"
+    name: "地方中核産科病院院長夫人",
+    title: "広島",
+    content: "色も色の組み合わせも可愛くて気に入っています。\n玄関で丸い顔が浮き上がっているのを見ると心も弾みます。",
+    location: "広島",
+    imageUrl: "/images/cat1.jpg"
+  },
+  {
+    name: "医療系記者",
+    title: "パリ",
+    content: "J'aime Montmartre depuis toujours d'autaut plus que ma mere est nee la-bas. Ce tableau revet donc un sens tout particulier.\n\n私はいつもモンマルトルが大好きで、特に母がモンマルトルで生まれています。ですのでこの絵は非常に特別な意味を持ちます。",
+    location: "パリ",
+    imageUrl: "/images/landscape1.jpg"
   },
   {
     name: "パリ郊外役所職員",
