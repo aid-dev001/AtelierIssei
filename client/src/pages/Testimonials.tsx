@@ -16,14 +16,14 @@ const testimonials = [
     name: "ひょこあに ねこ",
     title: "地方中核産科病院院長夫人",
     content: "色も色の組み合わせも可愛くて気に入っています。\n玄関で丸い顔が浮き上がっているのを見ると心も弾みます。",
-    location: "札幌",
+    location: "広島",
     imageUrl: "/images/cat1.jpg"
   },
   {
-    name: "山田 誠",
-    title: "建築家",
-    content: "空間に調和をもたらす稀有な才能を持つアーティストです。彼の作品は、建築空間に新たな生命を吹き込んでくれます。",
-    location: "大阪",
+    name: "モンマルトル",
+    title: "医療系記者",
+    content: "J'aime Montmartre depuis toujours d'autaut plus que ma mere est nee la-bas. Ce tableau revet donc un sens tout particulier.\n\n私はいつもモンマルトルが大好きで、特に母がモンマルトルで生まれています。ですのでこの絵は非常に特別な意味を持ちます。",
+    location: "パリ",
     imageUrl: "/images/landscape1.jpg"
   },
   {
@@ -34,10 +34,10 @@ const testimonials = [
     imageUrl: "/images/bear1.jpg"
   },
   {
-    name: "中村 洋子",
-    title: "美術評論家",
-    content: "現代アートシーンにおいて、ISSEIは特筆すべき存在です。その作品は時代を超えて語り継がれていくでしょう。",
-    location: "京都",
+    name: "エッフェル塔 ねこ",
+    title: "フランス美術評論家",
+    content: "c'est trop mignon!!\n\nとにかくかわいい！！\n\nc'est formidable de redecouvrir notre Tour Eiffel a travers les yeux d'un peintre japonais. Magnifique!\n\n日本画家の目を通してエッフェル塔を再発見できるのは素晴らしいことです。素敵！",
+    location: "パリ",
     imageUrl: "/images/eiffel1.png"
   }
 ];
