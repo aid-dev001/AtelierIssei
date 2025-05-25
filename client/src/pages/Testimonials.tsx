@@ -6,6 +6,20 @@ import { Quote } from "lucide-react";
 
 const testimonials = [
   {
+    name: "松本 英治",
+    title: "病院長",
+    content: "ISSEIさんの作品には独特の温かみがあります。病院の壁に飾ることで、患者さんやスタッフの心を和ませてくれています。色彩の使い方が素晴らしく、見る人に前向きな気持ちを与えてくれる作品です。",
+    location: "東京",
+    imageUrl: "/images/13452.jpg"
+  },
+  {
+    name: "川島 千尋",
+    title: "アートコレクター",
+    content: "様々なアーティストの作品を見てきましたが、ISSEIさんの作品は特別です。色使いの豊かさと独創的なデザインが魅力的で、何枚も集めたくなります。自宅のリビングに飾っていますが、来客の方からも必ず褒められる一枚です。",
+    location: "京都",
+    imageUrl: "/images/13454.jpg"
+  },
+  {
     name: "ビーグル ブルドッグ",
     title: "パリ雑誌メディア経営者・実業家",
     content: "Ce matin je partage mon petit-dejeuner avec le \"coeur\" d'Issei. Le petit chien nous nourrissent de leur confiance dans la vie! Ils attendent la bonne surprise du jour... a moi d'ouvrir l'oeil!\n\nisseiの\"心\"とともに朝食を。\n子犬は生きる自信をくれます！",
@@ -39,20 +53,6 @@ const testimonials = [
     content: "c'est trop mignon!!\n\nとにかくかわいい！！\n\nc'est formidable de redecouvrir notre Tour Eiffel a travers les yeux d'un peintre japonais. Magnifique!\n\n日本画家の目を通してエッフェル塔を再発見できるのは素晴らしいことです。素敵！",
     location: "パリ",
     imageUrl: "/images/eiffel1.png"
-  },
-  {
-    name: "松本 英治",
-    title: "病院長",
-    content: "ISSEIさんの作品には独特の温かみがあります。病院の壁に飾ることで、患者さんやスタッフの心を和ませてくれています。色彩の使い方が素晴らしく、見る人に前向きな気持ちを与えてくれる作品です。",
-    location: "東京",
-    imageUrl: "/images/13452.jpg"
-  },
-  {
-    name: "川島 千尋",
-    title: "アートコレクター",
-    content: "様々なアーティストの作品を見てきましたが、ISSEIさんの作品は特別です。色使いの豊かさと独創的なデザインが魅力的で、何枚も集めたくなります。自宅のリビングに飾っていますが、来客の方からも必ず褒められる一枚です。",
-    location: "京都",
-    imageUrl: "/images/13454.jpg"
   }
 ];
 
