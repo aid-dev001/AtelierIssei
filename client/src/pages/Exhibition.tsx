@@ -131,6 +131,18 @@ const locations = [
     ],
   },
   {
+    id: "tokyo-higashi-shinjuku",
+    label: "東京・東新宿",
+    year: "2023",
+    country: "日本",
+    description: "都市の夜景に映えるポップアートの展示",
+    images: [
+      "/images/LINE_ALBUM_20241124_250525_234.jpg",
+      "/images/LINE_ALBUM_20241124_250525_233.jpg",
+      "/images/LINE_ALBUM_20241124_250525_238.jpg",
+    ],
+  },
+  {
     id: "atis-mons-church",
     label: "フランス・アティスモンス教会",
     year: "2023",
@@ -167,18 +179,6 @@ const locations = [
     country: "フランス",
     description: "芸術家の聖地で描く街角スケッチの旅",
     images: ["/images/23704_0.jpg", "/images/23703_0.jpg"],
-  },
-  {
-    id: "tokyo-higashi-shinjuku",
-    label: "東京・東新宿",
-    year: "2023",
-    country: "日本",
-    description: "都市の夜景に映えるポップアートの展示",
-    images: [
-      "/attached_assets/LINE_ALBUM_20241124_250525_234.jpg",
-      "/attached_assets/LINE_ALBUM_20241124_250525_233.jpg", 
-      "/attached_assets/LINE_ALBUM_20241124_250525_238.jpg"
-    ],
   },
   {
     id: "chaumont",
