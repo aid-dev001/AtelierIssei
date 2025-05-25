@@ -215,12 +215,12 @@ const Home = () => {
         {/* フラットなデザインの代表的な写真6枚を表示 - スマホは1列 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
           {[
-            { src: "/assets/images/12662.jpg", title: "色彩の旋律", description: "抽象的な色彩の中に見える秩序と調和" },
-            { src: "/assets/images/12669.jpg", title: "都市の記憶", description: "現代都市に残る過去の痕跡を描く" },
-            { src: "/assets/images/10821.jpg", title: "光の旅路", description: "朝の光が作り出す一瞬の風景" },
-            { src: "/assets/images/3446.jpg", title: "抽象研究 #4", description: "形と色の関係性を探求する実験的作品" },
-            { src: "/assets/images/2266.jpg", title: "幾何学的視覚", description: "線と面が織りなす視覚的リズム" },
-            { src: "/assets/images/7855.jpg", title: "静寂の瞬間", description: "日常の中に隠れた美しさを切り取る" }
+            { src: "/images/12662.jpg", title: "色彩の旋律", description: "抽象的な色彩の中に見える秩序と調和" },
+            { src: "/images/12669.jpg", title: "都市の記憶", description: "現代都市に残る過去の痕跡を描く" },
+            { src: "/images/10821.jpg", title: "光の旅路", description: "朝の光が作り出す一瞬の風景" },
+            { src: "/images/3446.jpg", title: "抽象研究 #4", description: "形と色の関係性を探求する実験的作品" },
+            { src: "/images/2266.jpg", title: "幾何学的視覚", description: "線と面が織りなす視覚的リズム" },
+            { src: "/images/7855.jpg", title: "静寂の瞬間", description: "日常の中に隠れた美しさを切り取る" }
           ].map((image, index) => (
             <div key={index} className="space-y-3">
               <div className="aspect-square bg-gray-100 overflow-hidden">
@@ -361,7 +361,7 @@ const Home = () => {
                   year: "2022",
                   country: "日本",
                   description: "伝統と革新が交差する街で生まれる新しい表現",
-                  images: ["/assets/images/12653.jpg", "/assets/images/12654.jpg", "/assets/images/12655.jpg"]
+                  images: ["/images/12653.jpg", "/images/12654.jpg", "/images/12655.jpg"]
                 };
                 
                 // テキスト内容を設定
@@ -430,13 +430,13 @@ const Home = () => {
                 <div id="selected-location-images" className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* 初期表示用の画像 */}
                   <div className="aspect-square bg-gray-100 rounded overflow-hidden group">
-                    <img src="/assets/images/12653.jpg" alt="東京・赤坂 - 1" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" onError={(e) => { const img = e.target as HTMLImageElement; img.onerror = null; img.src = '/placeholder.png'; }} />
+                    <img src="/images/12653.jpg" alt="東京・赤坂 - 1" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" onError={(e) => { const img = e.target as HTMLImageElement; img.onerror = null; img.src = '/placeholder.png'; }} />
                   </div>
                   <div className="aspect-square bg-gray-100 rounded overflow-hidden group">
-                    <img src="/assets/images/12654.jpg" alt="東京・赤坂 - 2" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" onError={(e) => { const img = e.target as HTMLImageElement; img.onerror = null; img.src = '/placeholder.png'; }} />
+                    <img src="/images/12654.jpg" alt="東京・赤坂 - 2" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" onError={(e) => { const img = e.target as HTMLImageElement; img.onerror = null; img.src = '/placeholder.png'; }} />
                   </div>
                   <div className="aspect-square bg-gray-100 rounded overflow-hidden group">
-                    <img src="/assets/images/12655.jpg" alt="東京・赤坂 - 3" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" onError={(e) => { const img = e.target as HTMLImageElement; img.onerror = null; img.src = '/placeholder.png'; }} />
+                    <img src="/images/12655.jpg" alt="東京・赤坂 - 3" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" onError={(e) => { const img = e.target as HTMLImageElement; img.onerror = null; img.src = '/placeholder.png'; }} />
                   </div>
                   {/* 画像はJavaScriptで動的に挿入 */}
                 </div>
