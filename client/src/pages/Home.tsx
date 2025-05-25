@@ -365,6 +365,15 @@ const Home = () => {
                       document.getElementById('selected-location-year')!.textContent = location.year;
                       document.getElementById('selected-location-description')!.textContent = location.description;
                       
+                      // 詳細ページへのリンクを更新
+                      const linkWrapper = document.getElementById('location-detail-link-wrapper');
+                      if (linkWrapper) {
+                        const link = linkWrapper.querySelector('a');
+                        if (link) {
+                          link.setAttribute('href', `/exhibition/location/${location.id}`);
+                        }
+                      }
+                      
                       // 画像の更新
                       const imageContainer = document.getElementById('selected-location-images');
                       if (imageContainer) {
@@ -378,7 +387,8 @@ const Home = () => {
                       }
                       
                       element.classList.remove('hidden');
-                      element.scrollIntoView({ behavior: 'smooth' });
+                      // スクロールは不要なので削除
+                      // element.scrollIntoView({ behavior: 'smooth' });
                     }
                   }}
                 >
@@ -443,12 +453,14 @@ const Home = () => {
               </div>
               <div className="flex justify-between items-center mt-1">
                 <h2 id="selected-location-title" className="text-3xl font-bold tracking-wide">東京・赤坂</h2>
-                <ScrollToTopLink 
-                  href="/exhibition/location/tokyo-akasaka" 
-                  className="text-sm text-primary hover:text-primary/80 transition-colors"
-                >
-                  詳細ページへ
-                </ScrollToTopLink>
+                <div id="location-detail-link-wrapper">
+                  <ScrollToTopLink 
+                    href="/exhibition/location/tokyo-akasaka" 
+                    className="text-sm text-primary hover:text-primary/80 transition-colors"
+                  >
+                    詳細ページへ
+                  </ScrollToTopLink>
+                </div>
               </div>
             </div>
             
