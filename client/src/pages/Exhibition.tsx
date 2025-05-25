@@ -11,7 +11,7 @@ const locations = [
   { id: "abu-dhabi", label: "アブダビ", year: "2019", country: "UAE", description: "砂漠の国で開催した個展での作品展示", images: ["/images/abu_dhabi_1.jpg"] },
   { id: "tokyo-okubo", label: "東京・大久保", year: "2019", country: "日本", description: "多様な文化が混ざり合うギャラリーでの作品展示", images: ["/images/tokyo_okubo_1.jpg"] },
   { id: "paris", label: "パリ第一回", year: "2019", country: "フランス", description: "芸術の都で開催した初個展での作品展示", images: ["/images/paris_1.jpg", "/images/paris_2.jpg", "/images/paris_3.jpg"] },
-  { id: "france-savigny", label: "フランス・サヴィニー地方", year: "2019", country: "フランス", description: "フランス地方都市でのファッションとアートの融合展示", images: ["/attached_assets/s231sa.jpg", "/attached_assets/23671.jpg"] },
+  { id: "france-savigny", label: "フランス・サヴィニー地方", year: "2019", country: "フランス", description: "フランス地方都市でのファッションとアートの融合展示", images: ["/images/landscape1.jpg", "/images/cat1.jpg"] },
   { id: "tokyo-akasaka", label: "東京・赤坂", year: "2022", country: "日本", description: "伝統と革新が交差する街で生まれる新しい表現", images: ["/images/akasaka_1.jpg", "/images/akasaka_2.jpg", "/images/akasaka_3.jpg"] },
   { id: "london", label: "ロンドン", year: "2022", country: "イギリス", description: "古典と現代が融合する街での芸術探求", images: ["/images/10819.jpg", "/images/10820.jpg", "/images/10821.jpg"] },
   { id: "paris-second", label: "パリ第二回", year: "2022", country: "フランス", description: "パリ中心部での2回目の個展「POKO FACE」シリーズ", images: ["/attached_assets/23601.jpg", "/attached_assets/23622_0.jpg", "/attached_assets/1662819546.jpg"] },
