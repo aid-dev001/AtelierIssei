@@ -137,7 +137,6 @@ const Testimonials = () => {
                     <div className="space-y-2">
                       <div className="font-semibold text-gray-700 text-lg">{testimonial.name}</div>
                       <div className="text-gray-600">{testimonial.title}</div>
-                      <div className="text-gray-600">{testimonial.location}</div>
                     </div>
                   </div>
                 </div>

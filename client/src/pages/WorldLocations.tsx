@@ -260,7 +260,7 @@ const WorldLocations = () => {
                       console.log(`Redirecting to location: ${locationId}`);
                       
                       // 正しいルートへ遷移する
-                      const url = `/exhibition/location/${locationId}`;
+                      const url = `/location/${locationId}`;
                       window.location.href = url;
                     }}
                   >
