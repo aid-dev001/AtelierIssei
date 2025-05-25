@@ -404,15 +404,13 @@ const locationsData: Record<string, LocationData> = {
     
     また、地元の伝統的な祭りや日常的な農作業の風景は、コミュニティと創造性の関係、そして場所に根ざした芸術の意義について再考するきっかけとなりました。時にはぶどう畑で働く農家の方々や、パン屋、鍛冶屋など伝統的な職人との交流も、手仕事と芸術の深い関係性を感じさせるものでした。`,
     images: [
-      { url: '/images/tireine_1.jpg', caption: 'POKO FACEデザインのTシャツを着用したモデル' },
-      { url: '/images/tireine_2.jpg', caption: '展示会場の様子と作品を鑑賞する来場者たち' },
-      { url: '/images/7853.jpg', caption: '石造りの村の通り' },
-      { url: '/images/7855.jpg', caption: '中世の教会の内部' },
-      { url: '/images/2914.jpg', caption: '古い石造りの家の細部' }
+      { url: '/images/1731420256.jpg', caption: 'ティレーヌアンドレシス教会の展示風景' },
+      { url: '/images/スクリーンショット 2025-05-25 23.14.20.png', caption: '中世の面影を残す村の様子' },
+      { url: '/images/スクリーンショット 2025-05-25 23.15.16.png', caption: '教会内部の展示作品' }
     ],
     relatedLocations: [
-      { id: 'atis-mons', title: 'アティスモンス', image: '/images/12666.jpg' },
-      { id: 'bourges', title: 'ブールジュ', image: '/images/3446.jpg' }
+      { id: 'atis-mons', title: 'アティスモンス', image: '/attached_assets/1928320.png' },
+      { id: 'bourges', title: 'ブールジュ', image: '/images/13463.jpg' }
     ]
   },
   // ブールジュ
@@ -434,15 +432,11 @@ const locationsData: Record<string, LocationData> = {
     
     毎年開催される音楽祭「ブールジュの春」に触れる機会もあり、音楽と視覚芸術の接点についても新たな視点を得ることができました。`,
     images: [
-      { url: '/3446.jpg', caption: 'ブールジュ大聖堂の全景' },
-      { url: '/3525.jpg', caption: '大聖堂のステンドグラス' },
-      { url: '/3730.jpg', caption: '中世の旧市街の通り' },
-      { url: '/2266.jpg', caption: '木組みの伝統的な建物' },
-      { url: '/2914.jpg', caption: '音楽祭「ブールジュの春」の様子' }
+      { url: '/images/13463.jpg', caption: 'ブールジュ大聖堂の全景とアート作品' }
     ],
     relatedLocations: [
-      { id: 'saint-hilaire-andre', title: 'フランス・ティレーヌアンドレシス', image: '/7853.jpg' },
-      { id: 'chaumont', title: 'ショーモン城', image: '/2266.jpg' }
+      { id: 'saint-hilaire-andre', title: 'フランス・ティレーヌアンドレシス教会', image: '/images/1731420256.jpg' },
+      { id: 'chaumont', title: 'ショーモン城', image: '/images/LINE_ALBUM_20241124_250525_242.jpg' }
     ]
   },
   // パリ第二回
