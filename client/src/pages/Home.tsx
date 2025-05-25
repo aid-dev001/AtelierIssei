@@ -603,16 +603,16 @@ const Home = () => {
               quote: "isseiの\"心\"とともに朝食を。子犬は生きる自信をくれます！"
             },
             {
-              image: "/attached_assets/image2.jpeg",
-              name: "川村 明美",
-              title: "地方中核産科病院院長夫人",
-              quote: "夫の病院に飾られた作品が、多くの妊婦さんや新米ママたちに元気を与えています。特に明るい色使いと優しいタッチが、不安を抱える方々の心を和ませてくれる素晴らしいアートです。"
+              image: "/images/cat1.jpg",
+              name: "地方中核産科病院院長夫人",
+              title: "広島",
+              quote: "色も色の組み合わせも可愛くて気に入っています。玄関で丸い顔が浮き上がっているのを見ると心も弾みます。"
             },
             {
-              image: "/attached_assets/dkajeiow92.png",
-              name: "佐々木 健一",
-              title: "医療系専門誌記者",
-              quote: "医療施設におけるアートの癒し効果に関する取材で訪れた病院で初めて作品に出会いました。患者さんとスタッフの双方から高い評価を得ており、医療環境の質向上に貢献している好例です。"
+              image: "/images/landscape1.jpg",
+              name: "医療系記者",
+              title: "パリ",
+              quote: "私はいつもモンマルトルが大好きで、特に母がモンマルトルで生まれています。ですのでこの絵は非常に特別な意味を持ちます。"
             }
           ].map((voice, index) => (
             <ScrollToTopLink href="/voices" key={index}>
