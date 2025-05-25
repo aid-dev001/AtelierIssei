@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "wouter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MapPin, Globe, Navigation } from "lucide-react";
@@ -249,16 +250,12 @@ const WorldLocations = () => {
                 </p>
                 
                 <div className="mt-8">
-                  <a 
-                    href={`/exhibition/location/${selectedLocation.id}`} 
+                  <Link 
+                    to={`/exhibition/location/${selectedLocation.id}`}
                     className="inline-block px-4 py-2 bg-gray-100 text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.location.href = `/exhibition/location/${selectedLocation.id}`;
-                    }}
                   >
                     詳細ページへ
-                  </a>
+                  </Link>
                 </div>
               </div>
               

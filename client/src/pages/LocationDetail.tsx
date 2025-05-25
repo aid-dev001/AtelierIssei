@@ -464,9 +464,15 @@ const LocationDetail: React.FC = () => {
   const [location, setLocation] = useState<LocationData | null>(null);
 
   useEffect(() => {
+    console.log("LocationDetail locationId:", locationId);
+    
     if (locationId && locationsData[locationId]) {
+      console.log("Found location data for:", locationId);
       setLocation(locationsData[locationId]);
       window.scrollTo(0, 0);
+    } else {
+      console.log("No location data found for:", locationId);
+      console.log("Available locations:", Object.keys(locationsData));
     }
   }, [locationId]);
 
