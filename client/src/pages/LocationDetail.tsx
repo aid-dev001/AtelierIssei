@@ -325,9 +325,9 @@ const locationsData: Record<string, LocationData> = {
     
     また、アティスモンスの小さな美術館や文化センターでの展示や地元のアーティストとの交流は、フランスにおける地方の文化活動の重要性を認識する機会となり、私自身のアーティストとしての役割についても再考する時間となりました。`,
     images: [
-      { url: '/atis_mons_1.jpg', caption: 'アティスモンスの文化センター外観' },
-      { url: '/atis_mons_2.jpg', caption: '「POKO FACE」シリーズの展示風景' },
-      { url: '/atis_mons_3.jpg', caption: '地元の方々との交流会の様子' }
+      { url: '/attached_assets/1928320.png', caption: 'アティスモンスの文化センター外観' },
+      { url: '/attached_assets/23611_0.jpg', caption: '「POKO FACE」シリーズの展示風景' },
+      { url: '/attached_assets/23615_0.jpg', caption: '地元の方々との交流会の様子' }
     ],
     relatedLocations: [
       { id: 'paris-second', title: 'パリ第二回', image: '/paris_second_1.jpg' },
@@ -378,13 +378,13 @@ const locationsData: Record<string, LocationData> = {
     
     この経験は、場所と作品の関係性、そして展示空間が鑑賞体験にもたらす影響について、より深く考察するきっかけとなりました。`,
     images: [
-      { url: '/atis_mons_church_1.jpg', caption: 'アティスモンス教会での展示風景と「POKO FACE」バナー作品' },
-      { url: '/atis_mons_church_2.jpg', caption: '石造りの歴史的な教会の外観' },
-      { url: '/atis_mons_church_3.jpg', caption: '展示されたポートレート作品群' }
+      { url: '/images/1731420256.jpg', caption: 'アティスモンス教会での展示風景と「POKO FACE」バナー作品' },
+      { url: '/images/スクリーンショット 2025-05-25 23.14.20.png', caption: '石造りの歴史的な教会の外観' },
+      { url: '/images/スクリーンショット 2025-05-25 23.15.16.png', caption: '展示されたポートレート作品群' }
     ],
     relatedLocations: [
-      { id: 'atis-mons', title: 'アティスモンス', image: '/atis_mons_1.jpg' },
-      { id: 'normandy', title: 'フランス・ノルマンディー', image: '/france_normandy_1.jpg' }
+      { id: 'atis-mons', title: 'アティスモンス', image: '/attached_assets/1928320.png' },
+      { id: 'normandy', title: 'フランス・ノルマンディー', image: '/images/montmartre_1.jpg' }
     ]
   },
   // フランス・ティレーヌアンドレシス
