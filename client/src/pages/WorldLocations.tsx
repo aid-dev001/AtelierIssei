@@ -251,7 +251,7 @@ const WorldLocations = () => {
                 
                 <div className="mt-8">
                   <Link
-                    href={`/location/${selectedLocation.id}`}
+                    to={`/location/${selectedLocation.id}`}
                     className="inline-block px-4 py-2 bg-gray-100 text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
                   >
                     詳細ページへ
