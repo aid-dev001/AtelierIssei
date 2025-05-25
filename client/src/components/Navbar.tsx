@@ -17,7 +17,6 @@ const Navbar = () => {
     { href: "/collections", label: "COLLECTIONS" },
     { href: "/exhibition", label: "EXHIBITION" },
     { href: "/ateliers", label: "ATELIER" },
-    { href: "/world-locations", label: "WORLD MAP" },
     { href: "/profile", label: "PROFILE" },
     { href: "/news", label: "NEWS" },
     { href: "/voices", label: "VOICES" },
