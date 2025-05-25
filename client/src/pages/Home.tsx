@@ -249,11 +249,11 @@ const Home = () => {
       {/* Video Section */}
       <div className="my-24">
         <section className="relative w-full overflow-hidden" style={{ minHeight: '80vh' }}>
-          <div className="absolute inset-0 bg-black">
+          <div className="absolute inset-0 bg-black flex items-center justify-center">
             <img
               src="/images/assets/atelier-issei-logo.png"
               alt="ATELIER ISSEI"
-              className="w-full h-full object-cover opacity-80"
+              className="w-auto h-auto max-w-[80%] max-h-[80%] opacity-80"
             />
             <div className="absolute inset-0 bg-black bg-opacity-40"></div>
           </div>
