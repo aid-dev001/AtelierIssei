@@ -1004,6 +1004,44 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Profile Section */}
+      <section className="container mx-auto px-4 py-20 bg-gray-50">
+        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">
+          PROFILE
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
+          <img
+            src="/artworks/スクリーンショット 2024-12-07 12.26.30.png"
+            alt="Artist ISSEI"
+            className="rounded-lg shadow-lg w-full h-auto"
+            onError={(e) => {
+              const img = e.target as HTMLImageElement;
+              img.onerror = null;
+              img.src = "/placeholder.png";
+            }}
+          />
+          <div className="space-y-6">
+            <h3 className="text-2xl font-bold">ISSEI</h3>
+            <p className="text-gray-600 leading-relaxed">
+              幼少期より芸術に囲まれた環境で育ち、祖父の油絵から深い影響を受ける。
+              心の機微を捉えた繊細な作風と、力強い色彩表現が特徴的な作品を生み出し続けています。
+            </p>
+            <p className="text-gray-600 leading-relaxed">
+              抽象画からスタートし、独自のスタイルを確立。
+              現在は、日本国内外で個展を開催し、
+              伝統と革新が融合する新たな表現の可能性を追求しています。
+            </p>
+            <div className="pt-4">
+              <ScrollToTopLink href="/profile">
+                <a className="inline-block px-6 py-3 bg-primary/90 text-white rounded-md hover:bg-primary transition-colors">
+                  詳細プロフィールへ
+                </a>
+              </ScrollToTopLink>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Works */}
       <section className="container mx-auto px-4 py-20">
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">
