@@ -147,11 +147,7 @@ const locations = [
     year: "2023",
     country: "フランス",
     description: "歴史と自然が織りなす風景からのインスピレーション",
-    images: [
-      "/images/Ludo-mediatheque-Etrepagny-Le-Patio--ML-Vittori-min-1200x900.jpg",
-      "/images/12670.jpg",
-      "/images/12671.jpg",
-    ],
+    images: ["/images/france_normandy_1.jpg"],
   },
   {
     id: "france-chambord",
