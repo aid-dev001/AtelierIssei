@@ -201,7 +201,11 @@ const locations = [
     year: "2024",
     country: "フランス",
     description: "中世の面影を残す村での滞在制作",
-    images: ["/images/tireine_1.jpg", "/images/tireine_2.jpg"],
+    images: [
+      "/images/1731420256.jpg",
+      "/images/スクリーンショット 2025-05-25 23.14.20.png",
+      "/images/スクリーンショット 2025-05-25 23.15.16.png"
+    ],
   },
   {
     id: "bourges",
