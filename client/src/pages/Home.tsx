@@ -436,18 +436,30 @@ const Home = () => {
             </div>
           </div>
           
+          {/* 初期表示用の広島データ */}
+          <div id="initial-location-data" 
+            data-id="hiroshima"
+            data-label="広島" 
+            data-year="1998" 
+            data-country="日本" 
+            data-description="平和への祈りと再生をテーマにした作品の制作拠点"
+            data-images='["/images/hiroshima_1.jpg","/images/hiroshima_2.jpg"]'
+            className="hidden"
+          ></div>
+
           <script dangerouslySetInnerHTML={{
             __html: `
-              // ページ読み込み時に最初の場所を選択
-              window.addEventListener('load', function() {
-                // データを直接設定
+              // ページ読み込み時の処理
+              function initializeLocationDetail() {
+                // 初期データを取得
+                const initialData = document.getElementById('initial-location-data');
                 const firstLocation = {
-                  id: "hiroshima",
-                  label: "広島",
-                  year: "1998",
-                  country: "日本",
-                  description: "平和への祈りと再生をテーマにした作品の制作拠点",
-                  images: ["/images/hiroshima_1.jpg", "/images/hiroshima_2.jpg"]
+                  id: initialData.getAttribute('data-id'),
+                  label: initialData.getAttribute('data-label'),
+                  year: initialData.getAttribute('data-year'),
+                  country: initialData.getAttribute('data-country'),
+                  description: initialData.getAttribute('data-description'),
+                  images: JSON.parse(initialData.getAttribute('data-images'))
                 };
                 
                 // テキスト内容を設定
@@ -482,7 +494,14 @@ const Home = () => {
                 if (hiroshimaItem) {
                   hiroshimaItem.classList.add('bg-gray-100');
                 }
-              });
+              }
+              
+              // ページロード後に実行
+              window.addEventListener('load', initializeLocationDetail);
+              // 一応DOMContentLoadedでも実行
+              document.addEventListener('DOMContentLoaded', initializeLocationDetail);
+              // 即時実行も試す
+              setTimeout(initializeLocationDetail, 500);
             `
           }}></script>
           
