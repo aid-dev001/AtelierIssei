@@ -355,7 +355,7 @@ const Home = () => {
                 { id: "atis-mons", label: "アティスモンス", year: "2022", country: "フランス", description: "フランス郊外の静かな村での集中的な創作期間", images: ["/atis_mons_1.jpg", "/atis_mons_2.jpg", "/atis_mons_3.jpg"] },
                 { id: "atis-mons-church", label: "フランス・アティスモンス教会", year: "2023", country: "フランス", description: "歴史的な教会を舞台にした特別展示会", images: ["/atis_mons_church_1.jpg", "/atis_mons_church_2.jpg", "/atis_mons_church_3.jpg"] },
                 { id: "chaumont", label: "フランス・ショーモン城", year: "2024", country: "フランス", description: "歴史的な城での特別展示プロジェクト", images: ["/chaumont_2024_1.jpg", "/chaumont_2024_2.jpg"] },
-                { id: "nice", label: "ニース", year: "2023", country: "フランス", description: "地中海の陽光に照らされた色彩の研究", images: ["/12663.jpg", "/12664.jpg", "/12665.jpg"] },
+                { id: "nice", label: "フランス・ニース", year: "2024", country: "フランス", description: "地中海の陽光に照らされた色彩の研究", images: ["/nice_2024_1.jpg", "/nice_2024_2.jpg", "/nice_2024_3.jpg"] },
                 { id: "fukuyama", label: "広島・福山", year: "2024", country: "日本", description: "福山こころの病院での愛と癒しをテーマにした作品展示", images: ["/fukuyama_1.jpg", "/fukuyama_2.jpg"] },
                 { id: "france-chambord", label: "フランス・シャンボール城", year: "2023", country: "フランス", description: "フランス最大の城を描く野外アートプロジェクト", images: ["/chambord_2023_1.jpg", "/chambord_2023_2.jpg"] },
                 { id: "montmartre", label: "フランス・モンマルトル", year: "2023", country: "フランス", description: "芸術家の聖地で描く街角スケッチの旅", images: ["/montmartre_1.jpg", "/montmartre_2.jpg"] }
