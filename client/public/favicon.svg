@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-  <!-- "I" の文字 - ピンク色 #e890b2 (より大きく) -->
-  <rect x="8" y="4" width="16" height="4" fill="#e890b2"/>
-  <rect x="14.5" y="4" width="3" height="24" fill="#e890b2"/>
-  <rect x="8" y="24" width="16" height="4" fill="#e890b2"/>
+  <!-- "I" の文字 - 濃いピンク紫色 #d1338f (より大きく) -->
+  <rect x="8" y="4" width="16" height="4" fill="#d1338f"/>
+  <rect x="14.5" y="4" width="3" height="24" fill="#d1338f"/>
+  <rect x="8" y="24" width="16" height="4" fill="#d1338f"/>
 </svg>
