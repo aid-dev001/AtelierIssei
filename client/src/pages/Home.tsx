@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { Collection, Artwork } from "@db/schema";
 import CustomMap from "@/components/Map";
 import VideoHero from "@/components/VideoHero";
+import VideoModal from "@/components/VideoModal";
 
 
 const ATELIER_LOCATIONS = ["銀座", "広島", "パリ"] as const;
@@ -250,8 +251,8 @@ const Home = () => {
         <section className="relative w-full overflow-hidden" style={{ minHeight: '80vh' }}>
           <div className="absolute inset-0 bg-black">
             <img
-              src="/images/12653.jpg"
-              alt="創作活動"
+              src="/images/assets/atelier-issei-logo.png"
+              alt="ATELIER ISSEI"
               className="w-full h-full object-cover opacity-80"
             />
             <div className="absolute inset-0 bg-black bg-opacity-40"></div>
@@ -267,17 +268,16 @@ const Home = () => {
                   各地での創作活動と展示の様子をご覧ください。世界各地での活動を通じて得た経験と感性が、作品に表現されています。
                 </p>
                 
-                <a 
-                  href="/videos/movie.mp4" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 hover:bg-white/30 text-white rounded-full backdrop-blur-sm transition-all duration-300"
-                >
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                  <span>動画を見る</span>
-                </a>
+                <VideoModal videoSrc="/videos/movie.mp4">
+                  <button 
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 hover:bg-white/30 text-white rounded-full backdrop-blur-sm transition-all duration-300"
+                  >
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                    <span>動画を見る</span>
+                  </button>
+                </VideoModal>
               </div>
             </div>
           </div>
