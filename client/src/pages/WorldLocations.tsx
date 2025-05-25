@@ -147,6 +147,14 @@ const WorldLocations = () => {
   useEffect(() => {
     if (filteredLocations.length > 0) {
       setSelectedLocation(filteredLocations[0]);
+      // 詳細情報エリアの先頭までスクロール
+      const detailSection = document.getElementById('location-detail-section');
+      if (detailSection) {
+        window.scrollTo({
+          top: detailSection.offsetTop - 100,
+          behavior: 'smooth'
+        });
+      }
     } else {
       setSelectedLocation(null);
     }
@@ -208,7 +216,7 @@ const WorldLocations = () => {
 
         {/* 選択された場所の詳細情報 - シンプルでおしゃれなデザイン */}
         {selectedLocation && (
-          <div className="bg-white rounded-xl shadow-lg p-8 mb-12">
+          <div id="location-detail-section" className="bg-white rounded-xl shadow-lg p-8 mb-12">
             <div className="border-b pb-6 mb-8">
               <div className="flex items-center gap-3">
                 <span className="text-sm uppercase tracking-wider text-gray-500">{selectedLocation.country}</span>
@@ -243,9 +251,9 @@ const WorldLocations = () => {
                 <div className="mt-8">
                   <a 
                     href={`/exhibition/location/${selectedLocation.id}`} 
-                    className="inline-flex items-center text-primary hover:underline text-lg"
+                    className="inline-block px-4 py-2 bg-gray-100 text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
                   >
-                    <span>詳細ページへ</span>
+                    詳細ページへ
                   </a>
                 </div>
               </div>
