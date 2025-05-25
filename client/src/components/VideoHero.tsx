@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 
 interface VideoHeroProps {
   videoSrc: string;
@@ -12,46 +12,26 @@ const VideoHero: React.FC<VideoHeroProps> = ({
   title = "アーティスト活動記録"
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  
+  // 再生ボタンをクリックしたときの処理
+  const handlePlayClick = () => {
     const videoElement = videoRef.current;
     if (!videoElement) return;
-
-    // 動画のロード状態をチェックして再生を試みる
-    const attemptPlay = () => {
-      // 動画のロードが完了していない場合は、ロード完了時のイベントを設定
-      if (videoElement.readyState < 3) { // HAVE_FUTURE_DATA = 3
-        videoElement.addEventListener('canplay', handleCanPlay);
-      } else {
-        // 既にロード済みの場合は直接再生
-        startPlayback();
-      }
-    };
-
-    // 動画が再生可能になった時の処理
-    const handleCanPlay = () => {
-      videoElement.removeEventListener('canplay', handleCanPlay);
-      startPlayback();
-    };
-
-    // 再生開始関数
-    const startPlayback = () => {
+    
+    if (videoElement.paused) {
       videoElement.play()
+        .then(() => {
+          setIsPlaying(true);
+        })
         .catch(error => {
-          console.log("自動再生できませんでした: ", error);
+          console.log("再生できませんでした: ", error);
         });
-    };
-
-    // 即時実行
-    attemptPlay();
-
-    // クリーンアップ関数
-    return () => {
-      if (videoElement) {
-        videoElement.removeEventListener('canplay', handleCanPlay);
-      }
-    };
-  }, []);
+    } else {
+      videoElement.pause();
+      setIsPlaying(false);
+    }
+  };
 
   return (
     <div className="relative w-full overflow-hidden" style={{ minHeight: '80vh' }}>
@@ -59,7 +39,6 @@ const VideoHero: React.FC<VideoHeroProps> = ({
       <div className="absolute inset-0 bg-black">
         <video 
           ref={videoRef}
-          autoPlay 
           muted 
           loop 
           playsInline 
@@ -82,9 +61,31 @@ const VideoHero: React.FC<VideoHeroProps> = ({
             <h2 className="text-4xl md:text-5xl font-bold mb-8 tracking-wide text-white">
               {title}
             </h2>
-            <p className="text-xl text-gray-100 max-w-2xl">
+            <p className="text-xl text-gray-100 max-w-2xl mb-8">
               各地での創作活動と展示の様子をご覧ください。世界各地での活動を通じて得た経験と感性が、作品に表現されています。
             </p>
+            
+            {/* 再生ボタン */}
+            <button 
+              onClick={handlePlayClick}
+              className="flex items-center gap-2 px-6 py-3 bg-white/20 hover:bg-white/30 text-white rounded-full backdrop-blur-sm transition-all duration-300"
+            >
+              <svg 
+                className="w-6 h-6" 
+                fill="currentColor" 
+                viewBox="0 0 24 24" 
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                {isPlaying ? (
+                  // 一時停止アイコン
+                  <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                ) : (
+                  // 再生アイコン
+                  <path d="M8 5v14l11-7z" />
+                )}
+              </svg>
+              <span>{isPlaying ? '一時停止' : '再生'}</span>
+            </button>
           </div>
         </div>
       </div>
