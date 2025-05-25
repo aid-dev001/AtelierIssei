@@ -251,7 +251,7 @@ const Home = () => {
         <section className="relative w-full overflow-hidden" style={{ minHeight: '80vh' }}>
           <div className="absolute inset-0 bg-black">
             <img
-              src="/images/assets/atelier-issei-logo.png"
+              src="/images/assets/atelier-issei-logo-2.png"
               alt="ATELIER ISSEI"
               className="w-full h-full object-cover opacity-80"
             />
