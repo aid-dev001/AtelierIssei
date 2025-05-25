@@ -17,7 +17,7 @@ const testimonials = [
     title: "大学病院小児科部長",
     content: "子供たちが病院を訪れる際の不安を和らげるのにこの作品が大きく貢献しています。\n\n明るい色彩と優しいモチーフが子供たちの笑顔を引き出し、診療環境も和やかになりました。\n\nアートが持つ癒しの力を実感しています。",
     location: "東京",
-    imageUrl: "/images/bear1.jpg"
+    imageUrl: "/images/dog1.jpg"
   },
   {
     name: "ひょこあに ねこ",
