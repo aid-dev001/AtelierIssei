@@ -210,7 +210,7 @@ const locations = [
     country: "フランス",
     description: "ゴシック建築に囲まれた創作体験",
     images: [
-      "/images/bourges_2025_1.jpg",
+      "/images/13463.jpg",
       "/images/3525.jpg",
       "/images/3730.jpg",
     ],

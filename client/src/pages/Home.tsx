@@ -574,8 +574,6 @@ const Home = () => {
                     "歴史と自然が織りなす風景からのインスピレーション",
                   images: [
                     "/images/Ludo-mediatheque-Etrepagny-Le-Patio--ML-Vittori-min-1200x900.jpg",
-                    "/images/12670.jpg",
-                    "/images/12671.jpg",
                   ],
                 },
                 {
@@ -595,10 +593,7 @@ const Home = () => {
                   year: "2023",
                   country: "フランス",
                   description: "芸術家の聖地で描く街角スケッチの旅",
-                  images: [
-                    "/images/23704_0.jpg",
-                    "/images/23703_0.jpg",
-                  ],
+                  images: ["/images/23704_0.jpg", "/images/23703_0.jpg"],
                 },
                 {
                   id: "chaumont",
@@ -647,7 +642,7 @@ const Home = () => {
                   country: "フランス",
                   description: "ゴシック建築に囲まれた創作体験",
                   images: [
-                    "/images/bourges_2025_1.jpg",
+                    "/images/13463.jpg",
                     "/images/3525.jpg",
                     "/images/3730.jpg",
                   ],
