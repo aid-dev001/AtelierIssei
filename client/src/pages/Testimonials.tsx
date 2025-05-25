@@ -27,6 +27,20 @@ const testimonials = [
     imageUrl: "/images/dog1.jpg"
   },
   {
+    name: "福山こころの病院",
+    title: "医療法人 大林会",
+    content: "優しい色彩と温かみのあるデザインで、患者さんに癒しを与えてくれる素晴らしい作品です。病院内に飾ることで、心の安らぎを感じていただける環境づくりに一役買っています。",
+    location: "福山",
+    imageUrl: "/13456.jpg"
+  },
+  {
+    name: "マリア・ゴンザレス",
+    title: "スペイン美術愛好家",
+    content: "Esta pintura me recuerda a las pequeñas iglesias de mi pueblo en España. La simplicidad y los colores brillantes traen paz a mi corazón.\n\nこの絵は私の故郷スペインの小さな教会を思い出させます。シンプルさと鮮やかな色彩が心に平和をもたらしてくれます。",
+    location: "マドリード",
+    imageUrl: "/13457.jpg"
+  },
+  {
     name: "ひょこあに ねこ",
     title: "地方中核産科病院院長夫人",
     content: "色も色の組み合わせも可愛くて気に入っています。\n玄関で丸い顔が浮き上がっているのを見ると心も弾みます。",
