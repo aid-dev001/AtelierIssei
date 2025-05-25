@@ -503,46 +503,45 @@ const Home = () => {
           {[
             {
               image: "12648.jpg",
-              name: "Sarah Thompson",
-              title: "NY Gallery Owner",
-              quote: "優雅さと力強さが見事に調和した作品群"
+              name: "ひょこあに ねこ",
+              title: "地方中核産科病院院長夫人",
+              quote: "色も色の組み合わせも可愛くて気に入っています。玄関で丸い顔が浮き上がっているのを見ると心も弾みます。"
             },
             {
               image: "12653.jpg",
-              name: "Pierre Dubois",
-              title: "Art Collector",
-              quote: "日本の繊細さと現代アートの融合"
+              name: "モンマルトル",
+              title: "医療系記者",
+              quote: "私はいつもモンマルトルが大好きで、特に母がモンマルトルで生まれています。ですのでこの絵は非常に特別な意味を持ちます。"
             },
             {
               image: "12658.jpg",
-              name: "山田 誠",
-              title: "建築家",
-              quote: "空間に新たな生命を吹き込む稀有な才能"
+              name: "エッフェル塔 ねこ",
+              title: "フランス美術評論家",
+              quote: "日本画家の目を通してエッフェル塔を再発見できるのは素晴らしいことです。素敵！"
             }
           ].map((voice, index) => (
             <ScrollToTopLink href="/voices" key={index}>
-              <div className="group relative aspect-[3/4] overflow-hidden rounded-xl shadow-xl cursor-pointer">
-                <img
-                  src={`/artworks/${voice.image}`}
-                  alt={`Voice by ${voice.name}`}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  onError={(e) => {
-                    const img = e.target as HTMLImageElement;
-                    img.onerror = null;
-                    img.src = '/placeholder.png';
-                  }}
-                />
-                <div className="absolute inset-0 bg-black/40 transition-opacity duration-500 group-hover:opacity-70" />
-                <div className="absolute inset-0 flex flex-col justify-end p-8 text-white transform translate-y-8 transition-transform duration-500 group-hover:translate-y-0">
-                  <div className="space-y-2">
-                    <p className="text-lg font-medium tracking-wide opacity-0 transform -translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
-                      "{voice.quote}"
-                    </p>
-                    <div className="h-px w-12 bg-white/70 transform scale-x-0 transition-transform duration-500 origin-left group-hover:scale-x-100" />
-                    <div className="space-y-1 opacity-0 transform -translate-y-4 transition-all duration-500 delay-100 group-hover:opacity-100 group-hover:translate-y-0">
-                      <p className="font-medium">{voice.name}</p>
-                      <p className="text-sm text-white/80">{voice.title}</p>
-                    </div>
+              <div className="grid grid-cols-1 rounded-xl shadow-xl overflow-hidden cursor-pointer">
+                <div className="relative aspect-square overflow-hidden">
+                  <img
+                    src={`/artworks/${voice.image}`}
+                    alt={`Voice by ${voice.name}`}
+                    className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
+                    onError={(e) => {
+                      const img = e.target as HTMLImageElement;
+                      img.onerror = null;
+                      img.src = '/placeholder.png';
+                    }}
+                  />
+                </div>
+                <div className="p-6 bg-white">
+                  <p className="text-lg font-medium mb-4 text-gray-800">
+                    "{voice.quote}"
+                  </p>
+                  <div className="h-px w-12 bg-gray-300 mb-4" />
+                  <div className="space-y-1">
+                    <p className="font-medium">{voice.name}</p>
+                    <p className="text-sm text-gray-600">{voice.title}</p>
                   </div>
                 </div>
               </div>
