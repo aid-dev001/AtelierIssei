@@ -460,10 +460,11 @@ const locationsData: Record<string, LocationData> = {
 };
 
 const LocationDetail: React.FC = () => {
-  // URLからロケーションIDを直接取得
+  // URLからロケーションIDを直接取得 - 末尾から取得する形式に修正
   const path = window.location.pathname;
-  const pathSegments = path.split('/');
-  const locationId = pathSegments[pathSegments.length - 1];
+  // exhibition/location/:locationId 形式から正確にlocationIdを抽出
+  const match = path.match(/\/exhibition\/location\/([^\/]+)$/);
+  const locationId = match ? match[1] : null;
   
   const [location, setLocation] = useState<LocationData | null>(null);
   
