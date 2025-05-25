@@ -17,7 +17,7 @@ const locations = [
   { id: "paris-second", label: "パリ第二回", year: "2022", country: "フランス", description: "パリ中心部での2回目の個展「POKO FACE」シリーズ", images: ["/attached_assets/23601.jpg", "/attached_assets/23622_0.jpg", "/attached_assets/1662819546.jpg"] },
   { id: "spain-casamila", label: "スペイン・カサミラ", year: "2022", country: "スペイン", description: "ガウディ建築の傑作と現代アートの融合", images: ["/images/spain_casamila_1.jpg", "/images/spain_casamila_2.jpg", "/images/spain_casamila_3.jpg"] },
   { id: "atis-mons", label: "アティスモンス", year: "2022", country: "フランス", description: "フランス郊外の静かな村での集中的な創作期間", images: ["/images/atis_mons_1.jpg", "/images/atis_mons_2.jpg", "/images/atis_mons_3.jpg"] },
-  { id: "atis-mons-church", label: "フランス・アティスモンス教会", year: "2023", country: "フランス", description: "歴史的な教会を舞台にした特別展示会", images: ["/images/atis_mons_church_1.jpg", "/images/atis_mons_church_2.jpg", "/images/atis_mons_church_3.jpg"] },
+  { id: "atis-mons-church", label: "フランス・アティスモンス教会", year: "2023", country: "フランス", description: "歴史的な教会を舞台にした特別展示会", images: ["/images/23588.jpg", "/images/23571_0.jpg", "/images/23590_0 (1).jpg"] },
   { id: "normandy", label: "フランス・ノルマンディー", year: "2023", country: "フランス", description: "歴史と自然が織りなす風景からのインスピレーション", images: ["/images/france_normandy_1.jpg", "/images/12670.jpg", "/images/12671.jpg"] },
   { id: "france-chambord", label: "フランス・シャンボール城", year: "2023", country: "フランス", description: "フランス最大の城を描く野外アートプロジェクト", images: ["/images/chambord_2023_1.jpg", "/images/chambord_2023_2.jpg"] },
   { id: "montmartre", label: "フランス・モンマルトル", year: "2023", country: "フランス", description: "芸術家の聖地で描く街角スケッチの旅", images: ["/images/montmartre_1.jpg", "/images/montmartre_2.jpg"] },
