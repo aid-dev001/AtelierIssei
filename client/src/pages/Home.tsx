@@ -560,13 +560,10 @@ const Home = () => {
                 <div id="selected-location-images" className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* 初期表示用の画像 */}
                   <div className="aspect-square bg-gray-100 rounded overflow-hidden group">
-                    <img src="/images/12653.jpg" alt="東京・赤坂 - 1" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" onError={(e) => { const img = e.target as HTMLImageElement; img.onerror = null; img.src = '/placeholder.png'; }} />
+                    <img src="/images/hiroshima_1.jpg" alt="広島 - 1" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" onError={(e) => { const img = e.target as HTMLImageElement; img.onerror = null; img.src = '/placeholder.png'; }} />
                   </div>
                   <div className="aspect-square bg-gray-100 rounded overflow-hidden group">
-                    <img src="/images/12654.jpg" alt="東京・赤坂 - 2" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" onError={(e) => { const img = e.target as HTMLImageElement; img.onerror = null; img.src = '/placeholder.png'; }} />
-                  </div>
-                  <div className="aspect-square bg-gray-100 rounded overflow-hidden group">
-                    <img src="/images/12655.jpg" alt="東京・赤坂 - 3" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" onError={(e) => { const img = e.target as HTMLImageElement; img.onerror = null; img.src = '/placeholder.png'; }} />
+                    <img src="/images/hiroshima_2.jpg" alt="広島 - 2" className="w-full h-full object-cover transition duration-500 group-hover:scale-105" onError={(e) => { const img = e.target as HTMLImageElement; img.onerror = null; img.src = '/placeholder.png'; }} />
                   </div>
                   {/* 画像はJavaScriptで動的に挿入 */}
                 </div>
