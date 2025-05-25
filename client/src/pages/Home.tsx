@@ -520,10 +520,10 @@ const Home = () => {
               quote: "日本画家の目を通してエッフェル塔を再発見できるのは素晴らしいことです。素敵！"
             },
             {
-              image: "/images/13452.jpg",
-              name: "会社紹介",
-              title: "著名な会社役員",
-              quote: "この作品は当社のコーポレートアイデンティティを見事に表現しています。社内の雰囲気も明るくなりました。"
+              image: "/images/dog1.jpg",
+              name: "ビーグル ブルドッグ",
+              title: "パリ雑誌メディア経営者・実業家",
+              quote: "isseiの\"心\"とともに朝食を。子犬は生きる自信をくれます！"
             }
           ].map((voice, index) => (
             <ScrollToTopLink href="/voices" key={index}>
