@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import type { Collection, Artwork } from "@db/schema";
 import CustomMap from "@/components/Map";
+import VideoHero from "@/components/VideoHero";
 
 
 const ATELIER_LOCATIONS = ["銀座", "広島", "パリ"] as const;
