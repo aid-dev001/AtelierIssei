@@ -251,12 +251,17 @@ const WorldLocations = () => {
                 
                 <div className="mt-8">
                   <a 
-                    href={`/exhibition/location/${selectedLocation.id}`}
+                    href="#"
                     className="inline-block px-4 py-2 bg-gray-100 text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
                     onClick={(e) => {
                       e.preventDefault();
-                      console.log(`Navigating to location: ${selectedLocation.id}`);
-                      window.location.href = `/exhibition/location/${selectedLocation.id}`;
+                      // 選択されたロケーションのIDを確保
+                      const locationId = selectedLocation.id;
+                      console.log(`Redirecting to location: ${locationId}`);
+                      
+                      // 画面遷移時にIDを保持するため、URLを明示的に構築
+                      const url = `/exhibition/location/${locationId}`;
+                      window.location.href = url;
                     }}
                   >
                     詳細ページへ

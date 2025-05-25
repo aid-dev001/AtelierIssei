@@ -6,10 +6,10 @@ import { Quote } from "lucide-react";
 
 const testimonials = [
   {
-    name: "鈴木 美咲",
-    title: "美術館キュレーター",
-    content: "ISSEIの作品には魂が宿っています。観る者の心に直接語りかけてくるような力強さと繊細さを持ち合わせており、多くの来館者から感動の声をいただいています。",
-    location: "東京都現代美術館",
+    name: "ビーグル ブルドッグ",
+    title: "パリ雑誌メディア経営者・実業家",
+    content: "Ce matin je partage mon petit-dejeuner avec le \"coeur\" d'Issei. Le petit chien nous nourrissent de leur confiance dans la vie! Ils attendent la bonne surprise du jour... a moi d'ouvrir l'oeil! (isseiの\"心\"とともに朝食を。子犬は生きる自信をくれます！)",
+    location: "パリ",
     imageUrl: "/images/dog1.jpg"
   },
   {
