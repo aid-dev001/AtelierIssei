@@ -74,6 +74,14 @@ const locations = [
     images: ["/images/s231sa.jpg", "/images/23671.jpg"],
   },
   {
+    id: "london",
+    label: "ロンドン",
+    year: "2021",
+    country: "イギリス",
+    description: "古典と現代が融合する街での芸術探求",
+    images: ["/images/スクリーンショット 2025-05-25 23.21.59.png"],
+  },
+  {
     id: "tokyo-akasaka",
     label: "東京・赤坂",
     year: "2022",
@@ -85,14 +93,7 @@ const locations = [
       "/images/akasaka_3.jpg",
     ],
   },
-  {
-    id: "london",
-    label: "ロンドン",
-    year: "2021",
-    country: "イギリス",
-    description: "古典と現代が融合する街での芸術探求",
-    images: ["/images/スクリーンショット 2025-05-25 23.21.59.png"],
-  },
+
   {
     id: "paris-second",
     label: "パリ第二回",
