@@ -11,7 +11,7 @@ const locations = [
     year: "1998",
     country: "日本",
     description: "平和への祈りと再生をテーマにした作品の制作拠点",
-    images: ["/images/hiroshima_1.jpg", "/images/hiroshima_2.jpg"],
+    images: ["/images/S__9044006.jpg", "/images/S__9044005.jpg"],
   },
   {
     id: "tokyo-shinjuku",

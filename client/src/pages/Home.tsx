@@ -429,8 +429,8 @@ const Home = () => {
                   country: "日本",
                   description: "平和への祈りと再生をテーマにした作品の制作拠点",
                   images: [
-                    "/images/hiroshima_1.jpg",
-                    "/images/hiroshima_2.jpg",
+                    "/images/S__9044006.jpg",
+                    "/images/S__9044005.jpg",
                   ],
                 },
                 {
@@ -723,7 +723,7 @@ const Home = () => {
             data-year="1998"
             data-country="日本"
             data-description="平和への祈りと再生をテーマにした作品の制作拠点"
-            data-images='["/images/hiroshima_1.jpg","/images/hiroshima_2.jpg"]'
+            data-images='["/images/S__9044006.jpg","/images/S__9044005.jpg"]'
             className="hidden"
           ></div>
 
@@ -870,7 +870,7 @@ const Home = () => {
                   {/* 初期表示用の画像 */}
                   <div className="aspect-square bg-gray-100 rounded overflow-hidden group">
                     <img
-                      src="/images/hiroshima_1.jpg"
+                      src="/images/S__9044006.jpg"
                       alt="広島 - 1"
                       className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
                       onError={(e) => {
