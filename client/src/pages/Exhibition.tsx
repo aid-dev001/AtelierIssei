@@ -58,18 +58,63 @@ const Exhibition = () => {
         </div>
       </section>
 
-      <section className="container mx-auto px-4 mb-20">
+      {/* 代表作セクション */}
+      <section className="container mx-auto px-4 py-20">
+        <h2 className="text-3xl font-bold mb-10 text-center">代表作</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[
+            { id: "paris-second", label: "パリ第二回", year: "2022", country: "フランス", image: "/paris_second_1.jpg", description: "パリ中心部での2回目の個展「POKO FACE」シリーズ" },
+            { id: "chaumont", label: "フランス・ショーモン城", year: "2024", country: "フランス", image: "/chaumont_2024_1.jpg", description: "歴史的な城での特別展示プロジェクト" },
+            { id: "montmartre", label: "フランス・モンマルトル", year: "2023", country: "フランス", image: "/montmartre_1.jpg", description: "芸術家の聖地で描く街角スケッチの旅" }
+          ].map(item => (
+            <ScrollToTopLink href={`/exhibition/location/${item.id}`} key={item.id}>
+              <div className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 overflow-hidden transform hover:-translate-y-1">
+                <div className="aspect-[4/3] overflow-hidden relative">
+                  <img
+                    src={item.image}
+                    alt={`${item.label} Exhibition`}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    onError={(e) => {
+                      const img = e.target as HTMLImageElement;
+                      img.onerror = null;
+                      img.src = '/placeholder.png';
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                </div>
+                <div className="p-8 space-y-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-xl font-bold tracking-wide group-hover:text-primary/80 transition-colors">
+                      {item.label}
+                    </h3>
+                    <span className="text-sm text-gray-500">{item.year}</span>
+                  </div>
+                  <p className="text-gray-600 leading-relaxed">{item.description}</p>
+                  <div className="pt-4">
+                    <span className="text-sm font-medium text-primary/80 group-hover:text-primary transition-colors">
+                      詳細ページへ
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </ScrollToTopLink>
+          ))}
+        </div>
+      </section>
+
+      {/* 展示歴セクション */}
+      <section className="container mx-auto px-4 pb-20">
         <h2 className="text-3xl font-bold mb-10 text-center">世界各地での展示歴</h2>
         
-        <div className="space-y-12">
+        <div className="grid grid-cols-1 gap-6">
           {locations.map((location) => (
-            <div key={location.id} className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+            <div key={location.id} className="bg-white rounded-xl shadow-md overflow-hidden">
+              <div className="flex flex-col md:flex-row">
                 {/* 画像セクション */}
-                <div className="md:col-span-1 bg-gray-100 relative">
-                  <div className="aspect-square h-full">
+                <div className="md:w-1/3 bg-gray-100">
+                  <div className="aspect-square md:h-full w-full">
                     <img
-                      src={location.images[0]}
+                      src={`/${location.images[0]}`}
                       alt={`${location.label} Exhibition`}
                       className="w-full h-full object-cover"
                       onError={(e) => {
@@ -82,49 +127,27 @@ const Exhibition = () => {
                 </div>
                 
                 {/* テキストセクション */}
-                <div className="md:col-span-2 p-8 flex flex-col justify-between">
+                <div className="md:w-2/3 p-6 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-xl font-bold">{location.label}</h3>
                       <div className="flex items-center gap-3">
                         <span className="text-sm font-medium text-gray-500">{location.year}</span>
                         <span className="text-sm font-medium text-gray-500">{location.country}</span>
                       </div>
                     </div>
-                    <h3 className="text-2xl font-bold mb-3">{location.label}</h3>
-                    <p className="text-gray-700 mb-6">{location.description}</p>
+                    <p className="text-gray-700 mb-4">{location.description}</p>
                   </div>
                   
                   <div className="flex justify-end">
                     <ScrollToTopLink href={`/exhibition/location/${location.id}`}>
-                      <Button variant="outline" className="hover:bg-gray-50">
+                      <Button variant="outline" size="sm" className="hover:bg-gray-50">
                         詳細ページへ
                       </Button>
                     </ScrollToTopLink>
                   </div>
                 </div>
               </div>
-              
-              {/* サムネイル画像 (2枚目以降がある場合) */}
-              {location.images.length > 1 && (
-                <div className="px-8 pb-8 pt-0">
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-                    {location.images.slice(1).map((image, index) => (
-                      <div key={index} className="aspect-square bg-gray-100 rounded overflow-hidden">
-                        <img 
-                          src={image} 
-                          alt={`${location.label} - ${index + 2}`}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            const img = e.target as HTMLImageElement;
-                            img.onerror = null;
-                            img.src = '/placeholder.png';
-                          }}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           ))}
         </div>
