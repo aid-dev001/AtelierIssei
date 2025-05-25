@@ -576,7 +576,7 @@ const Home = () => {
       {/* Voices Section */}
       <section className="container mx-auto px-4 py-20">
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">VOICES</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
             {
               image: "/13452.jpg",
@@ -601,6 +601,18 @@ const Home = () => {
               name: "パリ雑誌メディア経営者・実業家",
               title: "フランス　ディジョン",
               quote: "isseiの\"心\"とともに朝食を。子犬は生きる自信をくれます！"
+            },
+            {
+              image: "/attached_assets/image2.jpeg",
+              name: "田中 美咲",
+              title: "インテリアデザイナー",
+              quote: "鮮やかな色彩と独創的な構図が印象的です。クライアントの空間に合わせて作品を選ぶことができるのも魅力の一つです。アートのある空間づくりに欠かせないパートナーになっています。"
+            },
+            {
+              image: "/attached_assets/dkajeiow92.png",
+              name: "山本 健太",
+              title: "美術館キュレーター",
+              quote: "伝統と革新が融合した表現スタイルは非常に興味深いです。特に「POKO FACE」シリーズは、シンプルながらも深い感情を表現していて、多くの来場者の心に響いています。"
             }
           ].map((voice, index) => (
             <ScrollToTopLink href="/voices" key={index}>
