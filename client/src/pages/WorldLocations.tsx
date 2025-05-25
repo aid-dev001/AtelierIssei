@@ -176,39 +176,30 @@ const WorldLocations = () => {
           </TabsList>
         </Tabs>
         
-        {/* 地域リスト表示 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {filteredLocations.map((location) => (
-            <div 
-              key={location.id}
-              className={`bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg ${
-                selectedLocation?.id === location.id ? 'ring-2 ring-primary' : ''
-              }`}
-              onClick={() => setSelectedLocation(location)}
-            >
-              <div className="relative aspect-video overflow-hidden">
-                {LOCATION_IMAGES[location.id] && LOCATION_IMAGES[location.id].length > 0 && (
-                  <img 
-                    src={LOCATION_IMAGES[location.id][0]} 
-                    alt={location.label}
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                  />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 flex items-end">
-                  <div className="p-4 text-white">
-                    <div className="flex items-center gap-2 mb-1">
-                      <MapPin className="w-4 h-4" />
-                      <span className="font-medium text-sm">{location.country}</span>
+        {/* シンプルなリスト表示 */}
+        <div className="bg-white rounded-xl shadow-md overflow-hidden mb-12">
+          <ul className="divide-y">
+            {filteredLocations.map((location) => (
+              <li 
+                key={location.id}
+                className={`cursor-pointer hover:bg-gray-50 transition-colors ${
+                  selectedLocation?.id === location.id ? 'bg-gray-100' : ''
+                }`}
+                onClick={() => setSelectedLocation(location)}
+              >
+                <div className="flex items-center justify-between p-4">
+                  <div className="flex items-center gap-4">
+                    <MapPin className="w-5 h-5 text-gray-400" />
+                    <div>
+                      <div className="font-medium">{location.label}</div>
+                      <div className="text-sm text-gray-500">{location.country}</div>
                     </div>
-                    <h3 className="text-xl font-bold">{location.label}</h3>
                   </div>
+                  <div className="text-sm text-gray-500">2020 - 2024</div>
                 </div>
-              </div>
-              <div className="p-4">
-                <p className="text-gray-600">{location.description}</p>
-              </div>
-            </div>
-          ))}
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* 選択された場所の詳細情報 */}
