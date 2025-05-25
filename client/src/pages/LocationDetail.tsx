@@ -318,7 +318,7 @@ const locationsData: Record<string, LocationData> = {
     id: 'atis-mons',
     title: 'アティスモンス',
     country: 'フランス',
-    year: '2019',
+    year: '2022',
     description: 'フランス郊外の静かな村での集中的な創作期間',
     longDescription: `アティスモンスはパリ郊外に位置する静かな町で、都会の喧騒を離れた集中的な創作環境を提供してくれました。
     
@@ -330,15 +330,40 @@ const locationsData: Record<string, LocationData> = {
     
     また、アティスモンスの小さな美術館や文化センターでの展示や地元のアーティストとの交流は、フランスにおける地方の文化活動の重要性を認識する機会となり、私自身のアーティストとしての役割についても再考する時間となりました。`,
     images: [
-      { url: '/images/12666.jpg', caption: 'アティスモンスの静かな住宅街' },
-      { url: '/images/12667.jpg', caption: '地元の小さな広場' },
-      { url: '/images/12668.jpg', caption: '郊外の公園の風景' },
-      { url: '/images/3446.jpg', caption: '週末の市場の様子' },
-      { url: '/images/3525.jpg', caption: '60年代の集合住宅' }
+      { url: '/atis_mons_1.jpg', caption: 'アティスモンスの文化センター外観' },
+      { url: '/atis_mons_2.jpg', caption: '「POKO FACE」シリーズの展示風景' },
+      { url: '/atis_mons_3.jpg', caption: '地元の方々との交流会の様子' }
     ],
     relatedLocations: [
-      { id: 'paris', title: 'パリ', image: '/images/12680.jpg' },
-      { id: 'saint-hilaire-andre', title: 'サンティレースアンドレシス', image: '/images/7853.jpg' }
+      { id: 'paris-second', title: 'パリ第二回', image: '/paris_second_1.jpg' },
+      { id: 'atis-mons-church', title: 'フランス・アティスモンス教会', image: '/atis_mons_church_2.jpg' }
+    ]
+  },
+  
+  // フランス・アティスモンス教会
+  'atis-mons-church': {
+    id: 'atis-mons-church',
+    title: 'フランス・アティスモンス教会',
+    country: 'フランス',
+    year: '2023',
+    description: '歴史的な教会を舞台にした特別展示会',
+    longDescription: `2023年、私はアティスモンスの歴史的な教会を会場とした特別なアート展示会に参加する機会に恵まれました。この美しい石造りの教会は、現代アートと歴史的建造物が融合する独特の空間を提供してくれました。
+    
+    数世紀の歴史を持つこの教会は、現在はアート施設としても活用されており、古いステンドグラスが現代アートと共存する興味深い対比が生まれています。高い天井と神聖な雰囲気の中で、私の「POKO FACE」シリーズの作品は新たな文脈で捉えられる体験となりました。
+    
+    展示では、教会の白い壁面に並べられた鮮やかな色彩のポートレートが、来場者の目を引きました。特に青を基調としたバナー作品は、垂直に吊るされることで教会の空間の高さを強調し、作品と空間の対話を生み出すことができました。
+    
+    地元の芸術愛好家や観光客、そして教会関係者との交流は、芸術と信仰、伝統と革新といったテーマについて考える貴重な機会となりました。歴史的建造物の中での現代アート展示は、時間を超えた対話を生み出し、作品に新たな意味と解釈をもたらすことを実感しました。
+    
+    この経験は、場所と作品の関係性、そして展示空間が鑑賞体験にもたらす影響について、より深く考察するきっかけとなりました。`,
+    images: [
+      { url: '/atis_mons_church_1.jpg', caption: 'アティスモンス教会での展示風景と「POKO FACE」バナー作品' },
+      { url: '/atis_mons_church_2.jpg', caption: '石造りの歴史的な教会の外観' },
+      { url: '/atis_mons_church_3.jpg', caption: '展示されたポートレート作品群' }
+    ],
+    relatedLocations: [
+      { id: 'atis-mons', title: 'アティスモンス', image: '/atis_mons_1.jpg' },
+      { id: 'normandy', title: 'フランス・ノルマンディー', image: '/france_normandy_1.jpg' }
     ]
   },
   // サンティレースアンドレシス
@@ -507,7 +532,7 @@ const locationsData: Record<string, LocationData> = {
     id: 'chambord',
     title: 'シャンボール城',
     country: 'フランス',
-    year: '2017',
+    year: '2022',
     description: 'ルネサンス建築の傑作の中での芸術体験',
     longDescription: `シャンボール城はフランス・ルネサンス建築の最高傑作の一つとして知られ、その壮大な規模と革新的なデザインは今なお多くの訪問者を魅了しています。
     
@@ -521,15 +546,39 @@ const locationsData: Record<string, LocationData> = {
     
     シャンボール城の持つ壮大さと繊細さの共存は、私の作品における「スケールの操作」や「細部と全体の関係」について再考するきっかけとなりました。`,
     images: [
-      { url: '/images/IMG_7161.jpg', caption: 'シャンボール城の壮大な外観' },
-      { url: '/images/IMG_7162.jpg', caption: '有名な二重螺旋階段' },
-      { url: '/images/IMG_7163.jpg', caption: '城を取り囲む庭園と森林' },
-      { url: '/images/IMG_7164.jpg', caption: '屋上から見た幾何学的な建築デザイン' },
-      { url: '/images/IMG_7165.jpg', caption: '城内での現代美術展の様子' }
+      { url: '/IMG_7161.jpg', caption: 'シャンボール城の壮大な外観' },
+      { url: '/IMG_7162.jpg', caption: '有名な二重螺旋階段' },
+      { url: '/IMG_7163.jpg', caption: '城を取り囲む庭園と森林' }
     ],
     relatedLocations: [
-      { id: 'chaumont', title: 'ショーモン城', image: '/images/2266.jpg' },
-      { id: 'paris', title: 'パリ', image: '/images/12680.jpg' }
+      { id: 'chaumont', title: 'ショーモン城', image: '/2266.jpg' },
+      { id: 'france-chambord', title: 'フランス・シャンボール城', image: '/chambord_2023_1.jpg' }
+    ]
+  },
+  
+  // フランス・シャンボール城
+  'france-chambord': {
+    id: 'france-chambord',
+    title: 'フランス・シャンボール城',
+    country: 'フランス',
+    year: '2023',
+    description: 'フランス最大の城を描く野外アートプロジェクト',
+    longDescription: `2023年、私はシャンボール城を再訪し、この歴史的建造物の壮大な美しさを描く野外アートプロジェクトに参加する機会に恵まれました。
+    
+    フランスで最も有名な城のひとつであるシャンボール城は、その壮麗なルネサンス建築と広大な自然公園で知られています。城の周囲に広がる水堀と森林に囲まれた環境は、アーティストにとって格別のインスピレーション源となりました。
+    
+    このプロジェクトでは、城を取り囲む水面に映る城の姿を中心に、建築と自然の調和、そして光と影の表現に焦点を当てました。特に、季節の変わり目である秋の訪れとともに変化する森の色彩と、それを背景にした城の威厳ある姿は、時間と永続性についての考察を深める契機となりました。
+    
+    野外での制作活動は、天候の変化や光の移り変わりなど、自然と直接対話しながら作品を生み出す貴重な経験となりました。イーゼルを立て、城を眺めながら描く過程で、自分自身の視点と表現を再確認する機会にもなりました。
+    
+    この経験を通じて、歴史的建造物と自然環境の関係性、そして過去と現在の対話としての芸術表現について、新たな視点を得ることができました。`,
+    images: [
+      { url: '/chambord_2023_1.jpg', caption: 'シャンボール城を描く様子' },
+      { url: '/chambord_2023_2.jpg', caption: '水面に映るシャンボール城と描きかけの作品' }
+    ],
+    relatedLocations: [
+      { id: 'chambord', title: 'シャンボール城', image: '/IMG_7161.jpg' },
+      { id: 'normandy', title: 'フランス・ノルマンディー', image: '/france_normandy_1.jpg' }
     ]
   }
 };

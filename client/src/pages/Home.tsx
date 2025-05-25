@@ -354,11 +354,11 @@ const Home = () => {
                 { id: "france-savigny", label: "フランス・サヴィニー", year: "2022", country: "フランス", description: "フランス地方都市でのファッションとアートの融合展示", images: ["/france_savigny_1.jpg", "/france_savigny_2.jpg"] },
                 { id: "atis-mons", label: "アティスモンス", year: "2022", country: "フランス", description: "フランス郊外の静かな村での集中的な創作期間", images: ["/atis_mons_1.jpg", "/atis_mons_2.jpg", "/atis_mons_3.jpg"] },
                 { id: "atis-mons-church", label: "フランス・アティスモンス教会", year: "2023", country: "フランス", description: "歴史的な教会を舞台にした特別展示会", images: ["/atis_mons_church_1.jpg", "/atis_mons_church_2.jpg", "/atis_mons_church_3.jpg"] },
-                { id: "atis-mons-church", label: "フランス・アティスモンス教会", year: "2023", country: "フランス", description: "歴史的な教会を舞台にした特別展示会", images: ["/atis_mons_church_1.jpg", "/atis_mons_church_2.jpg", "/atis_mons_church_3.jpg"] },
                 { id: "chaumont", label: "ショーモン城", year: "2022", country: "フランス", description: "歴史的な城での特別展示プロジェクト", images: ["/2266.jpg", "/2914.jpg", "/3316.jpg"] },
                 { id: "nice", label: "ニース", year: "2023", country: "フランス", description: "地中海の陽光に照らされた色彩の研究", images: ["/12663.jpg", "/12664.jpg", "/12665.jpg"] },
                 { id: "fukuyama", label: "福山", year: "2024", country: "日本", description: "福山こころの病院での愛と癒しをテーマにした作品展示", images: ["/fukuyama_1.jpg", "/fukuyama_2.jpg"] },
-                { id: "chambord", label: "シャンボール城", year: "2022", country: "フランス", description: "ルネサンス建築の傑作の中での芸術体験", images: ["/IMG_7161.jpg", "/IMG_7162.jpg", "/IMG_7163.jpg"] }
+                { id: "chambord", label: "シャンボール城", year: "2022", country: "フランス", description: "ルネサンス建築の傑作の中での芸術体験", images: ["/IMG_7161.jpg", "/IMG_7162.jpg", "/IMG_7163.jpg"] },
+                { id: "france-chambord", label: "フランス・シャンボール城", year: "2023", country: "フランス", description: "フランス最大の城を描く野外アートプロジェクト", images: ["/chambord_2023_1.jpg", "/chambord_2023_2.jpg"] }
               ].map((location, index) => (
                 <div 
                   key={location.id}
