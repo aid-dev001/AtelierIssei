@@ -23,6 +23,30 @@ type LocationData = {
 };
 
 const locationsData: Record<string, LocationData> = {
+  // 東京・新宿
+  'tokyo-shinjuku': {
+    id: 'tokyo-shinjuku',
+    title: '東京・新宿',
+    country: '日本',
+    year: '2002',
+    description: '都市の活力とエネルギーが交差する創造的空間',
+    longDescription: `新宿は、伝統と革新が共存する東京の中心地として、アーティストに刺激的な創作環境を提供します。
+
+    2002年、私は新宿の多様性と活気からインスピレーションを得て、色彩豊かな抽象画シリーズを制作しました。日々変化する都市の表情と、そこに生きる人々の多様な物語が作品の根底にあります。
+    
+    昼と夜で異なる顔を見せる新宿の街並み、雑多な看板や光の洪水、そして静かな公園や路地裏など、対照的な要素が交錯する場所での経験が、私の色彩感覚と構図に大きな影響を与えました。
+
+    この時期に制作した作品では、都市の喧騒と孤独、人々の交流と分断といった現代社会の二面性を、鮮やかな色彩のコントラストと抽象的な形態で表現することを試みています。`,
+    images: [
+      { url: '/tokyo_shinjuku_1.jpg', caption: '抽象画：都市の色彩と形' },
+      { url: '/tokyo_shinjuku_2.jpg', caption: '抽象的構成：円と曲線の調和' },
+      { url: '/tokyo_shinjuku_3.jpg', caption: '色彩の交差：ネオンカラーの抽象画' }
+    ],
+    relatedLocations: [
+      { id: 'tokyo-ikebukuro', title: '東京・池袋', image: '/artworks/12648.jpg' },
+      { id: 'tokyo-okubo', title: '東京・大久保', image: '/artworks/12658.jpg' }
+    ]
+  },
   // 東京・赤坂
   'tokyo-akasaka': {
     id: 'tokyo-akasaka',

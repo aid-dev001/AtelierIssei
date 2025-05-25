@@ -338,6 +338,7 @@ const Home = () => {
           <div className="bg-white rounded-xl shadow-md overflow-hidden mb-12 p-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2">
               {[
+                { id: "tokyo-shinjuku", label: "東京・新宿", year: "2002", country: "日本", description: "都市の多様性と活気を色彩豊かに表現した作品", images: ["/tokyo_shinjuku_1.jpg", "/tokyo_shinjuku_2.jpg", "/tokyo_shinjuku_3.jpg"] },
                 { id: "tokyo-akasaka", label: "東京・赤坂", year: "2022", country: "日本", description: "伝統と革新が交差する街で生まれる新しい表現", images: ["/artworks/12653.jpg", "/artworks/12654.jpg", "/artworks/12655.jpg"] },
                 { id: "tokyo-ikebukuro", label: "東京・池袋", year: "2020", country: "日本", description: "都会の喧騒の中で見つけた静寂を表現するアトリエ", images: ["/artworks/12648.jpg", "/artworks/12649.jpg", "/artworks/12650.jpg"] },
                 { id: "tokyo-okubo", label: "東京・大久保", year: "2021", country: "日本", description: "多様な文化が混ざり合う場所からインスピレーションを得る", images: ["/artworks/12658.jpg", "/artworks/12659.jpg", "/artworks/12660.jpg"] },
