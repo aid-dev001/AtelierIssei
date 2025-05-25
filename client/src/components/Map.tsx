@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 export type LocationMarker = {
   id: string;
@@ -16,45 +16,11 @@ type WorldMapProps = {
 };
 
 const WorldMap = ({ markers, onMarkerClick, selectedMarker }: WorldMapProps) => {
-  const mapRef = useRef<HTMLDivElement>(null);
-  
-  useEffect(() => {
-    if (!mapRef.current) return;
-
-    // Clear existing markers
-    const existingMarkers = mapRef.current.querySelectorAll('.custom-map-marker');
-    existingMarkers.forEach(marker => marker.remove());
-
-    // Create and add new markers
-    markers.forEach((marker) => {
-      const markerElement = document.createElement("div");
-      markerElement.className = `custom-map-marker group absolute cursor-pointer ${selectedMarker === marker.id ? 'ring-4 ring-primary ring-offset-2 z-10' : ''}`;
-      markerElement.style.left = `${marker.x}%`;
-      markerElement.style.top = `${marker.y}%`;
-      
-      // Create visual marker
-      const dot = document.createElement("div");
-      dot.className = `w-4 h-4 rounded-full bg-primary ${selectedMarker === marker.id ? 'scale-125' : ''} transition-all duration-300 group-hover:scale-125`;
-      markerElement.appendChild(dot);
-      
-      // Create tooltip
-      const tooltip = document.createElement("div");
-      tooltip.className = "absolute hidden group-hover:block bg-white p-2 rounded shadow-lg -translate-y-full -translate-x-1/2 text-sm z-20 whitespace-nowrap";
-      tooltip.textContent = marker.label;
-      markerElement.appendChild(tooltip);
-      
-      // Add click handler
-      if (onMarkerClick) {
-        markerElement.addEventListener('click', () => onMarkerClick(marker));
-      }
-      
-      mapRef.current?.appendChild(markerElement);
-    });
-  }, [markers, selectedMarker, onMarkerClick]);
+  const [hoveredMarker, setHoveredMarker] = useState<string | null>(null);
 
   return (
     <div className="relative w-full h-[600px] bg-gray-100 rounded-lg overflow-hidden">
-      <div ref={mapRef} className="absolute inset-0">
+      <div className="absolute inset-0">
         <svg width="100%" height="100%" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
           <rect width="1200" height="600" fill="#f8f9fa"/>
           <g fill="#e9ecef" stroke="#dee2e6" strokeWidth="1">
@@ -71,6 +37,54 @@ const WorldMap = ({ markers, onMarkerClick, selectedMarker }: WorldMapProps) => 
             {/* オーストラリア */}
             <path d="M900,450 C950,430 1000,440 1030,480 C1060,520 1070,570 1050,610 C1030,650 980,670 930,650 C880,630 850,590 850,540 C850,490 870,450 900,450 Z"/>
           </g>
+          
+          {/* マーカーを直接SVG内に配置 */}
+          {markers.map((marker) => (
+            <g 
+              key={marker.id}
+              transform={`translate(${marker.x * 12}, ${marker.y * 6})`}
+              onClick={() => onMarkerClick && onMarkerClick(marker)}
+              onMouseEnter={() => setHoveredMarker(marker.id)}
+              onMouseLeave={() => setHoveredMarker(null)}
+              className="cursor-pointer"
+            >
+              <circle 
+                r="6" 
+                fill={selectedMarker === marker.id ? "#ff4081" : "#2196f3"} 
+                stroke="#fff"
+                strokeWidth="1.5"
+                className="transition-all duration-300"
+                style={{
+                  transform: selectedMarker === marker.id || hoveredMarker === marker.id ? 'scale(1.5)' : 'scale(1)',
+                }}
+              />
+              
+              {(hoveredMarker === marker.id || selectedMarker === marker.id) && (
+                <g>
+                  <rect
+                    x="10"
+                    y="-20"
+                    rx="4"
+                    ry="4"
+                    width={marker.label.length * 7 + 20}
+                    height="24"
+                    fill="white"
+                    stroke="#ccc"
+                    strokeWidth="1"
+                  />
+                  <text
+                    x="20"
+                    y="-4"
+                    fontFamily="sans-serif"
+                    fontSize="12"
+                    fill="#333"
+                  >
+                    {marker.label}
+                  </text>
+                </g>
+              )}
+            </g>
+          ))}
         </svg>
       </div>
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/5" />
