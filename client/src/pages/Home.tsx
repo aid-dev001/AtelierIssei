@@ -530,7 +530,7 @@ const Home = () => {
               <div className="grid grid-cols-1 rounded-xl shadow-xl overflow-hidden cursor-pointer">
                 <div className="relative aspect-square overflow-hidden">
                   <img
-                    src={`/artworks/${voice.image}`}
+                    src={voice.image}
                     alt={`Voice by ${voice.name}`}
                     className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
                     onError={(e) => {
