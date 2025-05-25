@@ -442,9 +442,9 @@ const locationsData: Record<string, LocationData> = {
 
     この経験は、国際的なアート活動を継続することの意義と、文化的背景の異なる人々との創造的な対話の重要性を改めて実感させてくれました。`,
     images: [
-      { url: '/images/paris2_1.jpg', caption: 'パリのギャラリーショーウィンドウに展示された「POKO FACE」シリーズ' },
-      { url: '/images/paris2_2.jpg', caption: 'ギャラリーを訪れたコレクターと交流する様子' },
-      { url: '/images/paris2_3.jpg', caption: 'パリの街並みの中にあるギャラリーの外観' }
+      { url: '/images/23601.jpg', caption: 'パリのギャラリーショーウィンドウに展示された「POKO FACE」シリーズ' },
+      { url: '/images/23622_0.jpg', caption: 'ギャラリーを訪れたコレクターと交流する様子' },
+      { url: '/images/1662819546.jpg', caption: 'パリの街並みの中にあるギャラリーの外観' }
     ],
     relatedLocations: [
       { id: 'paris', title: 'パリ第一回', image: '/paris_1.jpg' },
@@ -489,9 +489,9 @@ const locationsData: Record<string, LocationData> = {
 
     カサ・ミラの波打つようなファサードと、私の作品に登場する流動的なラインや色彩表現との間には、不思議な共通点があります。建築とアートの境界を超えた対話は、私の創作活動に新たな視点をもたらしてくれました。`,
     images: [
-      { url: '/spain_casamila_1.jpg', caption: 'カサ・ミラ（ラ・ペドレラ）の外観' },
-      { url: '/spain_casamila_2.jpg', caption: 'M.A.D.S. ART GALLERYでの展示の様子' },
-      { url: '/spain_casamila_3.jpg', caption: '「LIQUID ARSENAL」国際アート展での受賞証書' }
+      { url: '/images/23624_0.jpg', caption: 'カサ・ミラ（ラ・ペドレラ）の外観' },
+      { url: '/images/23630_0.jpg', caption: 'M.A.D.S. ART GALLERYでの展示の様子' },
+      { url: '/images/heji3918.jpg', caption: '「LIQUID ARSENAL」国際アート展での受賞証書' }
     ],
     relatedLocations: [
       { id: 'paris', title: 'パリ第一回', image: '/paris_1.jpg' },
