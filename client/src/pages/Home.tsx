@@ -275,34 +275,56 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Atelier History */}
+      {/* World Locations */}
       <section className="bg-gray-50 py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold mb-4 text-center tracking-wider">ATELIER HISTORY</h2>
-          <p className="text-xl text-center mb-16 text-gray-700">アーティストisseiが創作活動を行ってきた場所の記録</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {ATELIER_LOCATIONS.map((location) => (
-              <div key={location} className="bg-white rounded-xl shadow-md overflow-hidden group transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                <ScrollToTopLink href={`/ateliers/${location}`}>
-                  <div className="aspect-[4/3] relative overflow-hidden cursor-pointer">
-                    <img
-                      src={AtelierInfo[location].mainImage}
-                      alt={`${location}アトリエ`}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                </ScrollToTopLink>
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold mb-3 tracking-wide">{location}</h3>
-                  <p className="text-gray-600 leading-relaxed">{AtelierInfo[location].description}</p>
-                  <div className="mt-6">
-                    <span className="inline-block bg-gray-100 text-gray-800 px-4 py-2 rounded-md text-sm font-bold tracking-wide">
-                      {AtelierInfo[location].period}
-                    </span>
+          <h2 className="text-4xl font-bold mb-4 text-center tracking-wider">WORLD LOCATIONS</h2>
+          <p className="text-xl text-center mb-16 text-gray-700">世界各地で取り組んだプロジェクトとインスピレーションを得た場所</p>
+          
+          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-12 p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2">
+              {[
+                { id: "tokyo-akasaka", label: "東京・赤坂", year: "2022" },
+                { id: "tokyo-ikebukuro", label: "東京・池袋", year: "2020" },
+                { id: "tokyo-okubo", label: "東京・大久保", year: "2021" },
+                { id: "hiroshima", label: "広島", year: "2019" },
+                { id: "fukuyama", label: "福山", year: "2018" },
+                { id: "abu-dhabi", label: "アブダビ", year: "2023" },
+                { id: "london", label: "ロンドン", year: "2022" },
+                { id: "paris", label: "パリ", year: "2021" },
+                { id: "nice", label: "ニース", year: "2023" },
+                { id: "atis-mons", label: "アティスモンス", year: "2022" },
+                { id: "normandy", label: "ノルマンディー", year: "2021" },
+                { id: "saint-hilaire-andre", label: "サンティレースアンドレシス", year: "2019" },
+                { id: "bourges", label: "ブールジュ", year: "2020" },
+                { id: "chaumont", label: "ショーモン城", year: "2022" },
+                { id: "chambord", label: "シャンボール城", year: "2022" }
+              ].map((location) => (
+                <div 
+                  key={location.id}
+                  className="cursor-pointer hover:bg-gray-50 transition-colors rounded px-3 py-2"
+                  onClick={() => window.location.href = "/world-locations"}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">{location.label}</span>
+                    <span className="text-sm text-gray-500">{location.year}</span>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+          </div>
+          
+          <div className="flex justify-center">
+            <Button 
+              asChild 
+              variant="outline" 
+              className="px-8 py-6 text-sm tracking-[0.2em] rounded-lg border-black/80 hover:border-black bg-white/80 hover:bg-white transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:-translate-y-0.5 group relative overflow-hidden"
+            >
+              <ScrollToTopLink href="/world-locations" className="relative z-10 flex items-center justify-center gap-2">
+                すべての場所を見る
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </ScrollToTopLink>
+            </Button>
           </div>
         </div>
       </section>
