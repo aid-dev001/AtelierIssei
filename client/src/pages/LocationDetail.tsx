@@ -577,8 +577,34 @@ const locationsData: Record<string, LocationData> = {
       { url: '/chambord_2023_2.jpg', caption: '水面に映るシャンボール城と描きかけの作品' }
     ],
     relatedLocations: [
-      { id: 'chambord', title: 'シャンボール城', image: '/IMG_7161.jpg' },
-      { id: 'normandy', title: 'フランス・ノルマンディー', image: '/france_normandy_1.jpg' }
+      { id: 'normandy', title: 'フランス・ノルマンディー', image: '/france_normandy_1.jpg' },
+      { id: 'montmartre', title: 'フランス・モンマルトル', image: '/montmartre_1.jpg' }
+    ]
+  },
+  
+  // フランス・モンマルトル
+  'montmartre': {
+    id: 'montmartre',
+    title: 'フランス・モンマルトル',
+    country: 'フランス',
+    year: '2023',
+    description: '芸術家の聖地で描く街角スケッチの旅',
+    longDescription: `2023年、私はパリの芸術家の聖地として知られるモンマルトルで、街角スケッチのプロジェクトに取り組みました。
+
+    モンマルトルは、ピカソやヴァン・ゴッホ、モディリアーニなど多くの偉大な芸術家たちが創作活動を行った歴史的な地区です。石畳の道、階段、そして象徴的なサクレクール寺院の白亜のドームが特徴的なこの丘の上の地区は、今日も多くの芸術家たちの創作意欲を刺激し続けています。
+    
+    私のプロジェクトでは、伝統的な画家たちが並ぶ広場テルトル広場から少し離れた場所で、地元の日常風景を捉えることに焦点を当てました。赤いキャノピーの下に並ぶカフェや、石畳の上を行き交う人々、そして遠くに見えるパリの景色などを、明るい色彩で表現しました。
+    
+    特に印象的だったのは、季節の変わり目の光の変化と、パリ特有の石造りの建物が作り出す影の深さでした。モンマルトルの街角で、イーゼルを立てて描く経験は、即興性と観察力を鍛える貴重な機会となりました。
+    
+    地元の人々や観光客との自然な交流も、このプロジェクトの魅力の一つでした。時に会話が生まれ、時に静かに見守られる中での制作は、公共空間における芸術の役割について考えさせられる経験となりました。`,
+    images: [
+      { url: '/montmartre_1.jpg', caption: 'モンマルトルの石畳の通りで絵を描く様子' },
+      { url: '/montmartre_2.jpg', caption: '赤いキャノピーのカフェと完成途中の作品' }
+    ],
+    relatedLocations: [
+      { id: 'france-chambord', title: 'フランス・シャンボール城', image: '/chambord_2023_1.jpg' },
+      { id: 'paris-second', title: 'パリ第二回', image: '/paris_second_1.jpg' }
     ]
   }
 };
