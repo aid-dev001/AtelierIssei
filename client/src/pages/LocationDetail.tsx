@@ -89,8 +89,8 @@ const locationsData: Record<string, LocationData> = {
     
     この対比が私の作品における「記憶と再生」というテーマの探求につながっています。広島滞在中に制作した作品では、過去を忘れずに未来に向かって歩む人間の強さを表現することを試みました。`,
     images: [
-      { url: '/images/hiroshima_1.jpg', caption: '静物画：茶色のバッグと花' },
-      { url: '/images/hiroshima_2.jpg', caption: '時計と黄色いレモンの静物画' }
+      { url: '/hiroshima_1.jpg', caption: '静物画：茶色のバッグと花' },
+      { url: '/hiroshima_2.jpg', caption: '時計と黄色いレモンの静物画' }
     ],
     relatedLocations: [
       { id: 'fukuyama', title: '福山', image: '/images/12670.jpg' },

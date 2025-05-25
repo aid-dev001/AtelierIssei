@@ -341,7 +341,7 @@ const Home = () => {
                 { id: "tokyo-akasaka", label: "東京・赤坂", year: "2022", country: "日本", description: "伝統と革新が交差する街で生まれる新しい表現", images: ["/artworks/12653.jpg", "/artworks/12654.jpg", "/artworks/12655.jpg"] },
                 { id: "tokyo-ikebukuro", label: "東京・池袋", year: "2020", country: "日本", description: "都会の喧騒の中で見つけた静寂を表現するアトリエ", images: ["/artworks/12648.jpg", "/artworks/12649.jpg", "/artworks/12650.jpg"] },
                 { id: "tokyo-okubo", label: "東京・大久保", year: "2021", country: "日本", description: "多様な文化が混ざり合う場所からインスピレーションを得る", images: ["/artworks/12658.jpg", "/artworks/12659.jpg", "/artworks/12660.jpg"] },
-                { id: "hiroshima", label: "広島", year: "1998", country: "日本", description: "平和への祈りと再生をテーマにした作品の制作拠点", images: ["/images/hiroshima_1.jpg", "/images/hiroshima_2.jpg"] },
+                { id: "hiroshima", label: "広島", year: "1998", country: "日本", description: "平和への祈りと再生をテーマにした作品の制作拠点", images: ["/hiroshima_1.jpg", "/hiroshima_2.jpg"] },
                 { id: "fukuyama", label: "福山", year: "2018", country: "日本", description: "瀬戸内の光と風を感じる穏やかな創作空間", images: ["/12675.jpg", "/12676.jpg", "/12677.jpg"] },
                 { id: "abu-dhabi", label: "アブダビ", year: "2023", country: "UAE", description: "砂漠の国で出会った光と影のコントラスト", images: ["/12678.jpg", "/12679.jpg", "/12680.jpg"] },
                 { id: "london", label: "ロンドン", year: "2022", country: "イギリス", description: "古典と現代が融合する街での芸術探求", images: ["/10819.jpg", "/10820.jpg", "/10821.jpg"] },
