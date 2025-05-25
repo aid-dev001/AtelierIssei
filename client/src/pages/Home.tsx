@@ -499,7 +499,7 @@ const Home = () => {
       {/* Voices Section */}
       <section className="container mx-auto px-4 py-20">
         <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">VOICES</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {[
             {
               image: "/13452.jpg",
@@ -518,6 +518,12 @@ const Home = () => {
               name: "エッフェル塔 ねこ",
               title: "フランス美術評論家",
               quote: "日本画家の目を通してエッフェル塔を再発見できるのは素晴らしいことです。素敵！"
+            },
+            {
+              image: "/13452.jpg",
+              name: "会社紹介",
+              title: "著名な会社役員",
+              quote: "この作品は当社のコーポレートアイデンティティを見事に表現しています。社内の雰囲気も明るくなりました。"
             }
           ].map((voice, index) => (
             <ScrollToTopLink href="/voices" key={index}>
