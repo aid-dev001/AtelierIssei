@@ -250,12 +250,17 @@ const WorldLocations = () => {
                 </p>
                 
                 <div className="mt-8">
-                  <Link 
-                    to={`/exhibition/location/${selectedLocation.id}`}
+                  <a 
+                    href={`/exhibition/location/${selectedLocation.id}`}
                     className="inline-block px-4 py-2 bg-gray-100 text-gray-800 hover:bg-gray-200 rounded-md transition-colors"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      console.log(`Navigating to location: ${selectedLocation.id}`);
+                      window.location.href = `/exhibition/location/${selectedLocation.id}`;
+                    }}
                   >
                     詳細ページへ
-                  </Link>
+                  </a>
                 </div>
               </div>
               

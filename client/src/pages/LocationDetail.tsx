@@ -460,24 +460,22 @@ const locationsData: Record<string, LocationData> = {
 };
 
 const LocationDetail: React.FC = () => {
-  const [locationPath] = useLocation();
-  const params = locationPath.split('/');
-  const actualLocationId = params[params.length - 1];
+  const { locationId } = useParams();
   const [location, setLocation] = useState<LocationData | null>(null);
 
   useEffect(() => {
-    console.log("URL Path:", locationPath);
-    console.log("Extracted LocationId:", actualLocationId);
+    console.log("LocationDetail with locationId:", locationId);
     
-    if (actualLocationId && locationsData[actualLocationId]) {
-      console.log("Found location data for:", actualLocationId);
-      setLocation(locationsData[actualLocationId]);
+    if (locationId && locationsData[locationId]) {
+      console.log("Found location data for:", locationId);
+      setLocation(locationsData[locationId]);
       window.scrollTo(0, 0);
     } else {
-      console.log("No location data found for:", actualLocationId);
+      // Handle case when location data not found
+      console.log("No location data found for:", locationId);
       console.log("Available locations:", Object.keys(locationsData));
     }
-  }, [actualLocationId, locationPath]);
+  }, [locationId]);
 
   if (!location) {
     return (
