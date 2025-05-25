@@ -34,10 +34,10 @@ const testimonials = [
     imageUrl: "/13456.jpg"
   },
   {
-    name: "マリア・ゴンザレス",
-    title: "スペイン美術愛好家",
-    content: "Esta pintura me recuerda a las pequeñas iglesias de mi pueblo en España. La simplicidad y los colores brillantes traen paz a mi corazón.\n\nこの絵は私の故郷スペインの小さな教会を思い出させます。シンプルさと鮮やかな色彩が心に平和をもたらしてくれます。",
-    location: "マドリード",
+    name: "千本倖生",
+    title: "KDDI／ワイモバイル設立者・連続起業家",
+    content: "大変素晴らしい絵をありがとう。いつも見ていて心が和みます。別荘ができたら飾ります。",
+    location: "東京",
     imageUrl: "/13457.jpg"
   },
   {
