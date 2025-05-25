@@ -147,7 +147,9 @@ const locations = [
     year: "2023",
     country: "フランス",
     description: "歴史と自然が織りなす風景からのインスピレーション",
-    images: ["/images/Ludo-mediatheque-Etrepagny-Le-Patio--ML-Vittori-min-1200x900.jpg", "/images/12670.jpg", "/images/12671.jpg"],
+    images: [
+      "/images/Ludo-mediatheque-Etrepagny-Le-Patio--ML-Vittori-min-1200x900.jpg",
+    ],
   },
   {
     id: "france-chambord",
@@ -155,7 +157,7 @@ const locations = [
     year: "2023",
     country: "フランス",
     description: "フランス最大の城を描く野外アートプロジェクト",
-    images: ["/images/chambord_2023_1.jpg", "/images/chambord_2023_2.jpg"],
+    images: ["/images/23694.jpg", "/images/23687_0.jpg"],
   },
   {
     id: "montmartre",
@@ -163,7 +165,7 @@ const locations = [
     year: "2023",
     country: "フランス",
     description: "芸術家の聖地で描く街角スケッチの旅",
-    images: ["/images/montmartre_1.jpg", "/images/montmartre_2.jpg"],
+    images: ["/images/23704_0.jpg", "/images/23703_0.jpg"],
   },
   {
     id: "chaumont",
