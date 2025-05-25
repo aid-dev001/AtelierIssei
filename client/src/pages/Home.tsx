@@ -150,8 +150,8 @@ const Home = () => {
   ];
 
   return (
-    <div className="space-y-36">
-      <section className="min-h-screen relative overflow-hidden">
+    <div>
+      <section className="min-h-screen relative overflow-hidden mb-36">
         {/* 背景の画像ギャラリー */}
         <div className="absolute inset-0">
           {/* グリッド状の画像レイアウト */}
