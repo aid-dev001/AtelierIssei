@@ -625,6 +625,15 @@ const Home = () => {
                   images: ["/images/23704_0.jpg", "/images/23703_0.jpg"],
                 },
                 {
+                  id: "fukuyama",
+                  label: "広島・福山",
+                  year: "2024",
+                  country: "日本",
+                  description:
+                    "福山こころの病院での愛と癒しをテーマにした作品展示",
+                  images: ["/images/13456_0.jpg"],
+                },
+                {
                   id: "chaumont",
                   label: "フランス・ショーモン城",
                   year: "2024",
@@ -646,15 +655,6 @@ const Home = () => {
                     "/images/スクリーンショット 2025-05-25 19.23.54.png",
                     "/images/スクリーンショット 2025-05-25 19.24.12.png",
                   ],
-                },
-                {
-                  id: "fukuyama",
-                  label: "広島・福山",
-                  year: "2024",
-                  country: "日本",
-                  description:
-                    "福山こころの病院での愛と癒しをテーマにした作品展示",
-                  images: ["/images/13456_0.jpg"],
                 },
                 {
                   id: "saint-hilaire-andre",
