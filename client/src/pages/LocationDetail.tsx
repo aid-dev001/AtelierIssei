@@ -307,7 +307,7 @@ const locationsData: Record<string, LocationData> = {
     title: "東京・池袋",
     country: "日本",
     year: "2018",
-    description: "ビジネスに打ち込んだ後、仕事仲間の励ましで絵画制作を再開",
+    description: "ビジネスに打ち込んだ後、仕事仲間の勧めで絵画制作を再開",
     longDescription: `2018年頃、私は研究や起業、ビジネスに打ち込んでいて、長い間絵から遠ざかっていました。日々の仕事に追われる中で、創作活動から離れた生活を送っていました。
 
     しかし、仕事を少し減らしたことをきっかけに時間に余裕ができ、久しぶりに絵筆を手に取る機会が訪れました。油絵に詳しい仕事仲間から「絵が上手いから、もっと描くといいよ」と勧められたことが、再び創作活動を始める大きなきっかけとなりました。
@@ -1076,7 +1076,7 @@ const LocationDetail: React.FC = () => {
       </div>
 
       {/* ナビゲーション */}
-      <div className="mt-20 border-t pt-12">
+      <div className="mt-32 border-t pt-16">
         <div className="max-w-4xl mx-auto">
           <div className="flex justify-between items-center">
             {/* 前のページ */}
@@ -1091,10 +1091,16 @@ const LocationDetail: React.FC = () => {
                   >
                     <ChevronLeft className="w-5 h-5" />
                     <div className="text-left">
-                      <div className="text-sm text-gray-500 mb-1">前のページ</div>
+                      <div className="text-sm text-gray-500 mb-1">
+                        前のページ
+                      </div>
                       <div className="font-medium text-base">
-                        {locationsData[locationOrder[currentIndex - 1]]?.title ||
-                          ""}
+                        {locationsData[locationOrder[currentIndex - 1]]
+                          ?.title || ""}
+                      </div>
+                      <div className="text-xs text-gray-400 mt-1 max-w-xs">
+                        {locationsData[locationOrder[currentIndex - 1]]
+                          ?.description || ""}
                       </div>
                     </div>
                   </Button>
@@ -1115,10 +1121,16 @@ const LocationDetail: React.FC = () => {
                     className="flex items-center gap-3 p-4 h-auto hover:bg-gray-50"
                   >
                     <div className="text-right">
-                      <div className="text-sm text-gray-500 mb-1">次のページ</div>
+                      <div className="text-sm text-gray-500 mb-1">
+                        次のページ
+                      </div>
                       <div className="font-medium text-base">
-                        {locationsData[locationOrder[currentIndex + 1]]?.title ||
-                          ""}
+                        {locationsData[locationOrder[currentIndex + 1]]
+                          ?.title || ""}
+                      </div>
+                      <div className="text-xs text-gray-400 mt-1 max-w-xs">
+                        {locationsData[locationOrder[currentIndex + 1]]
+                          ?.description || ""}
                       </div>
                     </div>
                     <ChevronRight className="w-5 h-5" />
