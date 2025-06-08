@@ -161,7 +161,7 @@ const locationsData: Record<string, LocationData> = {
     title: "福山",
     country: "日本",
     year: "2024",
-    description: "福山こころの病院での愛と癒しを衆ーマにした作品展示",
+    description: "福山こころの病院での愛と癒しをテーマにした作品展示",
     longDescription: `福山市は瀬戸内海に面した歴史ある街ですが、2024年には医療福祉の現場での芸術活動に焦点を当てた新たな取り組みを行いました。
     
     福山こころの病院との特別コラボレーションでは、愛と癒しをテーマにした「ハートアート」作品を制作・寄贈する機会に恵まれました。病院の医師やスタッフの方々と共に、アートの持つ癒しの力を医療現場に取り入れる意義について意見交換を行いました。
@@ -285,7 +285,7 @@ const locationsData: Record<string, LocationData> = {
     
     2019年、私はアブダビで初めての個展を開催する機会に恵まれました。中東の文化と日本のポップアートを融合させた作品シリーズを展示し、多くの現地のアート愛好家や国際的な来場者からの反響を得ることができました。
     
-    この展示では特に「POKO FACE」シリーズが注目を集め、カラフルな色彩とシンプルな���情のキャラクターが多文化が交差するアブダビという都市の雰囲㰗と���ッチし、新しい対話を生み出すことができました。
+    この展示では特に「POKO FACE」シリーズが注目を集め、カラフルな色彩とシンプルな表情のキャラクターが多文化が交差するアブダビという都市の雰囲㰗と���ッチし、新しい対話を生み出すことができました。
     
     中東という新しい文化圏での展示経験は、自分の作品が持つ普遍性と文化的背景について考え直すきっかけとなり、その後の創作活動に大きな影響を与えています。
     
@@ -312,7 +312,7 @@ const locationsData: Record<string, LocationData> = {
 
     しかし、仕事を少し減らしたことをきっかけに時間に余裕ができ、久しぶりに絵筆を手に取る機会が訪れました。油絵に詳しい仕事仲間から「絵が上手いから、もっと描くといいよ」と勧められたことが、再び創作活動を始める大きなきっかけとなりました。
 
-    住んでいた池袋で制作をすると、どの絵も素晴らしいと言ってもらえました。お題を出してもらって描いたり、抽象画を描いたりしました。ビジネスの世界で培った経験や視点が、無意識のうちに作品に反映されていたのかもしれません。池袋の部屋はそのままアトリエになりました。
+    池袋の部屋で制作をすると、どの絵も素晴らしいと言ってもらえました。お題を出してもらって描いたり、抽象画を描いたりしました、ビジネスの世界で培った経験や視点が、無意識のうちに作品に反映されていたのかもしれません。
 
     描いた作品を見た周囲の人々からは「素晴らしい」という評価をいただき、仕事仲間は「ぜひ本場のフランスで個展を開いて、たくさんの人に見てもらいたい」と言っていました。
 
@@ -414,7 +414,7 @@ const locationsData: Record<string, LocationData> = {
     
     歴史的な建造物と現代的な都市計画が共存するこの地域での滞在は、「都市と郊外」「中心と周縁」という概念について考察する貴重な機会となりました。
     
-    アティスモンスでの日々は、特に創作のリズムと日常���観察に焦点を当てていました。朝の散歩で出会う地元の人々や、市場での交流、そして季節の移り変わりを敏感に捉える時間は、作品の深みと持続性を考える上で重要な経験となりました。
+    アティスモンスでの日々は、特に創作のリズムと日常の観察に焦点を当てていました。朝の散歩で出会う地元の人々や、市場での交流、そして季節の移り変わりを敏感に捉える時間は、作品の深みと持続性を考える上で重要な経験となりました。
     
     この地域の住宅建築や公共空間のデザインも興味深く、特に1960年代から70年代にかけて建設された集合住宅群は、モダニズム建築と生活空間の関係性について考察する ��っかけとなりました。
     
@@ -540,7 +540,7 @@ const locationsData: Record<string, LocationData> = {
     
     村の小さな教会の内部にある中世の壁画や石像は、西洋美術の伝統と現代表現の接点について考察する機会となりました。
     
-    また、地元の伝統的な祭りや日常的な農作業の風景は、コミュニティと創造性の関係、そして場所に根ざした芸術の意義について再考するきっかけとなりました。時にはぶどう畑で働く農家の方々や、パン屋、鍛冶屋など伝統的な職人との交流も、手no�事と芸術の深い関係性を感じさせるものでした。`,
+    また、地元の伝統的な祭りや日常的な農作業の風景は、コミュニティと創造性の関係、そして場所に根ざした芸術の意義について再考するきっかけとなりました。時にはぶどう畑で働く農家の方々や、パン屋、鍛冶屋など伝統的な職人との交流も、手仕事と芸術の深い関係性を感じさせるものでした。`,
     images: [
       {
         url: "/images/1731420256.jpg",
@@ -1003,7 +1003,7 @@ const LocationDetail: React.FC = () => {
           </span>
         </div>
         <h1 className="text-4xl font-bold tracking-tight">{location.title}</h1>
-        <h2 className="text-xl text-gray-700 mt-3 leading-relaxed">{location.description}</h2>
+        <p className="text-xl text-gray-700">{location.description}</p>
       </div>
 
       <Separator className="my-8" />
@@ -1090,17 +1090,11 @@ const LocationDetail: React.FC = () => {
                     className="flex items-center gap-3 p-4 h-auto hover:bg-gray-50"
                   >
                     <ChevronLeft className="w-5 h-5" />
-                    <div className="text-left max-w-xs">
-                      <div className="text-sm text-gray-500 mb-1">
-                        前のページ
-                      </div>
+                    <div className="text-left">
+                      <div className="text-sm text-gray-500 mb-1">前のページ</div>
                       <div className="font-medium text-base">
-                        {locationsData[locationOrder[currentIndex - 1]]
-                          ?.title || ""}
-                      </div>
-                      <div className="text-sm text-gray-600 mt-1 line-clamp-2">
-                        {locationsData[locationOrder[currentIndex - 1]]
-                          ?.description || ""}
+                        {locationsData[locationOrder[currentIndex - 1]]?.title ||
+                          ""}
                       </div>
                     </div>
                   </Button>
@@ -1121,12 +1115,10 @@ const LocationDetail: React.FC = () => {
                     className="flex items-center gap-3 p-4 h-auto hover:bg-gray-50"
                   >
                     <div className="text-right">
-                      <div className="text-sm text-gray-500 mb-1">
-                        次のページ
-                      </div>
+                      <div className="text-sm text-gray-500 mb-1">次のページ</div>
                       <div className="font-medium text-base">
-                        {locationsData[locationOrder[currentIndex + 1]]
-                          ?.title || ""}
+                        {locationsData[locationOrder[currentIndex + 1]]?.title ||
+                          ""}
                       </div>
                     </div>
                     <ChevronRight className="w-5 h-5" />
