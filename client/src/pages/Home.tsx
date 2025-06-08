@@ -409,13 +409,9 @@ const Home = () => {
       </section>
       {/* Exhibition Link Section */}
       <section className="container mx-auto px-4 py-20">
-        <h2 className="text-4xl font-bold mb-4 text-center tracking-wider">
+        <h2 className="text-4xl font-bold mb-16 text-center tracking-wider">
           EXHIBITION
         </h2>
-        <p className="text-xl text-center mb-16 text-gray-700 max-w-3xl mx-auto">
-          世界各地で開催される展示会を通じて、<br />
-          アートの持つ普遍的な力と美しさを伝えています。
-        </p>
         <div className="relative overflow-hidden rounded-lg shadow-xl group">
           <ScrollToTopLink href="/exhibition" className="block">
             <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
