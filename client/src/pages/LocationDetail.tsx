@@ -31,7 +31,7 @@ const locationsData: Record<string, LocationData> = {
     title: "東京・新宿",
     country: "日本",
     year: "2002",
-    description: "大学入学を機に上京し、美術部の友人の影響で抽象画に挑戦",
+    description: "大学入学を機に上京し、美術部の友人の影響で初の抽象画",
     longDescription: `2002年、大学入学を機に広島から東京に出てきた私は、新宿での一人暮らしを始めました。都市の生活に慣れていく中で、趣味のひとつとして再び絵筆を手に取ることになりました。
 
     同じく上京し、高校時代に美術部に所属していた友人の影響で、趣味の一環で油絵を描いてみました。自由なタッチで描く友人を真似て抽象画を描いてみて、色彩と形の自由な表現に新たな可能性を感じました。
@@ -308,7 +308,7 @@ const locationsData: Record<string, LocationData> = {
     country: "日本",
     year: "2018",
     description: "ビジネスに打ち込んだ後、仕事仲間の勧めで絵画制作を再開",
-    longDescription: `2018年頃、私は研究や起業、ビジネスに打ち込んでいて、長い間絵から遠ざかっていました。日々の仕事に追われる中で、創作活動から離れた生活を送っていました。
+    longDescription: `2018年頃まで、私は研究や起業、ビジネスに打ち込んでいて、長い間絵から遠ざかっていました。日々の仕事に追われる中で、創作活動から離れた生活を送っていました。
 
     しかし、仕事を少し減らしたことをきっかけに時間に余裕ができ、久しぶりに絵筆を手に取る機会が訪れました。油絵に詳しい仕事仲間から「絵が上手いから、もっと描くといいよ」と勧められたことが、再び創作活動を始める大きなきっかけとなりました。
 
@@ -316,7 +316,7 @@ const locationsData: Record<string, LocationData> = {
 
     描いた作品を見た周囲の人々からは「素晴らしい」という評価をいただき、仕事仲間は「ぜひ本場のフランスで個展を開いて、たくさんの人に見てもらいたい」と言っていました。
 
-    この時期は私にとって大きな転機となりました。単なる趣味として再開した絵画制作が、国際的に評価される可能性があるとは思っていませんでした。`,
+    この時期は私にとって大きな転機となりました。単なる趣味として描いていた絵画制作が、国際的に評価される可能性があるとは思っていませんでした。`,
     images: [
       {
         url: "/images/LINE_ALBUM_20241124_250525_65.jpg",
@@ -1098,7 +1098,7 @@ const LocationDetail: React.FC = () => {
                         {locationsData[locationOrder[currentIndex - 1]]
                           ?.title || ""}
                       </div>
-                      <div className="text-xs text-gray-400 mt-1 max-w-xs">
+                      <div className="text-sm text-gray-600 mt-1 max-w-xs">
                         {locationsData[locationOrder[currentIndex - 1]]
                           ?.description || ""}
                       </div>
@@ -1128,7 +1128,7 @@ const LocationDetail: React.FC = () => {
                         {locationsData[locationOrder[currentIndex + 1]]
                           ?.title || ""}
                       </div>
-                      <div className="text-xs text-gray-400 mt-1 max-w-xs">
+                      <div className="text-sm text-gray-600 mt-1 max-w-xs">
                         {locationsData[locationOrder[currentIndex + 1]]
                           ?.description || ""}
                       </div>
