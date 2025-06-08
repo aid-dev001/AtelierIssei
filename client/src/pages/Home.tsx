@@ -423,13 +423,21 @@ const Home = () => {
               {/* グラデーションオーバーレイ */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"></div>
 
-              {/* ホバー時に表示されるボタン */}
+              {/* ホバー時に表示されるコンテンツ */}
               <div className="absolute inset-0 flex items-center justify-center z-10">
-                <div className="transform translate-y-8 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100">
-                  <div className="bg-white/95 backdrop-blur-sm px-8 py-4 rounded-full shadow-2xl border border-white/20 hover:bg-white transition-colors duration-300">
-                    <div className="text-black text-xl md:text-2xl font-bold tracking-wider flex items-center gap-3">
-                      EXHIBITION
-                      <ArrowRight className="w-6 h-6 transform transition-transform duration-300 group-hover:translate-x-1" />
+                <div className="transform translate-y-8 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100 text-center">
+                  <div className="space-y-4">
+                    {/* サブタイトル */}
+                    <p className="text-white text-base md:text-lg font-medium tracking-wide max-w-md mx-auto leading-relaxed drop-shadow-lg">
+                      世界各地で開催される展示会を通じて、<br />
+                      アートの持つ普遍的な力と美しさを伝えています。
+                    </p>
+                    {/* ボタン */}
+                    <div className="bg-white/95 backdrop-blur-sm px-8 py-4 rounded-full shadow-2xl border border-white/20 hover:bg-white transition-colors duration-300 inline-block">
+                      <div className="text-black text-xl md:text-2xl font-bold tracking-wider flex items-center gap-3">
+                        EXHIBITIONへ
+                        <ArrowRight className="w-6 h-6 transform transition-transform duration-300 group-hover:translate-x-1" />
+                      </div>
                     </div>
                   </div>
                 </div>
