@@ -429,17 +429,20 @@ const Home = () => {
                   <div className="space-y-4">
                     {/* ボタン */}
                     <div className="bg-white/95 backdrop-blur-sm px-8 py-4 rounded-full shadow-2xl border border-white/20 hover:bg-white transition-colors duration-300 inline-block">
-                      <div className="text-black text-xl md:text-2xl font-bold tracking-wider flex flex-col items-center gap-2">
-                        <span>EXHIBITIONへ</span>
-                        <ArrowRight className="w-6 h-6 transform transition-transform duration-300 group-hover:translate-y-1 rotate-90" />
+                      <div className="text-black text-xl md:text-2xl font-bold tracking-wider flex items-center gap-3">
+                        EXHIBITIONへ
+                        <ArrowRight className="w-6 h-6 transform transition-transform duration-300 group-hover:translate-x-1" />
                       </div>
                     </div>
+
                     {/* サブタイトル */}
-                    <p className="text-white text-base md:text-lg font-medium tracking-wide max-w-md mx-auto leading-relaxed drop-shadow-lg">
-                      世界各地で開催される展示会を通じて、
-                      <br />
-                      アートの持つ普遍的な力と美しさを伝えています。
-                    </p>
+                    <div className="bg-black/50 backdrop-blur-sm px-6 py-3 rounded-lg mx-auto inline-block">
+                      <p className="text-white text-base md:text-lg font-medium tracking-wide max-w-md mx-auto leading-relaxed drop-shadow-lg">
+                        世界各地で開催される展示会を通じて、
+                        <br />
+                        アートの持つ普遍的な力と美しさを伝えています。
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
