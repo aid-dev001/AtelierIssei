@@ -422,25 +422,17 @@ const Home = () => {
               />
               {/* グラデーションオーバーレイ */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"></div>
-              
+
               {/* ホバー時に表示されるボタン */}
               <div className="absolute inset-0 flex items-center justify-center z-10">
                 <div className="transform translate-y-8 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100">
                   <div className="bg-white/95 backdrop-blur-sm px-8 py-4 rounded-full shadow-2xl border border-white/20 hover:bg-white transition-colors duration-300">
                     <div className="text-black text-xl md:text-2xl font-bold tracking-wider flex items-center gap-3">
-                      EXHIBITIONへ
+                      EXHIBITION
                       <ArrowRight className="w-6 h-6 transform transition-transform duration-300 group-hover:translate-x-1" />
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/* 装飾的な光のエフェクト */}
-              <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-5">
-                <div className="absolute top-8 left-8 w-3 h-3 bg-white/80 rounded-full opacity-0 transition-all duration-700 group-hover:opacity-100 group-hover:animate-pulse"></div>
-                <div className="absolute top-16 right-12 w-2 h-2 bg-white/60 rounded-full opacity-0 transition-all duration-700 delay-100 group-hover:opacity-100 group-hover:animate-pulse"></div>
-                <div className="absolute bottom-12 left-16 w-4 h-4 bg-white/70 rounded-full opacity-0 transition-all duration-700 delay-200 group-hover:opacity-100 group-hover:animate-pulse"></div>
-                <div className="absolute bottom-20 right-8 w-2 h-2 bg-white/50 rounded-full opacity-0 transition-all duration-700 delay-300 group-hover:opacity-100 group-hover:animate-pulse"></div>
               </div>
             </div>
           </ScrollToTopLink>
