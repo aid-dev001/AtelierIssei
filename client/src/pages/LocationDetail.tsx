@@ -227,8 +227,8 @@ const locationsData: Record<string, LocationData> = {
         caption: "ギャラリーのウィンドウに展示された「POKO FACE」シリーズ",
       },
       {
-        url: "/images/paris_3.jpg",
-        caption: "ギャラリー内の壁面に展示された9枚の「POKO FACE」作品",
+        url: "/paris_gallery3.jpg",
+        caption: "ギャラリーでの展示を鑑賞する来場者と「POKO FACE」シリーズ",
       },
     ],
     relatedLocations: [

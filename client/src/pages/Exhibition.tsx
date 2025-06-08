@@ -62,7 +62,7 @@ const locations = [
     images: [
       "/images/paris_1.jpg",
       "/images/paris_2.jpg",
-      "/images/paris_3.jpg",
+      "/paris_gallery3.jpg",
     ],
   },
   {

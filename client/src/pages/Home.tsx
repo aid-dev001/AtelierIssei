@@ -611,14 +611,14 @@ const Home = () => {
                   year: "2023",
                   country: "フランス",
                   description: "フランス最大の城を描く野外アートプロジェクト",
-                  images: ["/images/23694.jpg","/images/23687_0.jpg"],
+                  images: ["/images/23694.jpg", "/images/23687_0.jpg"],
                 },
                 {
                   id: "montmartre",
                   label: "フランス・モンマルトル",
                   year: "2023",
                   country: "フランon�",
-                  description: "芸術家の聖地で描く街角スケッチの旅",
+                  description: "芸術家の聖地で描く街角スケ  �チの旅",
                   images: ["/images/23704_0.jpg", "/images/23703_0.jpg"],
                 },
                 {
