@@ -67,6 +67,13 @@ const testimonials = [
     content: "c'est trop mignon!!\n\nとにかくかわいい！！\n\nc'est formidable de redecouvrir notre Tour Eiffel a travers les yeux d'un peintre japonais. Magnifique!\n\n日本画家の目を通してエッフェル塔を再発見できるのは素晴らしいことです。素敵！",
     location: "パリ",
     imageUrl: "/images/eiffel1.png"
+  },
+  {
+    name: "内野 州馬",
+    title: "株式会社デジタルガレージ　社外取締役\n三菱商事株式会社　元CFO",
+    content: "絵に引き込まれるような気がして即決しました。カオスの中にある直線もとても魅力的です。",
+    location: "東京",
+    imageUrl: "/13900.jpg"
   }
 ];
 
