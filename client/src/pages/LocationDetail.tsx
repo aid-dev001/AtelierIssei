@@ -138,7 +138,8 @@ const locationsData: Record<string, LocationData> = {
     title: "広島",
     country: "日本",
     year: "1998",
-    description: "中学3年生で描いた油絵から始まった芸術への道",
+    description:
+      "中学3年生の美術の授業で初めて描いた油絵から始まった芸術への道",
     longDescription: `1998年、中学3年生の美術の授業で初めて手にした油絵の具。
 
     祖父が油絵を描いていた影響もあり、美術の授業を選択しました。絵の具の香りが祖父の部屋の匂いがして心地よかったです。
