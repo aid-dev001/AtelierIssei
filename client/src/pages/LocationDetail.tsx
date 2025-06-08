@@ -310,25 +310,25 @@ const locationsData: Record<string, LocationData> = {
     description: "ビジネスに打ち込んだ後、仕事仲間の励ましで絵画制作を再開",
     longDescription: `2018年頃、私は研究や起業、ビジネスに打ち込んでいて、長い間絵から遠ざかっていました。日々の仕事に追われる中で、創作活動から離れた生活を送っていました。
 
-    しかし、仕事を少し減らしたことをきっかけに時間に余裕ができ、久しぶりに絵筆を手に取る機会が訪れました。油絵に詳しい仕事仲間から「絵が上手いから、もっと描くといい」と励まされたことが、再び創作活動を始める大きなきっかけとなりました。
+    しかし、仕事を少し減らしたことをきっかけに時間に余裕ができ、久しぶりに絵筆を手に取る機会が訪れました。油絵に詳しい仕事仲間から「絵が上手いから、もっと描くといいよ」と勧められたことが、再び創作活動を始める大きなきっかけとなりました。
 
-    池袋のアトリエで制作を再開すると、以前とは異なる表現力が身についていることに驚きました。ビジネスの世界で培った経験や視点が、無意識のうちに作品に反映されていたのです。
+    池袋の部屋で制作をすると、どの絵も素晴らしいと言ってもらえました。お題を出してもらって描いたり、抽象画を描いたりしました、ビジネスの世界で培った経験や視点が、無意識のうちに作品に反映されていたのかもしれません。
 
-    描いた作品を見た周囲の人々からは「素晴らしい」という評価をいただき、中には「ぜひ本場のフランスで個展を開いて、たくさんの人に見てもらいたい」と言ってくれる方もいました。
+    描いた作品を見た周囲の人々からは「素晴らしい」という評価をいただき、仕事仲間は「ぜひ本場のフランスで個展を開いて、たくさんの人に見てもらいたい」と言っていました。
 
-    この言葉は私にとって大きな転機となりました。単なる趣味として再開した絵画制作が、国際的な展示への可能性を秘めていることを知り、本格的にアーティストとしての活動を再開する決意を固めることができました。`,
+    この時期は私にとって大きな転機となりました。単なる趣味として再開した絵画制作が、国際的に評価される可能性があるとは思っていませんでした。`,
     images: [
       {
-        url: "/images/tokyo_ikebukuro_1.jpg",
-        caption: "ピンクの世界に浮かぶ愛らしい表情",
+        url: "/images/LINE_ALBUM_20241124_250525_65.jpg",
+        caption: "ひょこあに ハリネズミ",
       },
       {
-        url: "/images/tokyo_ikebukuro_2.jpg",
-        caption: "色彩豊かな猫のポップアート",
+        url: "/images/スクリーンショット 2025-05-25 23.25.39.png",
+        caption: "エッフェル塔 ねこ",
       },
       {
         url: "/tokyo_ikebukuro3.jpg",
-        caption: "アトリエでの作品制作風景と東京の街並み",
+        caption: "アトリエでの作品風景と池袋の街並み",
       },
     ],
     relatedLocations: [
@@ -935,7 +935,7 @@ const locationsData: Record<string, LocationData> = {
 // 展示場所の順序を定義
 const locationOrder = [
   "hiroshima",
-  "tokyo-shinjuku", 
+  "tokyo-shinjuku",
   "tokyo-ikebukuro",
   "tokyo-akasaka",
   "tokyo-shibuya",
@@ -950,7 +950,7 @@ const locationOrder = [
   "atis-mons",
   "nice",
   "monaco",
-  "fukuyama"
+  "fukuyama",
 ];
 
 const LocationDetail: React.FC = () => {
@@ -1076,49 +1076,58 @@ const LocationDetail: React.FC = () => {
       </div>
 
       {/* ナビゲーション */}
-      <div className="mt-12 border-t pt-8">
-        <div className="flex justify-between items-center">
-          {/* 前のページ */}
-          <div className="flex-1">
-            {currentIndex > 0 && (
-              <Link href={`/exhibition/location/${locationOrder[currentIndex - 1]}`}>
-                <Button variant="ghost" className="flex items-center gap-2 p-0 h-auto">
-                  <ChevronLeft className="w-4 h-4" />
-                  <div className="text-left">
-                    <div className="text-sm text-gray-500">前のページ</div>
-                    <div className="font-medium">
-                      {locationsData[locationOrder[currentIndex - 1]]?.title || ""}
+      <div className="mt-20 border-t pt-12">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex justify-between items-center">
+            {/* 前のページ */}
+            <div className="flex-1 flex justify-start">
+              {currentIndex > 0 ? (
+                <Link
+                  href={`/exhibition/location/${locationOrder[currentIndex - 1]}`}
+                >
+                  <Button
+                    variant="ghost"
+                    className="flex items-center gap-3 p-4 h-auto hover:bg-gray-50"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                    <div className="text-left">
+                      <div className="text-sm text-gray-500 mb-1">前のページ</div>
+                      <div className="font-medium text-base">
+                        {locationsData[locationOrder[currentIndex - 1]]?.title ||
+                          ""}
+                      </div>
                     </div>
-                  </div>
-                </Button>
-              </Link>
-            )}
-          </div>
+                  </Button>
+                </Link>
+              ) : (
+                <div></div>
+              )}
+            </div>
 
-          {/* 展示一覧に戻る */}
-          <div className="flex-1 text-center">
-            <Link href="/exhibition">
-              <Button variant="outline" size="sm">
-                展示一覧に戻る
-              </Button>
-            </Link>
-          </div>
-
-          {/* 次のページ */}
-          <div className="flex-1 text-right">
-            {currentIndex >= 0 && currentIndex < locationOrder.length - 1 && (
-              <Link href={`/exhibition/location/${locationOrder[currentIndex + 1]}`}>
-                <Button variant="ghost" className="flex items-center gap-2 p-0 h-auto ml-auto">
-                  <div className="text-right">
-                    <div className="text-sm text-gray-500">次のページ</div>
-                    <div className="font-medium">
-                      {locationsData[locationOrder[currentIndex + 1]]?.title || ""}
+            {/* 次のページ */}
+            <div className="flex-1 flex justify-end">
+              {currentIndex >= 0 && currentIndex < locationOrder.length - 1 ? (
+                <Link
+                  href={`/exhibition/location/${locationOrder[currentIndex + 1]}`}
+                >
+                  <Button
+                    variant="ghost"
+                    className="flex items-center gap-3 p-4 h-auto hover:bg-gray-50"
+                  >
+                    <div className="text-right">
+                      <div className="text-sm text-gray-500 mb-1">次のページ</div>
+                      <div className="font-medium text-base">
+                        {locationsData[locationOrder[currentIndex + 1]]?.title ||
+                          ""}
+                      </div>
                     </div>
-                  </div>
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              </Link>
-            )}
+                    <ChevronRight className="w-5 h-5" />
+                  </Button>
+                </Link>
+              ) : (
+                <div></div>
+              )}
+            </div>
           </div>
         </div>
       </div>

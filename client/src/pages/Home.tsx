@@ -744,7 +744,7 @@ const Home = () => {
             data-label="広島"
             data-year="1998"
             data-country="日本"
-            data-description="中学3年生の美術の授業で初めて描いた油絵から始まった芸術への道"
+            data-description="平和への祈りと再生をテーマにした作品の制作拠点"
             data-images='["/images/S__9044006.jpg","/images/S__9044005.jpg"]'
             className="hidden"
           ></div>
