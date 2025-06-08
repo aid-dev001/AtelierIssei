@@ -323,7 +323,7 @@ const locationsData: Record<string, LocationData> = {
         url: "/images/tokyo_ikebukuro_2.jpg",
         caption: "色彩豊かな猫のポップアート",
       },
-      { url: "/images/tokyo_ikebukuro_3.jpg", caption: "鮮やかな抽象画作品" },
+      { url: "/tokyo_ikebukuro3.jpg", caption: "アトリエでの作品制作風景と東京の街並み" },
     ],
     relatedLocations: [
       { id: "tokyo-akasaka", title: "東京・赤坂", image: "/images/12653.jpg" },
