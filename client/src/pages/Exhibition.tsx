@@ -10,7 +10,7 @@ const locations = [
     label: "広島",
     year: "1998",
     country: "日本",
-    description: "平和への祈りと再生をテーマにした作品の制作拠点",
+    description: "中学3年生の美術の授業で初めて描いた油絵から始まった芸術への道",
     images: ["/images/S__9044006.jpg", "/images/S__9044005.jpg"],
   },
   {
@@ -18,7 +18,7 @@ const locations = [
     label: "東京・新宿",
     year: "2002",
     country: "日本",
-    description: "都市の多様性と活気を色彩豊かに表現した作品",
+    description: "大学入学を機に上京し、美術部の友人の影響で抽象画に挑戦",
     images: [
       "/images/tokyo_shinjuku_1.jpg",
       "/images/tokyo_shinjuku_2.jpg",
