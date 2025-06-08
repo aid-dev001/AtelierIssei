@@ -204,6 +204,18 @@ const locations = [
     ],
   },
   {
+    id: "monaco",
+    label: "モナコ",
+    year: "2024",
+    country: "モナコ",
+    description: "地中海の高級リゾートでの現代アート展示",
+    images: [
+      "/monaco1.jpg",
+      "/monaco2.jpg",
+      "/monaco3.jpg",
+    ],
+  },
+  {
     id: "fukuyama",
     label: "広島・福山",
     year: "2024",
