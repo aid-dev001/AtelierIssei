@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useLocation } from "wouter";
+import { useParams, useLocation, Link } from "wouter";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type LocationImage = {
   url: string;
@@ -930,6 +932,27 @@ const locationsData: Record<string, LocationData> = {
   },
 };
 
+// 展示場所の順序を定義
+const locationOrder = [
+  "hiroshima",
+  "tokyo-shinjuku", 
+  "tokyo-ikebukuro",
+  "tokyo-akasaka",
+  "tokyo-shibuya",
+  "tokyo-okubo",
+  "london",
+  "abu-dhabi",
+  "paris",
+  "paris-second",
+  "france-savigny",
+  "spain-casamila",
+  "chaumont",
+  "atis-mons",
+  "nice",
+  "monaco",
+  "fukuyama"
+];
+
 const LocationDetail: React.FC = () => {
   // URLからロケーションIDを直接取得 - 末尾から取得する形式に修正
   const path = window.location.pathname;
@@ -938,6 +961,7 @@ const LocationDetail: React.FC = () => {
   const locationId = match ? match[1] : null;
 
   const [location, setLocation] = useState<LocationData | null>(null);
+  const [currentIndex, setCurrentIndex] = useState<number>(-1);
 
   console.log("LocationDetail - URL path:", path);
   console.log("LocationDetail - Extracted locationId from URL:", locationId);
@@ -948,6 +972,8 @@ const LocationDetail: React.FC = () => {
     if (locationId && locationsData[locationId]) {
       console.log("Found location data for:", locationId);
       setLocation(locationsData[locationId]);
+      const index = locationOrder.indexOf(locationId);
+      setCurrentIndex(index);
       window.scrollTo(0, 0);
     } else {
       // Handle case when location data not found
@@ -1049,7 +1075,53 @@ const LocationDetail: React.FC = () => {
         ))}
       </div>
 
-      {/* 関連する場所セクションは削除 */}
+      {/* ナビゲーション */}
+      <div className="mt-12 border-t pt-8">
+        <div className="flex justify-between items-center">
+          {/* 前のページ */}
+          <div className="flex-1">
+            {currentIndex > 0 && (
+              <Link href={`/exhibition/location/${locationOrder[currentIndex - 1]}`}>
+                <Button variant="ghost" className="flex items-center gap-2 p-0 h-auto">
+                  <ChevronLeft className="w-4 h-4" />
+                  <div className="text-left">
+                    <div className="text-sm text-gray-500">前のページ</div>
+                    <div className="font-medium">
+                      {locationsData[locationOrder[currentIndex - 1]]?.title || ""}
+                    </div>
+                  </div>
+                </Button>
+              </Link>
+            )}
+          </div>
+
+          {/* 展示一覧に戻る */}
+          <div className="flex-1 text-center">
+            <Link href="/exhibition">
+              <Button variant="outline" size="sm">
+                展示一覧に戻る
+              </Button>
+            </Link>
+          </div>
+
+          {/* 次のページ */}
+          <div className="flex-1 text-right">
+            {currentIndex >= 0 && currentIndex < locationOrder.length - 1 && (
+              <Link href={`/exhibition/location/${locationOrder[currentIndex + 1]}`}>
+                <Button variant="ghost" className="flex items-center gap-2 p-0 h-auto ml-auto">
+                  <div className="text-right">
+                    <div className="text-sm text-gray-500">次のページ</div>
+                    <div className="font-medium">
+                      {locationsData[locationOrder[currentIndex + 1]]?.title || ""}
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
