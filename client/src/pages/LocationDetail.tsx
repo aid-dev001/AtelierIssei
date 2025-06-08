@@ -1090,13 +1090,17 @@ const LocationDetail: React.FC = () => {
                     className="flex items-center gap-3 p-4 h-auto hover:bg-gray-50"
                   >
                     <ChevronLeft className="w-5 h-5" />
-                    <div className="text-left">
+                    <div className="text-left max-w-xs">
                       <div className="text-sm text-gray-500 mb-1">
                         前のページ
                       </div>
                       <div className="font-medium text-base">
                         {locationsData[locationOrder[currentIndex - 1]]
                           ?.title || ""}
+                      </div>
+                      <div className="text-sm text-gray-600 mt-1 line-clamp-2">
+                        {locationsData[locationOrder[currentIndex - 1]]
+                          ?.description || ""}
                       </div>
                     </div>
                   </Button>
