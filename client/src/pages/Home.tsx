@@ -973,6 +973,13 @@ const Home = () => {
               quote:
                 "私はいつもモンマルトルが大好きで、特に母がモンマルトルで生まれています。ですのでこの絵は非常に特別な意味を持ちます。",
             },
+            {
+              image: "/13900.jpg",
+              name: "内野 州馬",
+              title: "株式会社デジタルガレージ　社外取締役\n三菱商事株式会社　元CFO",
+              quote:
+                "絵に引き込まれるような気がして即決しました。カオスの中にある直線もとても魅力的です。",
+            },
           ].map((voice, index) => (
             <ScrollToTopLink href="/voices" key={index}>
               <div className="grid grid-cols-1 rounded-xl shadow-xl overflow-hidden cursor-pointer">
