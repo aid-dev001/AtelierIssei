@@ -332,7 +332,7 @@ const Exhibition = () => {
 
                 <div className="flex flex-col lg:flex-row gap-12">
                   <div className="lg:w-1/3">
-                    <p className="text-lg text-gray-700 leading-relaxed">
+                    <p className="text-lg text-gray-700 leading-relaxed font-semibold">
                       {location.description}
                     </p>
 
