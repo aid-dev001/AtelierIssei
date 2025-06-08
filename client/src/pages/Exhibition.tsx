@@ -10,7 +10,7 @@ const locations = [
     label: "広島",
     year: "1998",
     country: "日本",
-    description: "中学3年生の美術の授業で初めて描いた油絵から始まった芸術への道",
+    description: "中学3年生で描いた油絵から始まった芸術への道",
     images: ["/images/S__9044006.jpg", "/images/S__9044005.jpg"],
   },
   {
@@ -18,7 +18,7 @@ const locations = [
     label: "東京・新宿",
     year: "2002",
     country: "日本",
-    description: "大学入学を機に上京し、美術部の友人の影響で抽象画に挑戦",
+    description: "大学入学を機に上京し、美術部の友人の影響で初の抽象画",
     images: [
       "/images/tokyo_shinjuku_1.jpg",
       "/images/tokyo_shinjuku_2.jpg",
@@ -34,6 +34,7 @@ const locations = [
     images: [
       "/images/LINE_ALBUM_20241124_250525_65.jpg",
       "/images/スクリーンショット 2025-05-25 23.25.39.png",
+      "/attached_assets/14853_0_1749401523812.jpg",
       "/tokyo_ikebukuro3.jpg",
     ],
   },
@@ -221,11 +222,7 @@ const locations = [
     year: "2024",
     country: "モナコ",
     description: "地中海の高級リゾートでの現代アート展示",
-    images: [
-      "/monaco1.jpg",
-      "/monaco2.jpg",
-      "/monaco3.jpg",
-    ],
+    images: ["/monaco1.jpg", "/monaco2.jpg", "/monaco3.jpg"],
   },
   {
     id: "fukuyama",
@@ -340,12 +337,11 @@ const Exhibition = () => {
                     {location.id === "hiroshima" && (
                       <>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                          祖父が油絵を描いていた影響で美術を選択し、初めてキャンバスに向かった時の感動は今でも鮮明に覚えています。
-                          絵の具の香り、筆の感触、そして色が混ざり合って生まれる予想もしなかった美しさに魅了されました。
+                          祖父が油絵を描いていた影響で美術を選択し、初めて油絵を描きました。
+                          絵の具は祖父の部屋と同じ匂いがしました。
                         </p>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                          最初に描いた静物画では、茶色のバッグと花、時計と黄色いレモンを題材に、
-                          不器用ながらも一筆一筆に心を込めて制作しました。この中学3年生での油絵体験が、
+                          最初に描いた静物画は、茶色の箱と花、時計と黄色いレモン。この中学3年生での油絵体験が、
                           その後の私の芸術人生の原点となっています。
                         </p>
                       </>
@@ -356,13 +352,11 @@ const Exhibition = () => {
                       <>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
                           大学入学を機に広島から東京に出てきて、新宿での一人暮らしを始めました。
-                          美術部に所属していた友人の影響で、今度は抽象画に挑戦することになり、
-                          中学生の時の静物画とは全く異なるアプローチに新たな可能性を感じました。
+                          同じく上京し、高校時代に美術部に所属していた友人の影響で、趣味の一環として抽象画を描きました。
                         </p>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                          制作を重ねるうちに、友人から「個展ができるんじゃないか」と言われるまでになりました。
-                          この言葉は私にとって大きな励みとなり、本格的にアーティストとしての道を歩む
-                          決意を固めるきっかけとなりました。
+                          何枚か描いてみると、友人から「個展ができるんじゃないか」と言われました。
+                          このときは重く受け止めていませんでしたが、将来的に海外で認められる可能性を表していたのかもしれません。
                         </p>
                       </>
                     )}
@@ -373,19 +367,23 @@ const Exhibition = () => {
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
                           研究や起業、ビジネスに打ち込んでいて長い間絵から遠ざかっていましたが、
                           仕事を少し減らしたことをきっかけに時間に余裕ができました。
-                          油絵に詳しい仕事仲間から「絵が上手いから、もっと描くといい」と励まされたことが、
+                          油絵に詳しい仕事仲間から「絵が上手いから、もっと描くといい」と勧められたことが、
                           再び創作活動を始める大きなきっかけとなりました。
                         </p>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
                           描いた作品を見た周囲の人々から「素晴らしい」という評価をいただき、
-                          中には「ぜひ本場のフランスで個展を開いて、たくさんの人に見てもらいたい」と
-                          言ってくれる方もいました。この言葉が国際的な展示への道を開くきっかけとなりました。
+                          仕事仲間からは「ぜひ本場のフランスで個展を開いて、たくさんの人に見てもらいたい」と
+                          言われました。この言葉が国際的な展示への道を開くきっかけとなりました。
                         </p>
                       </>
                     )}
 
                     {/* その他の場所 - 汎用的な説明 */}
-                    {!["hiroshima", "tokyo-shinjuku", "tokyo-ikebukuro"].includes(location.id) && (
+                    {![
+                      "hiroshima",
+                      "tokyo-shinjuku",
+                      "tokyo-ikebukuro",
+                    ].includes(location.id) && (
                       <>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
                           風景や文化、人々の表情から生まれるインスピレーションは、
