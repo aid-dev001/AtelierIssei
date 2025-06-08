@@ -435,7 +435,7 @@ const Home = () => {
             WORLD LOCATIONS
           </h2>
           <p className="text-xl text-center mb-16 text-gray-700">
-            世界各地で取り組んだプロジェクトとインスピレーションを得た場所
+            世界各地で取り組んだプロジェクトとインスピレーションを得たアトリエ
           </p>
 
           {/* 場所のリスト */}
