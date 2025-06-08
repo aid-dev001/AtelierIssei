@@ -428,12 +428,14 @@ const Home = () => {
                 <div className="transform translate-y-8 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100 text-center">
                   <div className="space-y-4">
                     {/* ボタン */}
-                    <div className="bg-white/95 backdrop-blur-sm px-8 py-4 rounded-full shadow-2xl border border-white/20 hover:bg-white transition-colors duration-300 inline-block">
-                      <div className="text-black text-xl md:text-2xl font-bold tracking-wider flex items-center gap-3">
-                        EXHIBITIONへ
+                    <div className="bg-black/50 backdrop-blur-sm px-8 py-4 rounded-full shadow-2xl border border-white/20 hover:bg-white transition-colors duration-300 inline-block">
+                      <div className="text-white text-xl md:text-2xl font-bold tracking-wider flex items-center gap-3">
+                        EXHIBITION
                         <ArrowRight className="w-6 h-6 transform transition-transform duration-300 group-hover:translate-x-1" />
                       </div>
                     </div>
+                    <br />
+                    <br />
 
                     {/* サブタイトル */}
                     <div className="bg-black/50 backdrop-blur-sm px-6 py-3 rounded-lg mx-auto inline-block">
@@ -470,7 +472,7 @@ const Home = () => {
                   label: "広島",
                   year: "1998",
                   country: "日本",
-                  description: "平和への祈りと再生をテーマにした作品の制作拠点",
+                  description: "中学3年生で描いた油絵から始まったアートへの道",
                   images: ["/images/S__9044006.jpg", "/images/S__9044005.jpg"],
                 },
                 {
@@ -767,7 +769,7 @@ const Home = () => {
             data-label="広島"
             data-year="1998"
             data-country="日本"
-            data-description="平和への祈りと再生をテーマにした作品の制作拠点"
+            data-description="中学3年生で描いた油絵から始まったアートへの道"
             data-images='["/images/S__9044006.jpg","/images/S__9044005.jpg"]'
             className="hidden"
           ></div>
@@ -886,21 +888,17 @@ const Home = () => {
                   id="selected-location-description"
                   className="text-lg text-gray-700 leading-relaxed"
                 >
-                  伝統と革新が交差する街で生まれる新しい表現
+                  <b>中学3年生で描いた油絵から始まったアートへの道</b>
                 </p>
 
                 <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                  風景や文化、人々の表情から生まれるインスピレーションは、
-                  作品の色彩や構図、テーマに深く影響しています。
-                  特にこの地域で感じた光と影のコントラスト、
-                  自然と都市の共存する風景は、
-                  新たな表現方法を模索するきっかけとなりました。
+                  祖父が油絵を描いていた影響で美術を選択し、初めて油絵を描きました。
+                  絵の具は祖父の部屋と同じ匂いがしました。
                 </p>
 
                 <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                  この場所での体験は、制作活動における
-                  重要な転機となり、以降の作品における
-                  視点や感性に変化をもたらしました。
+                  最初に描いた静物画は、茶色の箱と花、時計と黄色いレモン。この中学3年生での油絵体験が、
+                  その後の私の芸術人生の原点となっています。
                 </p>
               </div>
 
@@ -962,8 +960,7 @@ const Home = () => {
             {
               image: "/13900.jpg",
               name: "内野 州馬",
-              title:
-                "株式会社デジタルガレージ　社外取締役\n三菱商事株式会社　元CFO",
+              title: "株式会社デジタルガレージ　社外取締役",
               quote:
                 "絵に引き込まれるような気がして即決しました。カオスの中にある直線もとても魅力的です。",
             },
