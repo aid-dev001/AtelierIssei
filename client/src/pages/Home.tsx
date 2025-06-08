@@ -428,10 +428,12 @@ const Home = () => {
                 <div className="transform translate-y-8 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100 text-center">
                   <div className="space-y-4">
                     {/* サブタイトル */}
-                    <p className="text-white text-base md:text-lg font-medium tracking-wide max-w-md mx-auto leading-relaxed drop-shadow-lg">
-                      世界各地で開催される展示会を通じて、<br />
-                      アートの持つ普遍的な力と美しさを伝えています。
-                    </p>
+                    <div className="bg-black/50 backdrop-blur-sm px-6 py-3 rounded-lg mx-auto inline-block">
+                      <p className="text-white text-base md:text-lg font-medium tracking-wide leading-relaxed">
+                        世界各地で開催される展示会を通じて、<br />
+                        アートの持つ普遍的な力と美しさを伝えています。
+                      </p>
+                    </div>
                     {/* ボタン */}
                     <div className="bg-white/95 backdrop-blur-sm px-8 py-4 rounded-full shadow-2xl border border-white/20 hover:bg-white transition-colors duration-300 inline-block">
                       <div className="text-black text-xl md:text-2xl font-bold tracking-wider flex items-center gap-3">
