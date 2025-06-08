@@ -755,7 +755,7 @@ const locationsData: Record<string, LocationData> = {
       {
         id: "france-chambord",
         title: "フランス・シャンボール城",
-        image: "/chambord_2023_1.jpg",
+        image: "/images/23694.jpg",
       },
     ],
   },
@@ -777,10 +777,10 @@ const locationsData: Record<string, LocationData> = {
     
     この経験を通じて、歴史的建造物と自然環境の関係性、そして過去と現在の対話としての芸術表現について、新たな視点を得ることができました。`,
     images: [
-      { url: "/chambord_2023_1.jpg", caption: "シャンボール城を描く様子" },
+      { url: "/images/23694.jpg", caption: "シャンボール城を描く様子" },
       {
-        url: "/chambord_2023_2.jpg",
-        caption: "水面に映るシャンボール城と描きかけの作品",
+        url: "/images/23687_0.jpg",
+        caption: "水面に映るシャンボール城と野外作品",
       },
     ],
     relatedLocations: [

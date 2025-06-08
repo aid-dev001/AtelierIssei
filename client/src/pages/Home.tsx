@@ -611,10 +611,7 @@ const Home = () => {
                   year: "2023",
                   country: "フランス",
                   description: "フランス最大の城を描く野外アートプロジェクト",
-                  images: [
-                    "/images/chambord_2023_1.jpg",
-                    "/images/chambord_2023_2.jpg",
-                  ],
+                  images: ["/images/23694.jpg","/images/23687_0.jpg"],
                 },
                 {
                   id: "montmartre",
@@ -949,7 +946,7 @@ const Home = () => {
             },
             {
               image: "/13457.jpg",
-              name: "千本倖生",
+              name: "千本 倖生",
               title: "KDDI／ワイモバイル設立者・連続起業家",
               quote:
                 "大変素晴らしい絵をありがとう。いつも見ていて心が和みます。別荘に飾ります。",
