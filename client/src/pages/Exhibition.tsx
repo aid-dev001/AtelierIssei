@@ -181,6 +181,18 @@ const locations = [
     images: ["/images/23704_0.jpg", "/images/23703_0.jpg"],
   },
   {
+    id: "tokyo-shinjuku-2024",
+    label: "東京・新宿",
+    year: "2024",
+    country: "日本",
+    description: "都市の現代建築とアートの融合",
+    images: [
+      "/tokyo_shinjuku1.jpg",
+      "/tokyo_shinjuku2.jpg",
+      "/tokyo_shinjuku3.jpg",
+    ],
+  },
+  {
     id: "chaumont",
     label: "フランス・ショーモン城",
     year: "2024",
