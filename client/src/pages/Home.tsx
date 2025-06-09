@@ -1165,6 +1165,14 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* 画像モーダル */}
+      <ImageModal
+        isOpen={!!selectedImage}
+        onClose={() => setSelectedImage(null)}
+        imageUrl={selectedImage?.url || ""}
+        caption={selectedImage?.caption}
+      />
     </div>
   );
 };
