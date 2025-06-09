@@ -1114,7 +1114,7 @@ const LocationDetail: React.FC = () => {
             </div>
 
             {/* 次のページ */}
-            <div className="flex-1 flex justify-start md:justify-end">
+            <div className="flex-1 flex justify-end">
               {currentIndex >= 0 && currentIndex < locationOrder.length - 1 ? (
                 <Link
                   href={`/exhibition/location/${locationOrder[currentIndex + 1]}`}
@@ -1122,7 +1122,7 @@ const LocationDetail: React.FC = () => {
                 >
                   <Button
                     variant="ghost"
-                    className="flex items-center gap-3 p-3 md:p-4 h-auto hover:bg-gray-50 w-full md:w-auto justify-start md:justify-end"
+                    className="flex items-center gap-3 p-3 md:p-4 h-auto hover:bg-gray-50 w-full md:w-auto justify-end"
                   >
                     <div className="text-left md:text-right min-w-0 flex-1 order-2 md:order-1">
                       <div className="text-xs md:text-sm text-gray-500 mb-1">

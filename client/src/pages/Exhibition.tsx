@@ -37,6 +37,8 @@ const locations = [
       "/tokyo_ikebukuro3.jpg",
       "/images/5427.jpg",
       "/images/14867_1749433854412.jpg",
+      "/images/14868_1749435597334.jpg",
+      "/images/14869_1749435600759.jpg",
     ],
   },
   {
