@@ -1142,7 +1142,7 @@ const LocationDetail: React.FC = () => {
                           ?.description || ""}
                       </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0 order-1 md:order-2" />
+                    <ChevronRight className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0 order-2" />
                   </Button>
                 </Link>
               ) : (
