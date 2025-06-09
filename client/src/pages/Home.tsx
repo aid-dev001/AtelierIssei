@@ -1041,21 +1041,24 @@ const Home = () => {
                 "色も色の組み合わせも可愛くて気に入っています。玄関で丸い顔が浮き上がっているのを見ると心も弾みます。",
             },
           ].map((voice, index) => (
-            <ScrollToTopLink href="/voices" key={index}>
-              <div className="grid grid-cols-1 rounded-xl shadow-xl overflow-hidden cursor-pointer">
-                <div className="relative aspect-square overflow-hidden">
-                  <img
-                    src={voice.image}
-                    alt={`Voice by ${voice.name}`}
-                    className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
-                    onError={(e) => {
-                      const img = e.target as HTMLImageElement;
-                      img.onerror = null;
-                      img.src = "/placeholder.png";
-                    }}
-                  />
-                </div>
-                <div className="p-6 bg-white">
+            <div key={index} className="grid grid-cols-1 rounded-xl shadow-xl overflow-hidden">
+              <div 
+                className="relative aspect-square overflow-hidden cursor-pointer"
+                onClick={() => setSelectedImage({url: voice.image, caption: `${voice.name}の作品`})}
+              >
+                <img
+                  src={voice.image}
+                  alt={`Voice by ${voice.name}`}
+                  className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
+                  onError={(e) => {
+                    const img = e.target as HTMLImageElement;
+                    img.onerror = null;
+                    img.src = "/placeholder.png";
+                  }}
+                />
+              </div>
+              <ScrollToTopLink href="/voices">
+                <div className="p-6 bg-white cursor-pointer hover:bg-gray-50 transition-colors">
                   <p className="text-lg font-medium mb-4 text-gray-800">
                     "{voice.quote}"
                   </p>
@@ -1065,8 +1068,8 @@ const Home = () => {
                     <p className="text-sm text-gray-600">{voice.title}</p>
                   </div>
                 </div>
-              </div>
-            </ScrollToTopLink>
+              </ScrollToTopLink>
+            </div>
           ))}
         </div>
       </section>
