@@ -34,10 +34,8 @@ const locations = [
     images: [
       "/images/LINE_ALBUM_20241124_250525_65.jpg",
       "/images/スクリーンショット 2025-05-25 23.25.39.png",
-      "/images/14853_0_1749401523812.jpg",
       "/tokyo_ikebukuro3.jpg",
       "/images/5427.jpg",
-      "/images/IMG_7195.jpg",
       "/images/14867_1749433854412.jpg",
     ],
   },
