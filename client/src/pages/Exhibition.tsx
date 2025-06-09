@@ -31,7 +31,7 @@ const locations = [
     label: "東京・池袋",
     year: "2018",
     country: "日本",
-    description: "ビジネスに打ち込んだ後、仕事仲間の勧めで絵画制作を本格始動",
+    description: "ビジネスに打ち込んだ後、仕事仲間の勧めでアート制作を本格始動",
     images: [
       "/images/LINE_ALBUM_20241124_250525_65.jpg",
       "/images/スクリーンショット 2025-05-25 23.25.39.png",
@@ -258,8 +258,11 @@ const locations = [
 ];
 
 const Exhibition = () => {
-  const [selectedImage, setSelectedImage] = useState<{url: string; caption: string} | null>(null);
-  
+  const [selectedImage, setSelectedImage] = useState<{
+    url: string;
+    caption: string;
+  } | null>(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -414,7 +417,12 @@ const Exhibition = () => {
                         <div
                           key={i}
                           className="aspect-square bg-gray-100 rounded overflow-hidden group cursor-pointer"
-                          onClick={() => setSelectedImage({url: img, caption: `${location.label} - ${i + 1}`})}
+                          onClick={() =>
+                            setSelectedImage({
+                              url: img,
+                              caption: `${location.label} - ${i + 1}`,
+                            })
+                          }
                         >
                           <img
                             src={img}

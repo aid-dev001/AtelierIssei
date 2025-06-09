@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 import { ArrowRight } from "lucide-react";
@@ -9,6 +9,7 @@ import type { Collection, Artwork } from "@db/schema";
 import CustomMap from "@/components/Map";
 import VideoHero from "@/components/VideoHero";
 import VideoModal from "@/components/VideoModal";
+import ImageModal from "@/components/ImageModal";
 
 const ATELIER_LOCATIONS = ["銀座", "広島", "パリ"] as const;
 
