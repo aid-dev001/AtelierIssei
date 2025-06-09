@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 import { Button } from "@/components/ui/button";
+import ImageModal from "@/components/ImageModal";
 
 // ロケーションデータ（Home.tsxと同じデータを使用）
 const locations = [
@@ -34,9 +35,10 @@ const locations = [
     images: [
       "/images/LINE_ALBUM_20241124_250525_65.jpg",
       "/images/スクリーンショット 2025-05-25 23.25.39.png",
-      "/tokyo_ikebukuro3.jpg",
+      "/images/14868_1749435597334.jpg",
       "/images/5427.jpg",
       "/images/14867_1749433854412.jpg",
+      "/images/14869_1749435600759.jpg",
     ],
   },
   {
@@ -256,6 +258,8 @@ const locations = [
 ];
 
 const Exhibition = () => {
+  const [selectedImage, setSelectedImage] = useState<{url: string; caption: string} | null>(null);
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -409,7 +413,8 @@ const Exhibition = () => {
                       {location.images.map((img, i) => (
                         <div
                           key={i}
-                          className="aspect-square bg-gray-100 rounded overflow-hidden group"
+                          className="aspect-square bg-gray-100 rounded overflow-hidden group cursor-pointer"
+                          onClick={() => setSelectedImage({url: img, caption: `${location.label} - ${i + 1}`})}
                         >
                           <img
                             src={img}
@@ -431,6 +436,14 @@ const Exhibition = () => {
           </div>
         </div>
       </section>
+
+      {/* 画像モーダル */}
+      <ImageModal
+        isOpen={!!selectedImage}
+        onClose={() => setSelectedImage(null)}
+        imageUrl={selectedImage?.url || ""}
+        caption={selectedImage?.caption}
+      />
     </div>
   );
 };
