@@ -161,9 +161,23 @@ const Home = () => {
     },
   ];
 
+  const [selectedImage, setSelectedImage] = useState<{url: string; caption: string} | null>(null);
+
+  useEffect(() => {
+    const handleOpenImageModal = (event: any) => {
+      setSelectedImage(event.detail);
+    };
+    
+    window.addEventListener('openImageModal', handleOpenImageModal);
+    
+    return () => {
+      window.removeEventListener('openImageModal', handleOpenImageModal);
+    };
+  }, []);
+
   return (
     <div>
-      <section className="min-h-screen relative overflow-hidden mb-36">
+      <section className="relative overflow-hidden mb-36" style={{ minHeight: "110vh" }}>
         {/* 背景の画像ギャラリー */}
         <div className="absolute inset-0">
           {/* グリッド状の画像レイアウト */}
@@ -740,8 +754,14 @@ const Home = () => {
                         location.images.forEach((img, i) => {
                           const imgEl = document.createElement("div");
                           imgEl.className =
-                            "aspect-square bg-gray-100 rounded overflow-hidden group";
+                            "aspect-square bg-gray-100 rounded overflow-hidden group cursor-pointer";
                           imgEl.innerHTML = `<img src="${img}" alt="${location.label} - ${i + 1}" class="w-full h-full object-cover transition duration-500 group-hover:scale-105" onerror="this.onerror=null;this.src='/placeholder.png';" />`;
+                          imgEl.onclick = () => {
+                            const event = new CustomEvent('openImageModal', {
+                              detail: {url: img, caption: `${location.label} - ${i + 1}`}
+                            });
+                            window.dispatchEvent(event);
+                          };
                           imageContainer.appendChild(imgEl);
                         });
                       }
@@ -912,7 +932,10 @@ const Home = () => {
                   className="grid grid-cols-1 md:grid-cols-3 gap-6"
                 >
                   {/* 初期表示用の画像 */}
-                  <div className="aspect-square bg-gray-100 rounded overflow-hidden group">
+                  <div 
+                    className="aspect-square bg-gray-100 rounded overflow-hidden group cursor-pointer"
+                    onClick={() => setSelectedImage({url: "/images/S__9044006.jpg", caption: "広島 - 1"})}
+                  >
                     <img
                       src="/images/S__9044006.jpg"
                       alt="広島 - 1"
@@ -924,7 +947,10 @@ const Home = () => {
                       }}
                     />
                   </div>
-                  <div className="aspect-square bg-gray-100 rounded overflow-hidden group">
+                  <div 
+                    className="aspect-square bg-gray-100 rounded overflow-hidden group cursor-pointer"
+                    onClick={() => setSelectedImage({url: "/images/S__9044005.jpg", caption: "広島 - 2"})}
+                  >
                     <img
                       src="/images/S__9044005.jpg"
                       alt="広島 - 2"
