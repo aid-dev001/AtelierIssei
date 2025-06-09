@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Quote } from "lucide-react";
+import ImageModal from "@/components/ImageModal";
 
 // プロジェクトに既に存在する画像を使用
 
@@ -88,6 +89,8 @@ const testimonials = [
 ];
 
 const Testimonials = () => {
+  const [selectedImage, setSelectedImage] = useState<{url: string; caption: string} | null>(null);
+  
   useEffect(() => {
     const cards = document.querySelectorAll(".testimonial-card");
     const observer = new IntersectionObserver(
@@ -135,7 +138,10 @@ const Testimonials = () => {
                 <div
                   className={`grid grid-cols-1 md:grid-cols-2 h-full ${index % 2 === 0 ? "md:grid-flow-col" : "md:grid-flow-col-dense"}`}
                 >
-                  <div className="relative h-full overflow-hidden">
+                  <div 
+                    className="relative h-full overflow-hidden cursor-pointer"
+                    onClick={() => setSelectedImage({url: testimonial.imageUrl, caption: `${testimonial.name}の作品`})}
+                  >
                     <img
                       src={testimonial.imageUrl}
                       alt={`Artwork appreciated by ${testimonial.name}`}
@@ -173,6 +179,14 @@ const Testimonials = () => {
           ))}
         </div>
       </section>
+
+      {/* 画像モーダル */}
+      <ImageModal
+        isOpen={!!selectedImage}
+        onClose={() => setSelectedImage(null)}
+        imageUrl={selectedImage?.url || ""}
+        caption={selectedImage?.caption}
+      />
     </div>
   );
 };
