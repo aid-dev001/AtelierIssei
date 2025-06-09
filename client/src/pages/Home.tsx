@@ -161,23 +161,29 @@ const Home = () => {
     },
   ];
 
-  const [selectedImage, setSelectedImage] = useState<{url: string; caption: string} | null>(null);
+  const [selectedImage, setSelectedImage] = useState<{
+    url: string;
+    caption: string;
+  } | null>(null);
 
   useEffect(() => {
     const handleOpenImageModal = (event: any) => {
       setSelectedImage(event.detail);
     };
-    
-    window.addEventListener('openImageModal', handleOpenImageModal);
-    
+
+    window.addEventListener("openImageModal", handleOpenImageModal);
+
     return () => {
-      window.removeEventListener('openImageModal', handleOpenImageModal);
+      window.removeEventListener("openImageModal", handleOpenImageModal);
     };
   }, []);
 
   return (
     <div>
-      <section className="relative overflow-hidden mb-36" style={{ minHeight: "110vh" }}>
+      <section
+        className="relative overflow-hidden mb-36"
+        style={{ minHeight: "130vh" }}
+      >
         {/* 背景の画像ギャラリー */}
         <div className="absolute inset-0">
           {/* グリッド状の画像レイアウト */}
@@ -298,7 +304,10 @@ const Home = () => {
             },
           ].map((artwork, index) => (
             <div key={index} className="space-y-3 group">
-              <div className="aspect-square bg-gray-100 overflow-hidden rounded shadow-sm">
+              <div 
+                className="aspect-square bg-gray-100 overflow-hidden rounded shadow-sm cursor-pointer"
+                onClick={() => setSelectedImage({url: artwork.src, caption: artwork.title})}
+              >
                 <img
                   src={artwork.src}
                   alt={artwork.title}
@@ -757,8 +766,11 @@ const Home = () => {
                             "aspect-square bg-gray-100 rounded overflow-hidden group cursor-pointer";
                           imgEl.innerHTML = `<img src="${img}" alt="${location.label} - ${i + 1}" class="w-full h-full object-cover transition duration-500 group-hover:scale-105" onerror="this.onerror=null;this.src='/placeholder.png';" />`;
                           imgEl.onclick = () => {
-                            const event = new CustomEvent('openImageModal', {
-                              detail: {url: img, caption: `${location.label} - ${i + 1}`}
+                            const event = new CustomEvent("openImageModal", {
+                              detail: {
+                                url: img,
+                                caption: `${location.label} - ${i + 1}`,
+                              },
                             });
                             window.dispatchEvent(event);
                           };
@@ -932,9 +944,14 @@ const Home = () => {
                   className="grid grid-cols-1 md:grid-cols-3 gap-6"
                 >
                   {/* 初期表示用の画像 */}
-                  <div 
+                  <div
                     className="aspect-square bg-gray-100 rounded overflow-hidden group cursor-pointer"
-                    onClick={() => setSelectedImage({url: "/images/S__9044006.jpg", caption: "広島 - 1"})}
+                    onClick={() =>
+                      setSelectedImage({
+                        url: "/images/S__9044006.jpg",
+                        caption: "広島 - 1",
+                      })
+                    }
                   >
                     <img
                       src="/images/S__9044006.jpg"
@@ -947,9 +964,14 @@ const Home = () => {
                       }}
                     />
                   </div>
-                  <div 
+                  <div
                     className="aspect-square bg-gray-100 rounded overflow-hidden group cursor-pointer"
-                    onClick={() => setSelectedImage({url: "/images/S__9044005.jpg", caption: "広島 - 2"})}
+                    onClick={() =>
+                      setSelectedImage({
+                        url: "/images/S__9044005.jpg",
+                        caption: "広島 - 2",
+                      })
+                    }
                   >
                     <img
                       src="/images/S__9044005.jpg"
@@ -1109,7 +1131,8 @@ const Home = () => {
           ].map((work, index) => (
             <div
               key={index}
-              className="group relative aspect-square overflow-hidden rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300"
+              className="group relative aspect-square overflow-hidden rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer"
+              onClick={() => setSelectedImage({url: work.src, caption: work.title})}
             >
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 z-10" />
               <img
