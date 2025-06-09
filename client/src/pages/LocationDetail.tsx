@@ -1079,27 +1079,29 @@ const LocationDetail: React.FC = () => {
       {/* ナビゲーション */}
       <div className="mt-32 border-t pt-16">
         <div className="max-w-4xl mx-auto">
-          <div className="flex justify-between items-center">
+          {/* スマートフォンでは縦積み、PCでは横並び */}
+          <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4">
             {/* 前のページ */}
             <div className="flex-1 flex justify-start">
               {currentIndex > 0 ? (
                 <Link
                   href={`/exhibition/location/${locationOrder[currentIndex - 1]}`}
+                  className="w-full md:w-auto"
                 >
                   <Button
                     variant="ghost"
-                    className="flex items-center gap-3 p-4 h-auto hover:bg-gray-50"
+                    className="flex items-center gap-3 p-3 md:p-4 h-auto hover:bg-gray-50 w-full md:w-auto justify-start"
                   >
-                    <ChevronLeft className="w-5 h-5" />
-                    <div className="text-left">
-                      <div className="text-sm text-gray-500 mb-1">
+                    <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
+                    <div className="text-left min-w-0 flex-1">
+                      <div className="text-xs md:text-sm text-gray-500 mb-1">
                         前のページ
                       </div>
-                      <div className="font-medium text-base">
+                      <div className="font-medium text-sm md:text-base truncate">
                         {locationsData[locationOrder[currentIndex - 1]]
                           ?.title || ""}
                       </div>
-                      <div className="text-sm text-gray-600 mt-1 max-w-xs">
+                      <div className="text-xs md:text-sm text-gray-600 mt-1 line-clamp-2">
                         {locationsData[locationOrder[currentIndex - 1]]
                           ?.description || ""}
                       </div>
@@ -1112,29 +1114,30 @@ const LocationDetail: React.FC = () => {
             </div>
 
             {/* 次のページ */}
-            <div className="flex-1 flex justify-end">
+            <div className="flex-1 flex justify-start md:justify-end">
               {currentIndex >= 0 && currentIndex < locationOrder.length - 1 ? (
                 <Link
                   href={`/exhibition/location/${locationOrder[currentIndex + 1]}`}
+                  className="w-full md:w-auto"
                 >
                   <Button
                     variant="ghost"
-                    className="flex items-center gap-3 p-4 h-auto hover:bg-gray-50"
+                    className="flex items-center gap-3 p-3 md:p-4 h-auto hover:bg-gray-50 w-full md:w-auto justify-start md:justify-end"
                   >
-                    <div className="text-right">
-                      <div className="text-sm text-gray-500 mb-1">
+                    <div className="text-left md:text-right min-w-0 flex-1 order-2 md:order-1">
+                      <div className="text-xs md:text-sm text-gray-500 mb-1">
                         次のページ
                       </div>
-                      <div className="font-medium text-base">
+                      <div className="font-medium text-sm md:text-base truncate">
                         {locationsData[locationOrder[currentIndex + 1]]
                           ?.title || ""}
                       </div>
-                      <div className="text-sm text-gray-600 mt-1 max-w-xs">
+                      <div className="text-xs md:text-sm text-gray-600 mt-1 line-clamp-2">
                         {locationsData[locationOrder[currentIndex + 1]]
                           ?.description || ""}
                       </div>
                     </div>
-                    <ChevronRight className="w-5 h-5" />
+                    <ChevronRight className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0 order-1 md:order-2" />
                   </Button>
                 </Link>
               ) : (
