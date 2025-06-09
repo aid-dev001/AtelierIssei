@@ -3,6 +3,7 @@ import { useParams, useLocation, Link } from "wouter";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import ImageModal from "@/components/ImageModal";
 
 type LocationImage = {
   url: string;
@@ -963,6 +964,7 @@ const LocationDetail: React.FC = () => {
 
   const [location, setLocation] = useState<LocationData | null>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
+  const [selectedImage, setSelectedImage] = useState<{url: string; caption: string} | null>(null);
 
   console.log("LocationDetail - URL path:", path);
   console.log("LocationDetail - Extracted locationId from URL:", locationId);
@@ -1059,7 +1061,10 @@ const LocationDetail: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
         {location.images.map((image, index) => (
           <div key={index} className="group">
-            <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-2">
+            <div 
+              className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-2 cursor-pointer"
+              onClick={() => setSelectedImage(image)}
+            >
               <img
                 src={image.url}
                 alt={image.caption}
@@ -1124,7 +1129,7 @@ const LocationDetail: React.FC = () => {
                     variant="ghost"
                     className="flex items-center gap-3 p-3 md:p-4 h-auto hover:bg-gray-50 w-full md:w-auto justify-end"
                   >
-                    <div className="text-left md:text-right min-w-0 flex-1 order-2 md:order-1">
+                    <div className="text-right min-w-0 flex-1 order-2 md:order-1">
                       <div className="text-xs md:text-sm text-gray-500 mb-1">
                         次のページ
                       </div>
@@ -1147,6 +1152,14 @@ const LocationDetail: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* 画像モーダル */}
+      <ImageModal
+        isOpen={!!selectedImage}
+        onClose={() => setSelectedImage(null)}
+        imageUrl={selectedImage?.url || ""}
+        caption={selectedImage?.caption}
+      />
     </div>
   );
 };
