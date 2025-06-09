@@ -140,7 +140,7 @@ const Testimonials = () => {
                 >
                   <div 
                     className="relative h-full overflow-hidden cursor-pointer"
-                    onClick={() => setSelectedImage({url: testimonial.imageUrl, caption: `${testimonial.name}の作品`})}
+                    onClick={() => setSelectedImage({url: testimonial.imageUrl, caption: `${testimonial.name} 購入`})}
                   >
                     <img
                       src={testimonial.imageUrl}

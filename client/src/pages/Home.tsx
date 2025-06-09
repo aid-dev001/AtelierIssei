@@ -1044,7 +1044,7 @@ const Home = () => {
             <div key={index} className="grid grid-cols-1 rounded-xl shadow-xl overflow-hidden">
               <div 
                 className="relative aspect-square overflow-hidden cursor-pointer"
-                onClick={() => setSelectedImage({url: voice.image, caption: `${voice.name}の作品`})}
+                onClick={() => setSelectedImage({url: voice.image, caption: `${voice.name} 購入`})}
               >
                 <img
                   src={voice.image}
