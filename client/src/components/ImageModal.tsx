@@ -24,7 +24,7 @@ const ImageModal: React.FC<ImageModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4 pt-16 md:pt-4"
+      className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4 pt-16 md:pt-8"
       onClick={handleBackdropClick}
     >
       <div className="relative max-w-full max-h-full">
@@ -38,7 +38,7 @@ const ImageModal: React.FC<ImageModalProps> = ({
         <img
           src={imageUrl}
           alt={caption || "拡大画像"}
-          className="max-w-full max-h-[85vh] md:max-h-[80vh] object-contain rounded-lg"
+          className="max-w-full max-h-[85vh] md:max-h-[70vh] object-contain rounded-lg"
           onError={(e) => {
             const img = e.target as HTMLImageElement;
             img.onerror = null;
