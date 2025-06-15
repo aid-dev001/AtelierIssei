@@ -385,11 +385,20 @@ const Exhibition = () => {
                       </>
                     )}
 
-                    {/* 東京・池袋 - ビジネス後の再開の詳細説明 */}
+                    {/*  */}
                     {location.id === "abu-dhabi" && (
                       <>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
                           2019年、アブダビで初の個展を開催しました。池袋のアトリエで制作した「ひょこあに」シリーズを中心に展示し、動物が顔を出す親しみやすいデザインが現地でも好評を博しました。特に「ひょこあに」は来場者アンケートで最も人気を集め、文化を超えて伝わるアートの力を実感。国際的な活動への自信を深め、ヨーロッパ進出への重要な一歩となりました。{" "}
+                        </p>
+                      </>
+                    )}
+
+                    {/*  */}
+                    {location.id === "tokyo-okubo" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          新大久保のおしゃれなギャラリーで動物シリーズを展示しました。友人の依頼で描いた犬や猫の作品が多くの来場者に愛され、特に色彩豊かで親しみやすい表現が幅広い世代に好評でした。多文化が共存する街ならではの反響があり、言語や文化を超えるアートの力を実感。展示中には絵本化の話も持ち上がり、作品の可能性を広げる機会となりました。{" "}
                         </p>
                       </>
                     )}
@@ -400,6 +409,7 @@ const Exhibition = () => {
                       "tokyo-shinjuku",
                       "tokyo-ikebukuro",
                       "abu-dhabi",
+                      "tokyo-okubo",
                     ].includes(location.id) && (
                       <>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
