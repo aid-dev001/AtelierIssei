@@ -32,5 +32,5 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm start"
+args = "node start.cjs --production"
 waitForPort = 5000
