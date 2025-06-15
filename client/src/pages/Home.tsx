@@ -182,7 +182,7 @@ const Home = () => {
     <div>
       <section
         className="relative overflow-hidden mb-36"
-        style={{ minHeight: "130vh" }}
+        style={{ minHeight: "100vh" }}
       >
         {/* 背景の画像ギャラリー */}
         <div className="absolute inset-0">
