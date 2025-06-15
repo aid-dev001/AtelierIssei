@@ -31,15 +31,6 @@ const exhibitions = [
     mainImage: "/artworks/12660.jpg",
     galleryImages: ["/artworks/12661.jpg", "/artworks/12662.jpg", "/artworks/12663.jpg"],
     detailText: "パリの歴史ある街並みの中で、日本の繊細な美意識と現代アートの融合をお楽しみいただけます。"
-  },
-  {
-    id: "okubo",
-    city: "大久保",
-    address: "大久保ギャラリー",
-    description: "動物シリーズの人気展示",
-    mainImage: "/artworks/placeholder.png",
-    galleryImages: ["/artworks/placeholder.png", "/artworks/placeholder.png", "/artworks/placeholder.png"],
-    detailText: "大久保のおしゃれなギャラリーで作品を展示しました。動物シリーズを中心とした展示で、友人からの依頼で描いた作品たちがこちらでも大変人気でした。多くの方にご好評をいただき、絵本にしようという企画も持ち上がりました。アットホームな空間で、動物たちの愛らしい表情をお楽しみいただけた素晴らしい展示会でした。"
   }
 ];
 
