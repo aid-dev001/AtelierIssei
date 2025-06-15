@@ -54,7 +54,7 @@ const locations = [
     label: "東京・大久保",
     year: "2019",
     country: "日本",
-    description: "多様な文化が混ざり合うギャラリーでの作品展示",
+    description: "動物シリーズの人気展示",
     images: ["/images/tokyo_okubo_1.jpg"],
   },
   {
