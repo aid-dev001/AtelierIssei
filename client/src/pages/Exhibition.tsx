@@ -46,7 +46,7 @@ const locations = [
     label: "アブダビ",
     year: "2019",
     country: "UAE",
-    description: "砂漠の国で開催した個展での作品展示",
+    description: "展覧会初出品で『ひょこあに』シリーズが来場者アンケート1位",
     images: ["/images/abu_dhabi_1.jpg"],
   },
   {
@@ -54,7 +54,7 @@ const locations = [
     label: "東京・大久保",
     year: "2019",
     country: "日本",
-    description: "動物シリーズの人気展示",
+    description: "新大久保のギャラリーで動物シリーズを展示、絵本化企画も",
     images: ["/images/tokyo_okubo_1.jpg"],
   },
   {
@@ -385,11 +385,21 @@ const Exhibition = () => {
                       </>
                     )}
 
+                    {/* 東京・池袋 - ビジネス後の再開の詳細説明 */}
+                    {location.id === "abu-dhabi" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          2019年、アブダビで初の個展を開催しました。池袋のアトリエで制作した「ひょこあに」シリーズを中心に展示し、動物が顔を出す親しみやすいデザインが現地でも好評を博しました。特に「ひょこあに」は来場者アンケートで最も人気を集め、文化を超えて伝わるアートの力を実感。国際的な活動への自信を深め、ヨーロッパ進出への重要な一歩となりました。{" "}
+                        </p>
+                      </>
+                    )}
+
                     {/* その他の場所 - 汎用的な説明 */}
                     {![
                       "hiroshima",
                       "tokyo-shinjuku",
                       "tokyo-ikebukuro",
+                      "abu-dhabi",
                     ].includes(location.id) && (
                       <>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">

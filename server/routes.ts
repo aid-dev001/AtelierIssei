@@ -58,6 +58,13 @@ export default function setupRoutes(app: express.Express) {
   // Public routes
   app.get("/api/artworks", async (req, res) => {
     try {
+      // キャッシュ制御の設定
+      const cacheControl = process.env.NODE_ENV === 'production' 
+        ? 'public, max-age=180, s-maxage=180' // プロダクション: 3分
+        : 'no-cache, must-revalidate'; // 開発時: キャッシュなし
+      
+      res.set('Cache-Control', cacheControl);
+      
       const allArtworks = await db.select().from(artworks).orderBy(desc(artworks.updatedAt));
       res.json(allArtworks);
     } catch (error) {
@@ -69,6 +76,13 @@ export default function setupRoutes(app: express.Express) {
   // Collections CRUD endpoints
   app.get("/api/collections", async (req, res) => {
     try {
+      // キャッシュ制御の設定
+      const cacheControl = process.env.NODE_ENV === 'production' 
+        ? 'public, max-age=180, s-maxage=180' // プロダクション: 3分
+        : 'no-cache, must-revalidate'; // 開発時: キャッシュなし
+      
+      res.set('Cache-Control', cacheControl);
+      
       const allCollections = await db.select().from(collections).orderBy(desc(collections.updatedAt));
       console.log('Fetched collections:', allCollections);
       res.json(allCollections);
@@ -405,6 +419,13 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
   // Exhibitions CRUD endpoints
   app.get("/api/exhibitions", async (req, res) => {
     try {
+      // キャッシュ制御の設定
+      const cacheControl = process.env.NODE_ENV === 'production' 
+        ? 'public, max-age=180, s-maxage=180' // プロダクション: 3分
+        : 'no-cache, must-revalidate'; // 開発時: キャッシュなし
+      
+      res.set('Cache-Control', cacheControl);
+      
       const allExhibitions = await db.select().from(exhibitions).orderBy(desc(exhibitions.startDate));
       res.json(allExhibitions);
     } catch (error) {
@@ -523,10 +544,17 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
   // Voices CRUD endpoints
   app.get("/api/voices", async (req, res) => {
     try {
+      // キャッシュ制御の設定
+      const cacheControl = process.env.NODE_ENV === 'production' 
+        ? 'public, max-age=120, s-maxage=120' // プロダクション: 2分（コメントは頻繁に更新される可能性）
+        : 'no-cache, must-revalidate'; // 開発時: キャッシュなし
+      
+      res.set('Cache-Control', cacheControl);
+      
       const allVoices = await db.select().from(voices).orderBy(desc(voices.createdAt));
       res.json(allVoices);
     } catch (error) {
-      console.error("Failed to fetch voices:", error);
+      console.error("Failed to fetch voices:", error);  
       res.status(500).json({ error: "メッセージの取得に失敗しました" });
     }
   });
