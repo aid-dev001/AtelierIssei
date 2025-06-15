@@ -166,6 +166,19 @@ const Home = () => {
     caption: string;
   } | null>(null);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   useEffect(() => {
     const handleOpenImageModal = (event: any) => {
       setSelectedImage(event.detail);
@@ -182,7 +195,7 @@ const Home = () => {
     <div>
       <section
         className="relative overflow-hidden mb-36"
-        style={{ minHeight: "calc(100vw * 0.75)" }}
+        style={{ minHeight: isMobile ? "calc(100vw * 2.5)" : "calc(100vw * 0.8)" }}
       >
         {/* 背景の画像ギャラリー */}
         <div className="absolute inset-0">
@@ -304,9 +317,11 @@ const Home = () => {
             },
           ].map((artwork, index) => (
             <div key={index} className="space-y-3 group">
-              <div 
+              <div
                 className="aspect-square bg-gray-100 overflow-hidden rounded shadow-sm cursor-pointer"
-                onClick={() => setSelectedImage({url: artwork.src, caption: artwork.title})}
+                onClick={() =>
+                  setSelectedImage({ url: artwork.src, caption: artwork.title })
+                }
               >
                 <img
                   src={artwork.src}
@@ -1041,10 +1056,18 @@ const Home = () => {
                 "色も色の組み合わせも可愛くて気に入っています。玄関で丸い顔が浮き上がっているのを見ると心も弾みます。",
             },
           ].map((voice, index) => (
-            <div key={index} className="grid grid-cols-1 rounded-xl shadow-xl overflow-hidden">
-              <div 
+            <div
+              key={index}
+              className="grid grid-cols-1 rounded-xl shadow-xl overflow-hidden"
+            >
+              <div
                 className="relative aspect-square overflow-hidden cursor-pointer"
-                onClick={() => setSelectedImage({url: voice.image, caption: `${voice.name} 購入`})}
+                onClick={() =>
+                  setSelectedImage({
+                    url: voice.image,
+                    caption: `${voice.name} 購入`,
+                  })
+                }
               >
                 <img
                   src={voice.image}
@@ -1135,7 +1158,9 @@ const Home = () => {
             <div
               key={index}
               className="group relative aspect-square overflow-hidden rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer"
-              onClick={() => setSelectedImage({url: work.src, caption: work.title})}
+              onClick={() =>
+                setSelectedImage({ url: work.src, caption: work.title })
+              }
             >
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 z-10" />
               <img
