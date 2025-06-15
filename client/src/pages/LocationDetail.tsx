@@ -985,6 +985,7 @@ const LocationDetail: React.FC = () => {
 
     if (locationId && locationsData[locationId]) {
       console.log("Found location data for:", locationId);
+      console.log("LongDescription:", locationsData[locationId].longDescription);
       setLocation(locationsData[locationId]);
       const index = locationOrder.indexOf(locationId);
       setCurrentIndex(index);
