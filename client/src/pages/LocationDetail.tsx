@@ -408,7 +408,7 @@ const locationsData: Record<string, LocationData> = {
     country: "フランス",
     year: "2022",
     description: "フランス郊外の静かな村での集中的な創作期間",
-    longDescription: `アティスモンスはパリ郊外に位置する静かな町で���都会の喧騒を離れた集中的な創作環境を提供してくれました。
+    longDescription: `アティスモンスはパリ郊外に位置する静かな町で、都会の喧騒を離れた集中的な創作環境を提供してくれました。
     
     歴史的な建造物と現代的な都市計画が共存するこの地域での滞在は、「都市と郊外」「中心と周縁」という概念について考察する貴重な機会となりました。
     
@@ -537,7 +537,7 @@ const locationsData: Record<string, LocationData> = {
     
     この村での滞在中、私は特に「時間の層」と「場所の記憶」というテーマに注目しました。何世紀にもわたって変わらず残る石の質感や、季節の移り変わりとともに変化する光と影のパターンは、作品における時間性と物質性の表現に大きな影響を与えています。
     
-    村の小さな教会の内部にある中世の壁画や石像は、西洋美術の伝統と現代表現の接点���ついて考察する機会となりました。
+    村の小さな教会の内部にある中世の壁画や石像は、西洋美術の伝統と現代表現の接点について考察する機会となりました。
     
     また、地元の伝統的な祭りや日常的な農作業の風景は、コミュニティと創造性の関係、そして場所に根ざした芸術の意義について再考するきっかけとなりました。時にはぶどう畑で働く農家の方々や、パン屋、鍛冶屋など伝統的な職人との交流も、手仕事と芸術の深い関係性を感じさせるものでした。`,
     images: [
@@ -786,7 +786,7 @@ const locationsData: Record<string, LocationData> = {
       { url: "/images/23694.jpg", caption: "シャンボール城を描く様子" },
       {
         url: "/images/23687_0.jpg",
-        caption: "水面に映るシャンボーon�城と野外作品",
+        caption: "水面に映るシャンボール城と野外作品",
       },
     ],
     relatedLocations: [
@@ -937,20 +937,23 @@ const locationOrder = [
   "hiroshima",
   "tokyo-shinjuku",
   "tokyo-ikebukuro",
-  "tokyo-akasaka",
-  "tokyo-shibuya",
-  "tokyo-okubo",
-  "london",
   "abu-dhabi",
+  "tokyo-okubo",
   "paris",
-  "paris-second",
   "france-savigny",
+  "london",
+  "tokyo-akasaka",
+  "paris-second",
   "spain-casamila",
-  "chaumont",
   "atis-mons",
-  "nice",
+  "tokyo-higashi-shinjuku",
+  "atis-mons-church",
+  "normandy",
+  "france-chambord",
+  "montmartre",
+  "tokyo-shinjuku-2024",
+  "chaumont",
   "monaco",
-  "fukuyama",
 ];
 
 const LocationDetail: React.FC = () => {
