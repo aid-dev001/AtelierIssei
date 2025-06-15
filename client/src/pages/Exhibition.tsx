@@ -46,7 +46,7 @@ const locations = [
     label: "アブダビ",
     year: "2019",
     country: "UAE",
-    description: "初展覧会で「ひょこあに」シリーズが来場者アンケート1位",
+    description: "砂漠の国で開催した個展での作品展示",
     images: ["/images/abu_dhabi_1.jpg"],
   },
   {
@@ -54,8 +54,8 @@ const locations = [
     label: "東京・大久保",
     year: "2019",
     country: "日本",
-    description: "新大久保のギャラリーで動物シリーズを展示、絵本化企画も",
-    images: ["/images//tokyo_okubo_1.jpg"],
+    description: "動物シリーズの人気展示",
+    images: ["/images/tokyo_okubo_1.jpg"],
   },
   {
     id: "paris",
