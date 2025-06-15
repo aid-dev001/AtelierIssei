@@ -196,7 +196,7 @@ const Home = () => {
       <section
         className="relative overflow-hidden mb-36"
         style={{
-          minHeight: isMobile ? "calc(100vw * 1.9)" : "calc(100vw * 0.8)",
+          minHeight: isMobile ? "calc(100vw * 1.68)" : "calc(100vw * 0.8)",
         }}
       >
         {/* 背景の画像ギャラリー */}
@@ -247,9 +247,11 @@ const Home = () => {
           {/* 中央の透過カバー */}
           <div
             className="absolute left-1/2 -translate-x-1/2 w-[87%] bg-white"
-            style={{ 
+            style={{
               top: "calc(100vw * 0.125 / 2)",
-              height: isMobile ? "calc(100% - calc(100vw / 15))" : "calc(100% - calc(100vw / 15))"
+              height: isMobile
+                ? "calc(100% - calc(100vw * 0.125))"
+                : "calc(100% - calc(100vw * 0.125))",
             }}
           >
             {/* メインコンテンツ */}
