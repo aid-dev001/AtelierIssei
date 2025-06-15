@@ -353,7 +353,7 @@ const locationsData: Record<string, LocationData> = {
     images: [
       {
         url: "/images/tokyo_okubo_1.jpg",
-        caption: "大久保ギャラリーでの「POKO ANIMAL」シリーズ展示風景",
+        caption: "大久保ギャラリーでの動物シリーズ展示風景",
       },
     ],
     relatedLocations: [
