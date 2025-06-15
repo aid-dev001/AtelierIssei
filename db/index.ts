@@ -6,10 +6,11 @@ import * as schema from "@db/schema";
 const getDatabaseUrl = () => {
   // NODE_ENV が production の場合は本番用データベースを使用
   if (process.env.NODE_ENV === 'production') {
-    const productionUrl = process.env.PRODUCTION_DATABASE_URL;
+    // 本番環境では DATABASE_URL を使用
+    const productionUrl = process.env.DATABASE_URL;
     if (!productionUrl) {
       throw new Error(
-        "Production environment requires PRODUCTION_DATABASE_URL to be set"
+        "Production environment requires DATABASE_URL to be set"
       );
     }
     console.log("Using production database");

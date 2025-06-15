@@ -32,5 +32,5 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm run build && npm start"
+args = "npm start"
 waitForPort = 5000
