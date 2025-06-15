@@ -280,15 +280,16 @@ const locationsData: Record<string, LocationData> = {
     title: "アブダビ",
     country: "アラブ首長国連邦",
     year: "2019",
-    description:
-      "池袋のアトリエで制作していた作品のうち、一番人気のあった「ひょこあに」シリーズの作品を初めての展覧会に出展。来場者アンケートで一番人気だった",
-    longDescription: `2019年、私はアブダビで記念すべき初めての個展を開催する機会に恵まれました。この展覧会は、私の国際的なアーティスト活動の出発点となる重要なイベントでした。
-
-池袋のアトリエで制作していた数々の作品の中から、特に反響の良かった「ひょこあに」シリーズを中心に展示構成を行いました。動物が穴から顔を出しているデザインの「ひょこっとあにまる」コレクションは、言語や文化の壁を超えて多くの来場者の心を掴みました。
-
-砂漠の国アブダビという、日本とは全く異なる文化圏での展示でしたが、シンプルで親しみやすいキャラクターデザインと鮮やかな色彩が、現地の方々に温かく受け入れられました。特に「ひょこあに」シリーズの作品は、来場者アンケートで一番人気を獲得するという嬉しい結果となりました。
-
-この成功体験は、アートには文化的な境界を超えた普遍的な力があることを実感させてくれました。また、国際的な展示活動への自信と確信を与えてくれる貴重な機会となり、その後のヨーロッパでの展開への道筋を切り開く重要なステップとなりました。`,
+    description: "砂漠の国で開催した個展での作品展示",
+    longDescription: `アブダビは砂漠と海に囲まれた未来志向の都市として、伝統と革新の興味深い融合を見せています。
+    
+    2019年、私はアブダビで初めての個展を開催する機会に恵まれました。中東の文化と日本のポップアートを融合させた作品シリーズを展示し、多くの現地のアート愛好家や国際的な来場者からの反響を得ることができました。
+    
+    この展示では特に「POKO FACE」シリーズが注目を集め、カラフルな色彩とシンプルな表情のキャラクターが多文�����が交差するアブダビという都市の雰囲㰗と���ッチし、新しい対話を生み出すことができました。
+    
+    中東という新しい文化圏での展示経験は、自分の作品が持つ普遍性と文化的背景について考え直すきっかけとなり、その後の創作活動に大きな影響を与えています。
+    
+    また、この展示をきっかけに中東地域のアートコレクターとの繋がりが生まれ、継続的な文化交流の機会へと発展しています。`,
     images: [
       {
         url: "/images/abu_dhabi_1.jpg",
@@ -963,10 +964,7 @@ const LocationDetail: React.FC = () => {
 
   const [location, setLocation] = useState<LocationData | null>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
-  const [selectedImage, setSelectedImage] = useState<{
-    url: string;
-    caption: string;
-  } | null>(null);
+  const [selectedImage, setSelectedImage] = useState<{url: string; caption: string} | null>(null);
 
   console.log("LocationDetail - URL path:", path);
   console.log("LocationDetail - Extracted locationId from URL:", locationId);
@@ -1063,7 +1061,7 @@ const LocationDetail: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
         {location.images.map((image, index) => (
           <div key={index} className="group">
-            <div
+            <div 
               className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-2 cursor-pointer"
               onClick={() => setSelectedImage(image)}
             >

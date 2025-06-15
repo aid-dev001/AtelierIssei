@@ -46,7 +46,7 @@ const locations = [
     label: "アブダビ",
     year: "2019",
     country: "UAE",
-    description: "池袋のアトリエで制作していた作品のうち、一番人気のあった「ひょこあに」シリーズの作品を初めての展覧会に出展。来場者アンケートで一番人気だった",
+    description: "砂漠の国で開催した個展での作品展示",
     images: ["/images/abu_dhabi_1.jpg"],
   },
   {
