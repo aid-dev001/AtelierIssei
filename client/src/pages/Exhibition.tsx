@@ -52,10 +52,10 @@ const locations = [
   {
     id: "tokyo-okubo",
     label: "東京・大久保",
-    year: "2023",
+    year: "2019",
     country: "日本",
     description: "新大久保のギャラリーで動物シリーズを展示、絵本化企画も",
-    images: ["/artworks/12658.jpg"],
+    images: ["/images//tokyo_okubo_1.jpg"],
   },
   {
     id: "paris",

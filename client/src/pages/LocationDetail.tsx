@@ -774,7 +774,7 @@ const locationsData: Record<string, LocationData> = {
     id: "tokyo-okubo",
     title: "東京・大久保",
     country: "日本",
-    year: "2023",
+    year: "2019",
     description: "新大久保のギャラリーで動物シリーズを展示",
     longDescription: `新大久保のおしゃれなギャラリーで作品を展示しました。動物シリーズを中心とした展示で、友人からの依頼で描いた作品たちが多くの来場者に愛されました。
 
@@ -787,16 +787,8 @@ const locationsData: Record<string, LocationData> = {
     新大久保という国際色豊かな街での展示は、文化的背景の異なる人々にも受け入れられるアートの可能性を実感させてくれる体験となりました。`,
     images: [
       {
-        url: "/artworks/12658.jpg",
+        url: "/images/tokyo_okubo_1.jpg",
         caption: "新大久保ギャラリーでの動物シリーズ展示風景",
-      },
-      {
-        url: "/artworks/animal_series_1.jpg",
-        caption: "友人の依頼で制作した動物作品",
-      },
-      {
-        url: "/artworks/animal_series_2.jpg",
-        caption: "来場者に人気だった猫のポートレート",
       },
     ],
     relatedLocations: [
@@ -985,7 +977,10 @@ const LocationDetail: React.FC = () => {
 
     if (locationId && locationsData[locationId]) {
       console.log("Found location data for:", locationId);
-      console.log("LongDescription:", locationsData[locationId].longDescription);
+      console.log(
+        "LongDescription:",
+        locationsData[locationId].longDescription,
+      );
       setLocation(locationsData[locationId]);
       const index = locationOrder.indexOf(locationId);
       setCurrentIndex(index);
