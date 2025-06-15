@@ -20,9 +20,14 @@ function log(message: string) {
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static('client/public'));
-app.use('/artworks', express.static('public/artworks'));
-app.use('/artworks', express.static('.'));
+// 静的ファイルのキャッシュ設定
+const staticOptions = process.env.NODE_ENV === 'production' 
+  ? { maxAge: '1h', etag: true, lastModified: true } // プロダクション: 1時間キャッシュ
+  : { maxAge: 0, etag: false, lastModified: false }; // 開発時: キャッシュなし
+
+app.use(express.static('client/public', staticOptions));
+app.use('/artworks', express.static('public/artworks', staticOptions));
+app.use('/artworks', express.static('.', staticOptions));
 
 const MemoryStoreSession = MemoryStore(session);
 app.use(session({
