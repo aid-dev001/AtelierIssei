@@ -280,13 +280,12 @@ const locationsData: Record<string, LocationData> = {
     title: "アブダビ",
     country: "アラブ首長国連邦",
     year: "2019",
-    description: "池袋のアトリエで制作していた作品のうち、一番人気のあった「ひょこあに」シリーズの作品を初めての展覧会に出展。来場者アンケートで一番人気だった",
+    description:
+      "池袋のアトリエで制作していた作品のうち、一番人気のあった「ひょこあに」シリーズの作品を初めての展覧会に出展。来場者アンケートで一番人気だった",
     longDescription: `
     2019年、私はアブダビで記念すべき初めての個展を開催する機会に恵まれました。この展覧会は、私の国際的なアーティスト活動の出発点となる重要なイベントでした。
 
     池袋のアトリエで制作していた数々の作品の中から、特に反響の良かった「ひょこあに」シリーズを中心に展示構成を行いました。動物が穴から顔を出しているデザインの「ひょこっとあにまる」コレクションは、言語や文化の壁を超えて多くの来場者の心を掴みました。
-    
-
     
     砂漠の国アブダビという、日本とは全く異なる文化圏での展示でしたが、シンプルで親しみやすいキャラクターデザインと鮮やかな色彩が、現地の方々に温かく受け入れられました。特に「ひょこあに」シリーズの作品は、来場者アンケートで一番人気を獲得するという嬉しい結果となりました。
 
@@ -965,7 +964,10 @@ const LocationDetail: React.FC = () => {
 
   const [location, setLocation] = useState<LocationData | null>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
-  const [selectedImage, setSelectedImage] = useState<{url: string; caption: string} | null>(null);
+  const [selectedImage, setSelectedImage] = useState<{
+    url: string;
+    caption: string;
+  } | null>(null);
 
   console.log("LocationDetail - URL path:", path);
   console.log("LocationDetail - Extracted locationId from URL:", locationId);
@@ -1062,7 +1064,7 @@ const LocationDetail: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
         {location.images.map((image, index) => (
           <div key={index} className="group">
-            <div 
+            <div
               className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-2 cursor-pointer"
               onClick={() => setSelectedImage(image)}
             >
