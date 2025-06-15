@@ -172,11 +172,11 @@ const Home = () => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    
+
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   useEffect(() => {
@@ -195,7 +195,9 @@ const Home = () => {
     <div>
       <section
         className="relative overflow-hidden mb-36"
-        style={{ minHeight: isMobile ? "calc(100vw * 2.5)" : "calc(100vw * 0.8)" }}
+        style={{
+          minHeight: isMobile ? "calc(100vw * 1.9)" : "calc(100vw * 0.8)",
+        }}
       >
         {/* 背景の画像ギャラリー */}
         <div className="absolute inset-0">
@@ -244,8 +246,11 @@ const Home = () => {
 
           {/* 中央の透過カバー */}
           <div
-            className="absolute left-1/2 -translate-x-1/2 w-[87%] h-[85%] bg-white"
-            style={{ top: "calc(100vw * 0.125 / 2)" }}
+            className="absolute left-1/2 -translate-x-1/2 w-[87%] bg-white"
+            style={{ 
+              top: "calc(100vw * 0.125 / 2)",
+              height: isMobile ? "calc(100% - calc(100vw / 15))" : "calc(100% - calc(100vw / 15))"
+            }}
           >
             {/* メインコンテンツ */}
             <div className="h-full flex items-center">
