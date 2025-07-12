@@ -77,8 +77,7 @@ const locations = [
     label: "フランス・サヴィニー地方",
     year: "2019",
     country: "フランス",
-    description:
-      "パリでのファンが招待してくれた地元美術イベント。高校生がひょこあにTシャツでファッションショー",
+    description: "パリでのファンが招待してくれた地元美術イベント。高校生がひょこあにTシャツでファッションショー",
     images: ["/images/s231sa.jpg", "/images/23671.jpg"],
   },
   {
@@ -94,8 +93,7 @@ const locations = [
     label: "東京・赤坂",
     year: "2022",
     country: "日本",
-    description:
-      "3ヶ月で150枚制作。抽象画に加え女の子の絵を描くようになった新画風への転換期",
+    description: "3ヶ月で150枚制作。抽象画に加え女の子の絵を描くようになった新画風への転換期",
     images: [
       "/images/akasaka_1.jpg",
       "/images/akasaka_2.jpg",
@@ -108,24 +106,11 @@ const locations = [
     label: "パリ第二回",
     year: "2022",
     country: "フランス",
-    description:
-      "コロナ明けの2回目個展を2箇所で開催。フランス人が作品の前で何十分も話し続けるほど大好評",
+    description: "コロナ明けの2回目個展を2箇所で開催。フランス人が作品の前で何十分も話し続けるほど大好評",
     images: [
       "/attached_assets/23601.jpg",
       "/attached_assets/23622_0.jpg",
       "/attached_assets/1662819546.jpg",
-    ],
-  },
-  {
-    id: "atis-mons",
-    label: "アティスモンス",
-    year: "2022",
-    country: "フランス",
-    description: "パリ2箇所の個展の合間に教会で開催。アーティストが「鮮やかな色彩の中に寂しさもある」と涙を流すほど感動",
-    images: [
-      "/attached_assets/1928320.png",
-      "/attached_assets/23611_0.jpg",
-      "/attached_assets/23615_0.jpg",
     ],
   },
   {
@@ -138,6 +123,18 @@ const locations = [
       "/images/23624_0.jpg",
       "/images/23630_0.jpg",
       "/images/heji3918.jpg",
+    ],
+  },
+  {
+    id: "atis-mons",
+    label: "アティスモンス",
+    year: "2022",
+    country: "フランス",
+    description: "フランス郊外の静かな村での集中的な創作期間",
+    images: [
+      "/attached_assets/1928320.png",
+      "/attached_assets/23611_0.jpg",
+      "/attached_assets/23615_0.jpg",
     ],
   },
   {
@@ -444,9 +441,7 @@ const Exhibition = () => {
                           ロンドンで開かれた展覧会に出展する機会をいただきました。歴史と伝統のある芸術都市での展示は、私にとって大変光栄な体験でした。
                         </p>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                          この展覧会での作品が評価され、英国王立美術家協会（Royal
-                          Society of British
-                          Artists）の名誉会員に招待されました。国際的な芸術界での認知度が高まり、イギリスの芸術コミュニティとの貴重な繋がりを築くことができました。
+                          この展覧会での作品が評価され、英国王立美術家協会（Royal Society of British Artists）の名誉会員に招待されました。国際的な芸術界での認知度が高まり、イギリスの芸術コミュニティとの貴重な繋がりを築くことができました。
                         </p>
                       </>
                     )}
@@ -470,19 +465,7 @@ const Exhibition = () => {
                           コロナの影響で個展の機会を逃しましたが、明けて2回目の個展を行うことができました。2回目は2箇所で開催し、このときも大好評でした。
                         </p>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                          フランスの方々は通常、感情を表に出すことは少ないとされますが、作品の前では熱心に語りかけてくださいます。絵について感じたことを長時間にわたって話してくださる方もいらっしゃいます。そのような深い反応をいただけることは大変ありがたいです。
-                        </p>
-                      </>
-                    )}
-
-                    {/* アティスモンス - 詳細説明 */}
-                    {location.id === "atis-mons" && (
-                      <>
-                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                          パリ2箇所の個展の合間に、パリ南郊外の街で展示を行いました。街の教会を貸していただき、たくさんの方がいらっしゃいました。
-                        </p>
-                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                          中にはアーティストの方がいらして、「鮮やかな色彩の中に寂しさもある」と言われて感動し、涙を流されていました。それだけ感じて頂けるのは有り難いです。歴史ある教会という神聖な空間でのアート展示は特別な体験となりました。
+                          普段は感情を表に出さず、ほとんど褒めることもしないフランス人ですが、作品の前では興奮気味になります。絵について感じたことを何十分も、1時間も話してくれる方もいます。それだけ感じてもらえることは嬉しいです。
                         </p>
                       </>
                     )}
@@ -499,7 +482,6 @@ const Exhibition = () => {
                       "london",
                       "tokyo-akasaka",
                       "paris-second",
-                      "atis-mons",
                     ].includes(location.id) && (
                       <>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
