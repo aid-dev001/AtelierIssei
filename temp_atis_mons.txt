@@ -1,0 +1,38 @@
+  // アティスモンス
+  "atis-mons": {
+    id: "atis-mons",
+    title: "アティスモンス",
+    country: "フランス",
+    year: "2022",
+    description: "パリ2箇所の個展の合間に教会で開催。アーティストが「鮮やかな色彩の中に寂しさもある」と涙を流すほど感動",
+    longDescription: `2022年、パリ2箇所の個展の合間に、パリ南郊外の街アティスモンスで展示を行いました。街の教会「ボンヌ・ヌーベル」（3 Rue Joliot Curie, 91600 Savigny-sur-Orge）を貸していただき、9月17日〜21日の期間でたくさんの方がいらっしゃいました。
+
+    中にはアーティストの方がいらして、私の作品を見て「鮮やかな色彩の中に寂しさもある」と言われて感動し、涙を流されていました。それだけ深く感じて頂けるのは本当に有り難いことです。
+
+    歴史ある教会という神聖な空間での展示は、作品とともに特別な体験となりました。石造りの美しい建築と現代的な色彩の作品が織りなす対話は、時間を超えた芸術の力を感じさせてくれました。
+
+    アティスモンスはパリ郊外に位置する静かな町で、都会の喧騒を離れた集中的な創作環境を提供してくれました。この地域での展示は、フランスにおける地方の文化活動の重要性を認識する機会となり、私自身のアーティストとしての役割についても再考する時間となりました。`,
+    googleMapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2628.567!2d2.3474!3d48.6829!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e5d5e5b5b5b5b5%3A0x5b5b5b5b5b5b5b5!2s3%20Rue%20Joliot%20Curie%2C%2091600%20Savigny-sur-Orge%2C%20France!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus",
+    images: [
+      {
+        url: "/attached_assets/1928320.png",
+        caption: "アティスモンスの文化センター外観",
+      },
+      {
+        url: "/attached_assets/23611_0.jpg",
+        caption: "「POKO FACE」シリーズの展示風景",
+      },
+      {
+        url: "/attached_assets/23615_0.jpg",
+        caption: "地元の方々との交流会の様子",
+      },
+    ],
+    relatedLocations: [
+      { id: "paris-second", title: "パリ第二回", image: "/paris_second_1.jpg" },
+      {
+        id: "atis-mons-church",
+        title: "フランス・アティスモンス教会",
+        image: "/atis_mons_church_2.jpg",
+      },
+    ],
+  },
