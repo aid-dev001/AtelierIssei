@@ -85,7 +85,7 @@ const locations = [
     label: "ロンドン",
     year: "2021",
     country: "イギリス",
-    description: "古典と現代が融合する街での芸術探求",
+    description: "展覧会出展により英国王立美術家協会の名誉会員に招待",
     images: ["/images/スクリーンショット 2025-05-25 23.21.59.png"],
   },
   {
@@ -93,7 +93,7 @@ const locations = [
     label: "東京・赤坂",
     year: "2022",
     country: "日本",
-    description: "伝統と革新が交差する街で生まれる新しい表現",
+    description: "3ヶ月で150枚制作。抽象画に加え女の子の絵を描くようになった新画風への転換期",
     images: [
       "/images/akasaka_1.jpg",
       "/images/akasaka_2.jpg",
@@ -434,6 +434,30 @@ const Exhibition = () => {
                       </>
                     )}
 
+                    {/* ロンドン - 詳細説明 */}
+                    {location.id === "london" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          ロンドンで開かれた展覧会に出展する機会をいただきました。歴史と伝統のある芸術都市での展示は、私にとって大変光栄な体験でした。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          この展覧会での作品が評価され、英国王立美術家協会（Royal Society of British Artists）の名誉会員に招待されました。国際的な芸術界での認知度が高まり、イギリスの芸術コミュニティとの貴重な繋がりを築くことができました。
+                        </p>
+                      </>
+                    )}
+
+                    {/* 東京・赤坂 - 詳細説明 */}
+                    {location.id === "tokyo-akasaka" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          絵を描く時間が増え、赤坂に部屋を借りて毎日創作に専念していました。3ヶ月という短期間で150枚の作品を制作し、非常に密度の高い創作活動を行いました。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          この時期は、これまでの抽象画に加え、女の子の絵を描くようになった重要な転換期でした。今までとは違った画風の作品を創ることができ、自分の表現の幅が大きく広がった時期として印象に残っています。
+                        </p>
+                      </>
+                    )}
+
                     {/* その他の場所 - 汎用的な説明 */}
                     {![
                       "hiroshima",
@@ -443,6 +467,8 @@ const Exhibition = () => {
                       "tokyo-okubo",
                       "paris",
                       "france-savigny",
+                      "london",
+                      "tokyo-akasaka",
                     ].includes(location.id) && (
                       <>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
