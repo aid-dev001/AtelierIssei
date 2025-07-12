@@ -106,7 +106,7 @@ const locations = [
     label: "パリ第二回",
     year: "2022",
     country: "フランス",
-    description: "パリ中心部での2回目の個展「POKO FACE」シリーズ",
+    description: "コロナ明けの2回目個展を2箇所で開催。フランス人が作品の前で何十分も話し続けるほど大好評",
     images: [
       "/attached_assets/23601.jpg",
       "/attached_assets/23622_0.jpg",
@@ -458,6 +458,18 @@ const Exhibition = () => {
                       </>
                     )}
 
+                    {/* パリ第二回 - 詳細説明 */}
+                    {location.id === "paris-second" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          コロナの影響で個展の機会を逃しましたが、明けて2回目の個展を行うことができました。2回目は2箇所で開催し、このときも大好評でした。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          普段は感情を表に出さず、ほとんど褒めることもしないフランス人ですが、作品の前では興奮気味になります。絵について感じたことを何十分も、1時間も話してくれる方もいます。それだけ感じてもらえることは嬉しいです。
+                        </p>
+                      </>
+                    )}
+
                     {/* その他の場所 - 汎用的な説明 */}
                     {![
                       "hiroshima",
@@ -469,6 +481,7 @@ const Exhibition = () => {
                       "france-savigny",
                       "london",
                       "tokyo-akasaka",
+                      "paris-second",
                     ].includes(location.id) && (
                       <>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">

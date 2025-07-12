@@ -606,14 +606,16 @@ const locationsData: Record<string, LocationData> = {
     title: "パリ第二回",
     country: "フランス",
     year: "2022",
-    description: "パリ中心部での2回目の個展「POKO FACE」シリーズ",
-    longDescription: `2019年のパリでの初個展から3年後の2022年、再びパリの中心部で「POKO FACE」シリーズの新作を発表する機会に恵まれました。
+    description: "コロナ明けの2回目個展を2箇所で開催。フランス人が作品の前で何十分も話し続けるほど大好評",
+    longDescription: `2022年、コロナの影響で個展の機会を逃しましたが、明けて2回目の個展を行うことができました。2回目は2箇所で開催し、このときも大好評でした。
 
-    今回の展示会場はパリ市内の白を基調とした明るく開放的なギャラリーで、青い背景に様々な表情を持つカラフルな顔のモチーフを配した作品が、パリの街並みの中で鮮やかに映えました。
+    第一会場「Petite boutique de Charonne」では2022年9月10日〜14日に開催されました。バスティーユ地区の19 Rue Paul Bertにあるこのギャラリーでは、「POKO FACE」シリーズの新作を発表しました。
 
-    ギャラリーのショーウィンドウには特大サイズの「POKO FACE」バナーを掲示し、通りがかりの人々の目を引くディスプレイとなりました。店内では様々なサイズの作品を展示し、オリジナルグッズの販売も行いました。
+    第二会場「Boutique des Arts et Metiers」では2022年9月24日〜27日に開催されました。マレ地区の59 Rue Notre Dame de Nazarethにあるこのギャラリーでも、同様に熱い反響をいただきました。
 
-    前回の個展から時間が経ち、パリのアートシーンにも少しずつ認知されるようになった手応えを感じました。フランス人アートコレクターやギャラリストとの対話を通じて、日本とフランスの文化的な感性の違いや共通点について考える貴重な機会となりました。
+    普段は感情を表に出さず、ほとんど褒めることもしないフランス人ですが、作品の前では興奮気味になります。絵について感じたことを何十分も、1時間も話してくれる方もいます。それだけ感じてもらえることは嬉しいです。
+
+    2箇所のギャラリーでの連続開催により、より多くの方に作品を見ていただくことができ、パリのアートシーンでの認知度も高まりました。フランス人アートコレクターやギャラリストとの深い対話を通じて、日本とフランスの文化的な感性の違いや共通点について考える貴重な機会となりました。
 
     この経験は、国際的なアート活動を継続することの意義と、文化的背景の異なる人々との創造的な対話の重要性を改めて実感させてくれました。`,
     images: [
@@ -1101,7 +1103,121 @@ const LocationDetail: React.FC = () => {
       </div>
 
       {/* Google Map */}
-      {location.googleMapUrl && (
+      {location.id === "paris-second" && (
+        <div className="mt-12">
+          <h3 className="text-2xl font-bold mb-6 text-gray-800">
+            ギャラリー所在地
+          </h3>
+          <div className="space-y-6">
+            {/* 第一会場 */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h4 className="text-lg font-semibold mb-4 text-gray-800">
+                第一会場: Petite boutique de Charonne
+              </h4>
+              <p className="text-sm text-gray-600 mb-4">
+                開催期間: 2022年9月10日〜14日<br />
+                住所: 19 Rue Paul Bert, 75011 Paris
+              </p>
+              <div className="aspect-w-16 aspect-h-9 h-[36rem] rounded-lg overflow-hidden">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2625.2847!2d2.3824404!3d48.8522623!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e6720bcf608ab1%3A0xc5c3334e65233e67!2s19%20Rue%20Paul%20Bert%2C%2075011%20Paris!5e0!3m2!1sja!2sjp!4v1640000000000!5m2!1sja!2sjp"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="rounded-lg"
+                ></iframe>
+              </div>
+              <div className="mt-4">
+                <a
+                  href="https://www.google.com/maps/place/19+Rue+Paul+Bert,+75011+Paris,+%E3%83%95%E3%83%A9%E3%83%B3%E3%82%B9/@48.8522623,2.3846424,17z/data=!3m1!4b1!4m6!3m5!1s0x47e6720bcf608ab1:0xc5c3334e65233e67!8m2!3d48.8522623!4d2.3846424!16s%2Fg%2F11bw3yzmfd?entry=ttu&g_ep=EgoyMDI1MDcwOS4wIKXMDSoASAFQAw%3D%3D"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                  Google Mapで開く
+                </a>
+              </div>
+            </div>
+
+            {/* 第二会場 */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h4 className="text-lg font-semibold mb-4 text-gray-800">
+                第二会場: Boutique des Arts et Metiers
+              </h4>
+              <p className="text-sm text-gray-600 mb-4">
+                開催期間: 2022年9月24日〜27日<br />
+                住所: 59 Rue Notre Dame de Nazareth, 75003 Paris
+              </p>
+              <div className="aspect-w-16 aspect-h-9 h-[36rem] rounded-lg overflow-hidden">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.0195!2d2.3558460!3d48.8677068!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e102494e30b%3A0x310e4fabdd693656!2s59%20Rue%20Notre%20Dame%20de%20Nazareth%2C%2075003%20Paris!5e0!3m2!1sja!2sjp!4v1640000000000!5m2!1sja!2sjp"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="rounded-lg"
+                ></iframe>
+              </div>
+              <div className="mt-4">
+                <a
+                  href="https://www.google.com/maps/place/59+Rue+Notre+Dame+de+Nazareth,+75003+Paris,+%E3%83%95%E3%83%A9%E3%83%B3%E3%82%B9/@48.8644181,2.358046,15.33z/data=!4m6!3m5!1s0x47e66e102494e30b:0x310e4fabdd693656!8m2!3d48.8677068!4d2.356054!16s%2Fg%2F11bw3ys27t?entry=ttu&g_ep=EgoyMDI1MDcwOS4wIKXMDSoASAFQAw%3D%3D"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                  Google Mapで開く
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 他の場所のGoogle Map */}
+      {location.googleMapUrl && location.id !== "paris-second" && (
         <div className="mt-12">
           <h3 className="text-2xl font-bold mb-6 text-gray-800">
             ギャラリー所在地
