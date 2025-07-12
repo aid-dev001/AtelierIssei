@@ -77,7 +77,8 @@ const locations = [
     label: "フランス・サヴィニー地方",
     year: "2019",
     country: "フランス",
-    description: "パリでのファンが招待してくれた地元美術イベント。高校生がひょこあにTシャツでファッションショー",
+    description:
+      "パリでのファンが招待してくれた地元美術イベント。高校生がひょこあにTシャツでファッションショー",
     images: ["/images/s231sa.jpg", "/images/23671.jpg"],
   },
   {
@@ -93,7 +94,8 @@ const locations = [
     label: "東京・赤坂",
     year: "2022",
     country: "日本",
-    description: "3ヶ月で150枚制作。抽象画に加え女の子の絵を描くようになった新画風への転換期",
+    description:
+      "3ヶ月で150枚制作。抽象画に加え女の子の絵を描くようになった新画風への転換期",
     images: [
       "/images/akasaka_1.jpg",
       "/images/akasaka_2.jpg",
@@ -106,7 +108,8 @@ const locations = [
     label: "パリ第二回",
     year: "2022",
     country: "フランス",
-    description: "コロナ明けの2回目個展を2箇所で開催。フランスの方々が作品について深く語ってくださる温かい反応",
+    description:
+      "コロナ明けの2回目個展を2箇所で開催。フランスの方々が作品について深く語ってくださる温かい反応",
     images: [
       "/attached_assets/23601.jpg",
       "/attached_assets/23622_0.jpg",
@@ -138,6 +141,16 @@ const locations = [
     ],
   },
   {
+    id: "normandy",
+    label: "フランス・ノルマンディー",
+    year: "2023",
+    country: "フランス",
+    description: "歴史と自然が織りなす風景からのインスピレーション",
+    images: [
+      "/images/Ludo-mediatheque-Etrepagny-Le-Patio--ML-Vittori-min-1200x900.jpg",
+    ],
+  },
+  {
     id: "tokyo-higashi-shinjuku",
     label: "東京・東新宿",
     year: "2023",
@@ -159,16 +172,6 @@ const locations = [
       "/images/23588.jpg",
       "/images/23571_0.jpg",
       "/images/23590_0 (1).jpg",
-    ],
-  },
-  {
-    id: "normandy",
-    label: "フランス・ノルマンディー",
-    year: "2023",
-    country: "フランス",
-    description: "歴史と自然が織りなす風景からのインスピレーション",
-    images: [
-      "/images/Ludo-mediatheque-Etrepagny-Le-Patio--ML-Vittori-min-1200x900.jpg",
     ],
   },
   {
@@ -441,7 +444,9 @@ const Exhibition = () => {
                           ロンドンで開かれた展覧会に出展する機会をいただきました。歴史と伝統のある芸術都市での展示は、私にとって大変光栄な体験でした。
                         </p>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                          この展覧会での作品が評価され、英国王立美術家協会（Royal Society of British Artists）の名誉会員に招待されました。国際的な芸術界での認知度が高まり、イギリスの芸術コミュニティとの貴重な繋がりを築くことができました。
+                          この展覧会での作品が評価され、英国王立美術家協会（Royal
+                          Society of British
+                          Artists）の名誉会員に招待されました。国際的な芸術界での認知度が高まり、イギリスの芸術コミュニティとの貴重な繋がりを築くことができました。
                         </p>
                       </>
                     )}
@@ -462,10 +467,10 @@ const Exhibition = () => {
                     {location.id === "paris-second" && (
                       <>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                          コロナの影響で個展の機会を逃しましたが、明けて2回目の個展を行うことができました。2回目は2箇所で開催し、このときも温かい反応をいただきました。
+                          コロナの影響で個展の機会を逃しましたが、明けて2回目の個展を行うことができました。2回目は2箇所で開催し、このときも大好評でした。
                         </p>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                          フランスの方々は作品を前にして、深く感じ取ったことを時間をかけて話してくださいます。中には何十分も、時には1時間も作品について語ってくださる方もいらっしゃいます。作品がそれだけ心に響いていることを実感できて、とても嬉しく思います。
+                          フランスの方々は普段はあまり感情を表に出しませんが、作品を前にすると、感情を表に出して深く感じ取ったことを時間をかけて話してくださいます。中には何十分も、時には1時間も作品について語ってくださる方もいらっしゃいます。作品がそれだけ心に響いていることを実感できて、とても嬉しく思います。
                         </p>
                       </>
                     )}
