@@ -62,7 +62,7 @@ const locations = [
     label: "パリ第一回",
     year: "2019",
     country: "フランス",
-    description: "芸術の都で開催した初個展での作品展示",
+    description: "単独の個展では初めての個展。芸術の本場パリで大絶賛を受けた記念すべき展示",
     images: [
       "/images/paris_1.jpg",
       "/images/paris_2.jpg",
