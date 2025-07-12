@@ -214,10 +214,11 @@ const locationsData: Record<string, LocationData> = {
     title: "パリ第一回",
     country: "フランス",
     year: "2019",
-    description: "単独の個展では初めての個展。芸術の本場パリで大絶賛を受けた記念すべき展示",
+    description:
+      "単独の個展では初めての個展。芸術の本場パリで大絶賛を受けた記念すべき展示",
     longDescription: `2019年、私にとって記念すべき初めての単独個展を、芸術の本場パリで開催することができました。パリ11区のバスティーユ広場近くにあるGallery Art.Cでの展示でした。
 
-    この展示では、パリの方々から皆大絶賛をいただき、「C'est magnifique!（セマニフィク！）」や「Très bien!（トレビアン！）」と口々に言われました。展示した作品のポストカードが飛ぶように売れ、絵画も複数点購入していただくことができました。
+    この展示では、パリの方々から皆大絶賛をいただき、「C'est magnifique!（セマニフィク！）素晴らしい！」や「Très bien!（トレビアン！）」「C'est mignon（セミニョン！）かわいい！」と口々に言われました。展示した作品のポストカードが飛ぶように売れ、絵画も複数点購入していただくことができました。
 
     特に印象的だったのは、ギャラリーのオーナーから「30年ギャラリーをやっているけれど、短期間の個展でしかも新人アーティストで絵が売れたのは初めて」と言われたことです。この言葉は、私の作品がパリの芸術界で認められた瞬間として、非常に感慨深いものでした。
 
@@ -226,7 +227,8 @@ const locationsData: Record<string, LocationData> = {
     この成功体験は、私の国際的なアーティスト活動の原点となり、その後のヨーロッパでの展開への大きな自信となりました。パリという芸術の都で認められたことで、自分の作品が持つ普遍的な魅力を確信することができました。
 
     Gallery Art.Cは、パリ11区の芸術地区に位置し、多くの新進アーティストを支援する重要な文化拠点として機能しています。このギャラリーでの展示は、私の作品がヨーロッパの芸術界で認められる第一歩となりました。`,
-    googleMapUrl: "https://www.google.com/maps/place/Gallery+Art.C/@48.8627958,2.3715929,15.28z/data=!4m6!3m5!1s0x47e66df6e7e17e19:0xd9e32fde1323238d!8m2!3d48.8591481!4d2.3819519!16s%2Fg%2F11f1056qcq?entry=ttu&g_ep=EgoyMDI1MDcwOS4wIKXMDSoASAFQAw%3D%3D",
+    googleMapUrl:
+      "https://www.google.com/maps/place/Gallery+Art.C/@48.8627958,2.3715929,15.28z/data=!4m6!3m5!1s0x47e66df6e7e17e19:0xd9e32fde1323238d!8m2!3d48.8591481!4d2.3819519!16s%2Fg%2F11f1056qcq?entry=ttu&g_ep=EgoyMDI1MDcwOS4wIKXMDSoASAFQAw%3D%3D",
     images: [
       { url: "/images/paris_1.jpg", caption: "パリのGallery Art.C外観" },
       {
@@ -271,7 +273,7 @@ const locationsData: Record<string, LocationData> = {
       },
       {
         url: "/images/スクリーンショット 2025-05-25 19.24.12.png",
-        caption: "丘の上からのニース全景",
+        caption: "丘の上から���ニース全景",
       },
     ],
     relatedLocations: [
@@ -386,7 +388,7 @@ const locationsData: Record<string, LocationData> = {
     
     ノルマンディー滞在中、私は特に自然と人間の歴史との関係性に注目しました。エトルタの荘厳な白亜の崖や、オンフルールの絵画的な港町、そしてノルマンディー上陸作戦のビーチなど、時間と記憶が刻まれた風景は、私の作品における「時間」と「記憶」のテーマ探求に深い影響を与えています。
     
-    印象派の画家たちも愛したノルマンディーの光の変化は、特に朝霧や夕暮れ時に独特の雰囲気を醸し出し、色彩と光の表現に関する新たな試みへとつながりました。
+    印象派の画家たちも愛したノルマンディーの光の変化は、特に朝霧や夕暮れ時に独特の雰囲気を醸し出しin�色彩と光の表現に関する新たな試みへとつながりました。
     
     また、地元の人々の日常生活や伝統的な市場の光景、そして季節ごとに変化する農村風景は、「ノスタルジア」と「永続性」についての考察を深める機会となりました。`,
     images: [
@@ -635,17 +637,19 @@ const locationsData: Record<string, LocationData> = {
   // フランス・サヴィニー
   "france-savigny": {
     id: "france-savigny",
-    title: "フランス・サヴィニー",
+    title: "フランス・サヴィニー地方",
     country: "フランス",
-    year: "2022",
-    description: "フランス地方都市でのファッションとアートの融合展示",
-    longDescription: `サヴィニーはフランスの地方都市で、2022年には地域文化の活性化を目的としたアートとファッションの融合イベントが開催されました。
+    year: "2019",
+    description: "パリでのファンが招待してくれた地元美術イベント。高校生がひょこあにTシャツでファッションショー",
+    longDescription: `2019年、パリ第一回個展でファンになってくださった方がイベントに紹介してくださり、フランス・サヴィニー地方の地元美術イベントに出展する機会をいただきました。
 
-    このイベントでは、私のアート作品「POKO FACE」シリーズがファッションデザインに取り入れられ、アパレル製品として展開する特別なコラボレーションが実現しました。ピンク色をベースにした特徴的なTシャツは、シンプルでありながらもインパクトのあるデザインとして来場者の注目を集めました。
+    このイベントは地方都市での文化交流を目的としたもので、パリとは異なる親密な雰囲気の中で開催されました。私の「ひょこあに」シリーズの作品が展示され、地元の方々から温かい反応をいただきました。
 
-    ファッションショーでは、私のデザインを身につけたモデルがランウェイを歩き、アートとファッションの境界を超えた新しい表現の可能性を示しました。また、会場ではアート作品の展示とともに、デザイン製品の販売も行われ、多くの方々がアートを身近に感じる機会となりました。
+    特に印象的だったのは、地元の高校生の子がひょこあにのTシャツを着てファッションショーを行ってくれたことです。とても似合っていて、アートとファッションの融合という新しい表現の可能性を実感できました。
 
-    地方都市での文化イベントという草の根的な取り組みは、大都市のギャラリーとはまた違った親密さと温かみがあり、地域の人々とアーティストの間に直接的な対話が生まれる貴重な場となりました。この経験は、アートの社会的役割とアクセシビリティについて考える重要な機会となりました。`,
+    若い世代がアートを身近に感じ、自分なりの表現として取り入れてくれる姿を見て、アートの持つ普遍的な力と、文化を超えた共感の可能性を改めて感じました。
+
+    地方都市での草の根的な文化活動は、大都市のギャラリーとは違った親密さと温かみがあり、地域の人々とアーティストの間に直接的な対話が生まれる貴重な場となりました。この経験は、アートの社会的役割とアクセシビリティについて考える重要な機会となりました。`,
     images: [
       {
         url: "/attached_assets/s231sa.jpg",
@@ -780,7 +784,7 @@ const locationsData: Record<string, LocationData> = {
     description: "フランス最大の城を描く野外アートプロジェクト",
     longDescription: `2023年、私はシャンボール城を再訪し、この歴史的建造物の壮大な美しさを描く野外アートプロジェクトに参加する機会に恵まれました。
     
-    フランスで最も有名な城のひとつであるシャンボール城は、その壮麗なルネサンス建築と広大な自然公園で知られています。城の周囲に広がる水堀と森林に囲まれた環境は、アーティストにとって格別のインスピレーション源となりました。
+    フランスで最も有名な城のひとつであるシャンボール城は、その壮麗なルネサンス建築と広大な自然公園で知られています。城の周囲に広がる水堀と森林に囲まれた環境は、アーティストにとって格別のインスピレーション源とF��りました。
     
     このプロジェクトでは、城を取り囲む水面に映る城の姿を中心に、建築と自然の調和、そして光と影の表現に焦点を当てました。特に、季節の変わり目である秋の訪れとともに変化する森の色彩と、それを背景にした城の威厳ある姿は、時間と永続性についての考察を深める契機となりました。
     
@@ -1093,11 +1097,13 @@ const LocationDetail: React.FC = () => {
       {/* Google Map */}
       {location.googleMapUrl && (
         <div className="mt-12">
-          <h3 className="text-2xl font-bold mb-6 text-gray-800">ギャラリー所在地</h3>
+          <h3 className="text-2xl font-bold mb-6 text-gray-800">
+            ギャラリー所在地
+          </h3>
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="aspect-w-16 aspect-h-9 h-96 rounded-lg overflow-hidden">
               <iframe
-                src={location.googleMapUrl.replace('/maps/', '/maps/embed?').replace('?', '&')}
+                src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.8919!2d2.3819519!3d48.8591481!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66df6e7e17e19%3A0xd9e32fde1323238d!2sGallery%20Art.C!5e0!3m2!1sja!2sjp!4v1640000000000!5m2!1sja!2sjp`}
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -1114,9 +1120,24 @@ const LocationDetail: React.FC = () => {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
                 </svg>
                 Google Mapで開く
               </a>

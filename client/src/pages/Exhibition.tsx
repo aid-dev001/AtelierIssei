@@ -62,8 +62,10 @@ const locations = [
     label: "パリ第一回",
     year: "2019",
     country: "フランス",
-    description: "単独の個展では初めての個展。芸術の本場パリで大絶賛を受けた記念すべき展示",
-    details: "パリ11区のバスティーユ広場近くにあるGallery Art.Cで開催。パリの方々から「セマニフィク！」「トレビアン！」と絶賛され、ポストカードが飛ぶように売れ、絵画も購入していただきました。ギャラリーオーナーからは「30年やってるけど、短期間の個展でしかも新人アーティストで絵が売れたのは初めて」と言われた、記念すべき成功体験でした。",
+    description:
+      "単独の個展では初めての個展。芸術の本場パリで大絶賛を受けた記念すべき展示",
+    details:
+      "パリ11区のバスティーユ広場近くにあるGallery Art.Cで開催。パリの方々から「セマニフィク！」「トレビアン！」と絶賛され、ポストカードが飛ぶように売れ、絵画も購入していただきました。ギャラリーオーナーからは「30年やってるけど、短期間の個展でしかも新人アーティストで絵が売れたのは初めて」と言われた、記念すべき成功体験でした。",
     images: [
       "/images/paris_1.jpg",
       "/images/paris_2.jpg",
@@ -75,7 +77,7 @@ const locations = [
     label: "フランス・サヴィニー地方",
     year: "2019",
     country: "フランス",
-    description: "フランス地方都市でのファッションとアートの融合展示",
+    description: "パリでのファンが招待してくれた地元美術イベント。高校生がひょこあにTシャツでファッションショー",
     images: ["/images/s231sa.jpg", "/images/23671.jpg"],
   },
   {
@@ -408,10 +410,26 @@ const Exhibition = () => {
                     {location.id === "paris" && (
                       <>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                          パリ11区のバスティーユ広場近くにあるGallery Art.Cで開催。パリの方々から「C'est magnifique!（セマニフィク！）」「Très bien!（トレビアン！）」と絶賛され、ポストカードが飛ぶように売れ、絵画も購入していただきました。
+                          パリ11区のバスティーユ広場近くにあるGallery
+                          Art.Cで開催。パリの方々から「C'est
+                          magnifique!（セマニフィク！）素晴らしい！」「Très
+                          bien!（トレビアン！）」「C'est
+                          mignon（セミニョン！）かわいい！」と絶賛され、ポストカードが飛ぶように売れ、絵画も購入していただきました。
                         </p>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
                           特に印象的だったのは、ギャラリーオーナーから「30年やってるけど、短期間の個展でしかも新人アーティストで絵が売れたのは初めて」と言われたことです。この成功体験が、その後の国際的な展示活動への大きな自信となりました。
+                        </p>
+                      </>
+                    )}
+
+                    {/* フランス・サヴィニー地方 - 詳細説明 */}
+                    {location.id === "france-savigny" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          パリ第一回個展でファンになってくださった方がイベントに紹介してくださり、地元の美術イベントに出展する機会をいただきました。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          このイベントでは、地元の高校生の子がひょこあにのTシャツを着てファッションショーをしてくれました。とても似合っていて、アートとファッションの融合を見ることができ、とても感動しました。地方都市でもアートを通じた新しい表現の可能性を実感できた貴重な体験でした。
                         </p>
                       </>
                     )}
@@ -424,6 +442,7 @@ const Exhibition = () => {
                       "abu-dhabi",
                       "tokyo-okubo",
                       "paris",
+                      "france-savigny",
                     ].includes(location.id) && (
                       <>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
