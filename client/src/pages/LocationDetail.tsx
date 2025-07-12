@@ -1108,7 +1108,7 @@ const LocationDetail: React.FC = () => {
           <h3 className="text-2xl font-bold mb-6 text-gray-800">
             ギャラリー所在地
           </h3>
-          <div className="space-y-6">
+          <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-6">
             {/* 第一会場 */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <h4 className="text-lg font-semibold mb-4 text-gray-800">
