@@ -18,6 +18,7 @@ type LocationData = {
   description: string;
   longDescription: string;
   images: LocationImage[];
+  googleMapUrl?: string;
   relatedLocations?: {
     id: string;
     title: string;
@@ -225,6 +226,7 @@ const locationsData: Record<string, LocationData> = {
     この成功体験は、私の国際的なアーティスト活動の原点となり、その後のヨーロッパでの展開への大きな自信となりました。パリという芸術の都で認められたことで、自分の作品が持つ普遍的な魅力を確信することができました。
 
     Gallery Art.Cは、パリ11区の芸術地区に位置し、多くの新進アーティストを支援する重要な文化拠点として機能しています。このギャラリーでの展示は、私の作品がヨーロッパの芸術界で認められる第一歩となりました。`,
+    googleMapUrl: "https://www.google.com/maps/place/Gallery+Art.C/@48.8627958,2.3715929,15.28z/data=!4m6!3m5!1s0x47e66df6e7e17e19:0xd9e32fde1323238d!8m2!3d48.8591481!4d2.3819519!16s%2Fg%2F11f1056qcq?entry=ttu&g_ep=EgoyMDI1MDcwOS4wIKXMDSoASAFQAw%3D%3D",
     images: [
       { url: "/images/paris_1.jpg", caption: "パリのGallery Art.C外観" },
       {
@@ -1087,6 +1089,41 @@ const LocationDetail: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {/* Google Map */}
+      {location.googleMapUrl && (
+        <div className="mt-12">
+          <h3 className="text-2xl font-bold mb-6 text-gray-800">ギャラリー所在地</h3>
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="aspect-w-16 aspect-h-9 h-96 rounded-lg overflow-hidden">
+              <iframe
+                src={location.googleMapUrl.replace('/maps/', '/maps/embed?').replace('?', '&')}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="rounded-lg"
+              ></iframe>
+            </div>
+            <div className="mt-4">
+              <a
+                href={location.googleMapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Google Mapで開く
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ナビゲーション */}
       <div className="mt-32 border-t pt-16">
