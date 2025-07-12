@@ -117,18 +117,6 @@ const locations = [
     ],
   },
   {
-    id: "spain-casamila",
-    label: "スペイン・カサミラ",
-    year: "2022",
-    country: "スペイン",
-    description: "ガウディ建築の傑作と現代アートの融合",
-    images: [
-      "/images/23624_0.jpg",
-      "/images/23630_0.jpg",
-      "/images/heji3918.jpg",
-    ],
-  },
-  {
     id: "atis-mons",
     label: "アティスモンス",
     year: "2022",
@@ -138,6 +126,18 @@ const locations = [
       "/attached_assets/1928320.png",
       "/attached_assets/23611_0.jpg",
       "/attached_assets/23615_0.jpg",
+    ],
+  },
+  {
+    id: "spain-casamila",
+    label: "スペイン・カサミラ",
+    year: "2022",
+    country: "スペイン",
+    description: "ガウディ建築の傑作と現代アートの融合",
+    images: [
+      "/images/23624_0.jpg",
+      "/images/23630_0.jpg",
+      "/images/heji3918.jpg",
     ],
   },
   {
