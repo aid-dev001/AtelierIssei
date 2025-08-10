@@ -76,7 +76,8 @@ const locationsData: Record<string, LocationData> = {
     title: "東京・赤坂",
     country: "日本",
     year: "2022",
-    description: "3ヶ月で150枚制作。抽象画に加え女の子の絵を描くようになった新画風への転換期",
+    description:
+      "3ヶ月で150枚制作。抽象画に加え女の子の絵を描くようになった新画風への転換期",
     longDescription: `2022年、絵を描く時間が増え、赤坂に部屋を借りて毎日創作に専念していました。この期間は私の創作活動において極めて重要な転換期となりました。
 
     3ヶ月という短期間で150枚の作品を制作し、非常に密度の高い創作活動を行いました。一日数枚のペースで描き続けることで、技法の向上と表現の幅の拡大を同時に実現することができました。
@@ -606,7 +607,8 @@ const locationsData: Record<string, LocationData> = {
     title: "パリ第二回",
     country: "フランス",
     year: "2022",
-    description: "コロナ明けの2回目個展を2箇所で開催。フランスの方々が作品について深く語ってくださる温かい反応",
+    description:
+      "コロナ明けの2回目個展を2箇所で開催。フランスの方々が作品について深く語る情熱的な反応",
     longDescription: `2022年、コロナの影響で個展の機会を逃しましたが、明けて2回目の個展を行うことができました。2回目は2箇所で開催し、このときも温かい反応をいただきました。
 
     第一会場「Petite boutique de Charonne」では2022年9月10日〜14日に開催されました。バスティーユ地区の19 Rue Paul Bertにあるこのギャラリーでは、「POKO FACE」シリーズの新作を発表しました。
@@ -648,7 +650,8 @@ const locationsData: Record<string, LocationData> = {
     title: "フランス・サヴィニー地方",
     country: "フランス",
     year: "2019",
-    description: "パリでのファンが招待してくれた地元美術イベント。高校生がひょこあにTシャツでファッションショー",
+    description:
+      "パリでのファンが招待してくれた地元美術イベント。高校生がひょこあにTシャツでファッションショー",
     longDescription: `2019年、パリ第一回個展でファンになってくださった方がイベントに紹介してくださり、フランス・サヴィニー地方の地元美術イベントに出展する機会をいただきました。
 
     このイベントは地方都市での文化交流を目的としたもので、パリとは異なる親密な雰囲気の中で開催されました。私の「ひょこあに」シリーズの作品が展示され、地元の方々から温かい反応をいただきました。
@@ -1115,7 +1118,8 @@ const LocationDetail: React.FC = () => {
                 第一会場: Petite boutique de Charonne
               </h4>
               <p className="text-sm text-gray-600 mb-4">
-                開催期間: 2022年9月10日〜14日<br />
+                開催期間: 2022年9月10日〜14日
+                <br />
                 住所: 19 Rue Paul Bert, 75011 Paris
               </p>
               <div className="aspect-w-16 aspect-h-9 h-[36rem] rounded-lg overflow-hidden">
@@ -1167,7 +1171,8 @@ const LocationDetail: React.FC = () => {
                 第二会場: Boutique des Arts et Metiers
               </h4>
               <p className="text-sm text-gray-600 mb-4">
-                開催期間: 2022年9月24日〜27日<br />
+                開催期間: 2022年9月24日〜27日
+                <br />
                 住所: 59 Rue Notre Dame de Nazareth, 75003 Paris
               </p>
               <div className="aspect-w-16 aspect-h-9 h-[36rem] rounded-lg overflow-hidden">
