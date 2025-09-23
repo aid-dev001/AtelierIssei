@@ -238,7 +238,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     }
   });
 
-  // Generate description using OpenAI
+  // Upload image without AI description generation
   app.post(`/admin/${ADMIN_URL_PATH}/generate-description`, requireAdmin, upload.single('image'), async (req, res) => {
     try {
       if (!req.file) {
@@ -252,45 +252,20 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
 
       // 画像の公開URLを生成
       const imageUrl = `/artworks/${req.file.filename}`;
-      console.log('Generating description for image:', imageUrl);
+      console.log('Image uploaded successfully:', imageUrl);
 
-      // OpenAI APIを使用して説明を生成
-      try {
-        // 画像のフルURLを生成
-        const imageFullUrl = `${req.protocol}://${req.get('host')}${imageUrl}`;
-        console.log('Attempting to generate description for image:', imageFullUrl);
-
-        const { title, description } = await generateArtworkDescription(imageFullUrl);
-        console.log('Successfully generated description:', { title, description });
-
-        if (!title || !description) {
-          throw new Error('タイトルまたは説明文の生成に失敗しました');
-        }
-
-        res.json({ 
-          success: true,
-          title, 
-          description,
-          imageUrl 
-        });
-      } catch (error) {
-        console.error('Error in description generation:', error);
-        const isOpenAIError = error instanceof Error && error.message.includes('OpenAI');
-        
-        res.status(isOpenAIError ? 422 : 500).json({ 
-          error: isOpenAIError ? "説明文の生成に失敗しました" : "サーバーエラーが発生しました",
-          details: error instanceof Error ? error.message : "不明なエラー",
-          imageUrl: req.file ? `/artworks/${req.file.filename}` : undefined
-        });
-      }
+      // OpenAI API呼び出しをスキップし、空のタイトルと説明文を返す
+      res.json({ 
+        success: true,
+        title: "", 
+        description: "",
+        imageUrl 
+      });
     } catch (error) {
-      console.error("Error in generate-description:", error);
-      const isOpenAIError = error instanceof Error && error.message.includes('OpenAI');
-      
-      res.status(isOpenAIError ? 422 : 500).json({ 
-        error: isOpenAIError ? "説明文の生成に失敗しました" : "サーバーエラーが発生しました",
-        details: error instanceof Error ? error.message : "不明なエラー",
-        imageUrl: req.file ? `/artworks/${req.file.filename}` : undefined
+      console.error("Error in image upload:", error);
+      res.status(500).json({ 
+        error: "画像のアップロードに失敗しました",
+        details: error instanceof Error ? error.message : "不明なエラー"
       });
     }
   });
