@@ -1068,7 +1068,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         <Input
           id="createdLocation"
           name="createdLocation"
-          defaultValue={selectedArtwork?.createdLocation || '銀座'}
+          defaultValue={selectedArtwork?.createdLocation || ''}
           required
         />
       </div>
@@ -1077,7 +1077,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         <Input
           id="storedLocation"
           name="storedLocation"
-          defaultValue={selectedArtwork?.storedLocation || '銀座'}
+          defaultValue={selectedArtwork?.storedLocation || ''}
           required
         />
       </div>
@@ -1125,9 +1125,6 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
                 }}
                 className="resize-none"
                 rows={4}
-                onFocus={e => {
-                  e.currentTarget.parentElement?.scrollIntoView({ behavior: 'smooth' });
-                }}
               />
             </div>
           </div>
