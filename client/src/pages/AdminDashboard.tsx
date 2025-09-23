@@ -462,7 +462,7 @@ const deleteExhibitionMutation = useMutation({
 
       toast({
         title: "画像をアップロード中...",
-        description: "AIによる説明文の生成を開始します",
+        description: "画像をサーバーにアップロードしています",
       });
 
       const formData = new FormData();
@@ -486,15 +486,15 @@ const deleteExhibitionMutation = useMutation({
         throw new Error(data.error || '画像のアップロードに失敗しました');
       }
 
-      if (!data.imageUrl || !data.title || !data.description) {
-        throw new Error('画像のアップロードまたは説明文の生成に失敗しました');
+      if (!data.imageUrl) {
+        throw new Error('画像のアップロードに失敗しました');
       }
 
       // 状態を更新
       setImageData({
         url: data.imageUrl,
-        generatedTitle: data.title,
-        generatedDescription: data.description,
+        generatedTitle: data.title || "",
+        generatedDescription: data.description || "",
       });
 
       // 編集モードの場合は選択された作品の情報も更新
@@ -504,15 +504,15 @@ const deleteExhibitionMutation = useMutation({
           return {
             ...prev,
             imageUrl: data.imageUrl,
-            title: data.title,
-            description: data.description,
+            title: data.title || prev.title,
+            description: data.description || prev.description,
           };
         });
       }
 
       toast({
-        title: "作品の説明を生成しました",
-        description: "生成されたタイトルと説明文を確認・編集してください",
+        title: "画像のアップロードが完了しました",
+        description: "タイトルと説明文を手動で入力してください",
       });
     } catch (error) {
       console.error('Error uploading file:', error);
