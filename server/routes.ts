@@ -296,6 +296,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         imageUrl: req.body.imageUrl || imageUrl,
         interiorImageDescriptions: interiorDescriptions,
         collectionId: req.body.collectionId ? parseInt(req.body.collectionId) : null,
+        creationYear: req.body.creationYear ? parseInt(req.body.creationYear) : null,
         updatedAt: new Date(),
       };
 
@@ -350,6 +351,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         exhibitionLocation: updateData.exhibitionLocation || null,
         isAvailable: updateData.isAvailable,
         collectionId: updateData.collectionId,
+        creationYear: updateData.creationYear ? parseInt(updateData.creationYear) : null,
         interiorImageDescriptions: Array.isArray(updateData.interiorImageDescriptions) 
           ? updateData.interiorImageDescriptions 
           : [],
