@@ -278,6 +278,12 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
       }
 
       const imageUrl = `/artworks/${req.file.filename}`;
+      
+      // インテリアイメージの説明文を処理
+      const interiorDesc1 = req.body['interior-desc-1'] || '';
+      const interiorDesc2 = req.body['interior-desc-2'] || '';
+      const interiorDescriptions = [interiorDesc1, interiorDesc2].filter(desc => desc !== '');
+
       const artworkData = {
         title: req.body.title,
         description: req.body.description,
@@ -287,6 +293,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         createdLocation: req.body.createdLocation,
         storedLocation: req.body.storedLocation,
         imageUrl: req.body.imageUrl || imageUrl,
+        interiorImageDescriptions: interiorDescriptions,
         updatedAt: new Date(),
       };
 
