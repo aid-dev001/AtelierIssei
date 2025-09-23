@@ -295,6 +295,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         storedLocation: req.body.storedLocation,
         imageUrl: req.body.imageUrl || imageUrl,
         interiorImageDescriptions: interiorDescriptions,
+        collectionId: req.body.collectionId ? parseInt(req.body.collectionId) : null,
         updatedAt: new Date(),
       };
 
