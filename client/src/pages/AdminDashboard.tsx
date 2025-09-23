@@ -964,7 +964,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         <Dropzone
           existingImageUrl={imageData.url || selectedArtwork?.imageUrl}
           onFileChange={handleFileChange}
-          className="w-full mx-auto h-96"
+          className="w-full mx-auto h-56"
           maxHeightClass="max-h-[40%]"
         />
       </div>
