@@ -284,6 +284,27 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
       const interiorDesc2 = req.body['interior-desc-2'] || '';
       const interiorDescriptions = [interiorDesc1, interiorDesc2];
 
+      let createdAt = new Date();
+      let updatedAt = new Date();
+
+      // Handle different creation position options
+      if (req.body.createPosition === "last") {
+        // Create at the last position - set timestamps to older than the oldest artwork
+        const oldestArtwork = await db.query.artworks.findFirst({
+          orderBy: asc(artworks.updatedAt),
+        });
+        
+        if (oldestArtwork) {
+          const oldestDate = new Date(oldestArtwork.updatedAt);
+          createdAt = new Date(oldestDate.getTime() - 24 * 60 * 60 * 1000); // 1 day earlier
+          updatedAt = new Date(oldestDate.getTime() - 24 * 60 * 60 * 1000);
+        } else {
+          createdAt = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000); // 1 year ago
+          updatedAt = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000);
+        }
+      }
+      // Default behavior: create at latest position (current timestamps)
+
       const artworkData = {
         title: req.body.title,
         description: req.body.description,
@@ -297,7 +318,8 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         interiorImageDescriptions: interiorDescriptions,
         collectionId: req.body.collectionId ? parseInt(req.body.collectionId) : null,
         creationYear: req.body.creationYear ? parseInt(req.body.creationYear) : null,
-        updatedAt: new Date(),
+        createdAt: createdAt,
+        updatedAt: updatedAt,
       };
 
       await db.insert(artworks).values(artworkData);

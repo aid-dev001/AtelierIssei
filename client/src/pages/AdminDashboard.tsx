@@ -181,7 +181,40 @@ const deleteExhibitionMutation = useMutation({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`${adminPath}/artworks`] });
-      toast({ title: "作品を追加しました" });
+      toast({ title: "作品を追加しました（最新位置に作成）" });
+      setIsEditDialogOpen(false);
+      setSelectedArtwork(null);
+      setImageData({
+        url: '',
+        generatedTitle: '',
+        generatedDescription: '',
+      });
+    },
+    onError: (error) => {
+      toast({ 
+        variant: "destructive", 
+        title: "作品の追加に失敗しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
+      });
+    },
+  });
+
+  const createArtworkLastPositionMutation = useMutation({
+    mutationFn: async (artworkData: FormData) => {
+      artworkData.append('createPosition', 'last');
+      const response = await fetch(`${adminPath}/artworks`, {
+        method: 'POST',
+        body: artworkData,
+      });
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error || 'Failed to create artwork');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`${adminPath}/artworks`] });
+      toast({ title: "作品を追加しました（一番後ろの位置に作成）" });
       setIsEditDialogOpen(false);
       setSelectedArtwork(null);
       setImageData({
@@ -350,10 +383,11 @@ const deleteExhibitionMutation = useMutation({
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleCreateClick = async (createPosition: "latest" | "last") => {
     try {
-      const form = e.currentTarget;
+      const form = document.querySelector('#artwork-form') as HTMLFormElement;
+      if (!form) return;
+
       const formData = new FormData(form);
 
       // 必須フィールドの検証
@@ -369,48 +403,67 @@ const deleteExhibitionMutation = useMutation({
         return;
       }
 
+      if (!imageData.url) {
+        toast({
+          variant: "destructive",
+          title: "画像をアップロードしてください",
+        });
+        return;
+      }
+
+      // 画像データを追加
+      try {
+        const imageResponse = await fetch(imageData.url);
+        const imageBlob = await imageResponse.blob();
+        formData.append('image', imageBlob);
+        
+        console.log('Submitting artwork with data:', {
+          title,
+          description,
+          imageUrl: imageData.url,
+          createPosition
+        });
+
+        if (createPosition === "latest") {
+          await createArtworkMutation.mutateAsync(formData);
+        } else {
+          await createArtworkLastPositionMutation.mutateAsync(formData);
+        }
+        
+        // 成功後にフォームをリセット
+        setImageData({
+          url: '',
+          generatedTitle: '',
+          generatedDescription: '',
+        });
+        setIsEditDialogOpen(false);
+      } catch (imageError) {
+        console.error('Error processing image:', imageError);
+        toast({
+          variant: "destructive",
+          title: "画像の処理に失敗しました",
+          description: imageError instanceof Error ? imageError.message : "予期せぬエラーが発生しました",
+        });
+      }
+    } catch (error) {
+      console.error('Create error:', error);
+      toast({
+        variant: "destructive",
+        title: "エラーが発生しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+      });
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
       if (selectedArtwork) {
         // 更新の場合は新しいハンドラーを使用（デフォルトで最新位置に移動）
         await handleUpdateClick("latest");
       } else {
-        // 新規作成の場合
-        if (!imageData.url) {
-          toast({
-            variant: "destructive",
-            title: "画像をアップロードしてください",
-          });
-          return;
-        }
-
-        // 画像データを追加
-        try {
-          const imageResponse = await fetch(imageData.url);
-          const imageBlob = await imageResponse.blob();
-          formData.append('image', imageBlob);
-          
-          console.log('Submitting artwork with data:', {
-            title,
-            description,
-            imageUrl: imageData.url,
-          });
-
-          await createArtworkMutation.mutateAsync(formData);
-          
-          // 成功後にフォームをリセット
-          setImageData({
-            url: '',
-            generatedTitle: '',
-            generatedDescription: '',
-          });
-          setIsEditDialogOpen(false);
-        } catch (imageError) {
-          console.error('Error processing image:', imageError);
-          toast({
-            variant: "destructive",
-            title: "画像の処理に失敗しました",
-            description: imageError instanceof Error ? imageError.message : "予期せぬエラーが発生しました",
-          });
-        }
+        // 新規作成の場合はhandleCreateClickを使用（デフォルトで最新位置に作成）
+        await handleCreateClick("latest");
       }
     } catch (error) {
       console.error('Form submission error:', error);
@@ -1233,35 +1286,49 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         </select>
       </div>
       {selectedArtwork ? (
-        <div className="space-y-3">
+        <div className="flex gap-2">
+          <Button 
+            type="button" 
+            onClick={() => handleUpdateClick("latest")} 
+            className="flex-1"
+          >
+            最新の位置で更新
+          </Button>
           <Button 
             type="button" 
             onClick={() => handleUpdateClick("same")} 
-            className="w-full"
+            className="flex-1"
             variant="outline"
           >
             同じ位置で更新
           </Button>
           <Button 
             type="button" 
-            onClick={() => handleUpdateClick("latest")} 
-            className="w-full"
-          >
-            最新の位置で更新
-          </Button>
-          <Button 
-            type="button" 
             onClick={() => handleUpdateClick("last")} 
-            className="w-full"
+            className="flex-1"
             variant="secondary"
           >
             一番後ろの位置で更新
           </Button>
         </div>
       ) : (
-        <Button type="submit" className="w-full">
-          作成
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            type="button" 
+            onClick={() => handleCreateClick("latest")} 
+            className="flex-1"
+          >
+            最新の位置に作成
+          </Button>
+          <Button 
+            type="button" 
+            onClick={() => handleCreateClick("last")} 
+            className="flex-1"
+            variant="secondary"
+          >
+            一番後ろの位置で作成
+          </Button>
+        </div>
       )}
     </form>
   );
