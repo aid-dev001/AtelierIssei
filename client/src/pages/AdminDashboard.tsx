@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, memo } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { PenLine, Trash2, Wand2, Loader2 } from "lucide-react";
 import {
@@ -112,60 +112,6 @@ const deleteExhibitionMutation = useMutation({
     generatedTitle: '',
     generatedDescription: '',
   });
-  
-  // フォーム値の状態管理
-  const [formValues, setFormValues] = useState({
-    title: '',
-    description: '',
-    price: '',
-    size: '',
-    creationYear: '',
-    createdLocation: '',
-    storedLocation: '',
-    exhibitionLocation: '',
-    purchaser: '',
-    status: 'available',
-    collectionId: '',
-  });
-
-  // 編集モードまたは画像データの変更時にフォーム値を更新
-  useEffect(() => {
-    if (selectedArtwork) {
-      setFormValues({
-        title: selectedArtwork.title || '',
-        description: selectedArtwork.description || '',
-        price: selectedArtwork.price || '',
-        size: selectedArtwork.size || '',
-        creationYear: (selectedArtwork as any).creationYear?.toString() || '',
-        createdLocation: selectedArtwork.createdLocation || '',
-        storedLocation: selectedArtwork.storedLocation || '',
-        exhibitionLocation: selectedArtwork.exhibitionLocation || '',
-        purchaser: (selectedArtwork as any).purchaser || '',
-        status: selectedArtwork.status || 'available',
-        collectionId: selectedArtwork.collectionId?.toString() || '',
-      });
-    } else {
-      // 新規作成時は画像データから値を設定、既存の入力があればそれを優先
-      setFormValues(prev => ({
-        title: imageData.generatedTitle || prev.title,
-        description: imageData.generatedDescription || prev.description,
-        price: '',
-        size: '',
-        creationYear: '',
-        createdLocation: '',
-        storedLocation: '',
-        exhibitionLocation: '',
-        purchaser: '',
-        status: 'available',
-        collectionId: '',
-      }));
-    }
-  }, [selectedArtwork, imageData]);
-
-  // フォーム変更ハンドラーをメモ化
-  const handleFormValueChange = useCallback((field: string, value: string) => {
-    setFormValues(prev => ({ ...prev, [field]: value }));
-  }, []);
 
   // Collections data
   const { data: collections } = useQuery({
@@ -1154,7 +1100,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
     );
   };
 
-  const ArtworkForm = memo(() => (
+  const ArtworkForm = () => (
     <form 
       id="artwork-form"
       key={selectedArtwork ? `edit-${selectedArtwork.id}` : 'new-artwork'}
@@ -1178,8 +1124,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         <Input
           id="title"
           name="title"
-          value={formValues.title}
-          onChange={(e) => handleFormValueChange('title', e.target.value)}
+          defaultValue={selectedArtwork?.title || imageData.generatedTitle}
           required
         />
       </div>
@@ -1188,8 +1133,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         <Textarea
           id="description"
           name="description"
-          value={formValues.description}
-          onChange={(e) => handleFormValueChange('description', e.target.value)}
+          defaultValue={selectedArtwork?.description || imageData.generatedDescription}
           required
         />
       </div>
@@ -1347,7 +1291,6 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
             type="button" 
             onClick={() => handleUpdateClick("latest")} 
             className="flex-1"
-            variant="outline"
           >
             最新の位置で更新
           </Button>
@@ -1355,7 +1298,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
             type="button" 
             onClick={() => handleUpdateClick("same")} 
             className="flex-1"
-            variant="default"
+            variant="outline"
           >
             同じ位置で更新
           </Button>
@@ -1388,7 +1331,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         </div>
       )}
     </form>
-  ));
+  );
 
   if (isLoading) {
     return <div>Loading...</div>;
