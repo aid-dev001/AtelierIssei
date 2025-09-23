@@ -26,6 +26,7 @@ export const artworks = pgTable("artworks", {
   interiorImageDescriptions: text("interior_image_descriptions").array().notNull().default(['', '']),
   isAvailable: boolean("is_available").default(true).notNull(),
   collectionId: integer("collection_id").references(() => collections.id),
+  creationYear: integer("creation_year"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
