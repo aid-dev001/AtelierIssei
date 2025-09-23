@@ -965,6 +965,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
           existingImageUrl={imageData.url || selectedArtwork?.imageUrl}
           onFileChange={handleFileChange}
           className="w-full mx-auto"
+          maxHeightClass="max-h-[80%]"
         />
       </div>
       <div className="space-y-2">

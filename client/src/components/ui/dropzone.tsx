@@ -6,10 +6,11 @@ import { UploadCloud } from "lucide-react";
 export interface DropzoneProps extends React.HTMLAttributes<HTMLDivElement> {
   onFileChange: (file: File) => void;
   existingImageUrl?: string;
+  maxHeightClass?: string;
 }
 
 const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
-  ({ className, onFileChange, existingImageUrl, ...props }, ref) => {
+  ({ className, onFileChange, existingImageUrl, maxHeightClass = "max-h-[90%]", ...props }, ref) => {
     const { toast } = useToast();
     const [isDragging, setIsDragging] = React.useState(false);
     const [preview, setPreview] = React.useState<string | null>(existingImageUrl || null);
@@ -127,7 +128,7 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
             <img
               src={preview}
               alt="Preview"
-              className="max-w-full max-h-[90%] object-contain dropzone-preview rounded"
+              className={`max-w-full ${maxHeightClass} object-contain dropzone-preview rounded`}
             />
             <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity hover:opacity-100 rounded-lg">
               <p className="text-sm text-white">クリックまたはドラッグ＆ドロップで画像を変更</p>

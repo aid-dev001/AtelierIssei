@@ -27,7 +27,7 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
         </Link>
         <div className="absolute top-4 right-4 flex flex-col gap-2">
           <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium">
-            {artwork.status === 'sold' ? 'SOLD' : 
+            {artwork.status === 'sold' ? '売約済' : 
              artwork.status === 'reserved' ? '予約済' :
              artwork.status === 'preparation' ? '準備中' :
              '販売中'}

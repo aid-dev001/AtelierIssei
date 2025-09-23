@@ -121,7 +121,7 @@ const ArtworkDetail = () => {
                       artwork.status === 'reserved' ? 'text-neutral-800' :
                       artwork.status === 'preparation' ? 'text-neutral-700' : 'text-neutral-700'
                     }`}>
-                      {artwork.status === 'sold' ? 'SOLD OUT' : 
+                      {artwork.status === 'sold' ? '売約済' : 
                        artwork.status === 'reserved' ? '予約済み' :
                        artwork.status === 'preparation' ? '準備中' : '販売中'}
                     </div>
