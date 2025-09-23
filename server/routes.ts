@@ -17,7 +17,7 @@ import {
   collections,
   voices,
 } from "@db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, asc } from "drizzle-orm";
 
 // Configure multer for handling file uploads
 const storage = multer.diskStorage({
@@ -357,10 +357,24 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
           : [],
       };
 
-      // Only update updatedAt if updatePosition is true (default) or not specified
-      if (updateData.updatePosition !== false) {
+      // Handle different update position options
+      if (updateData.updatePosition === "last") {
+        // Move to the last position - set updatedAt to older than the oldest artwork
+        const oldestArtwork = await db.query.artworks.findFirst({
+          orderBy: asc(artworks.updatedAt),
+        });
+        
+        if (oldestArtwork) {
+          const oldestDate = new Date(oldestArtwork.updatedAt);
+          cleanedData.updatedAt = new Date(oldestDate.getTime() - 24 * 60 * 60 * 1000); // 1 day earlier
+        } else {
+          cleanedData.updatedAt = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000); // 1 year ago
+        }
+      } else if (updateData.updatePosition !== false) {
+        // Default behavior: move to latest position
         cleanedData.updatedAt = new Date();
       }
+      // If updatePosition is false, don't update updatedAt (keep same position)
 
       // Handle interiorImageUrls separately
       if (updateData.interiorImageUrls !== undefined) {

@@ -243,6 +243,28 @@ const deleteExhibitionMutation = useMutation({
     },
   });
 
+  const updateArtworkLastPositionMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+      const response = await fetch(`${adminPath}/artworks/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...data, updatePosition: "last" }),
+      });
+      if (!response.ok) throw new Error('Failed to update artwork');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`${adminPath}/artworks`] });
+      toast({ title: "作品を更新しました（一番後ろの位置に移動）" });
+      setIsEditDialogOpen(false);
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "作品の更新に失敗しました" });
+    },
+  });
+
   const deleteArtworkMutation = useMutation({
     mutationFn: async (artworkId: number) => {
       const response = await fetch(`${adminPath}/artworks/${artworkId}`, {
@@ -259,7 +281,7 @@ const deleteExhibitionMutation = useMutation({
     },
   });
 
-  const handleUpdateClick = async (updateToLatestPosition: boolean) => {
+  const handleUpdateClick = async (updatePosition: "same" | "latest" | "last") => {
     try {
       if (!selectedArtwork) return;
 
@@ -302,13 +324,18 @@ const deleteExhibitionMutation = useMutation({
         purchaser: formData.get('purchaser') as string || null,
       };
       
-      if (updateToLatestPosition) {
+      if (updatePosition === "latest") {
         await updateArtworkMutation.mutateAsync({
           id: selectedArtwork.id,
           data: updateData,
         });
-      } else {
+      } else if (updatePosition === "same") {
         await updateArtworkSamePositionMutation.mutateAsync({
+          id: selectedArtwork.id,
+          data: updateData,
+        });
+      } else if (updatePosition === "last") {
+        await updateArtworkLastPositionMutation.mutateAsync({
           id: selectedArtwork.id,
           data: updateData,
         });
@@ -344,7 +371,7 @@ const deleteExhibitionMutation = useMutation({
 
       if (selectedArtwork) {
         // 更新の場合は新しいハンドラーを使用（デフォルトで最新位置に移動）
-        await handleUpdateClick(true);
+        await handleUpdateClick("latest");
       } else {
         // 新規作成の場合
         if (!imageData.url) {
@@ -1209,7 +1236,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         <div className="space-y-3">
           <Button 
             type="button" 
-            onClick={() => handleUpdateClick(false)} 
+            onClick={() => handleUpdateClick("same")} 
             className="w-full"
             variant="outline"
           >
@@ -1217,10 +1244,18 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
           </Button>
           <Button 
             type="button" 
-            onClick={() => handleUpdateClick(true)} 
+            onClick={() => handleUpdateClick("latest")} 
             className="w-full"
           >
             最新の位置で更新
+          </Button>
+          <Button 
+            type="button" 
+            onClick={() => handleUpdateClick("last")} 
+            className="w-full"
+            variant="secondary"
+          >
+            一番後ろの位置で更新
           </Button>
         </div>
       ) : (

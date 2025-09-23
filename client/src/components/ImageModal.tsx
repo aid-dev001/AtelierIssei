@@ -38,7 +38,7 @@ const ImageModal: React.FC<ImageModalProps> = ({
         <img
           src={imageUrl}
           alt={caption || "拡大画像"}
-          className="max-w-full max-h-[85vh] md:max-h-[70vh] object-contain rounded-lg"
+          className="max-w-full max-h-[60vh] object-contain rounded-lg"
           onError={(e) => {
             const img = e.target as HTMLImageElement;
             img.onerror = null;
