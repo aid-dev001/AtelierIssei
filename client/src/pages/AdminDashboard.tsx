@@ -1290,15 +1290,14 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
           <Button 
             type="button" 
             onClick={() => handleUpdateClick("latest")} 
-            className="flex-1"
+            className="flex-1 bg-white text-black border hover:bg-gray-50"
           >
             最新の位置で更新
           </Button>
           <Button 
             type="button" 
             onClick={() => handleUpdateClick("same")} 
-            className="flex-1"
-            variant="outline"
+            className="flex-1 bg-gray-800 text-white hover:bg-gray-900"
           >
             同じ位置で更新
           </Button>
