@@ -1017,6 +1017,18 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         />
       </div>
       <div className="space-y-2">
+        <Label htmlFor="creationYear">制作年</Label>
+        <Input
+          id="creationYear"
+          name="creationYear"
+          type="number"
+          min="1900"
+          max="2100"
+          defaultValue={selectedArtwork?.creationYear?.toString() || ''}
+          placeholder="例: 2024"
+        />
+      </div>
+      <div className="space-y-2">
         <Label htmlFor="status">ステータス</Label>
         <select
           id="status"
