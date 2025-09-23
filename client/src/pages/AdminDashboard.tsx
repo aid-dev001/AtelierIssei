@@ -529,6 +529,11 @@ const deleteExhibitionMutation = useMutation({
       const interiorDesc1 = formData.get('interior-desc-1') as string || '';
       const interiorDesc2 = formData.get('interior-desc-2') as string || '';
       const interiorDescriptions = [interiorDesc1, interiorDesc2];
+      
+      console.log('Form data debug:');
+      console.log('interior-desc-1:', interiorDesc1);
+      console.log('interior-desc-2:', interiorDesc2);
+      console.log('interiorDescriptions:', interiorDescriptions);
 
       const updatedData = {
         ...selectedArtwork,
@@ -546,6 +551,7 @@ const deleteExhibitionMutation = useMutation({
       };
 
       console.log('Updating artwork with data:', updatedData);
+      console.log('updatedData.interiorImageDescriptions:', updatedData.interiorImageDescriptions);
 
       await updateArtworkMutation.mutateAsync({
         id: selectedArtwork.id,
@@ -1093,12 +1099,11 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
             <Dropzone
               existingImageUrl={selectedArtwork?.interiorImageUrls?.[0]}
               onFileChange={(file) => handleInteriorImageUpload(file, 0)}
-              className="w-full"
+              className="w-full max-h-48"
             />
             <div className="space-y-2">
               <Label htmlFor="interior-desc-1">1枚目の説明文</Label>
               <Textarea
-                key={`interior-desc-1-${selectedArtwork?.id || 'new'}`}
                 id="interior-desc-1"
                 name="interior-desc-1"
                 placeholder="1枚目の説明文を入力してください"
@@ -1114,12 +1119,11 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
             <Dropzone
               existingImageUrl={selectedArtwork?.interiorImageUrls?.[1]}
               onFileChange={(file) => handleInteriorImageUpload(file, 1)}
-              className="w-full"
+              className="w-full max-h-48"
             />
             <div className="space-y-2">
               <Label htmlFor="interior-desc-2">2枚目の説明文</Label>
               <Textarea
-                key={`interior-desc-2-${selectedArtwork?.id || 'new'}`}
                 id="interior-desc-2"
                 name="interior-desc-2"
                 placeholder="2枚目の説明文を入力してください"
