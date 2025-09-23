@@ -49,8 +49,15 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
               保管: {artwork.storedLocation || '銀座'}
             </div>
           </div>
-          <div className="bg-white/90 px-2 py-0.5 rounded text-sm font-medium min-w-0 w-fit">
-            {artwork.size?.split('(')[0] || 'F4'}
+          <div className="flex gap-2">
+            <div className="bg-white/90 px-2 py-0.5 rounded text-sm font-medium min-w-0 w-fit">
+              {artwork.size?.split('(')[0] || 'F4'}
+            </div>
+            {(artwork as any).creationYear && (
+              <div className="bg-white/90 px-2 py-0.5 rounded text-sm font-medium min-w-0 w-fit">
+                {(artwork as any).creationYear}年
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
