@@ -1099,7 +1099,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
             <Dropzone
               existingImageUrl={selectedArtwork?.interiorImageUrls?.[0]}
               onFileChange={(file) => handleInteriorImageUpload(file, 0)}
-              className="w-full max-h-48"
+              className="w-full h-48"
             />
             <div className="space-y-2">
               <Label htmlFor="interior-desc-1">1枚目の説明文</Label>
@@ -1119,7 +1119,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
             <Dropzone
               existingImageUrl={selectedArtwork?.interiorImageUrls?.[1]}
               onFileChange={(file) => handleInteriorImageUpload(file, 1)}
-              className="w-full max-h-48"
+              className="w-full h-48"
             />
             <div className="space-y-2">
               <Label htmlFor="interior-desc-2">2枚目の説明文</Label>
