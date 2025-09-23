@@ -1347,6 +1347,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
             type="button" 
             onClick={() => handleUpdateClick("latest")} 
             className="flex-1"
+            variant="outline"
           >
             最新の位置で更新
           </Button>
