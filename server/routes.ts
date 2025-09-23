@@ -355,8 +355,12 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         interiorImageDescriptions: Array.isArray(updateData.interiorImageDescriptions) 
           ? updateData.interiorImageDescriptions 
           : [],
-        updatedAt: new Date(),
       };
+
+      // Only update updatedAt if updatePosition is true (default) or not specified
+      if (updateData.updatePosition !== false) {
+        cleanedData.updatedAt = new Date();
+      }
 
       // Handle interiorImageUrls separately
       if (updateData.interiorImageUrls !== undefined) {

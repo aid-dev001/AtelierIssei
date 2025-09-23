@@ -206,14 +206,36 @@ const deleteExhibitionMutation = useMutation({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, updatePosition: true }),
       });
       if (!response.ok) throw new Error('Failed to update artwork');
       return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`${adminPath}/artworks`] });
-      toast({ title: "作品を更新しました" });
+      toast({ title: "作品を更新しました（最新位置に移動）" });
+      setIsEditDialogOpen(false);
+    },
+    onError: () => {
+      toast({ variant: "destructive", title: "作品の更新に失敗しました" });
+    },
+  });
+
+  const updateArtworkSamePositionMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+      const response = await fetch(`${adminPath}/artworks/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...data, updatePosition: false }),
+      });
+      if (!response.ok) throw new Error('Failed to update artwork');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`${adminPath}/artworks`] });
+      toast({ title: "作品を更新しました（同じ位置を保持）" });
       setIsEditDialogOpen(false);
     },
     onError: () => {
@@ -237,6 +259,70 @@ const deleteExhibitionMutation = useMutation({
     },
   });
 
+  const handleUpdateClick = async (updateToLatestPosition: boolean) => {
+    try {
+      if (!selectedArtwork) return;
+
+      const form = document.querySelector('#artwork-form') as HTMLFormElement;
+      if (!form) return;
+
+      const formData = new FormData(form);
+
+      // 必須フィールドの検証
+      const title = formData.get('title') as string;
+      const description = formData.get('description') as string;
+      
+      if (!title || !description) {
+        toast({
+          variant: "destructive",
+          title: "必須項目を入力してください",
+          description: "タイトルと説明は必須です",
+        });
+        return;
+      }
+
+      // インテリアイメージの説明文をフォームデータから取得
+      const interiorDesc1 = formData.get('interior-desc-1') as string || '';
+      const interiorDesc2 = formData.get('interior-desc-2') as string || '';
+      const interiorDescriptions = [interiorDesc1, interiorDesc2];
+      
+      const updateData = {
+        title,
+        description,
+        price: formData.get('price') ? parseFloat(formData.get('price') as string) : null,
+        size: formData.get('size') as string,
+        status: formData.get('status') as string,
+        createdLocation: formData.get('createdLocation') as string,
+        storedLocation: formData.get('storedLocation') as string,
+        exhibitionLocation: formData.get('exhibitionLocation') as string,
+        imageUrl: imageData.url || selectedArtwork.imageUrl,
+        collectionId: formData.get('collectionId') ? parseInt(formData.get('collectionId') as string) : null,
+        creationYear: formData.get('creationYear') ? parseInt(formData.get('creationYear') as string) : null,
+        interiorImageDescriptions: interiorDescriptions,
+        purchaser: formData.get('purchaser') as string || null,
+      };
+      
+      if (updateToLatestPosition) {
+        await updateArtworkMutation.mutateAsync({
+          id: selectedArtwork.id,
+          data: updateData,
+        });
+      } else {
+        await updateArtworkSamePositionMutation.mutateAsync({
+          id: selectedArtwork.id,
+          data: updateData,
+        });
+      }
+    } catch (error) {
+      console.error('Update error:', error);
+      toast({
+        variant: "destructive",
+        title: "エラーが発生しました",
+        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
+      });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -257,37 +343,8 @@ const deleteExhibitionMutation = useMutation({
       }
 
       if (selectedArtwork) {
-        // 更新の場合
-        // インテリアイメージの説明文をフォームデータから取得
-        const interiorDesc1 = formData.get('interior-desc-1') as string || '';
-        const interiorDesc2 = formData.get('interior-desc-2') as string || '';
-        const interiorDescriptions = [interiorDesc1, interiorDesc2];
-        
-        console.log('Form data debug:');
-        console.log('interior-desc-1:', interiorDesc1);
-        console.log('interior-desc-2:', interiorDesc2);
-        console.log('interiorDescriptions:', interiorDescriptions);
-        
-        const updateData = {
-          title,
-          description,
-          price: formData.get('price') ? parseFloat(formData.get('price') as string) : null,
-          size: formData.get('size') as string,
-          status: formData.get('status') as string,
-          createdLocation: formData.get('createdLocation') as string,
-          storedLocation: formData.get('storedLocation') as string,
-          exhibitionLocation: formData.get('exhibitionLocation') as string,
-          imageUrl: imageData.url || selectedArtwork.imageUrl,
-          collectionId: formData.get('collectionId') ? parseInt(formData.get('collectionId') as string) : null,
-          creationYear: formData.get('creationYear') ? parseInt(formData.get('creationYear') as string) : null,
-          interiorImageDescriptions: interiorDescriptions,
-          purchaser: formData.get('purchaser') as string || null,
-        };
-        
-        await updateArtworkMutation.mutateAsync({
-          id: selectedArtwork.id,
-          data: updateData,
-        });
+        // 更新の場合は新しいハンドラーを使用（デフォルトで最新位置に移動）
+        await handleUpdateClick(true);
       } else {
         // 新規作成の場合
         if (!imageData.url) {
@@ -965,6 +1022,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
 
   const ArtworkForm = () => (
     <form 
+      id="artwork-form"
       key={selectedArtwork ? `edit-${selectedArtwork.id}` : 'new-artwork'}
       onSubmit={(e) => {
         e.preventDefault();
@@ -1147,9 +1205,29 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
           ))}
         </select>
       </div>
-      <Button type="submit" className="w-full">
-        {selectedArtwork ? '更新' : '作成'}
-      </Button>
+      {selectedArtwork ? (
+        <div className="space-y-3">
+          <Button 
+            type="button" 
+            onClick={() => handleUpdateClick(false)} 
+            className="w-full"
+            variant="outline"
+          >
+            同じ位置で更新
+          </Button>
+          <Button 
+            type="button" 
+            onClick={() => handleUpdateClick(true)} 
+            className="w-full"
+          >
+            最新の位置で更新
+          </Button>
+        </div>
+      ) : (
+        <Button type="submit" className="w-full">
+          作成
+        </Button>
+      )}
     </form>
   );
 
