@@ -461,6 +461,12 @@ const deleteExhibitionMutation = useMutation({
         throw new Error('画像ファイルを選択してください');
       }
 
+      // 現在のフォーム入力値を保持
+      const titleInput = document.getElementById('title') as HTMLInputElement;
+      const descriptionInput = document.getElementById('description') as HTMLTextAreaElement;
+      const currentTitle = titleInput?.value || '';
+      const currentDescription = descriptionInput?.value || '';
+
       toast({
         title: "画像をアップロード中...",
         description: "画像をサーバーにアップロードしています",
@@ -491,22 +497,22 @@ const deleteExhibitionMutation = useMutation({
         throw new Error('画像のアップロードに失敗しました');
       }
 
-      // 状態を更新
+      // 状態を更新（既存の入力値を保持）
       setImageData({
         url: data.imageUrl,
-        generatedTitle: data.title || "",
-        generatedDescription: data.description || "",
+        generatedTitle: currentTitle || data.title || "",
+        generatedDescription: currentDescription || data.description || "",
       });
 
-      // 編集モードの場合は選択された作品の情報も更新
+      // 編集モードの場合は選択された作品の情報も更新（既存の入力値を保持）
       if (selectedArtwork) {
         setSelectedArtwork(prev => {
           if (!prev) return null;
           return {
             ...prev,
             imageUrl: data.imageUrl,
-            title: data.title || prev.title,
-            description: data.description || prev.description,
+            title: currentTitle || prev.title,
+            description: currentDescription || prev.description,
           };
         });
       }
