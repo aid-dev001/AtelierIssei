@@ -282,7 +282,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
       // インテリアイメージの説明文を処理
       const interiorDesc1 = req.body['interior-desc-1'] || '';
       const interiorDesc2 = req.body['interior-desc-2'] || '';
-      const interiorDescriptions = [interiorDesc1, interiorDesc2].filter(desc => desc !== '');
+      const interiorDescriptions = [interiorDesc1, interiorDesc2];
 
       const artworkData = {
         title: req.body.title,

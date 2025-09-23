@@ -127,7 +127,7 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
             <img
               src={preview}
               alt="Preview"
-              className="w-full h-auto object-contain dropzone-preview"
+              className="w-full h-auto max-h-96 object-contain dropzone-preview"
             />
             <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity hover:opacity-100">
               <p className="text-sm text-white">クリックまたはドラッグ＆ドロップで画像を変更</p>
