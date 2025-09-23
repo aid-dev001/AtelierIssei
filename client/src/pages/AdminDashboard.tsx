@@ -1297,7 +1297,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
           <Button 
             type="button" 
             onClick={() => handleUpdateClick("same")} 
-            className="flex-1 bg-gray-800 text-white hover:bg-gray-900"
+            className="flex-1 bg-gray-500 text-white hover:bg-gray-600"
           >
             同じ位置で更新
           </Button>
