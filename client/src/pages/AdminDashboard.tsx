@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, memo } from "react";
 import { useLocation } from "wouter";
 import { PenLine, Trash2, Wand2, Loader2 } from "lucide-react";
 import {
@@ -1154,7 +1154,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
     );
   };
 
-  const ArtworkForm = () => (
+  const ArtworkForm = memo(() => (
     <form 
       id="artwork-form"
       key={selectedArtwork ? `edit-${selectedArtwork.id}` : 'new-artwork'}
@@ -1388,7 +1388,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         </div>
       )}
     </form>
-  );
+  ));
 
   if (isLoading) {
     return <div>Loading...</div>;
