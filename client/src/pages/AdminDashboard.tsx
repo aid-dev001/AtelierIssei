@@ -525,6 +525,11 @@ const deleteExhibitionMutation = useMutation({
       const price = formData.get('price');
       const collectionId = formData.get('collectionId');
 
+      // インテリアイメージの説明文をフォームデータから取得
+      const interiorDesc1 = formData.get('interior-desc-1') as string || '';
+      const interiorDesc2 = formData.get('interior-desc-2') as string || '';
+      const interiorDescriptions = [interiorDesc1, interiorDesc2].filter(desc => desc !== '');
+
       const updatedData = {
         ...selectedArtwork,
         title: formData.get('title') as string,
@@ -536,7 +541,8 @@ const deleteExhibitionMutation = useMutation({
         storedLocation: formData.get('storedLocation') as string,
         exhibitionLocation: formData.get('exhibitionLocation') as string,
         imageUrl: imageData.url || selectedArtwork.imageUrl,
-        collectionId: collectionId ? parseInt(collectionId as string) : null
+        collectionId: collectionId ? parseInt(collectionId as string) : null,
+        interiorImageDescriptions: interiorDescriptions.length > 0 ? interiorDescriptions : []
       };
 
       console.log('Updating artwork with data:', updatedData);
