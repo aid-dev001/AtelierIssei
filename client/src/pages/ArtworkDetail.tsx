@@ -126,6 +126,11 @@ const ArtworkDetail = () => {
                        artwork.status === 'preparation' ? '準備中' : '販売中'}
                     </div>
                   )}
+                  {(artwork.status === 'reserved' || artwork.status === 'sold') && (artwork as any).purchaser && (
+                    <div className="text-sm text-neutral-600 tracking-wide">
+                      購入者: {(artwork as any).purchaser}
+                    </div>
+                  )}
                 </div>
                 {artwork.status === 'available' && (
                   <div className="mt-4">

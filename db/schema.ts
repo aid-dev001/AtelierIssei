@@ -18,6 +18,7 @@ export const artworks = pgTable("artworks", {
   price: numeric("price").notNull(),
   size: text("size"),
   status: text("status").notNull().default('available'),
+  purchaser: text("purchaser"),
   createdLocation: text("created_location").notNull().default('銀座'),
   storedLocation: text("stored_location").notNull().default('銀座'),
   exhibitionLocation: text("exhibition_location"),

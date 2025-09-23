@@ -102,6 +102,7 @@ const deleteExhibitionMutation = useMutation({
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [selectedArtwork, setSelectedArtwork] = useState<(Artwork & { interiorImageDescriptions: string[] }) | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [currentStatus, setCurrentStatus] = useState('available');
   const [imageData, setImageData] = useState<{
     url: string;
     generatedTitle: string;
@@ -279,6 +280,7 @@ const deleteExhibitionMutation = useMutation({
           imageUrl: imageData.url || selectedArtwork.imageUrl,
           collectionId: formData.get('collectionId') ? parseInt(formData.get('collectionId') as string) : null,
           interiorImageDescriptions: interiorDescriptions,
+          purchaser: formData.get('purchaser') as string || null,
         };
         
         await updateArtworkMutation.mutateAsync({
@@ -1017,6 +1019,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
           name="status"
           className="w-full rounded-md border border-input bg-background px-3 py-2"
           defaultValue={selectedArtwork?.status || 'available'}
+          onChange={(e) => setCurrentStatus(e.target.value)}
           required
         >
           <option value="available">販売中</option>
@@ -1025,6 +1028,20 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
           <option value="preparation">準備中</option>
         </select>
       </div>
+      {(selectedArtwork ? 
+        (selectedArtwork?.status === 'reserved' || selectedArtwork?.status === 'sold') :
+        (currentStatus === 'reserved' || currentStatus === 'sold')
+      ) && (
+        <div className="space-y-2">
+          <Label htmlFor="purchaser">購入者</Label>
+          <Input
+            id="purchaser"
+            name="purchaser"
+            defaultValue={(selectedArtwork as any)?.purchaser || ''}
+            placeholder="購入者名を入力してください"
+          />
+        </div>
+      )}
       <div className="space-y-2">
         <Label htmlFor="createdLocation">制作場所</Label>
         <Input
@@ -1226,6 +1243,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
                   className="border p-3 rounded-lg hover:shadow-lg transition-all cursor-pointer"
                   onClick={() => {
                     setSelectedArtwork(artwork);
+                    setCurrentStatus(artwork.status);
                     setImageData({
                       url: artwork.imageUrl,
                       generatedTitle: '',
@@ -1256,6 +1274,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
                       onClick={(e) => {
                         e.stopPropagation();
                         setSelectedArtwork(artwork);
+                        setCurrentStatus(artwork.status);
                         setImageData({
                           url: artwork.imageUrl,
                           generatedTitle: '',
