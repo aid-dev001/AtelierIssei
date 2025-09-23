@@ -1349,7 +1349,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
             type="button" 
             onClick={() => handleUpdateClick("same")} 
             className="flex-1"
-            variant="outline"
+            variant="default"
           >
             同じ位置で更新
           </Button>
