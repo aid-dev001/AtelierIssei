@@ -55,8 +55,7 @@ const Contact = () => {
           <div className="container mx-auto px-4">
             <h1 className="text-4xl font-bold mb-12 tracking-wider text-gray-800">CONTACT</h1>
             <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-2xl mx-auto">
-              作品のお問い合わせや展示についてのご相談は、
-              下記メールアドレスまで直接ご連絡ください。
+              作品のお問い合わせや展示についてのご相談は、 下記メールアドレスもしくは各種SNSまで直接ご連絡ください。
             </p>
             <div className="text-xl mt-8 space-y-2">
               <p>isseiart2018@gmail.com</p>
