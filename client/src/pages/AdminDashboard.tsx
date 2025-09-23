@@ -279,6 +279,7 @@ const deleteExhibitionMutation = useMutation({
           exhibitionLocation: formData.get('exhibitionLocation') as string,
           imageUrl: imageData.url || selectedArtwork.imageUrl,
           collectionId: formData.get('collectionId') ? parseInt(formData.get('collectionId') as string) : null,
+          creationYear: formData.get('creationYear') ? parseInt(formData.get('creationYear') as string) : null,
           interiorImageDescriptions: interiorDescriptions,
           purchaser: formData.get('purchaser') as string || null,
         };
