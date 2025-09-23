@@ -29,7 +29,7 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
           <div className={`px-3 py-1 rounded-md text-sm font-medium ${
             artwork.status === 'sold' ? 'bg-neutral-800/95 text-white' :
             artwork.status === 'reserved' ? 'bg-amber-50/95 text-amber-800 border border-amber-200/50' :
-            artwork.status === 'preparation' ? 'bg-stone-100/95 text-stone-700 border border-stone-200/50' :
+            artwork.status === 'preparation' ? 'bg-slate-200/95 text-slate-700 border border-slate-300/60' :
             'bg-white/90 text-neutral-900'
           }`}>
             {artwork.status === 'sold' ? '売約済' : 
