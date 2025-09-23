@@ -116,10 +116,10 @@ const ArtworkDetail = () => {
                     ¥{Number(artwork.price).toLocaleString()}
                   </div>
                   {artwork.status !== 'available' && (
-                    <div className={`text-lg font-medium ${
-                      artwork.status === 'sold' ? 'text-red-600' : 
-                      artwork.status === 'reserved' ? 'text-amber-600' :
-                      artwork.status === 'preparation' ? 'text-gray-600' : 'text-gray-600'
+                    <div className={`text-sm font-medium tracking-wide ${
+                      artwork.status === 'sold' ? 'text-neutral-900' : 
+                      artwork.status === 'reserved' ? 'text-neutral-800' :
+                      artwork.status === 'preparation' ? 'text-neutral-700' : 'text-neutral-700'
                     }`}>
                       {artwork.status === 'sold' ? 'SOLD OUT' : 
                        artwork.status === 'reserved' ? '予約済み' :
