@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation } from "wouter";
 import { PenLine, Trash2, Wand2, Loader2 } from "lucide-react";
 import {
@@ -161,6 +161,11 @@ const deleteExhibitionMutation = useMutation({
       }));
     }
   }, [selectedArtwork, imageData]);
+
+  // フォーム変更ハンドラーをメモ化
+  const handleFormValueChange = useCallback((field: string, value: string) => {
+    setFormValues(prev => ({ ...prev, [field]: value }));
+  }, []);
 
   // Collections data
   const { data: collections } = useQuery({
@@ -1174,7 +1179,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
           id="title"
           name="title"
           value={formValues.title}
-          onChange={(e) => setFormValues(prev => ({ ...prev, title: e.target.value }))}
+          onChange={(e) => handleFormValueChange('title', e.target.value)}
           required
         />
       </div>
@@ -1184,7 +1189,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
           id="description"
           name="description"
           value={formValues.description}
-          onChange={(e) => setFormValues(prev => ({ ...prev, description: e.target.value }))}
+          onChange={(e) => handleFormValueChange('description', e.target.value)}
           required
         />
       </div>
