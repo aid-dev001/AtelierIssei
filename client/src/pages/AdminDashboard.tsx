@@ -1024,7 +1024,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
           type="number"
           min="1900"
           max="2100"
-          defaultValue={selectedArtwork?.creationYear?.toString() || ''}
+          defaultValue={(selectedArtwork as any)?.creationYear?.toString() || ''}
           placeholder="例: 2024"
         />
       </div>
