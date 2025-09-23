@@ -128,7 +128,7 @@ const ArtworkDetail = () => {
                   )}
                   {(artwork.status === 'reserved' || artwork.status === 'sold') && (artwork as any).purchaser && (
                     <div className="text-sm text-neutral-600 tracking-wide">
-                      購入者: {(artwork as any).purchaser}
+                      {(artwork as any).purchaser}
                     </div>
                   )}
                 </div>
