@@ -30,13 +30,8 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
             {artwork.status === 'sold' ? 'SOLD' : 
              artwork.status === 'reserved' ? '予約済' :
              artwork.status === 'preparation' ? '準備中' :
-             `¥${Number(artwork.price).toLocaleString()}`}
+             '販売中'}
           </div>
-          {artwork.status === 'available' && (
-            <div className="bg-primary/90 text-white px-3 py-1 rounded-md text-sm font-medium cursor-pointer hover:bg-primary transition-colors">
-              予約する
-            </div>
-          )}
         </div>
         <div className="absolute bottom-4 left-4 flex flex-col gap-2">
           <div className="flex gap-2">

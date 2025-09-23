@@ -1102,27 +1102,13 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
             <div className="space-y-2">
               <Label htmlFor="interior-desc-1">1枚目の説明文</Label>
               <Textarea
+                key={`interior-desc-1-${selectedArtwork?.id || 'new'}`}
                 id="interior-desc-1"
                 name="interior-desc-1"
                 placeholder="1枚目の説明文を入力してください"
-                value={Array.isArray(selectedArtwork?.interiorImageDescriptions) 
+                defaultValue={Array.isArray(selectedArtwork?.interiorImageDescriptions) 
                   ? selectedArtwork.interiorImageDescriptions[0] || '' 
                   : ''}
-                onChange={e => {
-                  if (selectedArtwork) {
-                    const descriptions: string[] = Array.isArray(selectedArtwork.interiorImageDescriptions)
-                      ? [...selectedArtwork.interiorImageDescriptions]
-                      : ['', ''];
-                    descriptions[0] = e.target.value;
-                    setSelectedArtwork(prev => {
-                      if (!prev) return null;
-                      return {
-                        ...prev,
-                        interiorImageDescriptions: descriptions,
-                      };
-                    });
-                  }
-                }}
                 className="resize-none"
                 rows={4}
               />
@@ -1137,24 +1123,13 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
             <div className="space-y-2">
               <Label htmlFor="interior-desc-2">2枚目の説明文</Label>
               <Textarea
+                key={`interior-desc-2-${selectedArtwork?.id || 'new'}`}
                 id="interior-desc-2"
                 name="interior-desc-2"
                 placeholder="2枚目の説明文を入力してください"
-                value={Array.isArray(selectedArtwork?.interiorImageDescriptions) 
+                defaultValue={Array.isArray(selectedArtwork?.interiorImageDescriptions) 
                   ? selectedArtwork.interiorImageDescriptions[1] || '' 
                   : ''}
-                onChange={e => {
-                  if (selectedArtwork) {
-                    const descriptions: string[] = Array.isArray(selectedArtwork.interiorImageDescriptions)
-                      ? [...selectedArtwork.interiorImageDescriptions]
-                      : ['', ''];
-                    descriptions[1] = e.target.value;
-                    setSelectedArtwork(prev => prev ? {
-                      ...prev,
-                      interiorImageDescriptions: descriptions,
-                    } : null);
-                  }
-                }}
                 className="resize-none"
                 rows={4}
               />
