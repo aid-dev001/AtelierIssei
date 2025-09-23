@@ -407,35 +407,25 @@ const deleteExhibitionMutation = useMutation({
       // Filter out any null values at the end
       newImageUrls = newImageUrls.filter(url => url !== null);
 
+      // アップロードのみ行い、自動保存はしない
       if (selectedArtwork) {
-        try {
-          console.log('Updating artwork with interior images:', newImageUrls);
-          
-          await updateArtworkMutation.mutateAsync({
-            id: selectedArtwork.id,
-            data: {
-              interiorImageUrls: newImageUrls
-            },
-          });
-
-          toast({
-            title: "インテリアイメージをアップロードしました",
-          });
-        } catch (updateError) {
-          console.error('Error updating artwork with interior images:', updateError);
-          throw new Error('作品の更新に失敗しました: ' + 
-            (updateError instanceof Error ? updateError.message : '不明なエラー'));
-        }
+        // 選択された作品の状態を更新（UIに反映）
+        setSelectedArtwork(prev => prev ? {
+          ...prev,
+          interiorImageUrls: newImageUrls
+        } : null);
       } else {
+        // 新規作成の場合はローカル状態を更新
         setImageData(prev => ({
           ...prev,
           interiorImageUrls: newImageUrls,
         }));
-        
-        toast({
-          title: "インテリアイメージをアップロードしました",
-        });
       }
+      
+      toast({
+        title: "インテリアイメージをアップロードしました",
+        description: "保存するには「更新」ボタンを押してください",
+      });
     } catch (error) {
       console.error('Error handling interior image upload:', error);
       toast({
