@@ -58,9 +58,10 @@ const Contact = () => {
               作品のお問い合わせや展示についてのご相談は、
               下記メールアドレスまで直接ご連絡ください。
             </p>
-            <p className="text-xl mt-8">
-              isseiart2018@gmail.com
-            </p>
+            <div className="text-xl mt-8 space-y-2">
+              <p>isseiart2018@gmail.com</p>
+              <p>chatnoir710@gmail.com</p>
+            </div>
           </div>
         </div>
       </section>
