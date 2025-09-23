@@ -91,6 +91,11 @@ const ArtworkDetail = () => {
                   <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
                     サイズ: {artwork.size || 'F4(333mm x 242mm)'}
                   </div>
+                  {(artwork as any).creationYear && (
+                    <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
+                      制作年: {(artwork as any).creationYear}年
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {artwork.exhibitionLocation && (
