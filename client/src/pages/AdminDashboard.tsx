@@ -963,10 +963,14 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
   };
 
   const ArtworkForm = () => (
-    <form onSubmit={(e) => {
-      e.preventDefault();
-      handleSubmit(e);
-    }} className="space-y-8">
+    <form 
+      key={selectedArtwork ? `edit-${selectedArtwork.id}` : 'new-artwork'}
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit(e);
+      }} 
+      className="space-y-8"
+    >
       <div className="space-y-4">
         <Label htmlFor="image">作品画像</Label>
         <Dropzone
