@@ -111,15 +111,24 @@ const ArtworkDetail = () => {
               </div>
               
               <div className="bg-white px-8 py-6 rounded-xl shadow-sm">
-                <div className="text-2xl font-bold mb-3 tracking-wide text-gray-800/90">
-                  {artwork.status === 'sold' ? 'SOLD OUT' : 
-                   artwork.status === 'reserved' ? '予約済み' :
-                   `¥${Number(artwork.price).toLocaleString()}`}
+                <div className="space-y-2">
+                  <div className="text-2xl font-bold tracking-wide text-gray-800/90">
+                    ¥{Number(artwork.price).toLocaleString()}
+                  </div>
+                  {artwork.status !== 'available' && (
+                    <div className="text-lg font-medium text-red-600">
+                      {artwork.status === 'sold' ? 'SOLD OUT' : 
+                       artwork.status === 'reserved' ? '予約済み' :
+                       artwork.status === 'preparation' ? '準備中' : '販売中'}
+                    </div>
+                  )}
                 </div>
                 {artwork.status === 'available' && (
-                  <Button asChild className="w-full">
-                    <Link href="/contact">お問い合わせ</Link>
-                  </Button>
+                  <div className="mt-4">
+                    <Button asChild className="w-full">
+                      <Link href="/contact">お問い合わせ</Link>
+                    </Button>
+                  </div>
                 )}
               </div>
 
