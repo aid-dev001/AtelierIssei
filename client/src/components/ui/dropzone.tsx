@@ -123,13 +123,13 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
           onChange={handleFileInput}
         />
         {preview ? (
-          <div className="relative w-full h-full overflow-hidden rounded-lg">
+          <div className="relative w-full h-full flex items-center justify-center p-2 rounded-lg">
             <img
               src={preview}
               alt="Preview"
-              className="w-full h-full object-cover dropzone-preview"
+              className="max-w-full max-h-[90%] object-contain dropzone-preview rounded"
             />
-            <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity hover:opacity-100">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity hover:opacity-100 rounded-lg">
               <p className="text-sm text-white">クリックまたはドラッグ＆ドロップで画像を変更</p>
             </div>
           </div>
