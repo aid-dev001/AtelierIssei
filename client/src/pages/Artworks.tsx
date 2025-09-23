@@ -72,7 +72,7 @@ const Artworks = () => {
           </div>
 
           {totalPages > 1 && (
-            <div className="flex justify-center items-center gap-4">
+            <div className="flex justify-center items-center gap-4 mt-12">
               <Button
                 variant="outline"
                 size="icon"
