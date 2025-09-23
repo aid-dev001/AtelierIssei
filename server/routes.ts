@@ -291,7 +291,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
       if (req.body.createPosition === "last") {
         // Create at the last position - set timestamps to older than the oldest artwork
         const oldestArtwork = await db.query.artworks.findFirst({
-          orderBy: asc(artworks.updatedAt),
+          orderBy: (artworks) => asc(artworks.updatedAt),
         });
         
         if (oldestArtwork) {
@@ -383,7 +383,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
       if (updateData.updatePosition === "last") {
         // Move to the last position - set updatedAt to older than the oldest artwork
         const oldestArtwork = await db.query.artworks.findFirst({
-          orderBy: asc(artworks.updatedAt),
+          orderBy: (artworks) => asc(artworks.updatedAt),
         });
         
         if (oldestArtwork) {
