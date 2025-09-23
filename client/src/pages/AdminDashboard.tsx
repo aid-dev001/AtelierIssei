@@ -257,6 +257,16 @@ const deleteExhibitionMutation = useMutation({
 
       if (selectedArtwork) {
         // 更新の場合
+        // インテリアイメージの説明文をフォームデータから取得
+        const interiorDesc1 = formData.get('interior-desc-1') as string || '';
+        const interiorDesc2 = formData.get('interior-desc-2') as string || '';
+        const interiorDescriptions = [interiorDesc1, interiorDesc2];
+        
+        console.log('Form data debug:');
+        console.log('interior-desc-1:', interiorDesc1);
+        console.log('interior-desc-2:', interiorDesc2);
+        console.log('interiorDescriptions:', interiorDescriptions);
+        
         const updateData = {
           title,
           description,
@@ -268,6 +278,7 @@ const deleteExhibitionMutation = useMutation({
           exhibitionLocation: formData.get('exhibitionLocation') as string,
           imageUrl: imageData.url || selectedArtwork.imageUrl,
           collectionId: formData.get('collectionId') ? parseInt(formData.get('collectionId') as string) : null,
+          interiorImageDescriptions: interiorDescriptions,
         };
         
         await updateArtworkMutation.mutateAsync({
@@ -510,64 +521,6 @@ const deleteExhibitionMutation = useMutation({
         variant: "destructive",
         title: "エラーが発生しました",
         description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
-      });
-    }
-  };
-
-  const handleArtworkUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!selectedArtwork) return;
-
-    try {
-      const form = e.currentTarget;
-      const formData = new FormData(form);
-      
-      const price = formData.get('price');
-      const collectionId = formData.get('collectionId');
-
-      // インテリアイメージの説明文をフォームデータから取得
-      const interiorDesc1 = formData.get('interior-desc-1') as string || '';
-      const interiorDesc2 = formData.get('interior-desc-2') as string || '';
-      const interiorDescriptions = [interiorDesc1, interiorDesc2];
-      
-      console.log('Form data debug:');
-      console.log('interior-desc-1:', interiorDesc1);
-      console.log('interior-desc-2:', interiorDesc2);
-      console.log('interiorDescriptions:', interiorDescriptions);
-
-      const updatedData = {
-        ...selectedArtwork,
-        title: formData.get('title') as string,
-        description: formData.get('description') as string,
-        price: price ? parseFloat(price as string) : selectedArtwork.price,
-        size: formData.get('size') as string,
-        status: formData.get('status') as string,
-        createdLocation: formData.get('createdLocation') as string,
-        storedLocation: formData.get('storedLocation') as string,
-        exhibitionLocation: formData.get('exhibitionLocation') as string,
-        imageUrl: imageData.url || selectedArtwork.imageUrl,
-        collectionId: collectionId ? parseInt(collectionId as string) : null,
-        interiorImageDescriptions: interiorDescriptions
-      };
-
-      console.log('Updating artwork with data:', updatedData);
-      console.log('updatedData.interiorImageDescriptions:', updatedData.interiorImageDescriptions);
-
-      await updateArtworkMutation.mutateAsync({
-        id: selectedArtwork.id,
-        data: updatedData
-      });
-
-toast({
-        title: "作品情報を更新しました",
-      });
-      setIsEditDialogOpen(false);
-    } catch (error) {
-      console.error('Error updating artwork:', error);
-      toast({
-        variant: "destructive",
-        title: "更新に失敗しました",
-        description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
       });
     }
   };
