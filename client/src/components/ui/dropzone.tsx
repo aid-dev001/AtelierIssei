@@ -105,7 +105,8 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
       <div
         ref={ref}
         className={cn(
-          "relative rounded-lg border-2 border-dashed border-gray-300 p-6 transition-colors",
+          "relative rounded-lg border-2 border-dashed border-gray-300 transition-colors",
+          preview ? "p-0" : "p-6",
           isDragging && "border-primary bg-primary/5",
           className
         )}
