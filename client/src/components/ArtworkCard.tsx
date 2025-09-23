@@ -26,7 +26,12 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
           </div>
         </Link>
         <div className="absolute top-4 right-4 flex flex-col gap-2">
-          <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium">
+          <div className={`px-3 py-1 rounded-md text-sm font-medium ${
+            artwork.status === 'sold' ? 'bg-neutral-800/95 text-white' :
+            artwork.status === 'reserved' ? 'bg-amber-50/95 text-amber-800 border border-amber-200/50' :
+            artwork.status === 'preparation' ? 'bg-neutral-100/95 text-neutral-700' :
+            'bg-white/90 text-neutral-900'
+          }`}>
             {artwork.status === 'sold' ? '売約済' : 
              artwork.status === 'reserved' ? '予約済' :
              artwork.status === 'preparation' ? '準備中' :
