@@ -1,15 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Building2, Palette } from "lucide-react";
+import { Building2, Palette, X } from "lucide-react";
 import type { Artwork } from "@db/schema";
 
 const ArtworkDetail = () => {
   const [, params] = useRoute("/artwork/:id");
   const artworkId = params?.id;
+  const [modalImage, setModalImage] = useState<string | null>(null);
 
   const { data: artwork, isLoading } = useQuery<Artwork>({
     queryKey: ["artwork", artworkId],
@@ -66,7 +67,7 @@ const ArtworkDetail = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div className="space-y-8">
-              <div className="relative overflow-hidden shadow-2xl bg-white group">
+              <div className="relative overflow-hidden shadow-2xl bg-white group cursor-pointer" onClick={() => setModalImage(artwork.imageUrl)}>
                 <img
                   src={artwork.imageUrl}
                   alt={artwork.title}
@@ -93,7 +94,7 @@ const ArtworkDetail = () => {
                   </div>
                   {(artwork as any).creationYear && (
                     <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
-                      {(artwork as any).creationYear}年
+                      作成年: {(artwork as any).creationYear}年
                     </div>
                   )}
                 </div>
@@ -152,7 +153,7 @@ const ArtworkDetail = () => {
                     {artwork.interiorImageUrls && Array.isArray(artwork.interiorImageUrls) && artwork.interiorImageUrls.length > 0 ? (
                       artwork.interiorImageUrls.map((url: string, index: number) => (
                         <div key={index} className="space-y-2">
-                          <div className="relative group">
+                          <div className="relative group cursor-pointer" onClick={() => setModalImage(url)}>
                             <img
                               src={url}
                               alt={`${artwork.title} - Interior View ${index + 1}`}
@@ -186,6 +187,29 @@ const ArtworkDetail = () => {
           </div>
         </div>
       </div>
+      
+      {/* Image Modal */}
+      {modalImage && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
+          onClick={() => setModalImage(null)}
+        >
+          <div className="relative max-w-7xl max-h-full">
+            <button
+              onClick={() => setModalImage(null)}
+              className="absolute top-4 right-4 z-10 bg-white/20 hover:bg-white/30 rounded-full p-2 transition-colors"
+            >
+              <X className="w-6 h-6 text-white" />
+            </button>
+            <img
+              src={modalImage}
+              alt="拡大表示"
+              className="max-w-full max-h-full object-contain rounded-lg"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
