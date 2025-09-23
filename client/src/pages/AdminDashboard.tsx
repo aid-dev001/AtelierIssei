@@ -112,6 +112,55 @@ const deleteExhibitionMutation = useMutation({
     generatedTitle: '',
     generatedDescription: '',
   });
+  
+  // フォーム値の状態管理
+  const [formValues, setFormValues] = useState({
+    title: '',
+    description: '',
+    price: '',
+    size: '',
+    creationYear: '',
+    createdLocation: '',
+    storedLocation: '',
+    exhibitionLocation: '',
+    purchaser: '',
+    status: 'available',
+    collectionId: '',
+  });
+
+  // 編集モードまたは画像データの変更時にフォーム値を更新
+  useEffect(() => {
+    if (selectedArtwork) {
+      setFormValues({
+        title: selectedArtwork.title || '',
+        description: selectedArtwork.description || '',
+        price: selectedArtwork.price || '',
+        size: selectedArtwork.size || '',
+        creationYear: (selectedArtwork as any).creationYear?.toString() || '',
+        createdLocation: selectedArtwork.createdLocation || '',
+        storedLocation: selectedArtwork.storedLocation || '',
+        exhibitionLocation: selectedArtwork.exhibitionLocation || '',
+        purchaser: (selectedArtwork as any).purchaser || '',
+        status: selectedArtwork.status || 'available',
+        collectionId: selectedArtwork.collectionId?.toString() || '',
+      });
+    } else {
+      // 新規作成時は画像データから値を設定、既存の入力があればそれを優先
+      setFormValues(prev => ({
+        title: imageData.generatedTitle || prev.title,
+        description: imageData.generatedDescription || prev.description,
+        price: '',
+        size: '',
+        creationYear: '',
+        createdLocation: '',
+        storedLocation: '',
+        exhibitionLocation: '',
+        purchaser: '',
+        status: 'available',
+        collectionId: '',
+      }));
+    }
+  }, [selectedArtwork, imageData]);
 
   // Collections data
   const { data: collections } = useQuery({
@@ -1124,7 +1173,8 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         <Input
           id="title"
           name="title"
-          defaultValue={selectedArtwork?.title || imageData.generatedTitle}
+          value={formValues.title}
+          onChange={(e) => setFormValues(prev => ({ ...prev, title: e.target.value }))}
           required
         />
       </div>
@@ -1133,7 +1183,8 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         <Textarea
           id="description"
           name="description"
-          defaultValue={selectedArtwork?.description || imageData.generatedDescription}
+          value={formValues.description}
+          onChange={(e) => setFormValues(prev => ({ ...prev, description: e.target.value }))}
           required
         />
       </div>
