@@ -116,7 +116,7 @@ const ArtworkDetail = () => {
                     ¥{Number(artwork.price).toLocaleString()}
                   </div>
                   {artwork.status !== 'available' && (
-                    <div className={`text-sm font-medium tracking-wide ${
+                    <div className={`text-lg font-medium tracking-wide ${
                       artwork.status === 'sold' ? 'text-neutral-900' : 
                       artwork.status === 'reserved' ? 'text-neutral-800' :
                       artwork.status === 'preparation' ? 'text-neutral-700' : 'text-neutral-700'
