@@ -93,7 +93,7 @@ const ArtworkDetail = () => {
                   </div>
                   {(artwork as any).creationYear && (
                     <div className="bg-white/90 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
-                      制作年: {(artwork as any).creationYear}年
+                      {(artwork as any).creationYear}年
                     </div>
                   )}
                 </div>
