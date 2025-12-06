@@ -345,6 +345,9 @@ const deleteExhibitionMutation = useMutation({
       const interiorDesc2 = formData.get('interior-desc-2') as string || '';
       const interiorDescriptions = [interiorDesc1, interiorDesc2];
       
+      // インテリアイメージURLを取得（新しくアップロードしたものまたは既存のもの）
+      const interiorImageUrls = selectedArtwork.interiorImageUrls || [];
+      
       const updateData = {
         title,
         description,
@@ -357,6 +360,7 @@ const deleteExhibitionMutation = useMutation({
         imageUrl: imageData.url || selectedArtwork.imageUrl,
         collectionId: formData.get('collectionId') ? parseInt(formData.get('collectionId') as string) : null,
         creationYear: formData.get('creationYear') ? parseInt(formData.get('creationYear') as string) : null,
+        interiorImageUrls: interiorImageUrls,
         interiorImageDescriptions: interiorDescriptions,
         purchaser: formData.get('purchaser') as string || null,
       };
