@@ -107,10 +107,12 @@ const deleteExhibitionMutation = useMutation({
     url: string;
     generatedTitle: string;
     generatedDescription: string;
+    interiorImageUrls: string[];
   }>({
     url: '',
     generatedTitle: '',
     generatedDescription: '',
+    interiorImageUrls: [],
   });
 
   // Collections data
@@ -188,6 +190,7 @@ const deleteExhibitionMutation = useMutation({
         url: '',
         generatedTitle: '',
         generatedDescription: '',
+        interiorImageUrls: [],
       });
     },
     onError: (error) => {
@@ -221,6 +224,7 @@ const deleteExhibitionMutation = useMutation({
         url: '',
         generatedTitle: '',
         generatedDescription: '',
+        interiorImageUrls: [],
       });
     },
     onError: (error) => {
@@ -417,10 +421,16 @@ const deleteExhibitionMutation = useMutation({
         const imageBlob = await imageResponse.blob();
         formData.append('image', imageBlob);
         
+        // インテリアイメージURLを追加
+        if (imageData.interiorImageUrls && imageData.interiorImageUrls.length > 0) {
+          formData.append('interiorImageUrls', JSON.stringify(imageData.interiorImageUrls));
+        }
+        
         console.log('Submitting artwork with data:', {
           title,
           description,
           imageUrl: imageData.url,
+          interiorImageUrls: imageData.interiorImageUrls,
           createPosition
         });
 
@@ -435,6 +445,7 @@ const deleteExhibitionMutation = useMutation({
           url: '',
           generatedTitle: '',
           generatedDescription: '',
+          interiorImageUrls: [],
         });
         setIsEditDialogOpen(false);
       } catch (imageError) {
@@ -638,11 +649,12 @@ const deleteExhibitionMutation = useMutation({
       }
 
       // 状態を更新（既存の入力値を保持）
-      setImageData({
+      setImageData(prev => ({
+        ...prev,
         url: data.imageUrl,
         generatedTitle: currentTitle || data.title || "",
         generatedDescription: currentDescription || data.description || "",
-      });
+      }));
 
       // 編集モードの場合は選択された作品の情報も更新（既存の入力値を保持）
       if (selectedArtwork) {
@@ -1229,7 +1241,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Dropzone
-              existingImageUrl={selectedArtwork?.interiorImageUrls?.[0]}
+              existingImageUrl={selectedArtwork?.interiorImageUrls?.[0] || imageData.interiorImageUrls?.[0]}
               onFileChange={(file) => handleInteriorImageUpload(file, 0)}
               className="w-full h-48"
             />
@@ -1249,7 +1261,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
           </div>
           <div className="space-y-2">
             <Dropzone
-              existingImageUrl={selectedArtwork?.interiorImageUrls?.[1]}
+              existingImageUrl={selectedArtwork?.interiorImageUrls?.[1] || imageData.interiorImageUrls?.[1]}
               onFileChange={(file) => handleInteriorImageUpload(file, 1)}
               className="w-full h-48"
             />
@@ -1410,6 +1422,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
                         url: '',
                         generatedTitle: '',
                         generatedDescription: '',
+                        interiorImageUrls: [],
                       });
                       setIsEditDialogOpen(true);
                     }}
@@ -1444,6 +1457,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
                       url: artwork.imageUrl,
                       generatedTitle: '',
                       generatedDescription: '',
+                      interiorImageUrls: artwork.interiorImageUrls || [],
                     });
                     setIsEditDialogOpen(true);
                   }}
@@ -1475,6 +1489,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
                           url: artwork.imageUrl,
                           generatedTitle: '',
                           generatedDescription: '',
+                          interiorImageUrls: artwork.interiorImageUrls || [],
                         });
                         setIsEditDialogOpen(true);
                       }}

@@ -305,6 +305,16 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
       }
       // Default behavior: create at latest position (current timestamps)
 
+      // インテリアイメージURLを処理
+      let interiorImageUrls: string[] = [];
+      if (req.body.interiorImageUrls) {
+        try {
+          interiorImageUrls = JSON.parse(req.body.interiorImageUrls);
+        } catch (e) {
+          console.error('Failed to parse interiorImageUrls:', e);
+        }
+      }
+
       const artworkData = {
         title: req.body.title,
         description: req.body.description,
@@ -315,6 +325,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         createdLocation: req.body.createdLocation,
         storedLocation: req.body.storedLocation,
         imageUrl: req.body.imageUrl || imageUrl,
+        interiorImageUrls: interiorImageUrls,
         interiorImageDescriptions: interiorDescriptions,
         collectionId: req.body.collectionId ? parseInt(req.body.collectionId) : null,
         creationYear: req.body.creationYear ? parseInt(req.body.creationYear) : null,
