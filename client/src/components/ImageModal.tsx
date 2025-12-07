@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
 interface ImageModalProps {
@@ -14,11 +14,26 @@ const ImageModal: React.FC<ImageModalProps> = ({
   imageUrl,
   caption,
 }) => {
+  const [showCaption, setShowCaption] = useState(true);
+
+  useEffect(() => {
+    if (isOpen) {
+      setShowCaption(true);
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
+    }
+  };
+
+  const handleImageClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (caption) {
+      setShowCaption(!showCaption);
     }
   };
 
@@ -38,7 +53,8 @@ const ImageModal: React.FC<ImageModalProps> = ({
         <img
           src={imageUrl}
           alt={caption || "拡大画像"}
-          className="max-w-full max-h-[60vh] object-contain rounded-lg"
+          className="max-w-full max-h-[60vh] object-contain rounded-lg cursor-pointer"
+          onClick={handleImageClick}
           onError={(e) => {
             const img = e.target as HTMLImageElement;
             img.onerror = null;
@@ -46,9 +62,17 @@ const ImageModal: React.FC<ImageModalProps> = ({
           }}
         />
         
-        {caption && (
-          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white p-4 rounded-b-lg">
+        {caption && showCaption && (
+          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white p-4 rounded-b-lg transition-opacity duration-200">
             <p className="text-center">{caption}</p>
+          </div>
+        )}
+        
+        {caption && (
+          <div className="absolute bottom-[-28px] left-0 right-0 text-center">
+            <span className="text-white text-xs opacity-60">
+              {showCaption ? "タップで説明を非表示" : "タップで説明を表示"}
+            </span>
           </div>
         )}
       </div>
