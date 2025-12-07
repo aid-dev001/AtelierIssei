@@ -67,14 +67,6 @@ const ImageModal: React.FC<ImageModalProps> = ({
             <p className="text-center">{caption}</p>
           </div>
         )}
-        
-        {caption && (
-          <div className="absolute bottom-[-28px] left-0 right-0 text-center">
-            <span className="text-white text-xs opacity-60">
-              {showCaption ? "タップで説明を非表示" : "タップで説明を表示"}
-            </span>
-          </div>
-        )}
       </div>
     </div>
   );
