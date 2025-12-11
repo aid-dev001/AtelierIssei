@@ -220,7 +220,7 @@ const ArtworkDetail = () => {
                   </span>
                 </Link>
               </div>
-              <div className="grid grid-cols-2 md:flex md:justify-start gap-x-0 gap-y-8 md:gap-4">
+              <div className="grid grid-cols-2 md:flex md:justify-start gap-x-0 gap-y-4 md:gap-4">
                 {relatedArtworks.map((relatedArtwork) => (
                   <Link key={relatedArtwork.id} href={`/artwork/${relatedArtwork.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })} className="flex justify-center items-center">
                     <div className="group cursor-pointer relative overflow-hidden rounded shadow-sm aspect-square w-[75%] md:w-[200px] md:h-[200px]">
