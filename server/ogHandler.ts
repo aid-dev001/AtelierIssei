@@ -63,9 +63,14 @@ async function injectArtworkOgTags(html: string, artworkId: number, baseUrl: str
 
     const title = escapeHtml(`ATELIER ISSEI - ${artwork.title}`);
     const description = escapeHtml(artwork.description?.substring(0, 150) || 'アーティストisseiが創造する、温かみのある色彩と大胆な構図で見る人の心に寄り添う作品。');
-    const imageUrl = artwork.imageUrl?.startsWith('http') 
+    
+    // Build image URL, adding .jpg extension if missing for social media compatibility
+    let rawImageUrl = artwork.imageUrl?.startsWith('http') 
       ? artwork.imageUrl 
       : `${baseUrl}${artwork.imageUrl}`;
+    const hasExtension = /\.(jpg|jpeg|png|gif|webp)$/i.test(rawImageUrl);
+    const imageUrl = hasExtension ? rawImageUrl : `${rawImageUrl}.jpg`;
+    
     const pageUrl = `${baseUrl}/artwork/${artworkId}`;
 
     let modifiedHtml = html;

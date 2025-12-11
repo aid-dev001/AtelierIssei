@@ -6,6 +6,8 @@ import { setupVite, serveStatic } from "./vite";
 import { createServer } from "http";
 import { initializeAdmin } from "./admin";
 import { createOgMiddleware } from "./ogHandler";
+import fs from "fs";
+import path from "path";
 
 function log(message: string) {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -27,6 +29,20 @@ const staticOptions = process.env.NODE_ENV === 'production'
   : { maxAge: 0, etag: false, lastModified: false }; // 開発時: キャッシュなし
 
 app.use(express.static('client/public', staticOptions));
+
+// Handle .jpg extension for files without extension (for social media compatibility)
+app.use('/artworks', (req, res, next) => {
+  if (req.path.endsWith('.jpg')) {
+    const pathWithoutExt = req.path.slice(0, -4);
+    const filePath = `public/artworks${pathWithoutExt}`;
+    if (fs.existsSync(filePath)) {
+      res.type('image/jpeg');
+      return res.sendFile(path.resolve(filePath));
+    }
+  }
+  next();
+});
+
 app.use('/artworks', express.static('public/artworks', staticOptions));
 app.use('/artworks', express.static('.', staticOptions));
 
