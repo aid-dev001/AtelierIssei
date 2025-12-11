@@ -209,37 +209,39 @@ const ArtworkDetail = () => {
       {/* Related Artworks from Same Collection */}
       {collection && relatedArtworks.length > 0 && (
         <div className="container mx-auto px-4 py-8 border-t border-gray-100">
-          <div className="max-w-6xl mx-auto space-y-4">
-            <div className="flex justify-center gap-4 flex-wrap">
-              {relatedArtworks.map((relatedArtwork) => (
-                <Link key={relatedArtwork.id} href={`/artwork/${relatedArtwork.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })} className="block">
-                  <div className="group cursor-pointer relative overflow-hidden rounded shadow-sm" style={{ width: '200px', height: '200px' }}>
-                    <img
-                      src={relatedArtwork.imageUrl}
-                      alt={relatedArtwork.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      onError={(e) => {
-                        const img = e.target as HTMLImageElement;
-                        img.src = '/placeholder.png';
-                      }}
-                    />
-                    {relatedArtwork.status !== 'available' && (
-                      <div className="absolute inset-0 bg-black/30" />
-                    )}
-                  </div>
+          <div className="max-w-6xl mx-auto">
+            <div className="inline-block mx-auto w-full">
+              <div className="flex items-center justify-between mb-4 px-1">
+                <h3 className="text-base font-medium text-gray-500">
+                  {collection.title}の他の作品
+                </h3>
+                <Link href={`/collections/${collection.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}>
+                  <span className="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1">
+                    もっと見る
+                    <ArrowRight className="w-3 h-3" />
+                  </span>
                 </Link>
-              ))}
-            </div>
-            <div className="flex items-center justify-between max-w-fit mx-auto" style={{ width: `${Math.min(relatedArtworks.length, 4) * 200 + (Math.min(relatedArtworks.length, 4) - 1) * 16}px` }}>
-              <h3 className="text-base font-medium text-gray-500">
-                {collection.title}の他の作品
-              </h3>
-              <Link href={`/collections/${collection.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}>
-                <span className="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1">
-                  もっと見る
-                  <ArrowRight className="w-3 h-3" />
-                </span>
-              </Link>
+              </div>
+              <div className="flex justify-start gap-4 flex-wrap">
+                {relatedArtworks.map((relatedArtwork) => (
+                  <Link key={relatedArtwork.id} href={`/artwork/${relatedArtwork.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })} className="block">
+                    <div className="group cursor-pointer relative overflow-hidden rounded shadow-sm" style={{ width: '200px', height: '200px' }}>
+                      <img
+                        src={relatedArtwork.imageUrl}
+                        alt={relatedArtwork.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                        onError={(e) => {
+                          const img = e.target as HTMLImageElement;
+                          img.src = '/placeholder.png';
+                        }}
+                      />
+                      {relatedArtwork.status !== 'available' && (
+                        <div className="absolute inset-0 bg-black/30" />
+                      )}
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </div>
