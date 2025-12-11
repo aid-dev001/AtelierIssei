@@ -3,7 +3,11 @@ import { db } from "../db";
 import { artworks } from "../db/schema";
 import { eq } from "drizzle-orm";
 import fs from "fs";
-import path from "path";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 function getBaseUrl(req: Request): string {
   if (process.env.BASE_URL) {
@@ -62,7 +66,7 @@ async function injectArtworkOgTags(html: string, artworkId: number, baseUrl: str
     const imageUrl = artwork.imageUrl?.startsWith('http') 
       ? artwork.imageUrl 
       : `${baseUrl}${artwork.imageUrl}`;
-    const pageUrl = `${baseUrl}/artworks/${artworkId}`;
+    const pageUrl = `${baseUrl}/artwork/${artworkId}`;
 
     let modifiedHtml = html;
 
@@ -135,7 +139,13 @@ export function createOgMiddleware() {
     
     const artworkId = extractArtworkId(url);
     
-    if (!artworkId || !isSocialMediaBot(userAgent)) {
+    if (!artworkId) {
+      return next();
+    }
+
+    const isBot = isSocialMediaBot(userAgent);
+    
+    if (!isBot) {
       return next();
     }
 
