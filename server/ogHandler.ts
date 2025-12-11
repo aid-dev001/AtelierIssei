@@ -101,6 +101,16 @@ async function injectArtworkOgTags(html: string, artworkId: number, baseUrl: str
     );
 
     modifiedHtml = modifiedHtml.replace(
+      /<meta property="og:image:width" content="[^"]*" \/>/,
+      `<meta property="og:image:width" content="1200" />`
+    );
+
+    modifiedHtml = modifiedHtml.replace(
+      /<meta property="og:image:height" content="[^"]*" \/>/,
+      `<meta property="og:image:height" content="630" />`
+    );
+
+    modifiedHtml = modifiedHtml.replace(
       /<meta property="og:url" content="[^"]*" \/>/,
       `<meta property="og:url" content="${pageUrl}" />`
     );
