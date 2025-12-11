@@ -190,7 +190,7 @@ const ArtworkDetail = () => {
                         </div>
                       ))
                     ) : (
-                      <div className="w-full text-center text-gray-500 mb-4">
+                      <div className="w-full text-center text-gray-500 mb-8">
                         インテリアイメージは準備中です
                       </div>
                     )}
