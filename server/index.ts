@@ -5,6 +5,7 @@ import setupRoutes from "./routes";
 import { setupVite, serveStatic } from "./vite";
 import { createServer } from "http";
 import { initializeAdmin } from "./admin";
+import { createOgMiddleware } from "./ogHandler";
 
 function log(message: string) {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -74,6 +75,9 @@ app.use((req, res, next) => {
 
   next();
 });
+
+// OGタグミドルウェア（SNSボット用）
+app.use(createOgMiddleware());
 
 // グローバルエラーハンドリングミドルウェア
 const errorHandler = (err: any, _req: Request, res: Response, _next: NextFunction) => {
