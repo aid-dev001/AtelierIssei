@@ -224,7 +224,7 @@ const ArtworkDetail = () => {
             <div className="flex justify-center gap-4 flex-wrap">
               {relatedArtworks.map((relatedArtwork) => (
                 <Link key={relatedArtwork.id} href={`/artwork/${relatedArtwork.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })} className="block">
-                  <div className="group cursor-pointer relative overflow-hidden rounded shadow-sm" style={{ width: '100px', height: '100px' }}>
+                  <div className="group cursor-pointer relative overflow-hidden rounded shadow-sm" style={{ width: '200px', height: '200px' }}>
                     <img
                       src={relatedArtwork.imageUrl}
                       alt={relatedArtwork.title}
