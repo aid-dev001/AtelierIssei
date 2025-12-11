@@ -221,24 +221,22 @@ const ArtworkDetail = () => {
                 </span>
               </Link>
             </div>
-            <div className="flex justify-center gap-3 flex-wrap">
+            <div className="flex justify-center gap-4 flex-wrap">
               {relatedArtworks.map((relatedArtwork) => (
                 <Link key={relatedArtwork.id} href={`/artwork/${relatedArtwork.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}>
-                  <div className="group cursor-pointer">
-                    <div className="relative w-16 h-16 md:w-20 md:h-20 overflow-hidden rounded shadow-sm">
-                      <img
-                        src={relatedArtwork.imageUrl}
-                        alt={relatedArtwork.title}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                        onError={(e) => {
-                          const img = e.target as HTMLImageElement;
-                          img.src = '/placeholder.png';
-                        }}
-                      />
-                      {relatedArtwork.status !== 'available' && (
-                        <div className="absolute inset-0 bg-black/30" />
-                      )}
-                    </div>
+                  <div className="group cursor-pointer w-20 h-20 md:w-24 md:h-24 relative overflow-hidden rounded shadow-sm">
+                    <img
+                      src={relatedArtwork.imageUrl}
+                      alt={relatedArtwork.title}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                      onError={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        img.src = '/placeholder.png';
+                      }}
+                    />
+                    {relatedArtwork.status !== 'available' && (
+                      <div className="absolute inset-0 bg-black/30" />
+                    )}
                   </div>
                 </Link>
               ))}
