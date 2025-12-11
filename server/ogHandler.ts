@@ -57,7 +57,7 @@ async function injectArtworkOgTags(html: string, artworkId: number, baseUrl: str
       return html;
     }
 
-    const title = escapeHtml(`${artwork.title} | ATELIER ISSEI`);
+    const title = escapeHtml(`ATELIER ISSEI - ${artwork.title}`);
     const description = escapeHtml(artwork.description?.substring(0, 150) || 'アーティストisseiが創造する、温かみのある色彩と大胆な構図で見る人の心に寄り添う作品。');
     const imageUrl = artwork.imageUrl?.startsWith('http') 
       ? artwork.imageUrl 
