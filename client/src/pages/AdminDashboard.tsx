@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useLocation } from "wouter";
 import { PenLine, Trash2, Wand2, Loader2 } from "lucide-react";
 import {
@@ -1116,7 +1116,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
     );
   };
 
-  const ArtworkForm = () => (
+  const artworkFormContent = useMemo(() => (
     <form 
       id="artwork-form"
       key={selectedArtwork ? `edit-${selectedArtwork.id}` : 'new-artwork'}
@@ -1346,7 +1346,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         </div>
       )}
     </form>
-  );
+  ), [selectedArtwork, imageData, collections, currentStatus, handleSubmit, handleFileChange, handleCreateClick, handleUpdateClick, handleInteriorImageUpload]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -1443,7 +1443,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
                     </DialogHeader>
                   </div>
                   <div className="px-6 pb-6 h-[calc(90vh-80px)] overflow-y-auto">
-                    <ArtworkForm />
+                    {artworkFormContent}
                   </div>
                 </DialogContent>
               </Dialog>
