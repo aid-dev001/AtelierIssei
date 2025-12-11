@@ -167,7 +167,7 @@ const ArtworkDetail = () => {
 
               <div className="space-y-6">
                 <h2 className="text-2xl font-bold tracking-wide text-gray-800/90">インテリアイメージ</h2>
-                <div className="grid grid-cols-2 gap-6">
+                <div className={`grid gap-6 ${artwork.interiorImageUrls?.length === 1 ? 'grid-cols-1 max-w-sm mx-auto' : 'grid-cols-2'}`}>
                     {artwork.interiorImageUrls && Array.isArray(artwork.interiorImageUrls) && artwork.interiorImageUrls.length > 0 ? (
                       artwork.interiorImageUrls.map((url: string, index: number) => (
                         <div key={index} className="space-y-2">
