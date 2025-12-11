@@ -95,19 +95,23 @@ async function injectArtworkOgTags(html: string, artworkId: number, baseUrl: str
       `<meta property="og:type" content="article" />`
     );
 
+    // Replace og:image and add secure_url + type, remove fixed dimensions
+    const imageExtension = imageUrl.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
+    const imageTagsWithExtras = `<meta property="og:image" content="${imageUrl}" />\n    <meta property="og:image:secure_url" content="${imageUrl}" />\n    <meta property="og:image:type" content="${imageExtension}" />`;
     modifiedHtml = modifiedHtml.replace(
       /<meta property="og:image" content="[^"]*" \/>/,
-      `<meta property="og:image" content="${imageUrl}" />`
+      imageTagsWithExtras
+    );
+
+    // Remove fixed dimensions so Facebook auto-detects actual image size
+    modifiedHtml = modifiedHtml.replace(
+      /<meta property="og:image:width" content="[^"]*" \/>\n\s*/,
+      ''
     );
 
     modifiedHtml = modifiedHtml.replace(
-      /<meta property="og:image:width" content="[^"]*" \/>/,
-      `<meta property="og:image:width" content="1200" />`
-    );
-
-    modifiedHtml = modifiedHtml.replace(
-      /<meta property="og:image:height" content="[^"]*" \/>/,
-      `<meta property="og:image:height" content="630" />`
+      /<meta property="og:image:height" content="[^"]*" \/>\n\s*/,
+      ''
     );
 
     modifiedHtml = modifiedHtml.replace(
@@ -139,13 +143,6 @@ async function injectArtworkOgTags(html: string, artworkId: number, baseUrl: str
     modifiedHtml = modifiedHtml.replace(
       /<meta name="twitter:card" content="[^"]*" \/>/,
       `<meta name="twitter:card" content="summary_large_image" />`
-    );
-
-    // Add og:image:secure_url for HTTPS (some platforms require this)
-    const secureImageTag = `<meta property="og:image:secure_url" content="${imageUrl}" />`;
-    modifiedHtml = modifiedHtml.replace(
-      /<meta property="og:image:height" content="[^"]*" \/>/,
-      `<meta property="og:image:height" content="630" />\n    ${secureImageTag}`
     );
 
     return modifiedHtml;
