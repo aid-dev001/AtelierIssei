@@ -208,24 +208,24 @@ const ArtworkDetail = () => {
       
       {/* Related Artworks from Same Collection */}
       {collection && relatedArtworks.length > 0 && (
-        <div className="container mx-auto px-4 py-12 border-t border-gray-100">
-          <div className="max-w-6xl mx-auto space-y-8">
+        <div className="container mx-auto px-4 py-8 border-t border-gray-100">
+          <div className="max-w-6xl mx-auto space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold tracking-wide text-gray-800/90">
+              <h3 className="text-lg font-medium text-gray-600">
                 {collection.title}の他の作品
-              </h2>
-              <Link href={`/collection/${collection.id}`}>
-                <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
-                  シリーズを見る
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
+              </h3>
+              <Link href={`/collections/${collection.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}>
+                <span className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1">
+                  もっと見る
+                  <ArrowRight className="w-3 h-3" />
+                </span>
               </Link>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
               {relatedArtworks.map((relatedArtwork) => (
-                <Link key={relatedArtwork.id} href={`/artwork/${relatedArtwork.id}`}>
+                <Link key={relatedArtwork.id} href={`/artwork/${relatedArtwork.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}>
                   <div className="group cursor-pointer">
-                    <div className="relative aspect-square overflow-hidden rounded-lg shadow-md">
+                    <div className="relative aspect-square overflow-hidden rounded shadow-sm">
                       <img
                         src={relatedArtwork.imageUrl}
                         alt={relatedArtwork.title}
@@ -236,15 +236,12 @@ const ArtworkDetail = () => {
                         }}
                       />
                       {relatedArtwork.status !== 'available' && (
-                        <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                        <div className="absolute top-1 right-1 bg-black/60 text-white text-[10px] px-1 py-0.5 rounded">
                           {relatedArtwork.status === 'sold' ? '売約済' : 
                            relatedArtwork.status === 'reserved' ? '予約済' : '準備中'}
                         </div>
                       )}
                     </div>
-                    <p className="mt-2 text-sm text-gray-700 truncate group-hover:text-gray-900">
-                      {relatedArtwork.title}
-                    </p>
                   </div>
                 </Link>
               ))}
@@ -254,20 +251,20 @@ const ArtworkDetail = () => {
       )}
 
       {/* Navigation Links */}
-      <div className="container mx-auto px-4 py-12 border-t border-gray-100">
+      <div className="container mx-auto px-4 py-16 border-t border-gray-100">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-6">
             {collection && (
-              <Link href={`/collection/${collection.id}`}>
-                <Button variant="outline" className="flex items-center gap-2">
-                  <Layers className="w-4 h-4" />
+              <Link href={`/collections/${collection.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}>
+                <Button variant="outline" size="lg" className="w-full sm:w-auto flex items-center gap-3 px-8 py-6 text-lg">
+                  <Layers className="w-5 h-5" />
                   {collection.title}を見る
                 </Button>
               </Link>
             )}
-            <Link href="/artworks">
-              <Button variant="outline" className="flex items-center gap-2">
-                <Grid3X3 className="w-4 h-4" />
+            <Link href="/artworks" onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}>
+              <Button variant="outline" size="lg" className="w-full sm:w-auto flex items-center gap-3 px-8 py-6 text-lg">
+                <Grid3X3 className="w-5 h-5" />
                 すべての作品を見る
               </Button>
             </Link>
