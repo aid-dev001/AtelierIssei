@@ -233,9 +233,6 @@ const ArtworkDetail = () => {
                           img.src = '/placeholder.png';
                         }}
                       />
-                      {relatedArtwork.status !== 'available' && (
-                        <div className="absolute inset-0 bg-black/30" />
-                      )}
                     </div>
                   </Link>
                 ))}
