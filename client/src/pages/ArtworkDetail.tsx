@@ -196,9 +196,7 @@ const ArtworkDetail = () => {
                     )}
                   </div>
                   {artwork.interiorImageUrls && artwork.interiorImageUrls.length > 0 && (
-                    <p className="text-sm text-gray-500/80 text-center">
-                      ※ 実際の展示イメージです
-                    </p>
+                    <div className="h-4" />
                   )}
               </div>
             </div>
@@ -209,14 +207,14 @@ const ArtworkDetail = () => {
       {/* Related Artworks from Same Collection */}
       {collection && relatedArtworks.length > 0 && (
         <div className="container mx-auto px-4 py-8 border-t border-gray-100">
-          <div className="max-w-6xl mx-auto">
-            <div className="inline-block mx-auto w-full">
+          <div className="flex justify-center">
+            <div className="inline-block">
               <div className="flex items-center justify-between mb-4 px-1">
                 <h3 className="text-base font-medium text-gray-500">
                   {collection.title}の他の作品
                 </h3>
                 <Link href={`/collections/${collection.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}>
-                  <span className="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1">
+                  <span className="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1 ml-8">
                     もっと見る
                     <ArrowRight className="w-3 h-3" />
                   </span>
