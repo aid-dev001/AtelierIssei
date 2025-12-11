@@ -209,7 +209,7 @@ const ArtworkDetail = () => {
         <div className="container mx-auto px-4 py-8 border-t border-gray-100">
           <div className="flex justify-center">
             <div className="inline-block">
-              <div className="flex items-center justify-between mb-4 px-1">
+              <div className="flex items-center justify-between mb-6 px-1">
                 <h3 className="text-base font-medium text-gray-500">
                   {collection.title}の他の作品
                 </h3>
@@ -220,10 +220,10 @@ const ArtworkDetail = () => {
                   </span>
                 </Link>
               </div>
-              <div className="grid grid-cols-2 md:flex md:justify-start gap-x-3 gap-y-6 md:gap-4">
+              <div className="grid grid-cols-2 md:flex md:justify-start gap-x-3 gap-y-8 md:gap-4">
                 {relatedArtworks.map((relatedArtwork) => (
                   <Link key={relatedArtwork.id} href={`/artwork/${relatedArtwork.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })} className="flex justify-center items-center">
-                    <div className="group cursor-pointer relative overflow-hidden rounded shadow-sm aspect-square w-[80%] md:w-[200px] md:h-[200px]">
+                    <div className="group cursor-pointer relative overflow-hidden rounded shadow-sm aspect-square w-[90%] md:w-[200px] md:h-[200px]">
                       <img
                         src={relatedArtwork.imageUrl}
                         alt={relatedArtwork.title}
