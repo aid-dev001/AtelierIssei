@@ -4,9 +4,9 @@ import { useRoute } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Building2, Palette } from "lucide-react";
+import { Building2, Palette, ArrowRight, Grid3X3, Layers } from "lucide-react";
 import ImageModal from "@/components/ImageModal";
-import type { Artwork } from "@db/schema";
+import type { Artwork, Collection } from "@db/schema";
 
 const ArtworkDetail = () => {
   const [, params] = useRoute("/artwork/:id");
@@ -17,6 +17,23 @@ const ArtworkDetail = () => {
     queryKey: ["artwork", artworkId],
     queryFn: () => fetch(`/api/artworks/${artworkId}`).then(res => res.json()),
   });
+
+  // Fetch collection info if artwork has a collectionId
+  const { data: collection } = useQuery<Collection>({
+    queryKey: ["collection", artwork?.collectionId],
+    queryFn: () => fetch(`/api/collections/${artwork?.collectionId}`).then(res => res.json()),
+    enabled: !!artwork?.collectionId,
+  });
+
+  // Fetch all artworks to find related ones from the same collection
+  const { data: allArtworks } = useQuery<Artwork[]>({
+    queryKey: ["/api/artworks"],
+  });
+
+  // Get related artworks from same collection (excluding current artwork)
+  const relatedArtworks = allArtworks?.filter(
+    (a) => a.collectionId === artwork?.collectionId && a.id !== artwork?.id
+  ).slice(0, 4) || [];
 
   useEffect(() => {
     if (artwork) {
@@ -189,6 +206,75 @@ const ArtworkDetail = () => {
         </div>
       </div>
       
+      {/* Related Artworks from Same Collection */}
+      {collection && relatedArtworks.length > 0 && (
+        <div className="container mx-auto px-4 py-12 border-t border-gray-100">
+          <div className="max-w-6xl mx-auto space-y-8">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold tracking-wide text-gray-800/90">
+                {collection.title}の他の作品
+              </h2>
+              <Link href={`/collection/${collection.id}`}>
+                <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
+                  シリーズを見る
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {relatedArtworks.map((relatedArtwork) => (
+                <Link key={relatedArtwork.id} href={`/artwork/${relatedArtwork.id}`}>
+                  <div className="group cursor-pointer">
+                    <div className="relative aspect-square overflow-hidden rounded-lg shadow-md">
+                      <img
+                        src={relatedArtwork.imageUrl}
+                        alt={relatedArtwork.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        onError={(e) => {
+                          const img = e.target as HTMLImageElement;
+                          img.src = '/placeholder.png';
+                        }}
+                      />
+                      {relatedArtwork.status !== 'available' && (
+                        <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                          {relatedArtwork.status === 'sold' ? '売約済' : 
+                           relatedArtwork.status === 'reserved' ? '予約済' : '準備中'}
+                        </div>
+                      )}
+                    </div>
+                    <p className="mt-2 text-sm text-gray-700 truncate group-hover:text-gray-900">
+                      {relatedArtwork.title}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Navigation Links */}
+      <div className="container mx-auto px-4 py-12 border-t border-gray-100">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-4">
+            {collection && (
+              <Link href={`/collection/${collection.id}`}>
+                <Button variant="outline" className="flex items-center gap-2">
+                  <Layers className="w-4 h-4" />
+                  {collection.title}を見る
+                </Button>
+              </Link>
+            )}
+            <Link href="/artworks">
+              <Button variant="outline" className="flex items-center gap-2">
+                <Grid3X3 className="w-4 h-4" />
+                すべての作品を見る
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+
       <ImageModal
         isOpen={!!selectedImage}
         onClose={() => setSelectedImage(null)}
