@@ -190,7 +190,7 @@ const ArtworkDetail = () => {
                         </div>
                       ))
                     ) : (
-                      <div className="w-full text-center text-gray-500 mb-8">
+                      <div className="w-full flex items-center justify-center text-gray-500" style={{ minHeight: '200px' }}>
                         インテリアイメージは準備中です
                       </div>
                     )}
