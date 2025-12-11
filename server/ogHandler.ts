@@ -43,7 +43,7 @@ function isSocialMediaBot(userAgent: string): boolean {
 }
 
 function extractArtworkId(url: string): number | null {
-  const match = url.match(/^\/artworks\/(\d+)(?:\?.*)?$/);
+  const match = url.match(/^\/artwork\/(\d+)(?:\?.*)?$/);
   return match ? parseInt(match[1], 10) : null;
 }
 
