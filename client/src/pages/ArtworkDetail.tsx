@@ -119,7 +119,7 @@ const ArtworkDetail = () => {
               
               <div className="bg-white px-8 py-6 rounded-xl shadow-sm">
                 <div className="space-y-2">
-                  <div className="text-base font-medium tracking-wide text-gray-600">
+                  <div className="text-lg font-medium tracking-wide text-gray-600">
                     ¥{Number(artwork.price).toLocaleString()}
                   </div>
                   {artwork.status !== 'available' && (
