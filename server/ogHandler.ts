@@ -135,6 +135,19 @@ async function injectArtworkOgTags(html: string, artworkId: number, baseUrl: str
       `<meta name="twitter:image:alt" content="${escapeHtml(artwork.title || 'ATELIER ISSEI - アート作品')}" />`
     );
 
+    // Ensure twitter:card is set to summary_large_image for artwork pages
+    modifiedHtml = modifiedHtml.replace(
+      /<meta name="twitter:card" content="[^"]*" \/>/,
+      `<meta name="twitter:card" content="summary_large_image" />`
+    );
+
+    // Add og:image:secure_url for HTTPS (some platforms require this)
+    const secureImageTag = `<meta property="og:image:secure_url" content="${imageUrl}" />`;
+    modifiedHtml = modifiedHtml.replace(
+      /<meta property="og:image:height" content="[^"]*" \/>/,
+      `<meta property="og:image:height" content="630" />\n    ${secureImageTag}`
+    );
+
     return modifiedHtml;
   } catch (error) {
     console.error('Error injecting artwork OG tags:', error);
