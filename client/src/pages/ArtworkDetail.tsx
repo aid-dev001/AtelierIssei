@@ -167,10 +167,10 @@ const ArtworkDetail = () => {
 
               <div className="space-y-6">
                 <h2 className="text-2xl font-bold tracking-wide text-gray-800/90">インテリアイメージ</h2>
-                <div className={`grid gap-6 ${artwork.interiorImageUrls?.length === 1 ? 'grid-cols-1 max-w-sm mx-auto' : 'grid-cols-2'}`}>
+                <div className={`flex gap-6 ${artwork.interiorImageUrls?.length === 1 ? 'justify-center' : 'justify-start'}`}>
                     {artwork.interiorImageUrls && Array.isArray(artwork.interiorImageUrls) && artwork.interiorImageUrls.length > 0 ? (
                       artwork.interiorImageUrls.map((url: string, index: number) => (
-                        <div key={index} className="space-y-2">
+                        <div key={index} className="space-y-2 flex-1 max-w-[calc(50%-12px)]">
                           <div className="relative group cursor-pointer" onClick={() => setSelectedImage({url, caption: artwork.interiorImageDescriptions?.[index] || `${artwork.title} - インテリアイメージ ${index + 1}`})}>
                             <img
                               src={url}
@@ -190,7 +190,7 @@ const ArtworkDetail = () => {
                         </div>
                       ))
                     ) : (
-                      <div className="col-span-2 text-center text-gray-500">
+                      <div className="w-full text-center text-gray-500">
                         インテリアイメージは準備中です
                       </div>
                     )}
@@ -210,17 +210,6 @@ const ArtworkDetail = () => {
       {collection && relatedArtworks.length > 0 && (
         <div className="container mx-auto px-4 py-8 border-t border-gray-100">
           <div className="max-w-6xl mx-auto space-y-4">
-            <div className="flex items-center justify-center gap-4">
-              <h3 className="text-base font-medium text-gray-500">
-                {collection.title}の他の作品
-              </h3>
-              <Link href={`/collections/${collection.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}>
-                <span className="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1">
-                  もっと見る
-                  <ArrowRight className="w-3 h-3" />
-                </span>
-              </Link>
-            </div>
             <div className="flex justify-center gap-4 flex-wrap">
               {relatedArtworks.map((relatedArtwork) => (
                 <Link key={relatedArtwork.id} href={`/artwork/${relatedArtwork.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })} className="block">
@@ -240,6 +229,17 @@ const ArtworkDetail = () => {
                   </div>
                 </Link>
               ))}
+            </div>
+            <div className="flex items-center justify-between max-w-fit mx-auto" style={{ width: `${Math.min(relatedArtworks.length, 4) * 200 + (Math.min(relatedArtworks.length, 4) - 1) * 16}px` }}>
+              <h3 className="text-base font-medium text-gray-500">
+                {collection.title}の他の作品
+              </h3>
+              <Link href={`/collections/${collection.id}`} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}>
+                <span className="text-sm text-gray-400 hover:text-gray-600 flex items-center gap-1">
+                  もっと見る
+                  <ArrowRight className="w-3 h-3" />
+                </span>
+              </Link>
             </div>
           </div>
         </div>
