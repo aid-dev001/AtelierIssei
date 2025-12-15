@@ -604,7 +604,7 @@ const locationsData: Record<string, LocationData> = {
   // パリ2025
   "paris-2025": {
     id: "paris-2025",
-    title: "フランス・パリ",
+    title: "2025 フランス",
     country: "フランス",
     year: "2025",
     description: "パリ19区ギャラリーMでの個展とノルマンディーでの撮影プロジェクト",
