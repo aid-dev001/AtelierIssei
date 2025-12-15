@@ -1089,6 +1089,39 @@ const LocationDetail: React.FC = () => {
         />
       </div>
 
+      {/* パリ2025 ギャラリーリンク */}
+      {location.id === "paris-2025" && (
+        <div className="mb-12 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-1">Galerie M</h3>
+              <p className="text-gray-600">パリ19区ジョレス駅近くのギャラリー</p>
+            </div>
+            <a
+              href="https://www.thestorefront.com/fr/spaces/france/Ile-de-france/paris/41631-galerie-dart-proche-de-la-rotonde-?fbclid=IwY2xjawOs2UhleHRuA2FlbQIxMABicmlkETFrYlZMaVJFQ09PbHVhQmFLc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHvl3mxRvIFgorR33AIVtvmG4KafPi7h3B-hc5C3d1MMnY-YAJEXpt_inbF4R_aem_k4JYavq9fiaZK7rPRB7mVg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+              ギャラリー情報を見る
+            </a>
+          </div>
+        </div>
+      )}
+
       {/* サイドバー情報 - 上部に移動 */}
       <div className="mb-12">
         <h3 className="text-xl font-medium mb-4">詳細情報</h3>
