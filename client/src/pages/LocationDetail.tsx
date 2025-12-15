@@ -1114,8 +1114,8 @@ const LocationDetail: React.FC = () => {
             <dd className="font-medium">{location.country}</dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-gray-600">訪問年</dt>
-            <dd className="font-medium">{location.year}</dd>
+            <dt className="text-gray-600">{location.id === "paris-2025" ? "開催日" : "訪問年"}</dt>
+            <dd className="font-medium">{location.id === "paris-2025" ? "2025/11/29, 30" : location.year}</dd>
           </div>
           {location.id === "paris-2025" && (
             <div className="flex justify-between">
@@ -1423,6 +1423,10 @@ const LocationDetail: React.FC = () => {
                         {locationsData[locationOrder[currentIndex - 1]]
                           ?.title || ""}
                       </div>
+                      <div className="text-xs md:text-sm text-gray-600 mt-1 break-words line-clamp-2">
+                        {locationsData[locationOrder[currentIndex - 1]]
+                          ?.description || ""}
+                      </div>
                     </div>
                   </Button>
                 </Link>
@@ -1449,6 +1453,10 @@ const LocationDetail: React.FC = () => {
                       <div className="font-medium text-sm md:text-base break-words">
                         {locationsData[locationOrder[currentIndex + 1]]
                           ?.title || ""}
+                      </div>
+                      <div className="text-xs md:text-sm text-gray-600 mt-1 break-words line-clamp-2">
+                        {locationsData[locationOrder[currentIndex + 1]]
+                          ?.description || ""}
                       </div>
                     </div>
                     <ChevronRight className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0 order-2" />
