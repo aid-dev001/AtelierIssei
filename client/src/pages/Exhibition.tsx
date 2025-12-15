@@ -506,32 +506,170 @@ const Exhibition = () => {
                       </>
                     )}
 
-                    {/* その他の場所 - 汎用的な説明 */}
-                    {![
-                      "hiroshima",
-                      "tokyo-shinjuku",
-                      "tokyo-ikebukuro",
-                      "abu-dhabi",
-                      "tokyo-okubo",
-                      "paris",
-                      "france-savigny",
-                      "london",
-                      "tokyo-akasaka",
-                      "paris-second",
-                      "paris-2025",
-                    ].includes(location.id) && (
+                    {/* アティスモンス 2022 - 詳細説明 */}
+                    {location.id === "atis-mons" && (
                       <>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                          風景や文化、人々の表情から生まれるインスピレーションは、
-                          作品の色彩や構図、テーマに深く影響しています。
-                          特にこの地域で感じた光と影のコントラスト、
-                          自然と都市の共存する風景は、
-                          新たな表現方法を模索するきっかけとなりました。
+                          パリ近郊の静かな住宅地アティスモンスで、集中的な創作期間を過ごしました。フランスの日常生活に溶け込みながら、地元の方々との交流を通じて新しいインスピレーションを得ることができました。
                         </p>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
-                          この場所での体験は、制作活動における
-                          重要な転機となり、以降の作品における
-                          視点や感性に変化をもたらしました。
+                          この滞在中に制作した作品は、フランスの穏やかな空気感と、地域の人々の温かさを反映しています。アトリエでの制作に加え、街を歩きながらスケッチを重ね、後の作品群の土台となる重要な時期でした。
+                        </p>
+                      </>
+                    )}
+
+                    {/* スペイン・カサミラ 2022 - 詳細説明 */}
+                    {location.id === "spain-casamila" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          バルセロナにあるガウディの傑作、カサ・ミラ（ラ・ペドレラ）での展示に参加しました。曲線と自然をモチーフにした建築空間の中で、私の作品がどのように見えるか、とても興味深い体験でした。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          ガウディの有機的なデザイン哲学と自分の作品との対話は、芸術における「自然との調和」について深く考えるきっかけとなりました。スペインの情熱的な芸術文化に触れ、表現の幅を広げる貴重な機会となりました。
+                        </p>
+                      </>
+                    )}
+
+                    {/* フランス・ノルマンディー 2023 - 詳細説明 */}
+                    {location.id === "normandy" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          ノルマンディー地方のエトルパニーにある図書館・メディアテークで展示を行いました。歴史と自然が織りなすこの地域の風景は、作品制作に大きなインスピレーションを与えてくれました。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          印象派の画家たちも愛したこの地域の柔らかな光と、緑豊かな田園風景の中で、静寂と自然の美しさを感じながら創作活動に取り組みました。
+                        </p>
+                      </>
+                    )}
+
+                    {/* 東京・東新宿 2023 - 詳細説明 */}
+                    {location.id === "tokyo-higashi-shinjuku" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          東新宿のギャラリーで、ポップアートと抽象画を融合させた作品群を展示しました。都市の夜景に映える色彩豊かな作品は、来場者の方々から好評をいただきました。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          新宿の多様なエネルギーと文化の交差点で、国内外のアートファンと交流する機会を得ました。この展示は、日本での活動基盤を強化する重要なステップとなりました。
+                        </p>
+                      </>
+                    )}
+
+                    {/* フランス・アティスモンス教会 2023 - 詳細説明 */}
+                    {location.id === "atis-mons-church" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          アティスモンスの歴史ある教会を会場に、神聖な空間と現代アートの融合を試みた特別展示会を開催しました。教会の厳かな雰囲気の中で、作品たちは新たな表情を見せてくれました。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          地域の方々が多く訪れ、芸術を通じた心の交流が生まれました。伝統的な建築空間と現代アートの対話は、観る人それぞれに深い印象を残す展示となりました。
+                        </p>
+                      </>
+                    )}
+
+                    {/* フランス・シャンボール城 2023 - 詳細説明 */}
+                    {location.id === "france-chambord" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          ロワール渓谷にあるフランス最大の城、シャンボール城での野外アートプロジェクトに参加しました。ルネサンス建築の傑作を背景に、作品の撮影を行いました。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          壮大な城と広大な庭園の中で、歴史と現代アートが出会う瞬間を捉えることができました。この体験は、スケールの大きな作品づくりへの挑戦意欲を高めてくれました。
+                        </p>
+                      </>
+                    )}
+
+                    {/* フランス・モンマルトル 2023 - 詳細説明 */}
+                    {location.id === "montmartre" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          芸術家の聖地モンマルトルで、街角スケッチと撮影を行いました。ピカソやゴッホが歩いた同じ石畳の上で、彼らの創作精神を感じながら制作に取り組みました。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          サクレ・クール寺院を望む丘の上で、パリの街並みと自分の作品を一緒に収めた写真は、芸術の歴史と現在を繋ぐ特別な記録となりました。
+                        </p>
+                      </>
+                    )}
+
+                    {/* 東京・新宿 2024 - 詳細説明 */}
+                    {location.id === "tokyo-shinjuku-2024" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          2024年、新宿の現代的なギャラリースペースで展示を開催しました。高層ビルが立ち並ぶ都市景観の中で、アートが持つ癒しの力を表現した作品群を発表しました。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          忙しい都会の中で一息つける空間を提供したいという思いを込めて、来場者の方々に穏やかな時間を過ごしていただけるよう心がけました。
+                        </p>
+                      </>
+                    )}
+
+                    {/* フランス・ショーモン城 2024 - 詳細説明 */}
+                    {location.id === "chaumont" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          ロワール渓谷のショーモン城で開催された特別展示プロジェクトに参加しました。中世の城と現代アートの融合は、時を超えた芸術の対話を生み出しました。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          城の美しい庭園を舞台に、自然と建築、そしてアートが一体となった空間で作品を展示できたことは、とても光栄な体験でした。
+                        </p>
+                      </>
+                    )}
+
+                    {/* フランス・ニース 2024 - 詳細説明 */}
+                    {location.id === "nice" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          コート・ダジュールの中心地ニースで、地中海の陽光に照らされた色彩の研究を行いました。マティスも愛したこの街の光は、作品の色彩感覚に新たなインスピレーションを与えてくれました。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          青い海と空、色とりどりの建物が織りなす風景の中で、明るく生命力あふれる作品群を制作しました。南仏の開放的な雰囲気は、表現の自由さを後押ししてくれました。
+                        </p>
+                      </>
+                    )}
+
+                    {/* モナコ 2024 - 詳細説明 */}
+                    {location.id === "monaco" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          地中海に面した高級リゾート、モナコ公国での展示に参加しました。洗練された文化と芸術への深い理解を持つこの地で、作品を発表できたことは大変名誉なことでした。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          世界中から集まる芸術愛好家との交流を通じて、国際的なアートシーンにおける自分の位置づけを再確認する機会となりました。
+                        </p>
+                      </>
+                    )}
+
+                    {/* 広島・福山 2024 - 詳細説明 */}
+                    {location.id === "fukuyama" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          福山こころの病院で、愛と癒しをテーマにした作品展示を行いました。医療の現場でアートが持つ力を活かし、患者さんやスタッフの方々に安らぎを届けたいという思いから実現した展示です。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          故郷広島に近いこの場所で、アートを通じた心のケアに貢献できることは、私にとって特別な意味を持つ活動となりました。
+                        </p>
+                      </>
+                    )}
+
+                    {/* フランス・ティレーヌアンドレシス教会 2024 - 詳細説明 */}
+                    {location.id === "saint-hilaire-andre" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          中世の面影を残すフランスの小さな村で、歴史ある教会を舞台に滞在制作を行いました。静寂に包まれた環境の中で、内省的な作品づくりに集中することができました。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          村の人々の温かいもてなしを受けながら、時間がゆっくりと流れるこの場所で、心に響く作品を生み出すことができました。
+                        </p>
+                      </>
+                    )}
+
+                    {/* フランス・ブールジュ 2025 - 詳細説明 */}
+                    {location.id === "bourges" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          ユネスコ世界遺産のブールジュ大聖堂がある歴史的な街で、ゴシック建築に囲まれた創作体験をしました。中世の建築美と現代アートの対話を試みました。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          フランス中部のこの美しい街で、歴史の重みを感じながら新しい表現に挑戦しました。伝統と革新の融合をテーマにした作品制作に取り組んでいます。
                         </p>
                       </>
                     )}
