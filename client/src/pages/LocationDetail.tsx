@@ -1064,7 +1064,7 @@ const LocationDetail: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 min-h-screen">
+    <div key={locationId} className="container mx-auto px-4 py-12 min-h-screen">
       <div className="space-y-2 mb-6">
         <div className="flex items-center gap-3">
           <span className="text-sm tracking-wider text-gray-500">
