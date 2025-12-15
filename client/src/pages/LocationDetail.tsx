@@ -1004,16 +1004,21 @@ const locationOrder = [
   "london",
   "tokyo-akasaka",
   "paris-second",
-  "spain-casamila",
   "atis-mons",
+  "spain-casamila",
+  "normandy",
   "tokyo-higashi-shinjuku",
   "atis-mons-church",
-  "normandy",
   "france-chambord",
   "montmartre",
   "tokyo-shinjuku-2024",
   "chaumont",
+  "nice",
   "monaco",
+  "fukuyama",
+  "saint-hilaire-andre",
+  "bourges",
+  "paris-2025",
 ];
 
 const LocationDetail: React.FC = () => {
