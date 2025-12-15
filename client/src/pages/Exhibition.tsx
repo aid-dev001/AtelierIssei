@@ -261,6 +261,21 @@ const locations = [
     description: "ゴシック建築に囲まれた創作体験",
     images: ["/images/13463.jpg"],
   },
+  {
+    id: "paris-2025",
+    label: "フランス・パリ",
+    year: "2025",
+    country: "フランス",
+    description: "パリ19区ギャラリーMでの個展とノルマンディーでの撮影プロジェクト",
+    images: [
+      "/exhibitions/france-2025/01.jpg",
+      "/exhibitions/france-2025/02.jpg",
+      "/exhibitions/france-2025/03.jpg",
+      "/exhibitions/france-2025/04.jpg",
+      "/exhibitions/france-2025/05.jpg",
+      "/exhibitions/france-2025/06.jpg",
+    ],
+  },
 ];
 
 const Exhibition = () => {
