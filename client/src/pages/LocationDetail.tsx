@@ -607,7 +607,7 @@ const locationsData: Record<string, LocationData> = {
     title: "フランス・パリ",
     country: "フランス",
     year: "2025",
-    description: "パリ19区ギャラリーMでの個展とノルマンディーでの撮影プロジェクト",
+    description: "パリ19区ギャラリーMでの個展とノルマンディーでの撮影紀行",
     googleMapUrl:
       "https://www.google.com/maps/place/Galerie+M/@48.8833818,2.3558281,15z/data=!4m10!1m2!2m1!1sgaleries+d'Art+%C3%A0+Paris+19+-+75019!3m6!1s0x47e66dcc29fc1777:0x83e9f48e42f9f33b!8m2!3d48.8833818!4d2.3738525!15sCiJnYWxlcmllcyBkJ0FydCDDoCBQYXJpcyAxOSAtIDc1MDE5kgELYXJ0X2dhbGxlcnngAQA!16s%2Fg%2F11shpzh34l?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoKLDEwMDc5MjA2N0gBUAM%3D",
     longDescription: `今回の展示の舞台は、パリ19区ジョレス駅近くに位置するギャラリーMでした。フィルハーモニー・ド・パリという都市文化を象徴するコンサートホールと、サン＝マルタン運河の穏やかな水辺に寄り添う、上品で落ち着いたエリアにあります。チームメンバーのお母さんがかつて研修医として勤務していた大学病院の近くという点も、この展示に静かな時間の厚みを与えています。
