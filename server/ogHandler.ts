@@ -103,7 +103,7 @@ const locationsOgData: Record<string, LocationOgData> = {
   },
   "paris-2025": {
     title: "フランス・パリ",
-    description: "パリ19区ギャラリーMでの個展とノルマンディーでの撮影プロジェクト",
+    description: "パリ19区ギャラリーMでの個展とノルマンディーでの撮影紀行",
     image: "/exhibitions/france-2025/01.jpg",
   },
   "paris-second": {
