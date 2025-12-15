@@ -608,6 +608,8 @@ const locationsData: Record<string, LocationData> = {
     country: "フランス",
     year: "2025",
     description: "パリ19区ギャラリーMでの個展とノルマンディーでの撮影プロジェクト",
+    googleMapUrl:
+      "https://www.google.com/maps/place/Galerie+M/@48.8833818,2.3558281,15z/data=!4m10!1m2!2m1!1sgaleries+d'Art+%C3%A0+Paris+19+-+75019!3m6!1s0x47e66dcc29fc1777:0x83e9f48e42f9f33b!8m2!3d48.8833818!4d2.3738525!15sCiJnYWxlcmllcyBkJ0FydCDDoCBQYXJpcyAxOSAtIDc1MDE5kgELYXJ0X2dhbGxlcnngAQA!16s%2Fg%2F11shpzh34l?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoKLDEwMDc5MjA2N0gBUAM%3D",
     longDescription: `今回の展示の舞台は、パリ19区ジョレス駅近くに位置するギャラリーMでした。フィルハーモニー・ド・パリという都市文化を象徴するコンサートホールと、サン＝マルタン運河の穏やかな水辺に寄り添う、上品で落ち着いたエリアにあります。チームメンバーのお母さんがかつて研修医として勤務していた大学病院の近くという点も、この展示に静かな時間の厚みを与えています。
 
 展示初日の土曜日は、事前に構想していた壁面展示の一部が整わず、思い描いていたレイアウトを完全には実現できませんでした。さらに午後には、テロ抑止のため周辺一帯に交通規制が敷かれ、街の流れが一時的に止まります。そのような静寂の中で来場したのは、子ども二人を連れた家族、ダリを思わせる雰囲気の年配の男性、そして近隣カフェのオーナーでした。特にカフェオーナーは作品に強い関心を示し、ポストカードを20枚購入するとともに、近隣の店主仲間へ展示の案内を配布してくれることになりました。
@@ -1259,8 +1261,66 @@ const LocationDetail: React.FC = () => {
         </div>
       )}
 
+      {/* パリ2025のGoogle Map */}
+      {location.id === "paris-2025" && (
+        <div className="mt-12">
+          <h3 className="text-2xl font-bold mb-6 text-gray-800">
+            ギャラリー所在地
+          </h3>
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h4 className="text-lg font-semibold mb-4 text-gray-800">
+              Galerie M
+            </h4>
+            <p className="text-sm text-gray-600 mb-4">
+              パリ19区ジョレス駅近く
+            </p>
+            <div className="aspect-w-16 aspect-h-9 h-[36rem] rounded-lg overflow-hidden">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2623.5!2d2.3738525!3d48.8833818!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66dcc29fc1777%3A0x83e9f48e42f9f33b!2sGalerie%20M!5e0!3m2!1sja!2sjp!4v1640000000000!5m2!1sja!2sjp"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="rounded-lg"
+              ></iframe>
+            </div>
+            <div className="mt-4">
+              <a
+                href="https://www.google.com/maps/place/Galerie+M/@48.8833818,2.3558281,15z/data=!4m10!1m2!2m1!1sgaleries+d'Art+%C3%A0+Paris+19+-+75019!3m6!1s0x47e66dcc29fc1777:0x83e9f48e42f9f33b!8m2!3d48.8833818!4d2.3738525!15sCiJnYWxlcmllcyBkJ0FydCDDoCBQYXJpcyAxOSAtIDc1MDE5kgELYXJ0X2dhbGxlcnngAQA!16s%2Fg%2F11shpzh34l?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoKLDEwMDc5MjA2N0gBUAM%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                Google Mapで開く
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 他の場所のGoogle Map */}
-      {location.googleMapUrl && location.id !== "paris-second" && (
+      {location.googleMapUrl && location.id !== "paris-second" && location.id !== "paris-2025" && (
         <div className="mt-12">
           <h3 className="text-2xl font-bold mb-6 text-gray-800">
             ギャラリー所在地
