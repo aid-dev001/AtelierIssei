@@ -1415,15 +1415,15 @@ const LocationDetail: React.FC = () => {
                     className="flex items-center gap-3 p-3 md:p-4 h-auto hover:bg-gray-50 w-full justify-start"
                   >
                     <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
-                    <div className="text-left min-w-0 flex-1 overflow-hidden">
+                    <div className="text-left min-w-0 flex-1">
                       <div className="text-xs md:text-sm text-gray-500 mb-1">
                         前のページ
                       </div>
-                      <div className="font-medium text-sm md:text-base line-clamp-2">
+                      <div className="font-medium text-sm md:text-base truncate">
                         {locationsData[locationOrder[currentIndex - 1]]
                           ?.title || ""}
                       </div>
-                      <div className="text-xs md:text-sm text-gray-600 mt-1 line-clamp-2">
+                      <div className="text-xs md:text-sm text-gray-600 mt-1 truncate">
                         {locationsData[locationOrder[currentIndex - 1]]
                           ?.description || ""}
                       </div>
@@ -1446,15 +1446,15 @@ const LocationDetail: React.FC = () => {
                     variant="ghost"
                     className="flex items-center gap-3 p-3 md:p-4 h-auto hover:bg-gray-50 w-full justify-end"
                   >
-                    <div className="text-right min-w-0 flex-1 overflow-hidden order-2 md:order-1">
+                    <div className="text-right min-w-0 flex-1 order-2 md:order-1">
                       <div className="text-xs md:text-sm text-gray-500 mb-1">
                         次のページ
                       </div>
-                      <div className="font-medium text-sm md:text-base line-clamp-2">
+                      <div className="font-medium text-sm md:text-base truncate">
                         {locationsData[locationOrder[currentIndex + 1]]
                           ?.title || ""}
                       </div>
-                      <div className="text-xs md:text-sm text-gray-600 mt-1 line-clamp-2">
+                      <div className="text-xs md:text-sm text-gray-600 mt-1 truncate">
                         {locationsData[locationOrder[currentIndex + 1]]
                           ?.description || ""}
                       </div>
