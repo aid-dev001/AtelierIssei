@@ -1419,11 +1419,11 @@ const LocationDetail: React.FC = () => {
                       <div className="text-xs md:text-sm text-gray-500 mb-1">
                         前のページ
                       </div>
-                      <div className="font-medium text-sm md:text-base line-clamp-2">
+                      <div className="font-medium text-sm md:text-base break-words">
                         {locationsData[locationOrder[currentIndex - 1]]
                           ?.title || ""}
                       </div>
-                      <div className="text-xs md:text-sm text-gray-600 mt-1 line-clamp-2">
+                      <div className="text-xs md:text-sm text-gray-600 mt-1 break-words line-clamp-2">
                         {locationsData[locationOrder[currentIndex - 1]]
                           ?.description || ""}
                       </div>
@@ -1450,11 +1450,11 @@ const LocationDetail: React.FC = () => {
                       <div className="text-xs md:text-sm text-gray-500 mb-1">
                         次のページ
                       </div>
-                      <div className="font-medium text-sm md:text-base line-clamp-2">
+                      <div className="font-medium text-sm md:text-base break-words">
                         {locationsData[locationOrder[currentIndex + 1]]
                           ?.title || ""}
                       </div>
-                      <div className="text-xs md:text-sm text-gray-600 mt-1 line-clamp-2">
+                      <div className="text-xs md:text-sm text-gray-600 mt-1 break-words line-clamp-2">
                         {locationsData[locationOrder[currentIndex + 1]]
                           ?.description || ""}
                       </div>
