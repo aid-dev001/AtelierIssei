@@ -266,7 +266,7 @@ const locations = [
     label: "フランス・パリ",
     year: "2025",
     country: "フランス",
-    description: "パリ19区ギャラリーMでの個展とノルマンディーでの撮影プロジェクト",
+    description: "パリ19区ギャラリーMでの個展。84歳の女性が生涯初めてギャラリーに足を踏み入れ、「すべてがピュア」と語った感動的な展示。ノルマンディーでの撮影も並行して実施",
     images: [
       "/exhibitions/france-2025/01.jpg",
       "/exhibitions/france-2025/02.jpg",
