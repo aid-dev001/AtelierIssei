@@ -491,6 +491,21 @@ const Exhibition = () => {
                       </>
                     )}
 
+                    {/* パリ2025 - 詳細説明 */}
+                    {location.id === "paris-2025" && (
+                      <>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          パリ19区ジョレス駅近くのギャラリーMで開催。カフェオーナーがポストカード20枚を購入し、近隣店主への案内配布を申し出てくださいました。カメラマンのカップルと母親は約1時間滞在し、人物シリーズ10枚とキーホルダーを購入されました。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          特に印象的だったのは、84歳の女性の来場です。生涯パリに暮らしながら一度もギャラリーに入ったことがなかった彼女は、ガラス越しに作品を見て心を打たれ、初めて展示空間へ足を踏み入れました。「すべてがピュアで、これを描いた人の心は間違いなく純粋に違いない」と語り、作品とポストカードを手に取って静かに帰っていきました。
+                        </p>
+                        <p className="text-lg text-gray-700 leading-relaxed mt-4">
+                          並行して行われたノルマンディーでの撮影は、暴風雨と晴天が瞬時に入れ替わる過酷な天候の中で敢行。ディエップの浜辺やリンゴ農園、公園など、ノルマンディーの静けさに包まれた風景の中で作品を撮影しました。
+                        </p>
+                      </>
+                    )}
+
                     {/* その他の場所 - 汎用的な説明 */}
                     {![
                       "hiroshima",
@@ -503,6 +518,7 @@ const Exhibition = () => {
                       "london",
                       "tokyo-akasaka",
                       "paris-second",
+                      "paris-2025",
                     ].includes(location.id) && (
                       <>
                         <p className="text-lg text-gray-700 leading-relaxed mt-4">
