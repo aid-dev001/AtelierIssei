@@ -1041,11 +1041,18 @@ const LocationDetail: React.FC = () => {
   useEffect(() => {
     console.log("LocationDetail with locationId:", locationId);
 
+    // まず状態をリセット
+    setLocation(null);
+    setSelectedImage(null);
+
     if (locationId && locationsData[locationId]) {
       console.log("Found location data for:", locationId);
-      setLocation(locationsData[locationId]);
-      const index = locationOrder.indexOf(locationId);
-      setCurrentIndex(index);
+      // 少し遅延を入れて確実にリセット後に設定
+      setTimeout(() => {
+        setLocation(locationsData[locationId]);
+        const index = locationOrder.indexOf(locationId);
+        setCurrentIndex(index);
+      }, 0);
       window.scrollTo(0, 0);
     } else {
       // Handle case when location data not found
@@ -1397,28 +1404,24 @@ const LocationDetail: React.FC = () => {
           {/* スマートフォンでは縦積み、PCでは横並び */}
           <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4">
             {/* 前のページ */}
-            <div className="flex-1 flex justify-start">
+            <div className="flex-1 flex justify-start max-w-full md:max-w-[45%]">
               {currentIndex > 0 ? (
                 <Link
                   href={`/exhibition/location/${locationOrder[currentIndex - 1]}`}
-                  className="w-full md:w-auto"
+                  className="w-full"
                 >
                   <Button
                     variant="ghost"
-                    className="flex items-center gap-3 p-3 md:p-4 h-auto hover:bg-gray-50 w-full md:w-auto justify-start"
+                    className="flex items-center gap-3 p-3 md:p-4 h-auto hover:bg-gray-50 w-full justify-start"
                   >
                     <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
-                    <div className="text-left min-w-0 flex-1">
+                    <div className="text-left min-w-0 flex-1 overflow-hidden">
                       <div className="text-xs md:text-sm text-gray-500 mb-1">
                         前のページ
                       </div>
-                      <div className="font-medium text-sm md:text-base truncate">
+                      <div className="font-medium text-sm md:text-base break-words">
                         {locationsData[locationOrder[currentIndex - 1]]
                           ?.title || ""}
-                      </div>
-                      <div className="text-xs md:text-sm text-gray-600 mt-1 line-clamp-2">
-                        {locationsData[locationOrder[currentIndex - 1]]
-                          ?.description || ""}
                       </div>
                     </div>
                   </Button>
@@ -1429,27 +1432,23 @@ const LocationDetail: React.FC = () => {
             </div>
 
             {/* 次のページ */}
-            <div className="flex-1 flex justify-end">
+            <div className="flex-1 flex justify-end max-w-full md:max-w-[45%]">
               {currentIndex >= 0 && currentIndex < locationOrder.length - 1 ? (
                 <Link
                   href={`/exhibition/location/${locationOrder[currentIndex + 1]}`}
-                  className="w-full md:w-auto"
+                  className="w-full"
                 >
                   <Button
                     variant="ghost"
-                    className="flex items-center gap-3 p-3 md:p-4 h-auto hover:bg-gray-50 w-full md:w-auto justify-end"
+                    className="flex items-center gap-3 p-3 md:p-4 h-auto hover:bg-gray-50 w-full justify-end"
                   >
-                    <div className="text-right min-w-0 flex-1 order-2 md:order-1">
+                    <div className="text-right min-w-0 flex-1 overflow-hidden order-2 md:order-1">
                       <div className="text-xs md:text-sm text-gray-500 mb-1">
                         次のページ
                       </div>
-                      <div className="font-medium text-sm md:text-base truncate">
+                      <div className="font-medium text-sm md:text-base break-words">
                         {locationsData[locationOrder[currentIndex + 1]]
                           ?.title || ""}
-                      </div>
-                      <div className="text-xs md:text-sm text-gray-600 mt-1 line-clamp-2">
-                        {locationsData[locationOrder[currentIndex + 1]]
-                          ?.description || ""}
                       </div>
                     </div>
                     <ChevronRight className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0 order-2" />
