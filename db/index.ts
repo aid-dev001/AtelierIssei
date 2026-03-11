@@ -3,24 +3,18 @@ import ws from "ws";
 import * as schema from "@db/schema";
 
 const getDatabaseUrl = () => {
-  if (process.env.NODE_ENV === 'production') {
-    const productionUrl = process.env.PRODUCTION_DATABASE_URL;
-    if (!productionUrl) {
-      throw new Error(
-        "Production environment requires PRODUCTION_DATABASE_URL to be set"
-      );
-    }
-    console.log("Using production database (PRODUCTION_DATABASE_URL)");
-    return productionUrl;
-  }
-  const devUrl = process.env.DATABASE_URL;
-  if (!devUrl) {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
     throw new Error(
-      "Development environment requires DATABASE_URL to be set"
+      "DATABASE_URL must be set. Did you forget to provision a database?"
     );
   }
-  console.log("Using development database (DATABASE_URL)");
-  return devUrl;
+  if (process.env.NODE_ENV === 'production') {
+    console.log("Using production database (DATABASE_URL)");
+  } else {
+    console.log("Using development database (DATABASE_URL)");
+  }
+  return url;
 };
 
 const dbUrl = getDatabaseUrl();
