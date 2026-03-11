@@ -21,6 +21,10 @@ function log(message: string) {
 }
 
 const app = express();
+// 本番環境ではリバースプロキシ経由のHTTPS接続を信頼する（Replit デプロイ環境）
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // 静的ファイルのキャッシュ設定
@@ -47,17 +51,19 @@ app.use('/artworks', express.static('public/artworks', staticOptions));
 app.use('/artworks', express.static('.', staticOptions));
 
 const MemoryStoreSession = MemoryStore(session);
+const isProduction = process.env.NODE_ENV === 'production';
 app.use(session({
-  secret: 'your-secret-key',
-  resave: true,
-  saveUninitialized: true,
+  secret: process.env.SESSION_SECRET || 'fallback-dev-secret-key',
+  resave: false,
+  saveUninitialized: false,
   store: new MemoryStoreSession({
     checkPeriod: 86400000 // 24時間でexpire
   }),
   cookie: {
-    secure: false, // development環境ではfalse
+    secure: isProduction, // 本番環境(HTTPS)ではtrue
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24時間
+    maxAge: 24 * 60 * 60 * 1000, // 24時間
+    sameSite: isProduction ? 'none' : 'lax'
   }
 }));
 
