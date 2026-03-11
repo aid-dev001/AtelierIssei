@@ -50,6 +50,18 @@ app.use('/artworks', (req, res, next) => {
 app.use('/artworks', express.static('public/artworks', staticOptions));
 app.use('/artworks', express.static('.', staticOptions));
 
+// 開発環境でローカルに画像がない場合、本番サーバーから取得する
+if (process.env.NODE_ENV !== 'production') {
+  const PRODUCTION_BASE_URL = process.env.BASE_URL || 'https://atelier-issei.com';
+  app.use('/artworks', (req, res, next) => {
+    const localPath = path.join('public/artworks', req.path);
+    if (!fs.existsSync(localPath)) {
+      return res.redirect(`${PRODUCTION_BASE_URL}/artworks${req.path}`);
+    }
+    next();
+  });
+}
+
 const MemoryStoreSession = MemoryStore(session);
 const isProduction = process.env.NODE_ENV === 'production';
 app.use(session({
