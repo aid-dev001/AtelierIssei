@@ -160,6 +160,8 @@ const Product: React.FC = () => {
   const compositeRef = useRef<HTMLCanvasElement>(null);
   const tshirtRef = useRef<HTMLCanvasElement>(null);
   const maskRef = useRef<HTMLCanvasElement | null>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+  const prevIsReady = useRef(false);
 
   const { data: shapes = [] } = useQuery<ProductShape[]>({
     queryKey: ["product-shapes"],
@@ -287,18 +289,25 @@ const Product: React.FC = () => {
 
   const isReady = shapeImg && fillImg;
 
+  useEffect(() => {
+    if (isReady && !prevIsReady.current) {
+      setTimeout(() => previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
+    }
+    prevIsReady.current = !!isReady;
+  }, [isReady]);
+
   return (
     <div className="min-h-screen bg-white py-12">
       {modalImg && <ImageModal src={modalImg} onClose={() => setModalImg(null)} />}
 
       <div className="max-w-5xl mx-auto px-4">
         <h1 className="text-4xl font-bold mb-2 tracking-wider text-center">PRODUCT</h1>
-        <p className="text-center text-gray-400 mb-12 text-sm tracking-wide">
+        <p className="text-center text-black mb-12 text-sm tracking-wide">
           絵からデザインをシミュレート
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">
-          <div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12 md:items-stretch">
+          <div className="flex flex-col">
             <div className="flex items-center gap-2 mb-4">
               <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold">1</span>
               <span className="font-semibold text-sm tracking-wider">型の絵を選ぶ</span>
@@ -324,27 +333,29 @@ const Product: React.FC = () => {
             )}
           </div>
 
-          <div>
+          <div className="flex flex-col">
             <div className="flex items-center gap-2 mb-4">
               <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold">2</span>
               <span className="font-semibold text-sm tracking-wider">中身の絵を選ぶ</span>
-              <span className="text-xs text-gray-400">ISSEIの作品から選択</span>
+              <span className="text-xs text-black">ISSEIの作品から選択</span>
             </div>
             {artworks.length === 0 ? (
               <p className="text-sm text-gray-400 py-8 text-center border rounded-xl">作品がありません</p>
             ) : (
-              <div className="grid grid-cols-3 gap-2 max-h-64 overflow-y-auto pr-1">
-                {artworks.map((a) => (
-                  <button
-                    key={a.id}
-                    onClick={() => setSelectedFillId(a.id)}
-                    className={`rounded-xl overflow-hidden border-2 transition-all aspect-square ${
-                      selectedFillId === a.id ? "border-black shadow-md" : "border-transparent hover:border-gray-300"
-                    }`}
-                  >
-                    <img src={a.imageUrl} alt={a.title} className="w-full h-full object-cover bg-gray-50" />
-                  </button>
-                ))}
+              <div className="flex-1 overflow-y-auto">
+                <div className="grid grid-cols-3 gap-2 pr-1">
+                  {artworks.map((a) => (
+                    <button
+                      key={a.id}
+                      onClick={() => setSelectedFillId(a.id)}
+                      className={`rounded-xl overflow-hidden border-2 transition-all aspect-square ${
+                        selectedFillId === a.id ? "border-black shadow-md" : "border-transparent hover:border-gray-300"
+                      }`}
+                    >
+                      <img src={a.imageUrl} alt={a.title} className="w-full h-full object-cover bg-gray-50" />
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -352,18 +363,18 @@ const Product: React.FC = () => {
 
         {isReady && (
           <div className="mb-4 flex items-center gap-4 flex-wrap">
-            <label className="flex items-center gap-2 text-sm text-gray-600">
+            <label className="flex items-center gap-2 text-sm text-black">
               <span className="text-xs">型のくり抜き調整</span>
               <input
                 type="range" min={200} max={254} value={threshold}
                 onChange={(e) => { maskRef.current = null; setThreshold(Number(e.target.value)); }}
                 className="w-28 accent-black"
               />
-              <span className="text-xs text-gray-400">{threshold < 220 ? "広め" : threshold > 245 ? "狭め" : "標準"}</span>
+              <span className="text-xs text-black">{threshold < 220 ? "広め" : threshold > 245 ? "狭め" : "標準"}</span>
             </label>
             <button
               onClick={() => setOffset({ x: 0, y: 0 })}
-              className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-black transition-colors"
+              className="flex items-center gap-1.5 text-sm text-black hover:text-gray-600 transition-colors"
             >
               <RefreshCw className="w-4 h-4" />
               位置リセット
@@ -372,11 +383,11 @@ const Product: React.FC = () => {
         )}
 
         {isReady && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div ref={previewRef} className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <p className="text-xs font-semibold tracking-wider text-gray-400 uppercase mb-3">
+              <p className="text-xs font-semibold tracking-wider text-black uppercase mb-3">
                 プレビュー
-                <span className="font-normal ml-2 text-gray-300">← ドラッグで中身の絵を動かせます</span>
+                <span className="font-normal ml-2 text-black">← ドラッグで中身の絵を動かせます</span>
               </p>
               <div
                 className="relative rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-gray-50 group"
@@ -409,7 +420,7 @@ const Product: React.FC = () => {
 
             <div>
               <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-semibold tracking-wider text-gray-400 uppercase">
+                <p className="text-xs font-semibold tracking-wider text-black uppercase">
                   Tシャツ イメージ
                 </p>
                 <div className="flex gap-1.5">
@@ -452,7 +463,7 @@ const Product: React.FC = () => {
         )}
 
         {!isReady && (
-          <div className="text-center py-20 text-gray-300 text-sm tracking-wider">
+          <div className="text-center py-20 text-black text-sm tracking-wider">
             ①②で絵を選ぶとプレビューが表示されます
           </div>
         )}
