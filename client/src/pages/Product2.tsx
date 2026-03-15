@@ -208,7 +208,7 @@ export default function Product2() {
       ctx.font = "400 13px 'Helvetica Neue', Arial, sans-serif";
       ctx.fillStyle = tshirtColor === "black" ? "#e0e0e0" : "#2a2a2a";
       ctx.textAlign = "left";
-      const textX = cx - 225;
+      const textX = cx - 180;
       const maxW = FRONT_CW - textX - 40;
       const lines = wrapText(ctx, text, maxW);
       lines.forEach((line, i) => {
@@ -466,7 +466,7 @@ export default function Product2() {
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-black whitespace-nowrap">線の長さ</span>
                   <input
-                    type="range" min={80} max={450} step={10} value={lineWidth}
+                    type="range" min={80} max={360} step={10} value={lineWidth}
                     onChange={(e) => setLineWidth(Number(e.target.value))}
                     className="flex-1 accent-black"
                   />
