@@ -391,7 +391,7 @@ const Product: React.FC = () => {
         {isReady && (
           <div className="mb-4 flex items-center gap-4 flex-wrap">
             <label className="flex items-center gap-2 text-sm text-black">
-              <span className="text-xs whitespace-nowrap">型のサイズ</span>
+              <span className="text-xs whitespace-nowrap">絵のサイズ</span>
               <input
                 type="range" min={30} max={200} step={5} value={Math.round(shapeScale * 100)}
                 onChange={(e) => setShapeScale(Number(e.target.value) / 100)}
