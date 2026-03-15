@@ -534,7 +534,7 @@ export default function Product2() {
                 </div>
 
                 <div className="border-t border-gray-100 pt-4">
-                  <p className="text-xs font-semibold tracking-wider text-black mb-3">言葉を選ぶ・編集する</p>
+                  <p className="text-xs font-semibold tracking-wider text-black mb-3">② 言葉を選ぶ・編集する</p>
                   <div className="flex gap-2 mb-3">
                     {(["ja", "en", "fr"] as const).map((l) => (
                       <button
