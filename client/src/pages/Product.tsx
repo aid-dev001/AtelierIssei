@@ -302,14 +302,20 @@ const Product: React.FC = () => {
 
   useEffect(() => {
     if (shapeImg && fillImg) {
-      setTimeout(() => previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 200);
+      setTimeout(() => {
+        const el = previewRef.current;
+        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: "smooth" });
+      }, 200);
     }
   }, [shapeImg, fillImg]);
 
   useEffect(() => {
     if (!selectedShapeId || fillImg) return;
     if (window.innerWidth >= 768) return;
-    setTimeout(() => fillSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 200);
+    setTimeout(() => {
+      const el = fillSectionRef.current;
+      if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: "smooth" });
+    }, 200);
   }, [selectedShapeId]);
 
   const getCanvasPos = (e: React.MouseEvent | React.TouchEvent, canvas: HTMLCanvasElement) => {
