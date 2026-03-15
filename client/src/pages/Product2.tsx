@@ -353,18 +353,9 @@ export default function Product2() {
         <h1 className="text-4xl font-bold mb-2 tracking-wider text-center">PRODUCT</h1>
         <p className="text-center text-xs tracking-[0.2em] uppercase text-black mb-8">Art you can wear</p>
 
-        <div className="max-w-xl mx-auto mb-10 text-center space-y-4">
-          <p className="text-sm leading-relaxed tracking-wide text-black font-medium">
-            アートを身につける、自身で創るというプロダクト。
-          </p>
-          <p className="text-sm leading-relaxed tracking-wide text-black">
-            絵を選び、言葉を選ぶ。ISSEIの作品からひとつを選ぶと、<br className="hidden md:block" />
-            絵のストロークが細い横線となり、詩のような言葉とともにTシャツへと転写されます。
-          </p>
-          <p className="text-xs leading-relaxed tracking-wide text-gray-500">
-            表面に横線と言葉、裏面に絵の一部。二面で完成するデザインです。
-          </p>
-        </div>
+        <p className="text-sm leading-relaxed tracking-wide text-black font-medium text-center mb-10">
+          アートを身につける、自身で創るというプロダクト。
+        </p>
 
         <div className="flex justify-center gap-8 mb-10 border-b border-gray-200 pb-4">
           <ScrollToTopLink href="/product" className="text-sm tracking-widest text-gray-400 hover:text-black transition-colors">
@@ -373,6 +364,16 @@ export default function Product2() {
           <span className="text-sm tracking-widest text-black border-b-2 border-black pb-1">
             PRODUCT 2
           </span>
+        </div>
+
+        <div className="max-w-xl mx-auto mb-12 text-center space-y-4">
+          <p className="text-sm leading-relaxed tracking-wide text-black">
+            絵を選び、言葉を選ぶ。
+          </p>
+          <p className="text-sm leading-relaxed tracking-wide text-black">
+            ISSEIの作品からひとつを選ぶと、絵のストロークが横線となり、<br className="hidden md:block" />
+            詩のような言葉とともにTシャツへと転写されます。
+          </p>
         </div>
 
         <div ref={fillSectionRef} className="mb-12">
