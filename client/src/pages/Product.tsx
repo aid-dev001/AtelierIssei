@@ -411,9 +411,6 @@ const Product: React.FC = () => {
             型を選び、中身に絵を選ぶ。ただそれだけで、絵画はウェアラブルな表現へと変容します。
             これはプロダクトである前に、アートとの対話です。
           </p>
-          <p className="text-xs leading-relaxed tracking-widest text-black uppercase">
-            Choose a shape &mdash; fill it with ISSEI's art &mdash; wear the result
-          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">
