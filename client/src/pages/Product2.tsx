@@ -167,23 +167,40 @@ export default function Product2() {
   }, [selectedArtId, artworks]);
 
   useEffect(() => {
-    const selectedArt = artworks.find((a) => a.id === selectedArtId);
-    const artPhrases: { ja: string; en: string; fr: string }[] = [];
-    if (selectedArt?.description) {
-      const sentences = selectedArt.description
-        .split(/[。\n]/)
-        .map((s) => s.trim())
-        .filter((s) => s.length > 5)
-        .slice(0, 4)
-        .map((s) => ({ ja: s + "。", en: s + "。", fr: s + "。" }));
-      artPhrases.push(...sentences);
-    }
-    const needed = 8 - artPhrases.length;
-    const shuffledFixed = [...PHRASES].sort(() => Math.random() - 0.5).slice(0, needed);
-    const pool = [...artPhrases, ...shuffledFixed].sort(() => Math.random() - 0.5);
-    setCombinedPhrases(pool);
-    setPhraseIdx(0);
-    setCustomText(pool[0]?.[lang] ?? "");
+    let cancelled = false;
+    const buildPool = async () => {
+      const selectedArt = artworks.find((a) => a.id === selectedArtId);
+      let artPhrases: { ja: string; en: string; fr: string }[] = [];
+      if (selectedArt?.description) {
+        const jaSentences = selectedArt.description
+          .split(/[。\n]/)
+          .map((s) => s.trim())
+          .filter((s) => s.length > 5)
+          .slice(0, 4)
+          .map((s) => s + "。");
+        artPhrases = jaSentences.map((s) => ({ ja: s, en: s, fr: s }));
+        try {
+          const res = await fetch("/api/translate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sentences: jaSentences }),
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data.translations)) artPhrases = data.translations;
+          }
+        } catch (_) {}
+      }
+      if (cancelled) return;
+      const needed = 8 - artPhrases.length;
+      const shuffledFixed = [...PHRASES].sort(() => Math.random() - 0.5).slice(0, needed);
+      const pool = [...artPhrases, ...shuffledFixed].sort(() => Math.random() - 0.5);
+      setCombinedPhrases(pool);
+      setPhraseIdx(0);
+      setCustomText(pool[0]?.[lang] ?? "");
+    };
+    buildPool();
+    return () => { cancelled = true; };
   }, [selectedArtId, artworks]);
 
   useEffect(() => {
@@ -224,7 +241,7 @@ export default function Product2() {
       ctx.fillStyle = tshirtColor === "black" ? "#e0e0e0" : "#2a2a2a";
       ctx.textAlign = "left";
       const textX = cx - 170;
-      const maxW = FRONT_CW - textX - 40;
+      const maxW = 370;
       const lines = wrapText(ctx, text, maxW);
       lines.forEach((line, i) => {
         ctx.fillText(line, textX, ty + LINE_H + 40 + i * 17);

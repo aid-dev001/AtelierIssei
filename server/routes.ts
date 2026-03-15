@@ -3,7 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
-import { generateArtworkDescription, generateCollectionDescription, generateExhibitionDescription } from './openai';
+import { generateArtworkDescription, generateCollectionDescription, generateExhibitionDescription, translateSentences } from './openai';
 import { db } from "../db";
 import { ADMIN_URL_PATH, requireAdmin } from "./admin";
 import { 
@@ -577,6 +577,20 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     } catch (error) {
       console.error("Error deleting exhibition:", error);
       res.status(500).json({ error: "展示会の削除に失敗しました" });
+    }
+  });
+
+  app.post("/api/translate", async (req, res) => {
+    try {
+      const { sentences } = req.body as { sentences: string[] };
+      if (!Array.isArray(sentences) || sentences.length === 0) {
+        return res.status(400).json({ error: "sentences must be a non-empty array" });
+      }
+      const translations = await translateSentences(sentences);
+      res.json({ translations });
+    } catch (error) {
+      console.error("Translation error:", error);
+      res.status(500).json({ error: "翻訳に失敗しました" });
     }
   });
 

@@ -182,3 +182,25 @@ export async function generateExhibitionDescription(
     throw new Error('展示会の説明文生成に失敗しました');
   }
 }
+export async function translateSentences(sentences: string[]): Promise<{ ja: string; en: string; fr: string }[]> {
+  if (!process.env.OPENAI_API_KEY) throw new Error('OpenAI APIキーが設定されていません');
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      {
+        role: "system",
+        content: "You are a literary translator specializing in art. Translate each Japanese sentence into English and French, keeping a poetic and elegant tone. Return a JSON object with key \"translations\" containing an array of objects with keys ja, en, fr."
+      },
+      {
+        role: "user",
+        content: `Translate these sentences:\n${sentences.map((s, i) => `${i + 1}. ${s}`).join("\n")}`
+      }
+    ],
+    response_format: { type: "json_object" },
+  });
+
+  const raw = response.choices[0]?.message?.content ?? "{}";
+  const parsed = JSON.parse(raw);
+  return parsed.translations as { ja: string; en: string; fr: string }[];
+}
