@@ -415,7 +415,10 @@ const Product: React.FC = () => {
             アートを身につける、自身で創るというプロダクト。
           </p>
           <p className="text-sm leading-relaxed tracking-wide text-black">
-            型を選び、中身に絵を選ぶ。ただそれだけで、絵画はウェアラブルな表現へと変容します。<br className="hidden md:block" />
+            型を選び、中身に絵を選ぶ。
+          </p>
+          <p className="text-sm leading-relaxed tracking-wide text-black">
+            ただそれだけで、絵画はウェアラブルな表現へと変容します。<br className="hidden md:block" />
             ISSEIの作品が、あなただけのかたちに。
           </p>
           <p className="text-xs leading-relaxed tracking-wide text-gray-500">
