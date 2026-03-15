@@ -17,6 +17,7 @@ import {
   collections,
   voices,
   uploadedImages,
+  productShapes,
 } from "@db/schema";
 import { eq, desc, asc } from "drizzle-orm";
 
@@ -651,6 +652,49 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     } catch (error) {
       console.error("Error updating voice:", error);
       res.status(500).json({ error: "メッセージの更新に失敗しました" });
+    }
+  });
+
+  // Product shapes routes
+  app.get("/api/product-shapes", async (req, res) => {
+    try {
+      const shapes = await db.select().from(productShapes)
+        .where(eq(productShapes.isActive, true))
+        .orderBy(desc(productShapes.createdAt));
+      res.json(shapes);
+    } catch (error) {
+      console.error("Error fetching product shapes:", error);
+      res.status(500).json({ error: "型の絵の取得に失敗しました" });
+    }
+  });
+
+  app.post(`/api/${ADMIN_URL_PATH}/product-shapes`, requireAdmin, upload.single('image'), async (req, res) => {
+    try {
+      const { title } = req.body;
+      let imageUrl = '';
+      if (req.file) {
+        imageUrl = await saveImageToDB(req.file);
+      } else if (req.body.imageUrl) {
+        imageUrl = req.body.imageUrl;
+      } else {
+        return res.status(400).json({ error: "画像が必要です" });
+      }
+      const [shape] = await db.insert(productShapes).values({ title, imageUrl }).returning();
+      res.json(shape);
+    } catch (error) {
+      console.error("Error creating product shape:", error);
+      res.status(500).json({ error: "型の絵の登録に失敗しました" });
+    }
+  });
+
+  app.delete(`/api/${ADMIN_URL_PATH}/product-shapes/:id`, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await db.delete(productShapes).where(eq(productShapes.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting product shape:", error);
+      res.status(500).json({ error: "型の絵の削除に失敗しました" });
     }
   });
 

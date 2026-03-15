@@ -116,6 +116,19 @@ export const news = pgTable("news", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const productShapes = pgTable("product_shapes", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  title: text("title").notNull(),
+  imageUrl: text("image_url").notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertProductShapeSchema = createInsertSchema(productShapes);
+export const selectProductShapeSchema = createSelectSchema(productShapes);
+export type InsertProductShape = z.infer<typeof insertProductShapeSchema>;
+export type ProductShape = z.infer<typeof selectProductShapeSchema>;
+
 export const contacts = pgTable("contacts", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: text("name").notNull(),

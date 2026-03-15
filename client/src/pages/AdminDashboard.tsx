@@ -94,7 +94,7 @@ const deleteExhibitionMutation = useMutation({
     toast({ variant: "destructive", title: "展示会の削除に失敗しました" });
   },
 });
-  const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions'>('artworks');
+  const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions' | 'product'>('artworks');
   const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
   const [selectedExhibition, setSelectedExhibition] = useState<Exhibition | null>(null);
   const [isEditCollectionDialogOpen, setIsEditCollectionDialogOpen] = useState(false);
@@ -1407,6 +1407,19 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
                 <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
               )}
             </button>
+            <button
+              className={`px-4 py-2 font-medium transition-all relative ${
+                activeTab === 'product'
+                  ? 'text-black font-semibold'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              onClick={() => setActiveTab('product')}
+            >
+              PRODUCT型管理
+              {activeTab === 'product' && (
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
+              )}
+            </button>
           </div>
         </div>
       </header>
@@ -2003,9 +2016,123 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
             </div>
           </>
         ) : null}
+
+        {activeTab === 'product' && (
+          <ProductShapesTab adminPath={adminPath} />
+        )}
       </main>
     </div>
   );
 };
+
+function ProductShapesTab({ adminPath }: { adminPath: string }) {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [title, setTitle] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState('');
+
+  const { data: shapes = [], isLoading } = useQuery<{ id: number; title: string; imageUrl: string }[]>({
+    queryKey: ['product-shapes'],
+    queryFn: () => fetch('/api/product-shapes').then(r => r.json()),
+  });
+
+  const addMutation = useMutation({
+    mutationFn: async () => {
+      if (!file) throw new Error('画像を選択してください');
+      const fd = new FormData();
+      fd.append('title', title || '型の絵');
+      fd.append('image', file);
+      const res = await fetch(`${adminPath}/product-shapes`, { method: 'POST', body: fd });
+      if (!res.ok) throw new Error('登録失敗');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['product-shapes'] });
+      setTitle(''); setFile(null); setPreview('');
+      toast({ title: '登録しました' });
+    },
+    onError: (e: Error) => toast({ variant: 'destructive', title: e.message }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await fetch(`${adminPath}/product-shapes/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('削除失敗');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['product-shapes'] });
+      toast({ title: '削除しました' });
+    },
+    onError: () => toast({ variant: 'destructive', title: '削除に失敗しました' }),
+  });
+
+  return (
+    <div className="space-y-8">
+      <h2 className="text-2xl font-semibold">PRODUCT 型の絵管理</h2>
+      <div className="bg-gray-50 rounded-xl p-6 space-y-4 max-w-lg">
+        <h3 className="font-semibold">新規登録</h3>
+        <div className="space-y-2">
+          <Label>タイトル</Label>
+          <Input value={title} onChange={e => setTitle(e.target.value)} placeholder="例：鳥のシルエット" />
+        </div>
+        <div className="space-y-2">
+          <Label>画像（白背景推奨）</Label>
+          <label className="block cursor-pointer">
+            <div className="border-2 border-dashed rounded-lg h-36 flex items-center justify-center bg-white hover:bg-gray-50 transition-colors">
+              {preview ? (
+                <img src={preview} className="h-full object-contain p-2" alt="preview" />
+              ) : (
+                <span className="text-sm text-gray-400">クリックして画像を選択</span>
+              )}
+            </div>
+            <input type="file" accept="image/*" className="hidden" onChange={e => {
+              const f = e.target.files?.[0];
+              if (f) { setFile(f); setPreview(URL.createObjectURL(f)); }
+            }} />
+          </label>
+        </div>
+        <Button onClick={() => addMutation.mutate()} disabled={!file || addMutation.isPending} className="w-full">
+          {addMutation.isPending ? '登録中…' : '登録する'}
+        </Button>
+      </div>
+
+      <div>
+        <h3 className="font-semibold mb-4">登録済み型の絵</h3>
+        {isLoading ? (
+          <p className="text-gray-400 text-sm">読み込み中…</p>
+        ) : shapes.length === 0 ? (
+          <p className="text-gray-400 text-sm">まだ登録がありません</p>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {shapes.map(shape => (
+              <div key={shape.id} className="border rounded-xl overflow-hidden bg-white shadow-sm">
+                <img src={shape.imageUrl} alt={shape.title} className="w-full h-32 object-contain p-2 bg-gray-50" />
+                <div className="p-2 space-y-1">
+                  <p className="text-sm font-medium truncate">{shape.title}</p>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="destructive" size="sm" className="w-full text-xs">削除</Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>削除しますか？</AlertDialogTitle>
+                        <AlertDialogDescription>この操作は元に戻せません</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <div className="flex justify-end gap-2">
+                        <AlertDialogCancel>キャンセル</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => deleteMutation.mutate(shape.id)}>削除</AlertDialogAction>
+                      </div>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default AdminDashboard;
