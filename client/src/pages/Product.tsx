@@ -43,7 +43,8 @@ function drawTshirt(
   baseImg: HTMLImageElement | null,
   blackImg: HTMLImageElement | null,
   color: "white" | "black",
-  designScale: number
+  designScale: number,
+  designPos: { x: number; y: number }
 ) {
   const W = canvas.width;
   const H = canvas.height;
@@ -65,8 +66,8 @@ function drawTshirt(
     let rw = maxW;
     let rh = rw / aspect;
     if (rh > maxH) { rh = maxH; rw = rh * aspect; }
-    const dx = (W - rw) / 2;
-    const dy = H * 0.26;
+    const dx = (W - rw) / 2 + designPos.x;
+    const dy = H * 0.26 + designPos.y;
     ctx.globalCompositeOperation = color === "white" ? "multiply" : "screen";
     ctx.drawImage(designCanvas, dx, dy, rw, rh);
     ctx.globalCompositeOperation = "source-over";
@@ -124,6 +125,7 @@ const Product: React.FC = () => {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [fillScale, setFillScale] = useState(1.0);
   const [shapeScale, setShapeScale] = useState(1.0);
+  const [designPos, setDesignPos] = useState({ x: 0, y: 0 });
   const [canvasSize, setCanvasSize] = useState({ w: 480, h: 480 });
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -168,6 +170,7 @@ const Product: React.FC = () => {
     setOffset({ x: 0, y: 0 });
     setFillScale(1.0);
     setShapeScale(1.0);
+    setDesignPos({ x: 0, y: 0 });
     loadImg(shape.imageUrl).then((img) => {
       if (cancelled) return;
       const maxW = Math.min(480, window.innerWidth - 48);
@@ -249,8 +252,8 @@ const Product: React.FC = () => {
     const H = Math.round(W / aspect);
     canvas.width = W;
     canvas.height = H;
-    drawTshirt(canvas, compositeRef.current, tshirtBaseImg, tshirtBlackImg, tshirtColor, shapeScale);
-  }, [tshirtBaseImg, tshirtBlackImg, tshirtAspect, tshirtBlackAspect, tshirtColor, shapeScale]);
+    drawTshirt(canvas, compositeRef.current, tshirtBaseImg, tshirtBlackImg, tshirtColor, shapeScale, designPos);
+  }, [tshirtBaseImg, tshirtBlackImg, tshirtAspect, tshirtBlackAspect, tshirtColor, shapeScale, designPos]);
 
   useEffect(() => {
     if (!shapeImg || !fillImg) return;
@@ -323,7 +326,7 @@ const Product: React.FC = () => {
     const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
     const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
     tshirtDragStartScreenRef.current = { x: clientX, y: clientY };
-    tshirtDragStartOffsetRef.current = { x: offset.x, y: offset.y };
+    tshirtDragStartOffsetRef.current = { x: designPos.x, y: designPos.y };
   };
   const onTshirtMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     if (!tshirtDraggingRef.current || !tshirtRef.current) return;
@@ -335,11 +338,10 @@ const Product: React.FC = () => {
     if (Math.abs(dx) > 3 || Math.abs(dy) > 3) dragMovedRef.current = true;
     if (!dragMovedRef.current) return;
     const rect = tshirtRef.current.getBoundingClientRect();
-    const scaleX = canvasSize.w / rect.width;
-    const scaleY = canvasSize.h / rect.height;
-    setOffset({
-      x: tshirtDragStartOffsetRef.current.x + dx * scaleX,
-      y: tshirtDragStartOffsetRef.current.y + dy * scaleY,
+    const scale = 1600 / rect.width;
+    setDesignPos({
+      x: tshirtDragStartOffsetRef.current.x + dx * scale,
+      y: tshirtDragStartOffsetRef.current.y + dy * scale,
     });
   };
   const onTshirtUp = () => {
