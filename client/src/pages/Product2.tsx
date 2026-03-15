@@ -1,7 +1,31 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Download, X } from "lucide-react";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
+
+function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
+  const download = () => {
+    const a = document.createElement("a");
+    a.href = src;
+    a.download = "issei-design.png";
+    a.click();
+  };
+  return (
+    <div className="fixed inset-0 bg-black/85 z-[200] flex items-center justify-center p-4" onClick={onClose}>
+      <div className="relative max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
+        <img src={src} alt="拡大プレビュー" className="w-full rounded-2xl shadow-2xl" />
+        <div className="absolute top-3 right-3 flex gap-2">
+          <button onClick={download} className="bg-white/90 hover:bg-white rounded-full p-2.5 shadow transition-colors" title="ダウンロード">
+            <Download className="w-5 h-5 text-black" />
+          </button>
+          <button onClick={onClose} className="bg-white/90 hover:bg-white rounded-full p-2.5 shadow transition-colors" title="閉じる">
+            <X className="w-5 h-5 text-black" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 type ArtworkItem = { id: number; title: string; imageUrl: string };
 
@@ -94,6 +118,7 @@ export default function Product2() {
   const [cropScale, setCropScale] = useState(1.0);
   const [artOffset, setArtOffset] = useState({ x: 0, y: 0 });
   const [backMode, setBackMode] = useState<"shirt" | "art">("shirt");
+  const [modalImg, setModalImg] = useState<string | null>(null);
 
   const [page, setPage] = useState(1);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -431,21 +456,30 @@ export default function Product2() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
               <div>
-                <div
-                  className="rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-gray-50"
-                  style={{ width: "100%", aspectRatio: `${FRONT_CW} / ${FRONT_CH}` }}
-                >
-                  <canvas
-                    ref={frontRef}
-                    style={{ width: "100%", height: "100%", display: "block", cursor: "grab", touchAction: "none" }}
-                    onMouseDown={onFrontDown}
-                    onMouseMove={onFrontMove}
-                    onMouseUp={onFrontUp}
-                    onMouseLeave={onFrontUp}
-                    onTouchStart={onFrontDown}
-                    onTouchMove={onFrontMove}
-                    onTouchEnd={onFrontUp}
-                  />
+                <div className="relative">
+                  <div
+                    className="rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-gray-50"
+                    style={{ width: "100%", aspectRatio: `${FRONT_CW} / ${FRONT_CH}` }}
+                  >
+                    <canvas
+                      ref={frontRef}
+                      style={{ width: "100%", height: "100%", display: "block", cursor: "grab", touchAction: "none" }}
+                      onMouseDown={onFrontDown}
+                      onMouseMove={onFrontMove}
+                      onMouseUp={onFrontUp}
+                      onMouseLeave={onFrontUp}
+                      onTouchStart={onFrontDown}
+                      onTouchMove={onFrontMove}
+                      onTouchEnd={onFrontUp}
+                    />
+                  </div>
+                  <button
+                    onClick={() => setModalImg(frontRef.current?.toDataURL("image/png") ?? null)}
+                    className="absolute top-2 right-2 bg-white/90 hover:bg-white rounded-full p-2 shadow transition-colors"
+                    title="拡大・ダウンロード"
+                  >
+                    <Download className="w-4 h-4 text-black" />
+                  </button>
                 </div>
               </div>
 
@@ -478,21 +512,30 @@ export default function Product2() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
               <div>
-                <div
-                  className="rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-gray-50"
-                  style={{ width: "100%", aspectRatio: `${BACK_CW} / ${BACK_CH}` }}
-                >
-                  <canvas
-                    ref={backRef}
-                    style={{ width: "100%", height: "100%", display: "block", cursor: "grab", touchAction: "none" }}
-                    onMouseDown={onBackDown}
-                    onMouseMove={onBackMove}
-                    onMouseUp={onBackUp}
-                    onMouseLeave={onBackUp}
-                    onTouchStart={onBackDown}
-                    onTouchMove={onBackMove}
-                    onTouchEnd={onBackUp}
-                  />
+                <div className="relative">
+                  <div
+                    className="rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-gray-50"
+                    style={{ width: "100%", aspectRatio: `${BACK_CW} / ${BACK_CH}` }}
+                  >
+                    <canvas
+                      ref={backRef}
+                      style={{ width: "100%", height: "100%", display: "block", cursor: "grab", touchAction: "none" }}
+                      onMouseDown={onBackDown}
+                      onMouseMove={onBackMove}
+                      onMouseUp={onBackUp}
+                      onMouseLeave={onBackUp}
+                      onTouchStart={onBackDown}
+                      onTouchMove={onBackMove}
+                      onTouchEnd={onBackUp}
+                    />
+                  </div>
+                  <button
+                    onClick={() => setModalImg(backRef.current?.toDataURL("image/png") ?? null)}
+                    className="absolute top-2 right-2 bg-white/90 hover:bg-white rounded-full p-2 shadow transition-colors"
+                    title="拡大・ダウンロード"
+                  >
+                    <Download className="w-4 h-4 text-black" />
+                  </button>
                 </div>
               </div>
 
@@ -548,6 +591,7 @@ export default function Product2() {
           </>
         )}
       </div>
+      {modalImg && <ImageModal src={modalImg} onClose={() => setModalImg(null)} />}
     </div>
   );
 }
