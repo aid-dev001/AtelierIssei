@@ -17,13 +17,13 @@ function loadImg(src: string): Promise<HTMLImageElement> {
   });
 }
 
-function buildMask(img: HTMLImageElement): HTMLCanvasElement {
+function buildMask(img: HTMLImageElement, w: number, h: number): HTMLCanvasElement {
   const c = document.createElement("canvas");
-  c.width = img.naturalWidth || img.width;
-  c.height = img.naturalHeight || img.height;
+  c.width = w;
+  c.height = h;
   const ctx = c.getContext("2d")!;
-  ctx.drawImage(img, 0, 0);
-  const id = ctx.getImageData(0, 0, c.width, c.height);
+  ctx.drawImage(img, 0, 0, w, h);
+  const id = ctx.getImageData(0, 0, w, h);
   const d = id.data;
   for (let i = 0; i < d.length; i += 4) {
     const r = d[i], g = d[i + 1], b = d[i + 2];
@@ -226,7 +226,7 @@ const Product: React.FC = () => {
     const ctx = canvas.getContext("2d")!;
     ctx.clearRect(0, 0, w, h);
     if (!maskRef.current || maskForImgRef.current !== shapeImg) {
-      maskRef.current = buildMask(shapeImg);
+      maskRef.current = buildMask(shapeImg, w, h);
       maskForImgRef.current = shapeImg;
     }
     const scaleF = Math.max((w * 1.2) / fillImg.width, (h * 1.2) / fillImg.height) * fillScale;
