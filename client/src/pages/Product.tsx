@@ -482,7 +482,7 @@ const Product: React.FC = () => {
         </div>
 
         {isReady && (
-          <div ref={previewRef} className="mt-16 pt-8 border-t border-gray-200 mb-4 flex items-center gap-4 flex-wrap">
+          <div ref={previewRef} className="mt-16 pt-8 mb-4 flex items-center gap-4 flex-wrap">
             <label className="flex items-center gap-2 text-sm text-black">
               <span className="text-xs whitespace-nowrap">型の中の絵</span>
               <input
