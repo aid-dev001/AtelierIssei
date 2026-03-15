@@ -25,14 +25,39 @@ function buildMask(img: HTMLImageElement, w: number, h: number): HTMLCanvasEleme
   ctx.drawImage(img, 0, 0, w, h);
   const id = ctx.getImageData(0, 0, w, h);
   const d = id.data;
-  for (let i = 0; i < d.length; i += 4) {
-    const r = d[i], g = d[i + 1], b = d[i + 2];
-    if (r >= 220 && g >= 220 && b >= 220) {
-      d[i + 3] = 0;
-    } else {
-      d[i + 3] = 255;
-    }
+  const total = w * h;
+
+  const isBackground = (p: number) => {
+    const i = p * 4;
+    return d[i] >= 220 && d[i + 1] >= 220 && d[i + 2] >= 220;
+  };
+
+  // Flood-fill from all image edges: any white pixel reachable from outside = background
+  const outside = new Uint8Array(total);
+  const queue = new Int32Array(total);
+  let head = 0, tail = 0;
+
+  const seed = (p: number) => {
+    if (!outside[p] && isBackground(p)) { outside[p] = 1; queue[tail++] = p; }
+  };
+
+  for (let x = 0; x < w; x++) { seed(x); seed((h - 1) * w + x); }
+  for (let y = 1; y < h - 1; y++) { seed(y * w); seed(y * w + w - 1); }
+
+  while (head < tail) {
+    const p = queue[head++];
+    const px = p % w;
+    const py = (p / w) | 0;
+    if (py > 0)     { const n = p - w; if (!outside[n] && isBackground(n)) { outside[n] = 1; queue[tail++] = n; } }
+    if (py < h - 1) { const n = p + w; if (!outside[n] && isBackground(n)) { outside[n] = 1; queue[tail++] = n; } }
+    if (px > 0)     { const n = p - 1; if (!outside[n] && isBackground(n)) { outside[n] = 1; queue[tail++] = n; } }
+    if (px < w - 1) { const n = p + 1; if (!outside[n] && isBackground(n)) { outside[n] = 1; queue[tail++] = n; } }
   }
+
+  for (let i = 0; i < total; i++) {
+    d[i * 4 + 3] = outside[i] ? 0 : 255;
+  }
+
   ctx.putImageData(id, 0, 0);
   return c;
 }
