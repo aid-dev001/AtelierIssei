@@ -357,7 +357,7 @@ export default function Product2() {
           <p className="text-sm leading-relaxed tracking-wide text-black font-medium">
             アートを身につける、自身で創るというプロダクト。
           </p>
-          <p className="text-sm leading-relaxed tracking-wide text-black">
+          <p className="text-sm leading-relaxed tracking-wide text-black font-medium">
             これはアートと対話するという、先進的な試みです。
           </p>
         </div>
