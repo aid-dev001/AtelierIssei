@@ -131,6 +131,7 @@ const Product: React.FC = () => {
   const compositeRef = useRef<HTMLCanvasElement>(null);
   const tshirtRef = useRef<HTMLCanvasElement>(null);
   const maskRef = useRef<HTMLCanvasElement | null>(null);
+  const maskForImgRef = useRef<HTMLImageElement | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const prevIsReady = useRef(false);
   const shapeColRef = useRef<HTMLDivElement>(null);
@@ -156,22 +157,29 @@ const Product: React.FC = () => {
     if (selectedShapeId == null) return;
     const shape = shapes.find((s) => s.id === selectedShapeId);
     if (!shape) return;
+    let cancelled = false;
     maskRef.current = null;
+    maskForImgRef.current = null;
+    setShapeImg(null);
     setOffset({ x: 0, y: 0 });
     setShapeScale(1.0);
     loadImg(shape.imageUrl).then((img) => {
+      if (cancelled) return;
       const maxW = Math.min(480, window.innerWidth - 48);
       const aspect = img.naturalWidth / img.naturalHeight;
       setCanvasSize({ w: maxW, h: Math.round(maxW / aspect) });
       setShapeImg(img);
     });
+    return () => { cancelled = true; };
   }, [selectedShapeId, shapes]);
 
   useEffect(() => {
     if (selectedFillId == null) return;
     const art = artworks.find((a) => a.id === selectedFillId);
     if (!art) return;
-    loadImg(art.imageUrl).then(setFillImg);
+    let cancelled = false;
+    loadImg(art.imageUrl).then((img) => { if (!cancelled) setFillImg(img); });
+    return () => { cancelled = true; };
   }, [selectedFillId, artworks]);
 
   useEffect(() => {
@@ -215,8 +223,9 @@ const Product: React.FC = () => {
     canvas.height = h;
     const ctx = canvas.getContext("2d")!;
     ctx.clearRect(0, 0, w, h);
-    if (!maskRef.current) {
+    if (!maskRef.current || maskForImgRef.current !== shapeImg) {
       maskRef.current = buildMask(shapeImg);
+      maskForImgRef.current = shapeImg;
     }
     const scaleF = Math.max((w * 1.2) / fillImg.width, (h * 1.2) / fillImg.height);
     const fw = fillImg.width * scaleF;
