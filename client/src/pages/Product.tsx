@@ -303,7 +303,7 @@ const Product: React.FC = () => {
     if (shapeImg && fillImg) {
       setTimeout(() => previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 200);
     }
-  }, [fillImg]);
+  }, [shapeImg, fillImg]);
 
   const getCanvasPos = (e: React.MouseEvent | React.TouchEvent, canvas: HTMLCanvasElement) => {
     const rect = canvas.getBoundingClientRect();
