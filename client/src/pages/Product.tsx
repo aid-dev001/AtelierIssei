@@ -154,6 +154,7 @@ const Product: React.FC = () => {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [dragMoved, setDragMoved] = useState(false);
   const [threshold, setThreshold] = useState(238);
+  const [shapeScale, setShapeScale] = useState(1.0);
   const [canvasSize, setCanvasSize] = useState({ w: 480, h: 480 });
   const [modalImg, setModalImg] = useState<string | null>(null);
 
@@ -179,6 +180,7 @@ const Product: React.FC = () => {
     if (!shape) return;
     maskRef.current = null;
     setOffset({ x: 0, y: 0 });
+    setShapeScale(1.0);
     loadImg(shape.imageUrl).then((img) => {
       const maxW = Math.min(480, window.innerWidth - 48);
       const aspect = img.naturalWidth / img.naturalHeight;
@@ -216,10 +218,14 @@ const Product: React.FC = () => {
     const fw = fillImg.width * scaleF;
     const fh = fillImg.height * scaleF;
     ctx.drawImage(fillImg, (w - fw) / 2 + offset.x, (h - fh) / 2 + offset.y, fw, fh);
+    const mw = w * shapeScale;
+    const mh = h * shapeScale;
+    const mx = (w - mw) / 2;
+    const my = (h - mh) / 2;
     ctx.globalCompositeOperation = "destination-in";
-    ctx.drawImage(maskRef.current, 0, 0, w, h);
+    ctx.drawImage(maskRef.current, mx, my, mw, mh);
     ctx.globalCompositeOperation = "source-over";
-  }, [shapeImg, fillImg, offset, threshold, canvasSize]);
+  }, [shapeImg, fillImg, offset, threshold, shapeScale, canvasSize]);
 
   const renderTshirt = useCallback(() => {
     const canvas = tshirtRef.current;
@@ -232,8 +238,8 @@ const Product: React.FC = () => {
   }, [tshirtBaseImg, tshirtAspect, tshirtColor]);
 
   useEffect(() => {
-    if (shapeImg && fillImg) { maskRef.current = null; renderComposite(); }
-  }, [shapeImg, fillImg, threshold, canvasSize, renderComposite]);
+    if (shapeImg && fillImg) { renderComposite(); }
+  }, [shapeImg, fillImg, threshold, shapeScale, canvasSize, renderComposite]);
 
   useEffect(() => {
     if (shapeImg && fillImg) renderComposite();
@@ -364,7 +370,16 @@ const Product: React.FC = () => {
         {isReady && (
           <div className="mb-4 flex items-center gap-4 flex-wrap">
             <label className="flex items-center gap-2 text-sm text-black">
-              <span className="text-xs">型のくり抜き調整</span>
+              <span className="text-xs whitespace-nowrap">型のサイズ</span>
+              <input
+                type="range" min={30} max={200} step={5} value={Math.round(shapeScale * 100)}
+                onChange={(e) => setShapeScale(Number(e.target.value) / 100)}
+                className="w-28 accent-black"
+              />
+              <span className="text-xs text-black w-8">{Math.round(shapeScale * 100)}%</span>
+            </label>
+            <label className="flex items-center gap-2 text-sm text-black">
+              <span className="text-xs whitespace-nowrap">型のくり抜き調整</span>
               <input
                 type="range" min={200} max={254} value={threshold}
                 onChange={(e) => { maskRef.current = null; setThreshold(Number(e.target.value)); }}
