@@ -34,57 +34,33 @@ function buildMask(img: HTMLImageElement, threshold: number): HTMLCanvasElement 
 
 function drawTshirt(
   canvas: HTMLCanvasElement,
-  designCanvas: HTMLCanvasElement | null
+  designCanvas: HTMLCanvasElement | null,
+  baseImg: HTMLImageElement | null
 ) {
   const W = canvas.width;
   const H = canvas.height;
   const ctx = canvas.getContext("2d")!;
   ctx.clearRect(0, 0, W, H);
-  const s = W / 500;
 
-  ctx.fillStyle = "#888888";
-  ctx.fillRect(0, 0, W, H);
+  if (baseImg) {
+    ctx.drawImage(baseImg, 0, 0, W, H);
+  } else {
+    ctx.fillStyle = "#888";
+    ctx.fillRect(0, 0, W, H);
+  }
 
-  ctx.save();
-  ctx.shadowColor = "rgba(0,0,0,0.22)";
-  ctx.shadowBlur = 18 * s;
-  ctx.shadowOffsetY = 4 * s;
-
-  ctx.beginPath();
-  ctx.moveTo(162 * s, 72 * s);
-  ctx.bezierCurveTo(198 * s, 138 * s, 302 * s, 138 * s, 338 * s, 72 * s);
-  ctx.lineTo(396 * s, 46 * s);
-  ctx.lineTo(462 * s, 98 * s);
-  ctx.lineTo(456 * s, 198 * s);
-  ctx.bezierCurveTo(438 * s, 212 * s, 372 * s, 202 * s, 362 * s, 176 * s);
-  ctx.lineTo(362 * s, 446 * s);
-  ctx.lineTo(138 * s, 446 * s);
-  ctx.lineTo(138 * s, 176 * s);
-  ctx.bezierCurveTo(128 * s, 202 * s, 62 * s, 212 * s, 44 * s, 198 * s);
-  ctx.lineTo(38 * s, 98 * s);
-  ctx.lineTo(104 * s, 46 * s);
-  ctx.closePath();
-  ctx.fillStyle = "#ffffff";
-  ctx.fill();
-  ctx.restore();
-
-  if (designCanvas) {
-    const dw = designCanvas.width;
-    const dh = designCanvas.height;
-    const aspect = dw / dh;
-    const maxW = 160 * s;
-    const maxH = 180 * s;
+  if (designCanvas && designCanvas.width > 0 && designCanvas.height > 0) {
+    const aspect = designCanvas.width / designCanvas.height;
+    const maxW = W * 0.38;
+    const maxH = H * 0.36;
     let rw = maxW;
     let rh = rw / aspect;
     if (rh > maxH) { rh = maxH; rw = rh * aspect; }
     const dx = (W - rw) / 2;
-    const dy = 195 * s;
+    const dy = H * 0.19;
+    ctx.globalCompositeOperation = "multiply";
     ctx.drawImage(designCanvas, dx, dy, rw, rh);
-
-    ctx.fillStyle = "rgba(0,0,0,0.45)";
-    ctx.font = `${10 * s}px sans-serif`;
-    ctx.textAlign = "center";
-    ctx.fillText("ISSEI – Wearable Abstraction", W / 2, dy + rh + 16 * s);
+    ctx.globalCompositeOperation = "source-over";
   }
 }
 
@@ -93,6 +69,8 @@ const Product: React.FC = () => {
   const [selectedFillId, setSelectedFillId] = useState<number | null>(null);
   const [shapeImg, setShapeImg] = useState<HTMLImageElement | null>(null);
   const [fillImg, setFillImg] = useState<HTMLImageElement | null>(null);
+  const [tshirtBaseImg, setTshirtBaseImg] = useState<HTMLImageElement | null>(null);
+  const [tshirtAspect, setTshirtAspect] = useState(960 / 1080);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -159,13 +137,22 @@ const Product: React.FC = () => {
     ctx.globalCompositeOperation = "source-over";
   }, [shapeImg, fillImg, offset, threshold, canvasSize]);
 
+  useEffect(() => {
+    loadImg("/product/tshirt-base.jpg").then((img) => {
+      setTshirtBaseImg(img);
+      setTshirtAspect(img.naturalWidth / img.naturalHeight);
+    }).catch(() => {});
+  }, []);
+
   const renderTshirt = useCallback(() => {
     const canvas = tshirtRef.current;
     if (!canvas || !compositeRef.current) return;
-    canvas.width = 480;
-    canvas.height = 560;
-    drawTshirt(canvas, compositeRef.current);
-  }, []);
+    const W = 480;
+    const H = Math.round(W / tshirtAspect);
+    canvas.width = W;
+    canvas.height = H;
+    drawTshirt(canvas, compositeRef.current, tshirtBaseImg);
+  }, [tshirtBaseImg, tshirtAspect]);
 
   useEffect(() => {
     if (shapeImg && fillImg) {
@@ -356,7 +343,7 @@ const Product: React.FC = () => {
               </p>
               <div
                 className="rounded-2xl overflow-hidden shadow-lg border border-gray-100"
-                style={{ width: "100%", aspectRatio: "480 / 560" }}
+                style={{ width: "100%", aspectRatio: `${tshirtAspect}` }}
               >
                 <canvas
                   ref={tshirtRef}
