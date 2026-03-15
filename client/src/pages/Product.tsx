@@ -26,8 +26,11 @@ function buildMask(img: HTMLImageElement): HTMLCanvasElement {
   const id = ctx.getImageData(0, 0, c.width, c.height);
   const d = id.data;
   for (let i = 0; i < d.length; i += 4) {
-    if (d[i] >= 240 && d[i + 1] >= 240 && d[i + 2] >= 240) {
+    const r = d[i], g = d[i + 1], b = d[i + 2];
+    if (r >= 220 && g >= 220 && b >= 220) {
       d[i + 3] = 0;
+    } else {
+      d[i + 3] = 255;
     }
   }
   ctx.putImageData(id, 0, 0);
