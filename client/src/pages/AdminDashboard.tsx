@@ -1176,9 +1176,8 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         <Input
           id="creationYear"
           name="creationYear"
-          type="number"
-          min="1900"
-          max="2100"
+          type="text"
+          inputMode="numeric"
           defaultValue={(selectedArtwork as any)?.creationYear?.toString() || ''}
           placeholder="例: 2024"
         />
