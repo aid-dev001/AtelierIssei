@@ -408,7 +408,7 @@ const Product: React.FC = () => {
             ISSEIのアートを、あなた自身の身体へ。
           </p>
           <p className="text-sm leading-relaxed tracking-wide text-black">
-            型を選び、中身に絵を選んでください。ただそれだけで、絵画はウェアラブルな表現へと変容します。
+            型を選び、中身に絵を選ぶ。ただそれだけで、絵画はウェアラブルな表現へと変容します。
             これはプロダクトである前に、アートとの対話です。
           </p>
           <p className="text-xs leading-relaxed tracking-widest text-black uppercase">
