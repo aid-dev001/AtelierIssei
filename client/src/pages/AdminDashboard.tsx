@@ -2215,7 +2215,7 @@ function ProductShapesTab({ adminPath }: { adminPath: string }) {
               <Input value={editTitle} onChange={e => setEditTitle(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label>画像を差し替える（変更しない場合は空欄）</Label>
+              <Label>画像</Label>
               <DragDropImage
                 preview={editPreview}
                 onFile={f => { setEditFile(f); setEditPreview(URL.createObjectURL(f)); }}

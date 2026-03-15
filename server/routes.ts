@@ -668,7 +668,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     }
   });
 
-  app.post(`/api/${ADMIN_URL_PATH}/product-shapes`, requireAdmin, upload.single('image'), async (req, res) => {
+  app.post(`/admin/${ADMIN_URL_PATH}/product-shapes`, requireAdmin, upload.single('image'), async (req, res) => {
     try {
       const { title } = req.body;
       let imageUrl = '';
@@ -687,7 +687,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     }
   });
 
-  app.put(`/api/${ADMIN_URL_PATH}/product-shapes/:id`, requireAdmin, upload.single('image'), async (req, res) => {
+  app.put(`/admin/${ADMIN_URL_PATH}/product-shapes/:id`, requireAdmin, upload.single('image'), async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const updateData: { title?: string; imageUrl?: string } = {};
@@ -706,7 +706,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     }
   });
 
-  app.delete(`/api/${ADMIN_URL_PATH}/product-shapes/:id`, requireAdmin, async (req, res) => {
+  app.delete(`/admin/${ADMIN_URL_PATH}/product-shapes/:id`, requireAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       await db.delete(productShapes).where(eq(productShapes.id, id));
