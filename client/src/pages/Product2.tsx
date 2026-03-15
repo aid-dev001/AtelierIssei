@@ -180,15 +180,22 @@ export default function Product2() {
           .map((s) => s + "。");
         artPhrases = jaSentences.map((s) => ({ ja: s, en: s, fr: s }));
         try {
-          const res = await fetch("/api/translate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ sentences: jaSentences }),
-          });
-          if (res.ok) {
-            const data = await res.json();
-            if (Array.isArray(data.translations)) artPhrases = data.translations;
-          }
+          const translated = await Promise.all(
+            jaSentences.map(async (s) => {
+              const [enRes, frRes] = await Promise.all([
+                fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(s)}&langpair=ja|en`),
+                fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(s)}&langpair=ja|fr`),
+              ]);
+              const enData = await enRes.json();
+              const frData = await frRes.json();
+              return {
+                ja: s,
+                en: enData.responseData?.translatedText ?? s,
+                fr: frData.responseData?.translatedText ?? s,
+              };
+            })
+          );
+          artPhrases = translated;
         } catch (_) {}
       }
       if (cancelled) return;
@@ -551,7 +558,7 @@ export default function Product2() {
                 </div>
 
                 <button
-                  onClick={() => { setFrontPos({ x: 0.5, y: 0.37 }); setLineWidth(200); setArtVertOffset(0.5); }}
+                  onClick={() => { setFrontPos({ x: 0.5, y: 0.28 }); setLineWidth(130); setArtVertOffset(0.5); }}
                   className="flex items-center gap-1.5 text-sm text-black hover:text-gray-600 transition-colors w-fit"
                 >
                   <RefreshCw className="w-4 h-4" />
