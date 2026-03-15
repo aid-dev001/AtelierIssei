@@ -417,14 +417,14 @@ const Product: React.FC = () => {
                   <button
                     key={s.id}
                     onClick={() => setSelectedShapeId(s.id)}
-                    className={`rounded-xl border-2 transition-all flex flex-col overflow-hidden ${
+                    className={`rounded-xl border-2 transition-all flex flex-col overflow-hidden h-28 ${
                       selectedShapeId === s.id ? "border-black shadow-md" : "border-transparent hover:border-gray-300"
                     }`}
                   >
-                    <div className="aspect-square w-full bg-gray-50">
+                    <div className="flex-1 w-full bg-gray-50 min-h-0">
                       <img src={s.imageUrl} alt={s.title} className="w-full h-full object-contain p-1" />
                     </div>
-                    <p className="text-xs text-center py-1 px-1 truncate w-full text-black leading-tight" style={{ height: "2rem", display: "flex", alignItems: "center", justifyContent: "center" }}>{s.title}</p>
+                    <p className="text-xs text-center px-1 truncate w-full text-black shrink-0" style={{ height: "1.75rem", lineHeight: "1.75rem" }}>{s.title}</p>
                   </button>
                 ))}
               </div>
