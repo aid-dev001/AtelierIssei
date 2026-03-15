@@ -34,35 +34,11 @@ function buildMask(img: HTMLImageElement, threshold: number): HTMLCanvasElement 
   return c;
 }
 
-function drawBlackTshirt(ctx: CanvasRenderingContext2D, W: number, H: number) {
-  const s = W / 500;
-  ctx.save();
-  ctx.shadowColor = "rgba(0,0,0,0.4)";
-  ctx.shadowBlur = 22 * s;
-  ctx.shadowOffsetY = 5 * s;
-  ctx.beginPath();
-  ctx.moveTo(162 * s, 72 * s);
-  ctx.bezierCurveTo(198 * s, 138 * s, 302 * s, 138 * s, 338 * s, 72 * s);
-  ctx.lineTo(396 * s, 46 * s);
-  ctx.lineTo(462 * s, 98 * s);
-  ctx.lineTo(456 * s, 198 * s);
-  ctx.bezierCurveTo(438 * s, 212 * s, 372 * s, 202 * s, 362 * s, 176 * s);
-  ctx.lineTo(362 * s, 446 * s);
-  ctx.lineTo(138 * s, 446 * s);
-  ctx.lineTo(138 * s, 176 * s);
-  ctx.bezierCurveTo(128 * s, 202 * s, 62 * s, 212 * s, 44 * s, 198 * s);
-  ctx.lineTo(38 * s, 98 * s);
-  ctx.lineTo(104 * s, 46 * s);
-  ctx.closePath();
-  ctx.fillStyle = "#1a1a1a";
-  ctx.fill();
-  ctx.restore();
-}
-
 function drawTshirt(
   canvas: HTMLCanvasElement,
   designCanvas: HTMLCanvasElement | null,
   baseImg: HTMLImageElement | null,
+  blackImg: HTMLImageElement | null,
   color: "white" | "black"
 ) {
   const W = canvas.width;
@@ -70,17 +46,12 @@ function drawTshirt(
   const ctx = canvas.getContext("2d")!;
   ctx.clearRect(0, 0, W, H);
 
-  if (color === "white") {
-    if (baseImg) {
-      ctx.drawImage(baseImg, 0, 0, W, H);
-    } else {
-      ctx.fillStyle = "#888";
-      ctx.fillRect(0, 0, W, H);
-    }
+  const shirt = color === "white" ? baseImg : blackImg;
+  if (shirt) {
+    ctx.drawImage(shirt, 0, 0, W, H);
   } else {
-    ctx.fillStyle = "#888888";
+    ctx.fillStyle = color === "white" ? "#cccccc" : "#1a1a1a";
     ctx.fillRect(0, 0, W, H);
-    drawBlackTshirt(ctx, W, H);
   }
 
   if (designCanvas && designCanvas.width > 0 && designCanvas.height > 0) {
@@ -95,13 +66,6 @@ function drawTshirt(
     ctx.globalCompositeOperation = color === "white" ? "multiply" : "screen";
     ctx.drawImage(designCanvas, dx, dy, rw, rh);
     ctx.globalCompositeOperation = "source-over";
-
-    if (color === "black") {
-      ctx.fillStyle = "rgba(255,255,255,0.35)";
-      ctx.font = `${Math.round(W * 0.022)}px sans-serif`;
-      ctx.textAlign = "center";
-      ctx.fillText("ISSEI – Wearable Abstraction", W / 2, dy + rh + W * 0.04);
-    }
   }
 }
 
@@ -149,7 +113,9 @@ const Product: React.FC = () => {
   const [shapeImg, setShapeImg] = useState<HTMLImageElement | null>(null);
   const [fillImg, setFillImg] = useState<HTMLImageElement | null>(null);
   const [tshirtBaseImg, setTshirtBaseImg] = useState<HTMLImageElement | null>(null);
+  const [tshirtBlackImg, setTshirtBlackImg] = useState<HTMLImageElement | null>(null);
   const [tshirtAspect, setTshirtAspect] = useState(960 / 1080);
+  const [tshirtBlackAspect, setTshirtBlackAspect] = useState(976 / 1079);
   const [tshirtColor, setTshirtColor] = useState<"white" | "black">("white");
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [threshold, setThreshold] = useState(238);
@@ -210,6 +176,10 @@ const Product: React.FC = () => {
       setTshirtBaseImg(img);
       setTshirtAspect(img.naturalWidth / img.naturalHeight);
     }).catch(() => {});
+    loadImg("/product/tshirt-black-base.jpg").then((img) => {
+      setTshirtBlackImg(img);
+      setTshirtBlackAspect(img.naturalWidth / img.naturalHeight);
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -262,11 +232,12 @@ const Product: React.FC = () => {
     const canvas = tshirtRef.current;
     if (!canvas || !compositeRef.current) return;
     const W = 480;
-    const H = tshirtColor === "black" ? Math.round(W / 0.888) : Math.round(W / tshirtAspect);
+    const aspect = tshirtColor === "black" ? tshirtBlackAspect : tshirtAspect;
+    const H = Math.round(W / aspect);
     canvas.width = W;
     canvas.height = H;
-    drawTshirt(canvas, compositeRef.current, tshirtBaseImg, tshirtColor);
-  }, [tshirtBaseImg, tshirtAspect, tshirtColor]);
+    drawTshirt(canvas, compositeRef.current, tshirtBaseImg, tshirtBlackImg, tshirtColor);
+  }, [tshirtBaseImg, tshirtBlackImg, tshirtAspect, tshirtBlackAspect, tshirtColor]);
 
   useEffect(() => {
     if (shapeImg && fillImg) { renderComposite(); }
@@ -497,7 +468,7 @@ const Product: React.FC = () => {
               <p className="text-xs text-black mb-3">クリックで拡大</p>
               <div
                 className="rounded-2xl overflow-hidden shadow-lg border border-gray-100 cursor-pointer"
-                style={{ width: "100%", aspectRatio: tshirtColor === "black" ? "480 / 540" : `${tshirtAspect}` }}
+                style={{ width: "100%", aspectRatio: tshirtColor === "black" ? `${tshirtBlackAspect}` : `${tshirtAspect}` }}
                 onClick={() => setModalImg(tshirtRef.current?.toDataURL("image/png") ?? null)}
               >
                 <canvas
