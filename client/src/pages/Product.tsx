@@ -39,7 +39,8 @@ function drawTshirt(
   designCanvas: HTMLCanvasElement | null,
   baseImg: HTMLImageElement | null,
   blackImg: HTMLImageElement | null,
-  color: "white" | "black"
+  color: "white" | "black",
+  designScale: number
 ) {
   const W = canvas.width;
   const H = canvas.height;
@@ -56,8 +57,8 @@ function drawTshirt(
 
   if (designCanvas && designCanvas.width > 0 && designCanvas.height > 0) {
     const aspect = designCanvas.width / designCanvas.height;
-    const maxW = W * 0.38;
-    const maxH = H * 0.34;
+    const maxW = W * 0.38 * designScale;
+    const maxH = H * 0.34 * designScale;
     let rw = maxW;
     let rh = rw / aspect;
     if (rh > maxH) { rh = maxH; rw = rh * aspect; }
@@ -219,14 +220,10 @@ const Product: React.FC = () => {
     const fw = fillImg.width * scaleF;
     const fh = fillImg.height * scaleF;
     ctx.drawImage(fillImg, (w - fw) / 2 + offset.x, (h - fh) / 2 + offset.y, fw, fh);
-    const mw = w * shapeScale;
-    const mh = h * shapeScale;
-    const mx = (w - mw) / 2;
-    const my = (h - mh) / 2;
     ctx.globalCompositeOperation = "destination-in";
-    ctx.drawImage(maskRef.current, mx, my, mw, mh);
+    ctx.drawImage(maskRef.current, 0, 0, w, h);
     ctx.globalCompositeOperation = "source-over";
-  }, [shapeImg, fillImg, offset, threshold, shapeScale, canvasSize]);
+  }, [shapeImg, fillImg, offset, threshold, canvasSize]);
 
   const renderTshirt = useCallback(() => {
     const canvas = tshirtRef.current;
@@ -236,12 +233,12 @@ const Product: React.FC = () => {
     const H = Math.round(W / aspect);
     canvas.width = W;
     canvas.height = H;
-    drawTshirt(canvas, compositeRef.current, tshirtBaseImg, tshirtBlackImg, tshirtColor);
-  }, [tshirtBaseImg, tshirtBlackImg, tshirtAspect, tshirtBlackAspect, tshirtColor]);
+    drawTshirt(canvas, compositeRef.current, tshirtBaseImg, tshirtBlackImg, tshirtColor, shapeScale);
+  }, [tshirtBaseImg, tshirtBlackImg, tshirtAspect, tshirtBlackAspect, tshirtColor, shapeScale]);
 
   useEffect(() => {
     if (shapeImg && fillImg) { renderComposite(); }
-  }, [shapeImg, fillImg, threshold, shapeScale, canvasSize, renderComposite]);
+  }, [shapeImg, fillImg, threshold, canvasSize, renderComposite]);
 
   useEffect(() => {
     if (shapeImg && fillImg) renderComposite();
