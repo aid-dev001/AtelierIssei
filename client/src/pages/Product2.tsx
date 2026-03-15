@@ -110,8 +110,9 @@ export default function Product2() {
   const [phraseIdx, setPhraseIdx] = useState(0);
   const [customText, setCustomText] = useState(PHRASES[0].ja);
 
-  const [frontPos, setFrontPos] = useState({ x: 0.5, y: 0.42 });
-  const [lineWidth, setLineWidth] = useState(320);
+  const [frontPos, setFrontPos] = useState({ x: 0.5, y: 0.30 });
+  const [lineWidth, setLineWidth] = useState(260);
+  const [artVertOffset, setArtVertOffset] = useState(0.5);
 
   const [backPos, setBackPos] = useState({ x: 0.5, y: 0.38 });
   const [designScale, setDesignScale] = useState(1.0);
@@ -193,7 +194,7 @@ export default function Product2() {
     ctx.clip();
     const scale = lineWidth / artImg.width;
     const dh = artImg.height * scale;
-    const dy = ty + (LINE_H - dh) / 2;
+    const dy = ty + (LINE_H - dh) * artVertOffset;
     ctx.globalCompositeOperation = tshirtColor === "black" ? "screen" : "multiply";
     ctx.drawImage(artImg, lx, dy, lineWidth, dh);
     ctx.restore();
@@ -202,17 +203,18 @@ export default function Product2() {
     if (text) {
       ctx.save();
       ctx.globalCompositeOperation = tshirtColor === "black" ? "screen" : "multiply";
-      ctx.font = "bold 18px 'Helvetica Neue', Arial, sans-serif";
+      ctx.font = "bold 16px 'Helvetica Neue', Arial, sans-serif";
       ctx.fillStyle = tshirtColor === "black" ? "#ffffff" : "#1a1a1a";
       ctx.textAlign = "left";
-      const maxW = lineWidth * 1.6;
+      const textLeft = lx;
+      const maxW = FRONT_CW - textLeft - 40;
       const lines = wrapText(ctx, text, maxW);
       lines.forEach((line, i) => {
-        ctx.fillText(line, lx, ty + LINE_H + 26 + i * 26);
+        ctx.fillText(line, textLeft, ty + LINE_H + 22 + i * 22);
       });
       ctx.restore();
     }
-  }, [frontShirtImg, frontBlackShirtImg, artImg, frontPos, lineWidth, customText, tshirtColor]);
+  }, [frontShirtImg, frontBlackShirtImg, artImg, frontPos, lineWidth, artVertOffset, customText, tshirtColor]);
 
   const renderBack = useCallback(() => {
     const canvas = backRef.current;
@@ -352,106 +354,56 @@ export default function Product2() {
           </p>
         </div>
 
-        <div className="flex items-center justify-center gap-4 mb-10">
-          <span className="text-xs tracking-wider text-black">Tシャツカラー</span>
-          <button
-            onClick={() => setTshirtColor("white")}
-            className={`w-8 h-8 rounded-full border-2 bg-white transition-all ${tshirtColor === "white" ? "border-black shadow-md scale-110" : "border-gray-300"}`}
-          />
-          <button
-            onClick={() => setTshirtColor("black")}
-            className={`w-8 h-8 rounded-full border-2 bg-black transition-all ${tshirtColor === "black" ? "border-gray-400 shadow-md scale-110" : "border-gray-600"}`}
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">
-          <div ref={fillSectionRef} className="flex flex-col">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold">1</span>
-              <span className="font-semibold text-sm tracking-wider">絵を選ぶ</span>
-              <span className="text-xs text-black">ISSEIの作品から選択</span>
-            </div>
-            {artworks.length === 0 ? (
-              <p className="text-sm text-gray-400 py-8 text-center border rounded-xl">作品がありません</p>
-            ) : (
-              <div className="overflow-y-auto" style={{ maxHeight: "400px" }}>
-                <div className="grid grid-cols-3 gap-2 pr-1">
-                  {visibleArtworks.map((a) => (
-                    <button
-                      key={a.id}
-                      onClick={() => setSelectedArtId(a.id)}
-                      className={`rounded-xl overflow-hidden border-2 transition-all aspect-square ${
-                        selectedArtId === a.id ? "border-black shadow-md" : "border-transparent hover:border-gray-300"
-                      }`}
-                    >
-                      <img src={a.imageUrl} alt={a.title} className="w-full h-full object-cover bg-gray-50" loading="lazy" />
-                    </button>
-                  ))}
-                </div>
-                {hasMore && <div ref={sentinelRef} className="h-4" />}
+        <div ref={fillSectionRef} className="mb-12">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold">1</span>
+            <span className="font-semibold text-sm tracking-wider">絵を選ぶ</span>
+            <span className="text-xs text-black">ISSEIの作品から選択</span>
+          </div>
+          {artworks.length === 0 ? (
+            <p className="text-sm text-gray-400 py-8 text-center border rounded-xl">作品がありません</p>
+          ) : (
+            <div className="overflow-y-auto" style={{ maxHeight: "400px" }}>
+              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 pr-1">
+                {visibleArtworks.map((a) => (
+                  <button
+                    key={a.id}
+                    onClick={() => setSelectedArtId(a.id)}
+                    className={`rounded-xl overflow-hidden border-2 transition-all aspect-square ${
+                      selectedArtId === a.id ? "border-black shadow-md" : "border-transparent hover:border-gray-300"
+                    }`}
+                  >
+                    <img src={a.imageUrl} alt={a.title} className="w-full h-full object-cover bg-gray-50" loading="lazy" />
+                  </button>
+                ))}
               </div>
-            )}
-          </div>
-
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold">2</span>
-              <span className="font-semibold text-sm tracking-wider">言葉を選ぶ・編集する</span>
+              {hasMore && <div ref={sentinelRef} className="h-4" />}
             </div>
-
-            <div className="flex gap-2 mb-4">
-              {(["ja", "en", "fr"] as const).map((l) => (
-                <button
-                  key={l}
-                  onClick={() => setLang(l)}
-                  className={`px-3 py-1 text-xs rounded-full border transition-all ${
-                    lang === l ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-black"
-                  }`}
-                >
-                  {l === "ja" ? "日本語" : l === "en" ? "English" : "Français"}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex gap-2 flex-wrap mb-4">
-              {PHRASES.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setPhraseIdx(i)}
-                  className={`w-7 h-7 text-xs rounded-full border transition-all ${
-                    phraseIdx === i ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-black"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-            </div>
-
-            <textarea
-              value={customText}
-              onChange={(e) => setCustomText(e.target.value)}
-              className="border border-gray-300 rounded-xl p-3 text-sm leading-relaxed resize-none focus:outline-none focus:border-black"
-              rows={3}
-              placeholder="テキストを編集できます"
-            />
-
-            <div className="mt-4 flex items-center gap-2">
-              <span className="text-xs text-black whitespace-nowrap">横線の幅</span>
-              <input
-                type="range" min={100} max={600} step={10} value={lineWidth}
-                onChange={(e) => setLineWidth(Number(e.target.value))}
-                className="w-28 accent-black"
-              />
-              <span className="text-xs text-black w-10">{lineWidth}px</span>
-            </div>
-          </div>
+          )}
         </div>
 
         {artImg && (
           <>
-            <div ref={previewRef} className="mt-16 pt-8 mb-6">
-              <p className="text-xs font-semibold tracking-widest uppercase text-black mb-1">表面 FRONT</p>
-              <p className="text-xs text-black mb-3">ドラッグで横線＋テキストの位置を移動できます</p>
+            <div ref={previewRef} className="mt-16 pt-8 mb-6 flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <p className="text-xs font-semibold tracking-widest uppercase text-black mb-1">表面 FRONT</p>
+                <p className="text-xs text-black">ドラッグで横線＋テキストの位置を移動できます</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-black">カラー</span>
+                <button
+                  onClick={() => setTshirtColor("white")}
+                  className={`px-3 py-1 rounded-full text-xs border transition-colors ${
+                    tshirtColor === "white" ? "bg-black text-white border-black" : "bg-white text-gray-500 border-gray-300 hover:border-gray-500"
+                  }`}
+                >白</button>
+                <button
+                  onClick={() => setTshirtColor("black")}
+                  className={`px-3 py-1 rounded-full text-xs border transition-colors ${
+                    tshirtColor === "black" ? "bg-black text-white border-black" : "bg-white text-gray-500 border-gray-300 hover:border-gray-500"
+                  }`}
+                >黒</button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
@@ -483,18 +435,55 @@ export default function Product2() {
                 </div>
               </div>
 
-              <div className="flex flex-col justify-center gap-4">
+              <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-black whitespace-nowrap">横線の幅</span>
+                  <span className="text-xs text-black whitespace-nowrap">絵の上下位置</span>
                   <input
-                    type="range" min={100} max={600} step={10} value={lineWidth}
-                    onChange={(e) => setLineWidth(Number(e.target.value))}
-                    className="w-28 accent-black"
+                    type="range" min={0} max={1} step={0.01} value={artVertOffset}
+                    onChange={(e) => setArtVertOffset(Number(e.target.value))}
+                    className="flex-1 accent-black"
                   />
-                  <span className="text-xs text-black w-10">{lineWidth}px</span>
                 </div>
+
+                <div className="border-t border-gray-100 pt-4">
+                  <p className="text-xs font-semibold tracking-wider text-black mb-3">言葉を選ぶ・編集する</p>
+                  <div className="flex gap-2 mb-3">
+                    {(["ja", "en", "fr"] as const).map((l) => (
+                      <button
+                        key={l}
+                        onClick={() => setLang(l)}
+                        className={`px-3 py-1 text-xs rounded-full border transition-all ${
+                          lang === l ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-black"
+                        }`}
+                      >
+                        {l === "ja" ? "日本語" : l === "en" ? "EN" : "FR"}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex gap-1.5 flex-wrap mb-3">
+                    {PHRASES.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setPhraseIdx(i)}
+                        className={`w-7 h-7 text-xs rounded-full border transition-all ${
+                          phraseIdx === i ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-black"
+                        }`}
+                      >
+                        {i + 1}
+                      </button>
+                    ))}
+                  </div>
+                  <textarea
+                    value={customText}
+                    onChange={(e) => setCustomText(e.target.value)}
+                    className="w-full border border-gray-300 rounded-xl p-3 text-sm leading-relaxed resize-none focus:outline-none focus:border-black"
+                    rows={3}
+                    placeholder="テキストを編集できます"
+                  />
+                </div>
+
                 <button
-                  onClick={() => setFrontPos({ x: 0.5, y: 0.42 })}
+                  onClick={() => { setFrontPos({ x: 0.5, y: 0.30 }); setArtVertOffset(0.5); }}
                   className="flex items-center gap-1.5 text-sm text-black hover:text-gray-600 transition-colors w-fit"
                 >
                   <RefreshCw className="w-4 h-4" />
