@@ -6,6 +6,7 @@ import { setupVite, serveStatic } from "./vite";
 import { createServer } from "http";
 import { initializeAdmin } from "./admin";
 import { createOgMiddleware } from "./ogHandler";
+import { downloadFromStorage } from "./objectStorage";
 import fs from "fs";
 import path from "path";
 
@@ -50,17 +51,22 @@ app.use('/artworks', (req, res, next) => {
 app.use('/artworks', express.static('public/artworks', staticOptions));
 app.use('/artworks', express.static('.', staticOptions));
 
-// 開発環境でローカルに画像がない場合、本番サーバーから取得する
-if (process.env.NODE_ENV !== 'production') {
-  const PRODUCTION_BASE_URL = process.env.BASE_URL || 'https://atelier-issei.com';
-  app.use('/artworks', (req, res, next) => {
-    const localPath = path.join('public/artworks', req.path);
-    if (!fs.existsSync(localPath)) {
-      return res.redirect(`${PRODUCTION_BASE_URL}/artworks${req.path}`);
+// ローカルに画像がない場合、Object Storageから取得する
+app.use('/artworks', async (req, res, next) => {
+  const filename = req.path.replace(/^\//, '');
+  const localPath = path.join('public/artworks', filename);
+  if (!fs.existsSync(localPath) && filename) {
+    const buffer = await downloadFromStorage(filename);
+    if (buffer) {
+      const ext = path.extname(filename).toLowerCase();
+      const contentType = ext === '.png' ? 'image/png' : 'image/jpeg';
+      res.set('Content-Type', contentType);
+      res.set('Cache-Control', 'public, max-age=86400');
+      return res.send(buffer);
     }
-    next();
-  });
-}
+  }
+  next();
+});
 
 const MemoryStoreSession = MemoryStore(session);
 const isProduction = process.env.NODE_ENV === 'production';

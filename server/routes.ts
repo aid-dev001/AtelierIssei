@@ -3,6 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
+import { uploadToStorage } from './objectStorage';
 import { generateArtworkDescription, generateCollectionDescription, generateExhibitionDescription } from './openai';
 import { db } from "../db";
 import { ADMIN_URL_PATH, requireAdmin } from "./admin";
@@ -250,6 +251,10 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         return res.status(500).json({ error: "アップロードされた画像の保存に失敗しました" });
       }
 
+      // Object Storageにもバックアップ
+      const fileBuffer = fs.readFileSync(req.file.path);
+      await uploadToStorage(req.file.filename, fileBuffer, req.file.mimetype);
+
       // 画像の公開URLを生成
       const imageUrl = `/artworks/${req.file.filename}`;
       console.log('Image uploaded successfully:', imageUrl);
@@ -276,6 +281,10 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
       if (!req.file) {
         return res.status(400).json({ error: "画像がアップロードされていません" });
       }
+
+      // Object Storageにもバックアップ
+      const fileBuffer = fs.readFileSync(req.file.path);
+      await uploadToStorage(req.file.filename, fileBuffer, req.file.mimetype);
 
       const imageUrl = `/artworks/${req.file.filename}`;
       
@@ -348,6 +357,10 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
       if (!req.file) {
         return res.status(400).json({ error: "画像がアップロードされていません" });
       }
+
+      // Object Storageにもバックアップ
+      const fileBuffer = fs.readFileSync(req.file.path);
+      await uploadToStorage(req.file.filename, fileBuffer, req.file.mimetype);
 
       const imageUrl = `/artworks/${req.file.filename}`;
       res.json({ imageUrl });
@@ -493,7 +506,12 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
       console.log('Received exhibition data:', req.body);
       console.log('Received files:', req.files);
       
-      const subImageUrls = req.files ? (req.files as Express.Multer.File[]).map(file => `/artworks/${file.filename}`) : [];
+      const uploadedFiles = req.files as Express.Multer.File[] || [];
+      for (const file of uploadedFiles) {
+        const buf = fs.readFileSync(file.path);
+        await uploadToStorage(file.filename, buf, file.mimetype);
+      }
+      const subImageUrls = uploadedFiles.map(file => `/artworks/${file.filename}`);
       
       const exhibitionData = {
         title: req.body.title,
@@ -530,7 +548,12 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
   app.put(`/admin/${ADMIN_URL_PATH}/exhibitions/:id`, requireAdmin, upload.array('subImages'), async (req, res) => {
     try {
       const exhibitionId = parseInt(req.params.id);
-      const subImageUrls = req.files ? (req.files as Express.Multer.File[]).map(file => `/artworks/${file.filename}`) : undefined;
+      const uploadedExhibFiles = req.files as Express.Multer.File[] || [];
+      for (const file of uploadedExhibFiles) {
+        const buf = fs.readFileSync(file.path);
+        await uploadToStorage(file.filename, buf, file.mimetype);
+      }
+      const subImageUrls = uploadedExhibFiles.length > 0 ? uploadedExhibFiles.map(file => `/artworks/${file.filename}`) : undefined;
       
       const updateData = {
         ...req.body,
