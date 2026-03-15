@@ -476,7 +476,7 @@ const Product: React.FC = () => {
         </div>
 
         {isReady && (
-          <div className="mb-4 flex items-center gap-4 flex-wrap">
+          <div ref={previewRef} className="mt-10 mb-4 flex items-center gap-4 flex-wrap">
             <label className="flex items-center gap-2 text-sm text-black">
               <span className="text-xs whitespace-nowrap">型の中の絵</span>
               <input
@@ -506,7 +506,7 @@ const Product: React.FC = () => {
         )}
 
         {isReady && (
-          <div ref={previewRef} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <p className="text-xs font-semibold tracking-wider text-black uppercase mb-1">
                 プレビュー
