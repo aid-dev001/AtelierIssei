@@ -40,14 +40,18 @@ const ArtworkCard = ({ artwork }: ArtworkCardProps) => {
         </div>
         <div className="absolute bottom-4 left-4 flex flex-col gap-2">
           <div className="flex gap-2">
-            <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium flex items-center gap-1.5">
-              <Palette className="w-4 h-4 text-black" />
-              作成: {artwork.createdLocation || '銀座'}
-            </div>
-            <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium flex items-center gap-1.5">
-              <Building2 className="w-4 h-4 text-black" />
-              保管: {artwork.storedLocation || '銀座'}
-            </div>
+            {artwork.createdLocation && (
+              <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium flex items-center gap-1.5">
+                <Palette className="w-4 h-4 text-black" />
+                作成: {artwork.createdLocation}
+              </div>
+            )}
+            {artwork.storedLocation && (
+              <div className="bg-white/90 px-3 py-1 rounded-md text-sm font-medium flex items-center gap-1.5">
+                <Building2 className="w-4 h-4 text-black" />
+                保管: {artwork.storedLocation}
+              </div>
+            )}
           </div>
           <div className="flex gap-2">
             <div className="bg-white/90 px-2 py-0.5 rounded text-sm font-medium min-w-0 w-fit">
