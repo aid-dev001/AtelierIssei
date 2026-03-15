@@ -304,7 +304,7 @@ export default function Product2() {
     });
   };
   const onFrontUp = () => {
-    if (!frontDidMove.current) setModalImg(frontRef.current?.toDataURL("image/png") ?? null);
+    if (frontDragging.current && !frontDidMove.current) setModalImg(frontRef.current?.toDataURL("image/png") ?? null);
     frontDragging.current = false;
   };
 
@@ -342,7 +342,7 @@ export default function Product2() {
     }
   };
   const onBackUp = () => {
-    if (!backDidMove.current) setModalImg(backRef.current?.toDataURL("image/png") ?? null);
+    if (backDragging.current && !backDidMove.current) setModalImg(backRef.current?.toDataURL("image/png") ?? null);
     backDragging.current = false;
   };
 
