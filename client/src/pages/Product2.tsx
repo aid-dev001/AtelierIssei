@@ -472,7 +472,7 @@ export default function Product2() {
                   <span className="text-xs text-gray-400 w-8">{lineWidth}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-black whitespace-nowrap">絵の上下位置</span>
+                  <span className="text-xs text-black whitespace-nowrap">線に使う絵の上下位置</span>
                   <input
                     type="range" min={0} max={1} step={0.01} value={artVertOffset}
                     onChange={(e) => setArtVertOffset(Number(e.target.value))}
