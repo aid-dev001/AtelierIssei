@@ -401,17 +401,17 @@ const Product: React.FC = () => {
 
       <div className="max-w-5xl mx-auto px-4">
         <h1 className="text-4xl font-bold mb-2 tracking-wider text-center">PRODUCT</h1>
-        <p className="text-center text-xs tracking-[0.2em] uppercase text-gray-400 mb-8">Art you can wear</p>
+        <p className="text-center text-xs tracking-[0.2em] uppercase text-black mb-8">Art you can wear</p>
 
         <div className="max-w-xl mx-auto mb-14 text-center space-y-4">
-          <p className="text-sm leading-relaxed tracking-wide text-gray-700">
+          <p className="text-sm leading-relaxed tracking-wide text-black">
             ISSEIのアートを、あなた自身の身体へ。
           </p>
-          <p className="text-sm leading-relaxed tracking-wide text-gray-600">
-            型を選び、中身に絵を選ぶ。ただそれだけで、絵画はウェアラブルな表現へと変容する。
-            これはプロダクトである前に、アートとの対話だ。
+          <p className="text-sm leading-relaxed tracking-wide text-black">
+            型を選び、中身に絵を選んでください。ただそれだけで、絵画はウェアラブルな表現へと変容します。
+            これはプロダクトである前に、アートとの対話です。
           </p>
-          <p className="text-xs leading-relaxed tracking-widest text-gray-400 uppercase">
+          <p className="text-xs leading-relaxed tracking-widest text-black uppercase">
             Choose a shape &mdash; fill it with ISSEI's art &mdash; wear the result
           </p>
         </div>
