@@ -17,7 +17,7 @@ function loadImg(src: string): Promise<HTMLImageElement> {
   });
 }
 
-function buildMask(img: HTMLImageElement, threshold: number): HTMLCanvasElement {
+function buildMask(img: HTMLImageElement): HTMLCanvasElement {
   const c = document.createElement("canvas");
   c.width = img.naturalWidth || img.width;
   c.height = img.naturalHeight || img.height;
@@ -26,7 +26,7 @@ function buildMask(img: HTMLImageElement, threshold: number): HTMLCanvasElement 
   const id = ctx.getImageData(0, 0, c.width, c.height);
   const d = id.data;
   for (let i = 0; i < d.length; i += 4) {
-    if (d[i] >= threshold && d[i + 1] >= threshold && d[i + 2] >= threshold) {
+    if (d[i] >= 240 && d[i + 1] >= 240 && d[i + 2] >= 240) {
       d[i + 3] = 0;
     }
   }
@@ -119,7 +119,6 @@ const Product: React.FC = () => {
   const [tshirtBlackAspect, setTshirtBlackAspect] = useState(976 / 1079);
   const [tshirtColor, setTshirtColor] = useState<"white" | "black">("white");
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [threshold, setThreshold] = useState(238);
   const [shapeScale, setShapeScale] = useState(1.0);
   const [canvasSize, setCanvasSize] = useState({ w: 480, h: 480 });
   const [modalImg, setModalImg] = useState<string | null>(null);
@@ -214,7 +213,7 @@ const Product: React.FC = () => {
     const ctx = canvas.getContext("2d")!;
     ctx.clearRect(0, 0, w, h);
     if (!maskRef.current) {
-      maskRef.current = buildMask(shapeImg, threshold);
+      maskRef.current = buildMask(shapeImg);
     }
     const scaleF = Math.max((w * 1.2) / fillImg.width, (h * 1.2) / fillImg.height);
     const fw = fillImg.width * scaleF;
@@ -223,7 +222,7 @@ const Product: React.FC = () => {
     ctx.globalCompositeOperation = "destination-in";
     ctx.drawImage(maskRef.current, 0, 0, w, h);
     ctx.globalCompositeOperation = "source-over";
-  }, [shapeImg, fillImg, offset, threshold, canvasSize]);
+  }, [shapeImg, fillImg, offset, canvasSize]);
 
   const renderTshirt = useCallback(() => {
     const canvas = tshirtRef.current;
@@ -238,7 +237,7 @@ const Product: React.FC = () => {
 
   useEffect(() => {
     if (shapeImg && fillImg) { renderComposite(); }
-  }, [shapeImg, fillImg, threshold, canvasSize, renderComposite]);
+  }, [shapeImg, fillImg, canvasSize, renderComposite]);
 
   useEffect(() => {
     if (shapeImg && fillImg) renderComposite();
@@ -246,7 +245,7 @@ const Product: React.FC = () => {
 
   useEffect(() => {
     if (shapeImg && fillImg) setTimeout(() => renderTshirt(), 30);
-  }, [shapeImg, fillImg, offset, threshold, canvasSize, tshirtColor, renderTshirt]);
+  }, [shapeImg, fillImg, offset, canvasSize, tshirtColor, renderTshirt]);
 
   useEffect(() => {
     const isReady = !!(shapeImg && fillImg);
@@ -387,15 +386,6 @@ const Product: React.FC = () => {
                 className="w-28 accent-black"
               />
               <span className="text-xs text-black w-8">{Math.round(shapeScale * 100)}%</span>
-            </label>
-            <label className="flex items-center gap-2 text-sm text-black">
-              <span className="text-xs whitespace-nowrap">型のくり抜き調整</span>
-              <input
-                type="range" min={200} max={254} value={threshold}
-                onChange={(e) => { maskRef.current = null; setThreshold(Number(e.target.value)); }}
-                className="w-28 accent-black"
-              />
-              <span className="text-xs text-black">{threshold < 220 ? "広め" : threshold > 245 ? "狭め" : "標準"}</span>
             </label>
             <button
               onClick={() => setOffset({ x: 0, y: 0 })}
