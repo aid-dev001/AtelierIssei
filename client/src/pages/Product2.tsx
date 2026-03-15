@@ -78,6 +78,9 @@ export default function Product2() {
 
   const [frontShirtImg, setFrontShirtImg] = useState<HTMLImageElement | null>(null);
   const [backShirtImg, setBackShirtImg] = useState<HTMLImageElement | null>(null);
+  const [frontBlackShirtImg, setFrontBlackShirtImg] = useState<HTMLImageElement | null>(null);
+  const [backBlackShirtImg, setBackBlackShirtImg] = useState<HTMLImageElement | null>(null);
+  const [tshirtColor, setTshirtColor] = useState<"white" | "black">("white");
 
   const [lang, setLang] = useState<"ja" | "en" | "fr">("ja");
   const [phraseIdx, setPhraseIdx] = useState(0);
@@ -119,6 +122,8 @@ export default function Product2() {
   useEffect(() => {
     loadImg("/product/tshirt2-front.jpg").then(setFrontShirtImg);
     loadImg("/product/tshirt2-back.jpg").then(setBackShirtImg);
+    loadImg("/product/tshirt2-black-front.jpg").then(setFrontBlackShirtImg);
+    loadImg("/product/tshirt2-black-back.jpg").then(setBackBlackShirtImg);
   }, []);
 
   useEffect(() => {
@@ -144,12 +149,13 @@ export default function Product2() {
 
   const renderFront = useCallback(() => {
     const canvas = frontRef.current;
-    if (!canvas || !frontShirtImg) return;
+    const shirtImg = tshirtColor === "black" ? frontBlackShirtImg : frontShirtImg;
+    if (!canvas || !shirtImg) return;
     canvas.width = FRONT_CW;
     canvas.height = FRONT_CH;
     const ctx = canvas.getContext("2d")!;
     ctx.clearRect(0, 0, FRONT_CW, FRONT_CH);
-    ctx.drawImage(frontShirtImg, 0, 0, FRONT_CW, FRONT_CH);
+    ctx.drawImage(shirtImg, 0, 0, FRONT_CW, FRONT_CH);
     if (!artImg) return;
 
     const cx = frontPos.x * FRONT_CW;
@@ -163,15 +169,16 @@ export default function Product2() {
     const scale = lineWidth / artImg.width;
     const dh = artImg.height * scale;
     const dy = ty + (LINE_H - dh) / 2;
+    ctx.globalCompositeOperation = tshirtColor === "black" ? "screen" : "multiply";
     ctx.drawImage(artImg, lx, dy, lineWidth, dh);
     ctx.restore();
 
     const text = customText;
     if (text) {
       ctx.save();
-      ctx.globalCompositeOperation = "multiply";
+      ctx.globalCompositeOperation = tshirtColor === "black" ? "screen" : "multiply";
       ctx.font = "bold 18px 'Helvetica Neue', Arial, sans-serif";
-      ctx.fillStyle = "#1a1a1a";
+      ctx.fillStyle = tshirtColor === "black" ? "#ffffff" : "#1a1a1a";
       ctx.textAlign = "left";
       const maxW = lineWidth * 1.6;
       const lines = wrapText(ctx, text, maxW);
@@ -180,16 +187,17 @@ export default function Product2() {
       });
       ctx.restore();
     }
-  }, [frontShirtImg, artImg, frontPos, lineWidth, customText]);
+  }, [frontShirtImg, frontBlackShirtImg, artImg, frontPos, lineWidth, customText, tshirtColor]);
 
   const renderBack = useCallback(() => {
     const canvas = backRef.current;
-    if (!canvas || !backShirtImg) return;
+    const shirtImg = tshirtColor === "black" ? backBlackShirtImg : backShirtImg;
+    if (!canvas || !shirtImg) return;
     canvas.width = BACK_CW;
     canvas.height = BACK_CH;
     const ctx = canvas.getContext("2d")!;
     ctx.clearRect(0, 0, BACK_CW, BACK_CH);
-    ctx.drawImage(backShirtImg, 0, 0, BACK_CW, BACK_CH);
+    ctx.drawImage(shirtImg, 0, 0, BACK_CW, BACK_CH);
     if (!artImg) return;
 
     const sq = BACK_SQUARE_BASE * designScale;
@@ -205,10 +213,10 @@ export default function Product2() {
     const dh = artImg.height * scale;
     const dx = sx + (sq - dw) / 2 + artOffset.x;
     const dy = sy + (sq - dh) / 2 + artOffset.y;
-    ctx.globalCompositeOperation = "multiply";
+    ctx.globalCompositeOperation = tshirtColor === "black" ? "screen" : "multiply";
     ctx.drawImage(artImg, dx, dy, dw, dh);
     ctx.restore();
-  }, [backShirtImg, artImg, backPos, designScale, cropScale, artOffset]);
+  }, [backShirtImg, backBlackShirtImg, artImg, backPos, designScale, cropScale, artOffset, tshirtColor]);
 
   useEffect(() => { renderFront(); }, [renderFront]);
   useEffect(() => { renderBack(); }, [renderBack]);
@@ -317,6 +325,18 @@ export default function Product2() {
             ISSEIの作品からひとつを選ぶと、絵のストロークが横線となり、<br className="hidden md:block" />
             詩のような言葉とともにTシャツへと転写されます。
           </p>
+        </div>
+
+        <div className="flex items-center justify-center gap-4 mb-10">
+          <span className="text-xs tracking-wider text-black">Tシャツカラー</span>
+          <button
+            onClick={() => setTshirtColor("white")}
+            className={`w-8 h-8 rounded-full border-2 bg-white transition-all ${tshirtColor === "white" ? "border-black shadow-md scale-110" : "border-gray-300"}`}
+          />
+          <button
+            onClick={() => setTshirtColor("black")}
+            className={`w-8 h-8 rounded-full border-2 bg-black transition-all ${tshirtColor === "black" ? "border-gray-400 shadow-md scale-110" : "border-gray-600"}`}
+          />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">
