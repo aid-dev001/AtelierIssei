@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { RefreshCw, Download, X, Maximize2 } from "lucide-react";
+import { RefreshCw, Download, X } from "lucide-react";
 
 type ProductShape = { id: number; title: string; imageUrl: string };
 type ArtworkItem = { id: number; title: string; imageUrl: string };
+
+const PAGE_SIZE = 12;
 
 function loadImg(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -150,19 +152,23 @@ const Product: React.FC = () => {
   const [tshirtAspect, setTshirtAspect] = useState(960 / 1080);
   const [tshirtColor, setTshirtColor] = useState<"white" | "black">("white");
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [dragging, setDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [dragMoved, setDragMoved] = useState(false);
   const [threshold, setThreshold] = useState(238);
   const [shapeScale, setShapeScale] = useState(1.0);
   const [canvasSize, setCanvasSize] = useState({ w: 480, h: 480 });
   const [modalImg, setModalImg] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [artworkScrollH, setArtworkScrollH] = useState<number | null>(null);
 
   const compositeRef = useRef<HTMLCanvasElement>(null);
   const tshirtRef = useRef<HTMLCanvasElement>(null);
   const maskRef = useRef<HTMLCanvasElement | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const prevIsReady = useRef(false);
+  const shapeColRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const draggingRef = useRef(false);
+  const dragMovedRef = useRef(false);
+  const dragStartRef = useRef({ x: 0, y: 0 });
 
   const { data: shapes = [] } = useQuery<ProductShape[]>({
     queryKey: ["product-shapes"],
@@ -173,6 +179,9 @@ const Product: React.FC = () => {
     queryKey: ["/api/artworks"],
     queryFn: () => fetch("/api/artworks").then((r) => r.json()),
   });
+
+  const visibleArtworks = artworks.slice(0, visibleCount);
+  const hasMore = visibleCount < artworks.length;
 
   useEffect(() => {
     if (selectedShapeId == null) return;
@@ -202,6 +211,28 @@ const Product: React.FC = () => {
       setTshirtAspect(img.naturalWidth / img.naturalHeight);
     }).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    const ro = new ResizeObserver(() => {
+      if (shapeColRef.current) {
+        setArtworkScrollH(shapeColRef.current.offsetHeight - 44);
+      }
+    });
+    if (shapeColRef.current) ro.observe(shapeColRef.current);
+    return () => ro.disconnect();
+  }, [shapes]);
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    const io = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setVisibleCount((prev) => prev + PAGE_SIZE);
+      }
+    }, { threshold: 0.1 });
+    io.observe(sentinel);
+    return () => io.disconnect();
+  }, [visibleArtworks.length]);
 
   const renderComposite = useCallback(() => {
     const canvas = compositeRef.current;
@@ -249,6 +280,14 @@ const Product: React.FC = () => {
     if (shapeImg && fillImg) setTimeout(() => renderTshirt(), 30);
   }, [shapeImg, fillImg, offset, threshold, canvasSize, tshirtColor, renderTshirt]);
 
+  useEffect(() => {
+    const isReady = !!(shapeImg && fillImg);
+    if (isReady && !prevIsReady.current) {
+      setTimeout(() => previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
+    }
+    prevIsReady.current = isReady;
+  }, [shapeImg, fillImg]);
+
   const getCanvasPos = (e: React.MouseEvent | React.TouchEvent, canvas: HTMLCanvasElement) => {
     const rect = canvas.getBoundingClientRect();
     const sx = canvasSize.w / rect.width;
@@ -262,45 +301,44 @@ const Product: React.FC = () => {
   const onDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!compositeRef.current) return;
     const p = getCanvasPos(e, compositeRef.current);
-    setDragging(true);
-    setDragMoved(false);
-    setDragStart({ x: p.x - offset.x, y: p.y - offset.y });
+    draggingRef.current = true;
+    dragMovedRef.current = false;
+    dragStartRef.current = { x: p.x - offset.x, y: p.y - offset.y };
   };
   const onMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!dragging || !compositeRef.current) return;
-    setDragMoved(true);
+    if (!draggingRef.current || !compositeRef.current) return;
+    dragMovedRef.current = true;
     const p = getCanvasPos(e, compositeRef.current);
-    setOffset({ x: p.x - dragStart.x, y: p.y - dragStart.y });
+    setOffset({ x: p.x - dragStartRef.current.x, y: p.y - dragStartRef.current.y });
   };
-  const onUp = () => setDragging(false);
+  const onUp = () => {
+    if (draggingRef.current && !dragMovedRef.current) {
+      setModalImg(compositeRef.current?.toDataURL("image/png") ?? null);
+    }
+    draggingRef.current = false;
+  };
   const onTouchDown = (e: React.TouchEvent<HTMLCanvasElement>) => {
     if (!compositeRef.current) return;
     const p = getCanvasPos(e, compositeRef.current);
-    setDragging(true);
-    setDragMoved(false);
-    setDragStart({ x: p.x - offset.x, y: p.y - offset.y });
+    draggingRef.current = true;
+    dragMovedRef.current = false;
+    dragStartRef.current = { x: p.x - offset.x, y: p.y - offset.y };
   };
   const onTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
     e.preventDefault();
-    if (!dragging || !compositeRef.current) return;
-    setDragMoved(true);
+    if (!draggingRef.current || !compositeRef.current) return;
+    dragMovedRef.current = true;
     const p = getCanvasPos(e, compositeRef.current);
-    setOffset({ x: p.x - dragStart.x, y: p.y - dragStart.y });
+    setOffset({ x: p.x - dragStartRef.current.x, y: p.y - dragStartRef.current.y });
   };
-
-  const openModal = (canvasEl: HTMLCanvasElement | null) => {
-    if (!canvasEl) return;
-    setModalImg(canvasEl.toDataURL("image/png"));
+  const onTouchEnd = () => {
+    if (draggingRef.current && !dragMovedRef.current) {
+      setModalImg(compositeRef.current?.toDataURL("image/png") ?? null);
+    }
+    draggingRef.current = false;
   };
 
   const isReady = shapeImg && fillImg;
-
-  useEffect(() => {
-    if (isReady && !prevIsReady.current) {
-      setTimeout(() => previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
-    }
-    prevIsReady.current = !!isReady;
-  }, [isReady]);
 
   return (
     <div className="min-h-screen bg-white py-12">
@@ -312,8 +350,8 @@ const Product: React.FC = () => {
           絵からデザインをシミュレート
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12 md:items-stretch">
-          <div className="flex flex-col">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">
+          <div ref={shapeColRef} className="flex flex-col">
             <div className="flex items-center gap-2 mb-4">
               <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold">1</span>
               <span className="font-semibold text-sm tracking-wider">型の絵を選ぶ</span>
@@ -348,9 +386,12 @@ const Product: React.FC = () => {
             {artworks.length === 0 ? (
               <p className="text-sm text-gray-400 py-8 text-center border rounded-xl">作品がありません</p>
             ) : (
-              <div className="flex-1 overflow-y-auto">
+              <div
+                className="overflow-y-auto"
+                style={artworkScrollH ? { height: `${artworkScrollH}px` } : { maxHeight: "400px" }}
+              >
                 <div className="grid grid-cols-3 gap-2 pr-1">
-                  {artworks.map((a) => (
+                  {visibleArtworks.map((a) => (
                     <button
                       key={a.id}
                       onClick={() => setSelectedFillId(a.id)}
@@ -358,10 +399,11 @@ const Product: React.FC = () => {
                         selectedFillId === a.id ? "border-black shadow-md" : "border-transparent hover:border-gray-300"
                       }`}
                     >
-                      <img src={a.imageUrl} alt={a.title} className="w-full h-full object-cover bg-gray-50" />
+                      <img src={a.imageUrl} alt={a.title} className="w-full h-full object-cover bg-gray-50" loading="lazy" />
                     </button>
                   ))}
                 </div>
+                {hasMore && <div ref={sentinelRef} className="h-4" />}
               </div>
             )}
           </div>
@@ -400,41 +442,36 @@ const Product: React.FC = () => {
         {isReady && (
           <div ref={previewRef} className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <p className="text-xs font-semibold tracking-wider text-black uppercase mb-3">
+              <p className="text-xs font-semibold tracking-wider text-black uppercase mb-1">
                 プレビュー
-                <span className="font-normal ml-2 text-black">← ドラッグで中身の絵を動かせます</span>
+              </p>
+              <p className="text-xs text-black mb-3">
+                ドラッグで中身の絵を動かせます　クリックで拡大
               </p>
               <div
-                className="relative rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-gray-50 group"
+                className="rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-gray-50"
                 style={{ width: "100%", aspectRatio: `${canvasSize.w} / ${canvasSize.h}` }}
               >
                 <canvas
                   ref={compositeRef}
                   style={{
                     width: "100%", height: "100%", display: "block",
-                    cursor: dragging ? "grabbing" : "grab",
+                    cursor: "grab",
                     touchAction: "none",
                   }}
                   onMouseDown={onDown}
                   onMouseMove={onMove}
                   onMouseUp={onUp}
-                  onMouseLeave={onUp}
+                  onMouseLeave={() => { draggingRef.current = false; }}
                   onTouchStart={onTouchDown}
                   onTouchMove={onTouchMove}
-                  onTouchEnd={onUp}
+                  onTouchEnd={onTouchEnd}
                 />
-                <button
-                  onClick={() => openModal(compositeRef.current)}
-                  className="absolute top-2 right-2 bg-white/80 hover:bg-white rounded-full p-1.5 shadow opacity-0 group-hover:opacity-100 transition-opacity"
-                  title="拡大"
-                >
-                  <Maximize2 className="w-4 h-4 text-black" />
-                </button>
               </div>
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-1">
                 <p className="text-xs font-semibold tracking-wider text-black uppercase">
                   Tシャツ イメージ
                 </p>
@@ -457,21 +494,16 @@ const Product: React.FC = () => {
                   </button>
                 </div>
               </div>
+              <p className="text-xs text-black mb-3">クリックで拡大</p>
               <div
-                className="relative rounded-2xl overflow-hidden shadow-lg border border-gray-100 group"
+                className="rounded-2xl overflow-hidden shadow-lg border border-gray-100 cursor-pointer"
                 style={{ width: "100%", aspectRatio: tshirtColor === "black" ? "480 / 540" : `${tshirtAspect}` }}
+                onClick={() => setModalImg(tshirtRef.current?.toDataURL("image/png") ?? null)}
               >
                 <canvas
                   ref={tshirtRef}
                   style={{ width: "100%", height: "100%", display: "block" }}
                 />
-                <button
-                  onClick={() => openModal(tshirtRef.current)}
-                  className="absolute top-2 right-2 bg-white/80 hover:bg-white rounded-full p-1.5 shadow opacity-0 group-hover:opacity-100 transition-opacity"
-                  title="拡大"
-                >
-                  <Maximize2 className="w-4 h-4 text-black" />
-                </button>
               </div>
             </div>
           </div>
