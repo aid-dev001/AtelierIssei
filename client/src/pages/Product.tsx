@@ -48,10 +48,16 @@ function buildMask(img: HTMLImageElement, w: number, h: number): HTMLCanvasEleme
     const p = queue[head++];
     const px = p % w;
     const py = (p / w) | 0;
-    if (py > 0)     { const n = p - w; if (!outside[n] && isBackground(n)) { outside[n] = 1; queue[tail++] = n; } }
-    if (py < h - 1) { const n = p + w; if (!outside[n] && isBackground(n)) { outside[n] = 1; queue[tail++] = n; } }
-    if (px > 0)     { const n = p - 1; if (!outside[n] && isBackground(n)) { outside[n] = 1; queue[tail++] = n; } }
-    if (px < w - 1) { const n = p + 1; if (!outside[n] && isBackground(n)) { outside[n] = 1; queue[tail++] = n; } }
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if (dx === 0 && dy === 0) continue;
+        const nx = px + dx;
+        const ny = py + dy;
+        if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue;
+        const n = ny * w + nx;
+        if (!outside[n] && isBackground(n)) { outside[n] = 1; queue[tail++] = n; }
+      }
+    }
   }
 
   for (let i = 0; i < total; i++) {
