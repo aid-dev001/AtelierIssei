@@ -377,7 +377,7 @@ export default function Product2() {
           </p>
           <p className="text-sm leading-relaxed tracking-wide text-black">
             ISSEIの作品からひとつを選ぶと、絵のストロークが横線となり、<br className="hidden md:block" />
-            詩のような言葉とともにTシャツへと転写されます。
+            詩のような言葉とともにTシャツへと昇華されます。
           </p>
         </div>
 
