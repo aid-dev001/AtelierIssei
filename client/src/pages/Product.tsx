@@ -409,7 +409,7 @@ const Product: React.FC = () => {
           </p>
           <p className="text-sm leading-relaxed tracking-wide text-black">
             型を選び、中身に絵を選ぶ。ただそれだけで、絵画はウェアラブルな表現へと変容します。
-            これはプロダクトである前に、アートとの対話です。
+            これはアートとの対話するという、先進的なプロダクトです。
           </p>
         </div>
 
