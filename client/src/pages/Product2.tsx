@@ -27,7 +27,7 @@ function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
   );
 }
 
-type ArtworkItem = { id: number; title: string; imageUrl: string };
+type ArtworkItem = { id: number; title: string; imageUrl: string; description?: string };
 
 const PHRASES: { ja: string; en: string; fr: string }[] = [
   {
@@ -109,6 +109,9 @@ export default function Product2() {
   const [lang, setLang] = useState<"ja" | "en" | "fr">("en");
   const [phraseIdx, setPhraseIdx] = useState(0);
   const [customText, setCustomText] = useState(PHRASES[0].en);
+  const [combinedPhrases, setCombinedPhrases] = useState<{ ja: string; en: string; fr: string }[]>(
+    () => [...PHRASES].sort(() => Math.random() - 0.5)
+  );
 
   const [frontPos, setFrontPos] = useState({ x: 0.5, y: 0.28 });
   const [lineWidth, setLineWidth] = useState(130);
@@ -164,16 +167,28 @@ export default function Product2() {
   }, [selectedArtId, artworks]);
 
   useEffect(() => {
-    if (selectedArtId) {
-      const idx = Math.floor(Math.random() * PHRASES.length);
-      setPhraseIdx(idx);
-      setCustomText(PHRASES[idx][lang]);
+    const selectedArt = artworks.find((a) => a.id === selectedArtId);
+    const artPhrases: { ja: string; en: string; fr: string }[] = [];
+    if (selectedArt?.description) {
+      const sentences = selectedArt.description
+        .split(/[。\n]/)
+        .map((s) => s.trim())
+        .filter((s) => s.length > 5)
+        .slice(0, 4)
+        .map((s) => ({ ja: s + "。", en: s + "。", fr: s + "。" }));
+      artPhrases.push(...sentences);
     }
-  }, [selectedArtId]);
+    const needed = 8 - artPhrases.length;
+    const shuffledFixed = [...PHRASES].sort(() => Math.random() - 0.5).slice(0, needed);
+    const pool = [...artPhrases, ...shuffledFixed].sort(() => Math.random() - 0.5);
+    setCombinedPhrases(pool);
+    setPhraseIdx(0);
+    setCustomText(pool[0]?.[lang] ?? "");
+  }, [selectedArtId, artworks]);
 
   useEffect(() => {
-    setCustomText(PHRASES[phraseIdx][lang]);
-  }, [phraseIdx, lang]);
+    setCustomText(combinedPhrases[phraseIdx]?.[lang] ?? "");
+  }, [phraseIdx, lang, combinedPhrases]);
 
   const renderFront = useCallback(() => {
     const canvas = frontRef.current;
@@ -497,7 +512,7 @@ export default function Product2() {
                     ))}
                   </div>
                   <div className="flex gap-1.5 flex-wrap mb-3">
-                    {PHRASES.map((_, i) => (
+                    {combinedPhrases.map((_, i) => (
                       <button
                         key={i}
                         onClick={() => setPhraseIdx(i)}
