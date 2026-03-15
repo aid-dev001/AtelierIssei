@@ -405,7 +405,7 @@ const Product: React.FC = () => {
 
         <div className="max-w-xl mx-auto mb-14 text-center space-y-4">
           <p className="text-sm leading-relaxed tracking-wide text-black">
-            アートを、身につける。
+            アートを身につける、自身で創るというプロダクト。
           </p>
           <p className="text-sm leading-relaxed tracking-wide text-black">
             型を選び、中身に絵を選ぶ。ただそれだけで、絵画はウェアラブルな表現へと変容します。
