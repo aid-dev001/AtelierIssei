@@ -186,7 +186,7 @@ export default function Product2() {
     ctx.drawImage(shirtImg, 0, 0, FRONT_CW, FRONT_CH);
     if (!artImg) return;
 
-    const cx = frontPos.x * FRONT_CW;
+    const cx = FRONT_CW / 2;
     const ty = frontPos.y * FRONT_CH;
     const lx = cx - lineWidth / 2;
 
