@@ -113,7 +113,7 @@ export default function Product2() {
     () => [...PHRASES].sort(() => Math.random() - 0.5)
   );
 
-  const [frontPos, setFrontPos] = useState({ x: 0.5, y: 0.28 });
+  const [frontPos, setFrontPos] = useState({ x: 0.5, y: 0.32 });
   const [lineWidth, setLineWidth] = useState(130);
   const [artVertOffset, setArtVertOffset] = useState(0.5);
 
@@ -571,7 +571,7 @@ export default function Product2() {
                 </div>
 
                 <button
-                  onClick={() => { setFrontPos({ x: 0.5, y: 0.28 }); setLineWidth(130); setArtVertOffset(0.5); }}
+                  onClick={() => { setFrontPos({ x: 0.5, y: 0.32 }); setLineWidth(130); setArtVertOffset(0.5); }}
                   className="flex items-center gap-1.5 text-sm text-black hover:text-gray-600 transition-colors w-fit"
                 >
                   <RefreshCw className="w-4 h-4" />
