@@ -106,9 +106,9 @@ export default function Product2() {
   const [backBlackShirtImg, setBackBlackShirtImg] = useState<HTMLImageElement | null>(null);
   const [tshirtColor, setTshirtColor] = useState<"white" | "black">("white");
 
-  const [lang, setLang] = useState<"ja" | "en" | "fr">("ja");
+  const [lang, setLang] = useState<"ja" | "en" | "fr">("en");
   const [phraseIdx, setPhraseIdx] = useState(0);
-  const [customText, setCustomText] = useState(PHRASES[0].ja);
+  const [customText, setCustomText] = useState(PHRASES[0].en);
 
   const [frontPos, setFrontPos] = useState({ x: 0.5, y: 0.37 });
   const [lineWidth, setLineWidth] = useState(200);
@@ -207,12 +207,12 @@ export default function Product2() {
       ctx.globalCompositeOperation = tshirtColor === "black" ? "screen" : "multiply";
       ctx.font = "400 13px 'Helvetica Neue', Arial, sans-serif";
       ctx.fillStyle = tshirtColor === "black" ? "#e0e0e0" : "#2a2a2a";
-      ctx.textAlign = "left";
-      const textLeft = lx;
-      const maxW = FRONT_CW - textLeft - 40;
+      ctx.textAlign = "right";
+      const textRight = lx + lineWidth;
+      const maxW = lineWidth * 2;
       const lines = wrapText(ctx, text, maxW);
       lines.forEach((line, i) => {
-        ctx.fillText(line, textLeft, ty + LINE_H + 16 + i * 17);
+        ctx.fillText(line, textRight, ty + LINE_H + 28 + i * 17);
       });
       ctx.restore();
     }
