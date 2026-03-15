@@ -122,6 +122,7 @@ const Product: React.FC = () => {
   const [tshirtBlackAspect, setTshirtBlackAspect] = useState(976 / 1079);
   const [tshirtColor, setTshirtColor] = useState<"white" | "black">("white");
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [fillScale, setFillScale] = useState(1.0);
   const [shapeScale, setShapeScale] = useState(1.0);
   const [canvasSize, setCanvasSize] = useState({ w: 480, h: 480 });
   const [modalImg, setModalImg] = useState<string | null>(null);
@@ -162,6 +163,7 @@ const Product: React.FC = () => {
     maskForImgRef.current = null;
     setShapeImg(null);
     setOffset({ x: 0, y: 0 });
+    setFillScale(1.0);
     setShapeScale(1.0);
     loadImg(shape.imageUrl).then((img) => {
       if (cancelled) return;
@@ -227,14 +229,14 @@ const Product: React.FC = () => {
       maskRef.current = buildMask(shapeImg);
       maskForImgRef.current = shapeImg;
     }
-    const scaleF = Math.max((w * 1.2) / fillImg.width, (h * 1.2) / fillImg.height);
+    const scaleF = Math.max((w * 1.2) / fillImg.width, (h * 1.2) / fillImg.height) * fillScale;
     const fw = fillImg.width * scaleF;
     const fh = fillImg.height * scaleF;
     ctx.drawImage(fillImg, (w - fw) / 2 + offset.x, (h - fh) / 2 + offset.y, fw, fh);
     ctx.globalCompositeOperation = "destination-in";
     ctx.drawImage(maskRef.current, 0, 0, w, h);
     ctx.globalCompositeOperation = "source-over";
-  }, [shapeImg, fillImg, offset, canvasSize]);
+  }, [shapeImg, fillImg, offset, fillScale, canvasSize]);
 
   const renderTshirt = useCallback(() => {
     const canvas = tshirtRef.current;
@@ -390,6 +392,15 @@ const Product: React.FC = () => {
 
         {isReady && (
           <div className="mb-4 flex items-center gap-4 flex-wrap">
+            <label className="flex items-center gap-2 text-sm text-black">
+              <span className="text-xs whitespace-nowrap">型の中の絵</span>
+              <input
+                type="range" min={50} max={300} step={5} value={Math.round(fillScale * 100)}
+                onChange={(e) => setFillScale(Number(e.target.value) / 100)}
+                className="w-28 accent-black"
+              />
+              <span className="text-xs text-black w-8">{Math.round(fillScale * 100)}%</span>
+            </label>
             <label className="flex items-center gap-2 text-sm text-black">
               <span className="text-xs whitespace-nowrap">絵のサイズ</span>
               <input
