@@ -18,8 +18,7 @@ const Navbar = () => {
     { href: "/exhibition", label: "EXHIBITION" },
     { href: "/ateliers", label: "ATELIER" },
     { href: "/profile", label: "PROFILE" },
-    { href: "/product", label: "PRODUCT 1" },
-    { href: "/product2", label: "PRODUCT 2" },
+    { href: "/product", label: "PRODUCT" },
     { href: "/voices", label: "VOICES" },
     { href: "/contact", label: "CONTACT" },
   ];
