@@ -1,6 +1,20 @@
-import { pgTable, text, integer, timestamp, numeric, boolean, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, timestamp, numeric, boolean, varchar, customType } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
+
+const bytea = customType<{ data: Buffer }>({
+  dataType() {
+    return "bytea";
+  },
+});
+
+export const uploadedImages = pgTable("uploaded_images", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  filename: text("filename").notNull(),
+  data: bytea("data").notNull(),
+  mimetype: text("mimetype").notNull().default("image/jpeg"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
 
 // Admin Users table for secure authentication
 export const adminUsers = pgTable("admin_users", {

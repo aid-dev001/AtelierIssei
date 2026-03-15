@@ -6,7 +6,6 @@ import { setupVite, serveStatic } from "./vite";
 import { createServer } from "http";
 import { initializeAdmin } from "./admin";
 import { createOgMiddleware } from "./ogHandler";
-import { downloadFromStorage } from "./objectStorage";
 import fs from "fs";
 import path from "path";
 
@@ -51,22 +50,6 @@ app.use('/artworks', (req, res, next) => {
 app.use('/artworks', express.static('public/artworks', staticOptions));
 app.use('/artworks', express.static('.', staticOptions));
 
-// ローカルに画像がない場合、Object Storageから取得する
-app.use('/artworks', async (req, res, next) => {
-  const filename = req.path.replace(/^\//, '');
-  const localPath = path.join('public/artworks', filename);
-  if (!fs.existsSync(localPath) && filename) {
-    const buffer = await downloadFromStorage(filename);
-    if (buffer) {
-      const ext = path.extname(filename).toLowerCase();
-      const contentType = ext === '.png' ? 'image/png' : 'image/jpeg';
-      res.set('Content-Type', contentType);
-      res.set('Cache-Control', 'public, max-age=86400');
-      return res.send(buffer);
-    }
-  }
-  next();
-});
 
 const MemoryStoreSession = MemoryStore(session);
 const isProduction = process.env.NODE_ENV === 'production';

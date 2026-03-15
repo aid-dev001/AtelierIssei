@@ -3,7 +3,6 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
-import { uploadToStorage } from './objectStorage';
 import { generateArtworkDescription, generateCollectionDescription, generateExhibitionDescription } from './openai';
 import { db } from "../db";
 import { ADMIN_URL_PATH, requireAdmin } from "./admin";
@@ -17,31 +16,17 @@ import {
   adminUsers,
   collections,
   voices,
+  uploadedImages,
 } from "@db/schema";
 import { eq, desc, asc } from "drizzle-orm";
 
-// Configure multer for handling file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = 'public/artworks';
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
+// 画像はメモリに受け取ってDBへ保存する
 const upload = multer({ 
-  storage: storage,
+  storage: multer.memoryStorage(),
   limits: {
     fileSize: 30 * 1024 * 1024 // 30MB limit
   },
   fileFilter: (req, file, cb) => {
-    // JPEGとPNGのみを許可
     if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
       cb(null, true);
     } else {
@@ -50,11 +35,40 @@ const upload = multer({
   }
 });
 
+// 画像をDBに保存してURLを返すヘルパー
+async function saveImageToDB(file: Express.Multer.File): Promise<string> {
+  const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`;
+  const [inserted] = await db.insert(uploadedImages).values({
+    filename,
+    data: file.buffer,
+    mimetype: file.mimetype,
+  }).returning({ id: uploadedImages.id });
+  return `/api/images/${inserted.id}`;
+}
+
 import contactRouter from './routes/contact';
 
 export default function setupRoutes(app: express.Express) {
   // Contact routes
   app.use('/api', contactRouter);
+
+  // DBから画像を配信するエンドポイント
+  app.get("/api/images/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const image = await db.query.uploadedImages.findFirst({
+        where: eq(uploadedImages.id, id),
+      });
+      if (!image) {
+        return res.status(404).send("Not found");
+      }
+      res.set("Content-Type", image.mimetype);
+      res.set("Cache-Control", "public, max-age=31536000");
+      res.send(image.data);
+    } catch (error) {
+      res.status(500).send("Error");
+    }
+  });
 
   // Public routes
   app.get("/api/artworks", async (req, res) => {
@@ -246,18 +260,8 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         return res.status(400).json({ error: "画像がアップロードされていません" });
       }
 
-      // アップロードされたファイルが存在することを確認
-      if (!fs.existsSync(req.file.path)) {
-        return res.status(500).json({ error: "アップロードされた画像の保存に失敗しました" });
-      }
-
-      // Object Storageにもバックアップ
-      const fileBuffer = fs.readFileSync(req.file.path);
-      await uploadToStorage(req.file.filename, fileBuffer, req.file.mimetype);
-
-      // 画像の公開URLを生成
-      const imageUrl = `/artworks/${req.file.filename}`;
-      console.log('Image uploaded successfully:', imageUrl);
+      const imageUrl = await saveImageToDB(req.file);
+      console.log('Image saved to DB:', imageUrl);
 
       // OpenAI API呼び出しをスキップし、空のタイトルと説明文を返す
       res.json({ 
@@ -282,11 +286,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         return res.status(400).json({ error: "画像がアップロードされていません" });
       }
 
-      // Object Storageにもバックアップ
-      const fileBuffer = fs.readFileSync(req.file.path);
-      await uploadToStorage(req.file.filename, fileBuffer, req.file.mimetype);
-
-      const imageUrl = `/artworks/${req.file.filename}`;
+      const imageUrl = await saveImageToDB(req.file);
       
       // インテリアイメージの説明文を処理
       const interiorDesc1 = req.body['interior-desc-1'] || '';
@@ -358,11 +358,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         return res.status(400).json({ error: "画像がアップロードされていません" });
       }
 
-      // Object Storageにもバックアップ
-      const fileBuffer = fs.readFileSync(req.file.path);
-      await uploadToStorage(req.file.filename, fileBuffer, req.file.mimetype);
-
-      const imageUrl = `/artworks/${req.file.filename}`;
+      const imageUrl = await saveImageToDB(req.file);
       res.json({ imageUrl });
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -507,11 +503,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
       console.log('Received files:', req.files);
       
       const uploadedFiles = req.files as Express.Multer.File[] || [];
-      for (const file of uploadedFiles) {
-        const buf = fs.readFileSync(file.path);
-        await uploadToStorage(file.filename, buf, file.mimetype);
-      }
-      const subImageUrls = uploadedFiles.map(file => `/artworks/${file.filename}`);
+      const subImageUrls = await Promise.all(uploadedFiles.map(file => saveImageToDB(file)));
       
       const exhibitionData = {
         title: req.body.title,
@@ -549,11 +541,9 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     try {
       const exhibitionId = parseInt(req.params.id);
       const uploadedExhibFiles = req.files as Express.Multer.File[] || [];
-      for (const file of uploadedExhibFiles) {
-        const buf = fs.readFileSync(file.path);
-        await uploadToStorage(file.filename, buf, file.mimetype);
-      }
-      const subImageUrls = uploadedExhibFiles.length > 0 ? uploadedExhibFiles.map(file => `/artworks/${file.filename}`) : undefined;
+      const subImageUrls = uploadedExhibFiles.length > 0 
+        ? await Promise.all(uploadedExhibFiles.map(file => saveImageToDB(file)))
+        : undefined;
       
       const updateData = {
         ...req.body,
