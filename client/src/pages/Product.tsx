@@ -405,7 +405,7 @@ const Product: React.FC = () => {
 
         <div className="max-w-xl mx-auto mb-14 text-center space-y-4">
           <p className="text-sm leading-relaxed tracking-wide text-black">
-            ISSEIのアートを、あなた自身の身体へ。
+            アートを、身につける。
           </p>
           <p className="text-sm leading-relaxed tracking-wide text-black">
             型を選び、中身に絵を選ぶ。ただそれだけで、絵画はウェアラブルな表現へと変容します。
