@@ -304,7 +304,7 @@ const Product: React.FC = () => {
     if (shapeImg && fillImg) {
       setTimeout(() => {
         const el = previewRef.current;
-        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: "smooth" });
+        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 100, behavior: "smooth" });
       }, 200);
     }
   }, [shapeImg, fillImg]);
