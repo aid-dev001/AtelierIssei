@@ -408,7 +408,20 @@ const Product: React.FC = () => {
 
       <div className="max-w-5xl mx-auto px-4">
         <h1 className="text-4xl font-bold mb-2 tracking-wider text-center">PRODUCT</h1>
-        <p className="text-center text-xs tracking-[0.2em] uppercase text-black mb-6">Art you can wear</p>
+        <p className="text-center text-xs tracking-[0.2em] uppercase text-black mb-8">Art you can wear</p>
+
+        <div className="max-w-xl mx-auto mb-10 text-center space-y-4">
+          <p className="text-sm leading-relaxed tracking-wide text-black font-medium">
+            アートを身につける、自身で創るというプロダクト。
+          </p>
+          <p className="text-sm leading-relaxed tracking-wide text-black">
+            型を選び、中身に絵を選ぶ。ただそれだけで、絵画はウェアラブルな表現へと変容します。<br className="hidden md:block" />
+            ISSEIの作品が、あなただけのかたちに。
+          </p>
+          <p className="text-xs leading-relaxed tracking-wide text-gray-500">
+            形と色が、そのまま服になる。シミュレーターで自由に組み合わせてみてください。
+          </p>
+        </div>
 
         <div className="flex justify-center gap-8 mb-10 border-b border-gray-200 pb-4">
           <span className="text-sm tracking-widest text-black border-b-2 border-black pb-1">
@@ -417,16 +430,6 @@ const Product: React.FC = () => {
           <ScrollToTopLink href="/product2" className="text-sm tracking-widest text-gray-400 hover:text-black transition-colors">
             PRODUCT 2
           </ScrollToTopLink>
-        </div>
-
-        <div className="max-w-xl mx-auto mb-14 text-center space-y-4">
-          <p className="text-sm leading-relaxed tracking-wide text-black">
-            アートを身につける、自身で創るというプロダクト。
-          </p>
-          <p className="text-sm leading-relaxed tracking-wide text-black">
-            型を選び、中身に絵を選ぶ。ただそれだけで、絵画はウェアラブルな表現へと変容します。
-            これはアートと対話するという、先進的なプロダクトです。
-          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">

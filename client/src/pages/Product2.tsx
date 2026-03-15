@@ -129,7 +129,7 @@ export default function Product2() {
   const BACK_CW = 976;
   const BACK_CH = 1079;
   const BACK_SQUARE_BASE = 300;
-  const LINE_H = 7;
+  const LINE_H = 4;
 
   const frontRef = useRef<HTMLCanvasElement>(null);
   const backRef = useRef<HTMLCanvasElement>(null);
@@ -139,9 +139,11 @@ export default function Product2() {
   const frontDragging = useRef(false);
   const frontDragScreen = useRef({ x: 0, y: 0 });
   const frontDragStartPos = useRef({ x: 0, y: 0 });
+  const frontDidMove = useRef(false);
 
   const backDragging = useRef(false);
   const backDragScreen = useRef({ x: 0, y: 0 });
+  const backDidMove = useRef(false);
   const backDragStartPos = useRef({ x: 0, y: 0 });
   const backDragStartOffset = useRef({ x: 0, y: 0 });
 
@@ -279,15 +281,21 @@ export default function Product2() {
     return () => obs.disconnect();
   }, [hasMore]);
 
+  const CLICK_THRESHOLD = 6;
+
   const onFrontDown = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
     frontDragging.current = true;
+    frontDidMove.current = false;
     frontDragScreen.current = getClientXY(e);
     frontDragStartPos.current = { ...frontPos };
   };
   const onFrontMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (!frontDragging.current || !frontRef.current) return;
     const { x, y } = getClientXY(e);
+    const mx = Math.abs(x - frontDragScreen.current.x);
+    const my = Math.abs(y - frontDragScreen.current.y);
+    if (mx > CLICK_THRESHOLD || my > CLICK_THRESHOLD) frontDidMove.current = true;
     const rect = frontRef.current.getBoundingClientRect();
     const dx = (x - frontDragScreen.current.x) / rect.width;
     const dy = (y - frontDragScreen.current.y) / rect.height;
@@ -296,11 +304,15 @@ export default function Product2() {
       y: Math.max(0.05, Math.min(0.85, frontDragStartPos.current.y + dy)),
     });
   };
-  const onFrontUp = () => { frontDragging.current = false; };
+  const onFrontUp = () => {
+    if (!frontDidMove.current) setModalImg(frontRef.current?.toDataURL("image/png") ?? null);
+    frontDragging.current = false;
+  };
 
   const onBackDown = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
     backDragging.current = true;
+    backDidMove.current = false;
     backDragScreen.current = getClientXY(e);
     if (backMode === "shirt") {
       backDragStartPos.current = { ...backPos };
@@ -311,6 +323,9 @@ export default function Product2() {
   const onBackMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (!backDragging.current || !backRef.current) return;
     const { x, y } = getClientXY(e);
+    const mx = Math.abs(x - backDragScreen.current.x);
+    const my = Math.abs(y - backDragScreen.current.y);
+    if (mx > CLICK_THRESHOLD || my > CLICK_THRESHOLD) backDidMove.current = true;
     const rect = backRef.current.getBoundingClientRect();
     const dx = (x - backDragScreen.current.x) / rect.width;
     const dy = (y - backDragScreen.current.y) / rect.height;
@@ -327,13 +342,29 @@ export default function Product2() {
       });
     }
   };
-  const onBackUp = () => { backDragging.current = false; };
+  const onBackUp = () => {
+    if (!backDidMove.current) setModalImg(backRef.current?.toDataURL("image/png") ?? null);
+    backDragging.current = false;
+  };
 
   return (
     <div className="min-h-screen bg-white py-12">
       <div className="max-w-5xl mx-auto px-4">
         <h1 className="text-4xl font-bold mb-2 tracking-wider text-center">PRODUCT</h1>
-        <p className="text-center text-xs tracking-[0.2em] uppercase text-black mb-6">Art you can wear</p>
+        <p className="text-center text-xs tracking-[0.2em] uppercase text-black mb-8">Art you can wear</p>
+
+        <div className="max-w-xl mx-auto mb-10 text-center space-y-4">
+          <p className="text-sm leading-relaxed tracking-wide text-black font-medium">
+            アートを身につける、自身で創るというプロダクト。
+          </p>
+          <p className="text-sm leading-relaxed tracking-wide text-black">
+            絵を選び、言葉を選ぶ。ISSEIの作品からひとつを選ぶと、<br className="hidden md:block" />
+            絵のストロークが細い横線となり、詩のような言葉とともにTシャツへと転写されます。
+          </p>
+          <p className="text-xs leading-relaxed tracking-wide text-gray-500">
+            表面に横線と言葉、裏面に絵の一部。二面で完成するデザインです。
+          </p>
+        </div>
 
         <div className="flex justify-center gap-8 mb-10 border-b border-gray-200 pb-4">
           <ScrollToTopLink href="/product" className="text-sm tracking-widest text-gray-400 hover:text-black transition-colors">
@@ -342,16 +373,6 @@ export default function Product2() {
           <span className="text-sm tracking-widest text-black border-b-2 border-black pb-1">
             PRODUCT 2
           </span>
-        </div>
-
-        <div className="max-w-xl mx-auto mb-14 text-center space-y-4">
-          <p className="text-sm leading-relaxed tracking-wide text-black">
-            絵を選び、言葉を選ぶ。
-          </p>
-          <p className="text-sm leading-relaxed tracking-wide text-black">
-            ISSEIの作品からひとつを選ぶと、絵のストロークが横線となり、<br className="hidden md:block" />
-            詩のような言葉とともにTシャツへと転写されます。
-          </p>
         </div>
 
         <div ref={fillSectionRef} className="mb-12">
@@ -387,7 +408,7 @@ export default function Product2() {
             <div ref={previewRef} className="mt-16 pt-8 mb-6 flex items-center justify-between flex-wrap gap-3">
               <div>
                 <p className="text-xs font-semibold tracking-widest uppercase text-black mb-1">表面 FRONT</p>
-                <p className="text-xs text-black">ドラッグで横線＋テキストの位置を移動できます</p>
+                <p className="text-xs text-black">ドラッグ: 位置移動 / クリック: 拡大</p>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-black">カラー</span>
@@ -495,7 +516,7 @@ export default function Product2() {
             <div className="mb-4">
               <p className="text-xs font-semibold tracking-widest uppercase text-black mb-1">裏面 BACK</p>
               <p className="text-xs text-black mb-3">
-                {backMode === "shirt" ? "ドラッグで絵の位置を移動できます" : "ドラッグで絵の表示範囲を移動できます"}
+                {backMode === "shirt" ? "ドラッグ: 絵の位置移動 / クリック: 拡大" : "ドラッグ: 絵の表示範囲 / クリック: 拡大"}
               </p>
             </div>
 
