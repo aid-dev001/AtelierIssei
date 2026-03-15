@@ -208,10 +208,11 @@ export default function Product2() {
       ctx.font = "400 13px 'Helvetica Neue', Arial, sans-serif";
       ctx.fillStyle = tshirtColor === "black" ? "#e0e0e0" : "#2a2a2a";
       ctx.textAlign = "left";
-      const maxW = FRONT_CW - lx - 40;
+      const textX = cx - 225;
+      const maxW = FRONT_CW - textX - 40;
       const lines = wrapText(ctx, text, maxW);
       lines.forEach((line, i) => {
-        ctx.fillText(line, lx, ty + LINE_H + 28 + i * 17);
+        ctx.fillText(line, textX, ty + LINE_H + 28 + i * 17);
       });
       ctx.restore();
     }
