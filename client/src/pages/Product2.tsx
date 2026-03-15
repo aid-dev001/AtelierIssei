@@ -110,8 +110,8 @@ export default function Product2() {
   const [phraseIdx, setPhraseIdx] = useState(0);
   const [customText, setCustomText] = useState(PHRASES[0].en);
 
-  const [frontPos, setFrontPos] = useState({ x: 0.5, y: 0.37 });
-  const [lineWidth, setLineWidth] = useState(200);
+  const [frontPos, setFrontPos] = useState({ x: 0.5, y: 0.28 });
+  const [lineWidth, setLineWidth] = useState(130);
   const [artVertOffset, setArtVertOffset] = useState(0.5);
 
   const [backPos, setBackPos] = useState({ x: 0.5, y: 0.38 });
