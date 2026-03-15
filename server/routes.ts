@@ -687,6 +687,25 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     }
   });
 
+  app.put(`/api/${ADMIN_URL_PATH}/product-shapes/:id`, requireAdmin, upload.single('image'), async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updateData: { title?: string; imageUrl?: string } = {};
+      if (req.body.title) updateData.title = req.body.title;
+      if (req.file) {
+        updateData.imageUrl = await saveImageToDB(req.file);
+      }
+      const [updated] = await db.update(productShapes)
+        .set(updateData)
+        .where(eq(productShapes.id, id))
+        .returning();
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating product shape:", error);
+      res.status(500).json({ error: "型の絵の更新に失敗しました" });
+    }
+  });
+
   app.delete(`/api/${ADMIN_URL_PATH}/product-shapes/:id`, requireAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);

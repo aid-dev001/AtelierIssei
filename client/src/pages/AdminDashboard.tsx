@@ -2025,14 +2025,66 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
   );
 };
 
+type ShapeItem = { id: number; title: string; imageUrl: string };
+
+function DragDropImage({
+  preview,
+  onFile,
+  hint = "クリックまたはドラッグして画像を選択",
+}: {
+  preview: string;
+  onFile: (f: File) => void;
+  hint?: string;
+}) {
+  const [dragOver, setDragOver] = useState(false);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleFile = (f: File | undefined) => {
+    if (f) onFile(f);
+  };
+
+  return (
+    <label
+      className="block cursor-pointer"
+      onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+      onDragLeave={() => setDragOver(false)}
+      onDrop={e => {
+        e.preventDefault();
+        setDragOver(false);
+        handleFile(e.dataTransfer.files[0]);
+      }}
+    >
+      <div className={`border-2 border-dashed rounded-lg h-36 flex flex-col items-center justify-center transition-colors ${
+        dragOver ? 'border-black bg-gray-100' : 'border-gray-300 bg-white hover:bg-gray-50'
+      }`}>
+        {preview ? (
+          <img src={preview} className="h-full w-full object-contain p-2" alt="preview" />
+        ) : (
+          <>
+            <svg className="w-8 h-8 text-gray-300 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span className="text-xs text-gray-400 text-center px-2">{hint}</span>
+          </>
+        )}
+      </div>
+      <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={e => handleFile(e.target.files?.[0])} />
+    </label>
+  );
+}
+
 function ProductShapesTab({ adminPath }: { adminPath: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [title, setTitle] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState('');
+  const [editShape, setEditShape] = useState<ShapeItem | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editFile, setEditFile] = useState<File | null>(null);
+  const [editPreview, setEditPreview] = useState('');
 
-  const { data: shapes = [], isLoading } = useQuery<{ id: number; title: string; imageUrl: string }[]>({
+  const { data: shapes = [], isLoading } = useQuery<ShapeItem[]>({
     queryKey: ['product-shapes'],
     queryFn: () => fetch('/api/product-shapes').then(r => r.json()),
   });
@@ -2055,6 +2107,24 @@ function ProductShapesTab({ adminPath }: { adminPath: string }) {
     onError: (e: Error) => toast({ variant: 'destructive', title: e.message }),
   });
 
+  const updateMutation = useMutation({
+    mutationFn: async () => {
+      if (!editShape) return;
+      const fd = new FormData();
+      fd.append('title', editTitle || editShape.title);
+      if (editFile) fd.append('image', editFile);
+      const res = await fetch(`${adminPath}/product-shapes/${editShape.id}`, { method: 'PUT', body: fd });
+      if (!res.ok) throw new Error('更新失敗');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['product-shapes'] });
+      setEditShape(null);
+      toast({ title: '更新しました' });
+    },
+    onError: (e: Error) => toast({ variant: 'destructive', title: e.message }),
+  });
+
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
       const res = await fetch(`${adminPath}/product-shapes/${id}`, { method: 'DELETE' });
@@ -2067,9 +2137,17 @@ function ProductShapesTab({ adminPath }: { adminPath: string }) {
     onError: () => toast({ variant: 'destructive', title: '削除に失敗しました' }),
   });
 
+  const openEdit = (shape: ShapeItem) => {
+    setEditShape(shape);
+    setEditTitle(shape.title);
+    setEditFile(null);
+    setEditPreview(shape.imageUrl);
+  };
+
   return (
     <div className="space-y-8">
       <h2 className="text-2xl font-semibold">PRODUCT 型の絵管理</h2>
+
       <div className="bg-gray-50 rounded-xl p-6 space-y-4 max-w-lg">
         <h3 className="font-semibold">新規登録</h3>
         <div className="space-y-2">
@@ -2078,19 +2156,10 @@ function ProductShapesTab({ adminPath }: { adminPath: string }) {
         </div>
         <div className="space-y-2">
           <Label>画像（白背景推奨）</Label>
-          <label className="block cursor-pointer">
-            <div className="border-2 border-dashed rounded-lg h-36 flex items-center justify-center bg-white hover:bg-gray-50 transition-colors">
-              {preview ? (
-                <img src={preview} className="h-full object-contain p-2" alt="preview" />
-              ) : (
-                <span className="text-sm text-gray-400">クリックして画像を選択</span>
-              )}
-            </div>
-            <input type="file" accept="image/*" className="hidden" onChange={e => {
-              const f = e.target.files?.[0];
-              if (f) { setFile(f); setPreview(URL.createObjectURL(f)); }
-            }} />
-          </label>
+          <DragDropImage
+            preview={preview}
+            onFile={f => { setFile(f); setPreview(URL.createObjectURL(f)); }}
+          />
         </div>
         <Button onClick={() => addMutation.mutate()} disabled={!file || addMutation.isPending} className="w-full">
           {addMutation.isPending ? '登録中…' : '登録する'}
@@ -2108,8 +2177,11 @@ function ProductShapesTab({ adminPath }: { adminPath: string }) {
             {shapes.map(shape => (
               <div key={shape.id} className="border rounded-xl overflow-hidden bg-white shadow-sm">
                 <img src={shape.imageUrl} alt={shape.title} className="w-full h-32 object-contain p-2 bg-gray-50" />
-                <div className="p-2 space-y-1">
+                <div className="p-2 space-y-1.5">
                   <p className="text-sm font-medium truncate">{shape.title}</p>
+                  <Button size="sm" variant="outline" className="w-full text-xs" onClick={() => openEdit(shape)}>
+                    編集
+                  </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="destructive" size="sm" className="w-full text-xs">削除</Button>
@@ -2131,6 +2203,36 @@ function ProductShapesTab({ adminPath }: { adminPath: string }) {
           </div>
         )}
       </div>
+
+      <Dialog open={!!editShape} onOpenChange={open => { if (!open) setEditShape(null); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>型の絵を編集</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 pt-2">
+            <div className="space-y-2">
+              <Label>タイトル</Label>
+              <Input value={editTitle} onChange={e => setEditTitle(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>画像を差し替える（変更しない場合は空欄）</Label>
+              <DragDropImage
+                preview={editPreview}
+                onFile={f => { setEditFile(f); setEditPreview(URL.createObjectURL(f)); }}
+                hint="クリックまたはドラッグして新しい画像を選択"
+              />
+            </div>
+            <div className="flex gap-2 pt-2">
+              <Button variant="outline" className="flex-1" onClick={() => setEditShape(null)}>
+                キャンセル
+              </Button>
+              <Button className="flex-1" onClick={() => updateMutation.mutate()} disabled={updateMutation.isPending}>
+                {updateMutation.isPending ? '保存中…' : '保存する'}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
