@@ -174,6 +174,7 @@ const Product: React.FC = () => {
   const maskRef = useRef<HTMLCanvasElement | null>(null);
   const maskForImgRef = useRef<HTMLImageElement | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+  const fillSectionRef = useRef<HTMLDivElement>(null);
   const shapeColRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef(false);
@@ -305,6 +306,12 @@ const Product: React.FC = () => {
     }
   }, [shapeImg, fillImg]);
 
+  useEffect(() => {
+    if (!selectedShapeId || fillImg) return;
+    if (window.innerWidth >= 768) return;
+    setTimeout(() => fillSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 200);
+  }, [selectedShapeId]);
+
   const getCanvasPos = (e: React.MouseEvent | React.TouchEvent, canvas: HTMLCanvasElement) => {
     const rect = canvas.getBoundingClientRect();
     const sx = canvasSize.w / rect.width;
@@ -428,7 +435,7 @@ const Product: React.FC = () => {
             )}
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col" ref={fillSectionRef}>
             <div className="flex items-center gap-2 mb-4">
               <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold">2</span>
               <span className="font-semibold text-sm tracking-wider">中身の絵を選ぶ</span>
