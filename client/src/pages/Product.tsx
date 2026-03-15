@@ -424,7 +424,7 @@ const Product: React.FC = () => {
                     <div className="aspect-square w-full bg-gray-50">
                       <img src={s.imageUrl} alt={s.title} className="w-full h-full object-contain p-1" />
                     </div>
-                    <p className="text-xs text-center py-1 px-1 truncate w-full text-black">{s.title}</p>
+                    <p className="text-xs text-center py-1 px-1 truncate w-full text-black leading-tight" style={{ height: "2rem", display: "flex", alignItems: "center", justifyContent: "center" }}>{s.title}</p>
                   </button>
                 ))}
               </div>
