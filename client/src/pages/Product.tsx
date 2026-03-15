@@ -222,7 +222,6 @@ const Product: React.FC = () => {
             <div className="flex items-center gap-2 mb-4">
               <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold">1</span>
               <span className="font-semibold text-sm tracking-wider">型の絵を選ぶ</span>
-              <span className="text-xs text-gray-400">（白背景推奨）</span>
             </div>
             {shapes.length === 0 ? (
               <p className="text-sm text-gray-400 py-8 text-center border rounded-xl">
@@ -255,7 +254,7 @@ const Product: React.FC = () => {
             <div className="flex items-center gap-2 mb-4">
               <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold">2</span>
               <span className="font-semibold text-sm tracking-wider">中身の絵を選ぶ</span>
-              <span className="text-xs text-gray-400">（アートワークから）</span>
+              <span className="text-xs text-gray-400">ISSEIの作品から選択</span>
             </div>
             {artworks.length === 0 ? (
               <p className="text-sm text-gray-400 py-8 text-center border rounded-xl">
