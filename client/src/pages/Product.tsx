@@ -430,7 +430,7 @@ const Product: React.FC = () => {
 
         <div className="max-w-xl mx-auto mb-12 text-center space-y-4">
           <p className="text-sm leading-relaxed tracking-wide text-black">
-            型を選び、中身に絵を選ぶ。
+            型を選び、絵を選ぶ。
           </p>
           <p className="text-sm leading-relaxed tracking-wide text-black">
             ただそれだけで、絵画はウェアラブルな表現へと変容します。<br className="hidden md:block" />
