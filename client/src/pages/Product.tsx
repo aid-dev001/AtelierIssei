@@ -140,6 +140,9 @@ const Product: React.FC = () => {
   const draggingRef = useRef(false);
   const dragMovedRef = useRef(false);
   const dragStartRef = useRef({ x: 0, y: 0 });
+  const tshirtDraggingRef = useRef(false);
+  const tshirtDragStartScreenRef = useRef({ x: 0, y: 0 });
+  const tshirtDragStartOffsetRef = useRef({ x: 0, y: 0 });
 
   const { data: shapes = [] } = useQuery<ProductShape[]>({
     queryKey: ["product-shapes"],
@@ -250,16 +253,11 @@ const Product: React.FC = () => {
   }, [tshirtBaseImg, tshirtBlackImg, tshirtAspect, tshirtBlackAspect, tshirtColor, shapeScale]);
 
   useEffect(() => {
-    if (shapeImg && fillImg) { renderComposite(); }
-  }, [shapeImg, fillImg, canvasSize, renderComposite]);
-
-  useEffect(() => {
-    if (shapeImg && fillImg) renderComposite();
-  }, [offset, renderComposite]);
-
-  useEffect(() => {
-    if (shapeImg && fillImg) setTimeout(() => renderTshirt(), 30);
-  }, [shapeImg, fillImg, offset, canvasSize, tshirtColor, renderTshirt]);
+    if (!shapeImg || !fillImg) return;
+    renderComposite();
+    const timer = setTimeout(() => renderTshirt(), 10);
+    return () => clearTimeout(timer);
+  }, [shapeImg, fillImg, offset, fillScale, canvasSize, renderComposite, renderTshirt]);
 
   useEffect(() => {
     const isReady = !!(shapeImg && fillImg);
@@ -317,6 +315,38 @@ const Product: React.FC = () => {
       setModalImg(compositeRef.current?.toDataURL("image/png") ?? null);
     }
     draggingRef.current = false;
+  };
+
+  const onTshirtDown = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    tshirtDraggingRef.current = true;
+    dragMovedRef.current = false;
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+    tshirtDragStartScreenRef.current = { x: clientX, y: clientY };
+    tshirtDragStartOffsetRef.current = { x: offset.x, y: offset.y };
+  };
+  const onTshirtMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    if (!tshirtDraggingRef.current || !tshirtRef.current) return;
+    if ("touches" in e) e.preventDefault();
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+    const dx = clientX - tshirtDragStartScreenRef.current.x;
+    const dy = clientY - tshirtDragStartScreenRef.current.y;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) dragMovedRef.current = true;
+    if (!dragMovedRef.current) return;
+    const rect = tshirtRef.current.getBoundingClientRect();
+    const scaleX = canvasSize.w / rect.width;
+    const scaleY = canvasSize.h / rect.height;
+    setOffset({
+      x: tshirtDragStartOffsetRef.current.x + dx * scaleX,
+      y: tshirtDragStartOffsetRef.current.y + dy * scaleY,
+    });
+  };
+  const onTshirtUp = () => {
+    if (tshirtDraggingRef.current && !dragMovedRef.current) {
+      setModalImg(tshirtRef.current?.toDataURL("image/png") ?? null);
+    }
+    tshirtDraggingRef.current = false;
   };
 
   const isReady = shapeImg && fillImg;
@@ -475,15 +505,21 @@ const Product: React.FC = () => {
                   </button>
                 </div>
               </div>
-              <p className="text-xs text-black mb-3">クリックで拡大</p>
+              <p className="text-xs text-black mb-3">ドラッグ: 絵の位置調整 / クリック: 拡大</p>
               <div
-                className="rounded-2xl overflow-hidden shadow-lg border border-gray-100 cursor-pointer"
+                className="rounded-2xl overflow-hidden shadow-lg border border-gray-100 cursor-grab active:cursor-grabbing select-none"
                 style={{ width: "100%", aspectRatio: tshirtColor === "black" ? `${tshirtBlackAspect}` : `${tshirtAspect}` }}
-                onClick={() => setModalImg(tshirtRef.current?.toDataURL("image/png") ?? null)}
+                onMouseDown={onTshirtDown}
+                onMouseMove={onTshirtMove}
+                onMouseUp={onTshirtUp}
+                onMouseLeave={onTshirtUp}
+                onTouchStart={onTshirtDown}
+                onTouchMove={onTshirtMove}
+                onTouchEnd={onTshirtUp}
               >
                 <canvas
                   ref={tshirtRef}
-                  style={{ width: "100%", height: "100%", display: "block" }}
+                  style={{ width: "100%", height: "100%", display: "block", pointerEvents: "none" }}
                 />
               </div>
             </div>
