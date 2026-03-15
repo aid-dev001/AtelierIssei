@@ -417,7 +417,7 @@ const Product: React.FC = () => {
                   <button
                     key={s.id}
                     onClick={() => setSelectedShapeId(s.id)}
-                    className={`rounded-xl border-2 transition-all flex flex-col overflow-hidden h-28 ${
+                    className={`rounded-xl border-2 transition-all flex flex-col overflow-hidden h-[10.5rem] ${
                       selectedShapeId === s.id ? "border-black shadow-md" : "border-transparent hover:border-gray-300"
                     }`}
                   >
