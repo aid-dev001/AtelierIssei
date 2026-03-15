@@ -110,8 +110,8 @@ export default function Product2() {
   const [phraseIdx, setPhraseIdx] = useState(0);
   const [customText, setCustomText] = useState(PHRASES[0].ja);
 
-  const [frontPos, setFrontPos] = useState({ x: 0.5, y: 0.30 });
-  const [lineWidth, setLineWidth] = useState(260);
+  const [frontPos, setFrontPos] = useState({ x: 0.5, y: 0.37 });
+  const [lineWidth, setLineWidth] = useState(200);
   const [artVertOffset, setArtVertOffset] = useState(0.5);
 
   const [backPos, setBackPos] = useState({ x: 0.5, y: 0.38 });
@@ -129,7 +129,7 @@ export default function Product2() {
   const BACK_CW = 976;
   const BACK_CH = 1079;
   const BACK_SQUARE_BASE = 300;
-  const LINE_H = 4;
+  const LINE_H = 3;
 
   const frontRef = useRef<HTMLCanvasElement>(null);
   const backRef = useRef<HTMLCanvasElement>(null);
@@ -205,14 +205,14 @@ export default function Product2() {
     if (text) {
       ctx.save();
       ctx.globalCompositeOperation = tshirtColor === "black" ? "screen" : "multiply";
-      ctx.font = "bold 16px 'Helvetica Neue', Arial, sans-serif";
-      ctx.fillStyle = tshirtColor === "black" ? "#ffffff" : "#1a1a1a";
+      ctx.font = "400 13px 'Helvetica Neue', Arial, sans-serif";
+      ctx.fillStyle = tshirtColor === "black" ? "#e0e0e0" : "#2a2a2a";
       ctx.textAlign = "left";
       const textLeft = lx;
       const maxW = FRONT_CW - textLeft - 40;
       const lines = wrapText(ctx, text, maxW);
       lines.forEach((line, i) => {
-        ctx.fillText(line, textLeft, ty + LINE_H + 22 + i * 22);
+        ctx.fillText(line, textLeft, ty + LINE_H + 16 + i * 17);
       });
       ctx.restore();
     }
@@ -458,6 +458,15 @@ export default function Product2() {
 
               <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-2">
+                  <span className="text-xs text-black whitespace-nowrap">線の長さ</span>
+                  <input
+                    type="range" min={80} max={450} step={10} value={lineWidth}
+                    onChange={(e) => setLineWidth(Number(e.target.value))}
+                    className="flex-1 accent-black"
+                  />
+                  <span className="text-xs text-gray-400 w-8">{lineWidth}</span>
+                </div>
+                <div className="flex items-center gap-2">
                   <span className="text-xs text-black whitespace-nowrap">絵の上下位置</span>
                   <input
                     type="range" min={0} max={1} step={0.01} value={artVertOffset}
@@ -504,7 +513,7 @@ export default function Product2() {
                 </div>
 
                 <button
-                  onClick={() => { setFrontPos({ x: 0.5, y: 0.30 }); setArtVertOffset(0.5); }}
+                  onClick={() => { setFrontPos({ x: 0.5, y: 0.37 }); setLineWidth(200); setArtVertOffset(0.5); }}
                   className="flex items-center gap-1.5 text-sm text-black hover:text-gray-600 transition-colors w-fit"
                 >
                   <RefreshCw className="w-4 h-4" />
