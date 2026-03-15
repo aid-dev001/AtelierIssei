@@ -212,7 +212,7 @@ export default function Product2() {
       const maxW = FRONT_CW - textX - 40;
       const lines = wrapText(ctx, text, maxW);
       lines.forEach((line, i) => {
-        ctx.fillText(line, textX, ty + LINE_H + 28 + i * 17);
+        ctx.fillText(line, textX, ty + LINE_H + 40 + i * 17);
       });
       ctx.restore();
     }
