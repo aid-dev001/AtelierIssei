@@ -108,7 +108,7 @@ export default function Product2() {
 
   const [lang, setLang] = useState<"ja" | "en" | "fr">("en");
   const [phraseIdx, setPhraseIdx] = useState(0);
-  const [customText, setCustomText] = useState(PHRASES[0].en);
+  const [customText, setCustomText] = useState("");
   const [combinedPhrases, setCombinedPhrases] = useState<{ ja: string; en: string; fr: string }[]>(
     () => [...PHRASES].sort(() => Math.random() - 0.5)
   );
@@ -169,6 +169,7 @@ export default function Product2() {
   useEffect(() => {
     let cancelled = false;
     const buildPool = async () => {
+      setCustomText("");
       const selectedArt = artworks.find((a) => a.id === selectedArtId);
 
       // 1〜4: 絵の説明文からランダムに最大4文
