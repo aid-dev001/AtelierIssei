@@ -353,9 +353,14 @@ export default function Product2() {
         <h1 className="text-4xl font-bold mb-2 tracking-wider text-center">PRODUCT</h1>
         <p className="text-center text-xs tracking-[0.2em] uppercase text-black mb-8">Art you can wear</p>
 
-        <p className="text-sm leading-relaxed tracking-wide text-black font-medium text-center mb-10">
-          アートを身につける、自身で創るというプロダクト。
-        </p>
+        <div className="text-center mb-10 space-y-2">
+          <p className="text-sm leading-relaxed tracking-wide text-black font-medium">
+            アートを身につける、自身で創るというプロダクト。
+          </p>
+          <p className="text-sm leading-relaxed tracking-wide text-black">
+            これはアートと対話するという、先進的な試みです。
+          </p>
+        </div>
 
         <div className="flex justify-center gap-8 mb-10 border-b border-gray-200 pb-4">
           <ScrollToTopLink href="/product" className="text-sm tracking-widest text-gray-400 hover:text-black transition-colors">
