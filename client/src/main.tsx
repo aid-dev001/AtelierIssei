@@ -10,6 +10,7 @@ import Artworks from "./pages/Artworks";
 import ArtworkDetail from "./pages/ArtworkDetail";
 import Profile from "./pages/Profile";
 import Product from "./pages/Product";
+import Product2 from "./pages/Product2";
 import Contact from "./pages/Contact";
 import Ateliers from "./pages/Ateliers";
 // World Locationsページは削除
@@ -36,6 +37,7 @@ function Router() {
           <Route path="/artwork/:id" component={ArtworkDetail} />
           <Route path="/profile" component={Profile} />
           <Route path="/product" component={Product} />
+          <Route path="/product2" component={Product2} />
           <Route path="/voices" component={Testimonials} />
           <Route path="/contact" component={Contact} />
           <Route path="/ateliers" component={Ateliers} />

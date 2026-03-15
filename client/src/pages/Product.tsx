@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { RefreshCw, Download, X } from "lucide-react";
+import ScrollToTopLink from "@/components/ScrollToTopLink";
 
 type ProductShape = { id: number; title: string; imageUrl: string };
 type ArtworkItem = { id: number; title: string; imageUrl: string };
@@ -407,7 +408,16 @@ const Product: React.FC = () => {
 
       <div className="max-w-5xl mx-auto px-4">
         <h1 className="text-4xl font-bold mb-2 tracking-wider text-center">PRODUCT</h1>
-        <p className="text-center text-xs tracking-[0.2em] uppercase text-black mb-8">Art you can wear</p>
+        <p className="text-center text-xs tracking-[0.2em] uppercase text-black mb-6">Art you can wear</p>
+
+        <div className="flex justify-center gap-8 mb-10 border-b border-gray-200 pb-4">
+          <span className="text-sm tracking-widest text-black border-b-2 border-black pb-1">
+            PRODUCT 1
+          </span>
+          <ScrollToTopLink href="/product2" className="text-sm tracking-widest text-gray-400 hover:text-black transition-colors">
+            PRODUCT 2
+          </ScrollToTopLink>
+        </div>
 
         <div className="max-w-xl mx-auto mb-14 text-center space-y-4">
           <p className="text-sm leading-relaxed tracking-wide text-black">
