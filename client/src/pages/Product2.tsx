@@ -170,38 +170,51 @@ export default function Product2() {
     let cancelled = false;
     const buildPool = async () => {
       const selectedArt = artworks.find((a) => a.id === selectedArtId);
-      let artPhrases: { ja: string; en: string; fr: string }[] = [];
-      if (selectedArt?.description) {
-        const jaSentences = selectedArt.description
-          .split(/[。\n]/)
-          .map((s) => s.trim())
-          .filter((s) => s.length > 5)
-          .slice(0, 4)
-          .map((s) => s + "。");
-        artPhrases = jaSentences.map((s) => ({ ja: s, en: s, fr: s }));
-        try {
-          const translated = await Promise.all(
-            jaSentences.map(async (s) => {
-              const [enRes, frRes] = await Promise.all([
-                fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(s)}&langpair=ja|en`),
-                fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(s)}&langpair=ja|fr`),
-              ]);
-              const enData = await enRes.json();
-              const frData = await frRes.json();
-              return {
-                ja: s,
-                en: enData.responseData?.translatedText ?? s,
-                fr: frData.responseData?.translatedText ?? s,
-              };
-            })
-          );
-          artPhrases = translated;
-        } catch (_) {}
-      }
+
+      // 1〜4: 絵の説明文からランダムに最大4文
+      const artJa: string[] = selectedArt?.description
+        ? selectedArt.description
+            .split(/[。\n]/)
+            .map((s) => s.trim())
+            .filter((s) => s.length > 5)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 4)
+            .map((s) => s + "。")
+        : [];
+
+      // 5〜8: サイト全体からランダムに4句
+      const siteJa: string[] = [...PHRASES]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 4)
+        .map((p) => p.ja);
+
+      // 日本語8句を結合（順番を保持：絵→サイト）
+      const allJa = [...artJa, ...siteJa];
+
+      // まず日本語だけでセット（フォールバック）
+      let pool: { ja: string; en: string; fr: string }[] = allJa.map((s) => ({ ja: s, en: s, fr: s }));
+
+      // 全8句を無料APIで英語・フランス語に翻訳
+      try {
+        const translated = await Promise.all(
+          allJa.map(async (s) => {
+            const [enRes, frRes] = await Promise.all([
+              fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(s)}&langpair=ja|en`),
+              fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(s)}&langpair=ja|fr`),
+            ]);
+            const enData = await enRes.json();
+            const frData = await frRes.json();
+            return {
+              ja: s,
+              en: enData.responseData?.translatedText ?? s,
+              fr: frData.responseData?.translatedText ?? s,
+            };
+          })
+        );
+        pool = translated;
+      } catch (_) {}
+
       if (cancelled) return;
-      const needed = 8 - artPhrases.length;
-      const shuffledFixed = [...PHRASES].sort(() => Math.random() - 0.5).slice(0, needed);
-      const pool = [...artPhrases, ...shuffledFixed].sort(() => Math.random() - 0.5);
       setCombinedPhrases(pool);
       setPhraseIdx(0);
       setCustomText(pool[0]?.[lang] ?? "");
