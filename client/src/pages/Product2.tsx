@@ -376,8 +376,8 @@ export default function Product2() {
             絵を選び、言葉を選ぶ。
           </p>
           <p className="text-sm leading-relaxed tracking-wide text-black">
-            ISSEIの作品からひとつを選ぶと、絵のストロークが横線となり、<br className="hidden md:block" />
-            詩のような言葉とともにTシャツへと昇華されます。
+            ISSEIの作品からひとつを選ぶと、絵のストロークがラインとなり、<br className="hidden md:block" />
+            詩のような言葉とともにTシャツへと纏います。
           </p>
         </div>
 
