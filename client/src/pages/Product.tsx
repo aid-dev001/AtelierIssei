@@ -174,7 +174,6 @@ const Product: React.FC = () => {
   const maskRef = useRef<HTMLCanvasElement | null>(null);
   const maskForImgRef = useRef<HTMLImageElement | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
-  const prevIsReady = useRef(false);
   const shapeColRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef(false);
@@ -301,12 +300,10 @@ const Product: React.FC = () => {
   }, [shapeImg, fillImg, offset, fillScale, canvasSize, renderComposite, renderTshirt]);
 
   useEffect(() => {
-    const isReady = !!(shapeImg && fillImg);
-    if (isReady && !prevIsReady.current) {
-      setTimeout(() => previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
+    if (shapeImg && fillImg) {
+      setTimeout(() => previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 200);
     }
-    prevIsReady.current = isReady;
-  }, [shapeImg, fillImg]);
+  }, [fillImg]);
 
   const getCanvasPos = (e: React.MouseEvent | React.TouchEvent, canvas: HTMLCanvasElement) => {
     const rect = canvas.getBoundingClientRect();
