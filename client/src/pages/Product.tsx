@@ -241,7 +241,7 @@ const Product: React.FC = () => {
   const renderTshirt = useCallback(() => {
     const canvas = tshirtRef.current;
     if (!canvas || !compositeRef.current) return;
-    const W = 480;
+    const W = 1600;
     const aspect = tshirtColor === "black" ? tshirtBlackAspect : tshirtAspect;
     const H = Math.round(W / aspect);
     canvas.width = W;
