@@ -6,7 +6,6 @@ const router = Router();
 router.post('/order', async (req, res) => {
   try {
     const pass = (process.env.GMAIL_APP_PASSWORD ?? '').replace(/\s/g, '');
-    console.log('GMAIL_APP_PASSWORD length:', pass.length, '| first2:', pass.slice(0, 2));
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
