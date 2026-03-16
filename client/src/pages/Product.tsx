@@ -353,11 +353,32 @@ const Product: React.FC = () => {
     const p = getCanvasPos(e, compositeRef.current);
     setOffset({ x: p.x - dragStartRef.current.x, y: p.y - dragStartRef.current.y });
   };
+  const getTransparentPng = useCallback((): string | null => {
+    const dc = compositeRef.current;
+    if (!dc || dc.width === 0) return null;
+    const aspect = tshirtColor === "black" ? tshirtBlackAspect : tshirtAspect;
+    const W = 1600;
+    const H = Math.round(W / aspect);
+    const off = document.createElement("canvas");
+    off.width = W;
+    off.height = H;
+    const ctx = off.getContext("2d")!;
+    const da = dc.width / dc.height;
+    const maxW = W * 0.38 * shapeScale;
+    const maxH = H * 0.34 * shapeScale;
+    let rw = maxW, rh = rw / da;
+    if (rh > maxH) { rh = maxH; rw = rh * da; }
+    ctx.drawImage(dc, (W - rw) / 2 + designPos.x, H * 0.26 + designPos.y, rw, rh);
+    ctx.font = "300 17px 'Helvetica Neue', Arial, sans-serif";
+    ctx.fillStyle = "#1a1a1a";
+    ctx.fillText("ISSEI – Wearable Abstraction", W * 0.531, H * 0.634);
+    return off.toDataURL("image/png");
+  }, [tshirtColor, tshirtAspect, tshirtBlackAspect, shapeScale, designPos]);
+
   const onUp = () => {
     if (draggingRef.current && !dragMovedRef.current) {
-      const t = compositeRef.current?.toDataURL("image/png") ?? null;
-      setModalImg(t);
-      setModalTransparentImg(t);
+      setModalImg(compositeRef.current?.toDataURL("image/png") ?? null);
+      setModalTransparentImg(getTransparentPng());
     }
     draggingRef.current = false;
   };
@@ -377,9 +398,8 @@ const Product: React.FC = () => {
   };
   const onTouchEnd = () => {
     if (draggingRef.current && !dragMovedRef.current) {
-      const t = compositeRef.current?.toDataURL("image/png") ?? null;
-      setModalImg(t);
-      setModalTransparentImg(t);
+      setModalImg(compositeRef.current?.toDataURL("image/png") ?? null);
+      setModalTransparentImg(getTransparentPng());
     }
     draggingRef.current = false;
   };
@@ -411,7 +431,7 @@ const Product: React.FC = () => {
   const onTshirtUp = () => {
     if (tshirtDraggingRef.current && !dragMovedRef.current) {
       setModalImg(tshirtRef.current?.toDataURL("image/png") ?? null);
-      setModalTransparentImg(compositeRef.current?.toDataURL("image/png") ?? null);
+      setModalTransparentImg(getTransparentPng());
     }
     tshirtDraggingRef.current = false;
   };

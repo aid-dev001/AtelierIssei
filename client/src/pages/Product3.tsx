@@ -279,6 +279,10 @@ export default function Product3() {
     const mask = buildMask(shapes, shapeMode);
     offCtx.globalCompositeOperation = "destination-in";
     offCtx.drawImage(mask, 0, 0);
+    offCtx.globalCompositeOperation = "source-over";
+    offCtx.font = "300 9px 'Helvetica Neue', Arial, sans-serif";
+    offCtx.fillStyle = "#1a1a1a";
+    offCtx.fillText("ISSEI – Wearable Abstraction", CW * 0.531, CH * 0.634);
     return off.toDataURL("image/png");
   }, [artImg, shapes, shapeMode, artOffsetX, artOffsetY, artRotation, artScale]);
 
