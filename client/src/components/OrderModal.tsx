@@ -14,14 +14,20 @@ type Props = {
 const SIZES = ["S", "M", "L", "XL", "XXL"];
 
 export default function OrderModal({ imageDataUrl, imageDataUrl2, transparentDataUrl, transparentDataUrl2, productName, artworkTitle, onClose }: Props) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [size, setSize] = useState("M");
-  const [comment, setComment] = useState("");
+  const [name, setName] = useState(() => localStorage.getItem("order_name") ?? "");
+  const [email, setEmail] = useState(() => localStorage.getItem("order_email") ?? "");
+  const [address, setAddress] = useState(() => localStorage.getItem("order_address") ?? "");
+  const [size, setSize] = useState(() => localStorage.getItem("order_size") ?? "M");
+  const [comment, setComment] = useState(() => localStorage.getItem("order_comment") ?? "");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => { localStorage.setItem("order_name", name); }, [name]);
+  useEffect(() => { localStorage.setItem("order_email", email); }, [email]);
+  useEffect(() => { localStorage.setItem("order_address", address); }, [address]);
+  useEffect(() => { localStorage.setItem("order_size", size); }, [size]);
+  useEffect(() => { localStorage.setItem("order_comment", comment); }, [comment]);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -39,6 +45,7 @@ export default function OrderModal({ imageDataUrl, imageDataUrl2, transparentDat
         body: JSON.stringify({ name, email, address, size, comment, product: productName, artworkTitle: artworkTitle ?? "", imageData: imageDataUrl, imageData2: imageDataUrl2 ?? null, transparentData: transparentDataUrl ?? null, transparentData2: transparentDataUrl2 ?? null })
       });
       if (!res.ok) throw new Error();
+      ["order_name","order_email","order_address","order_size","order_comment"].forEach(k => localStorage.removeItem(k));
       setDone(true);
     } catch {
       setError("送信に失敗しました。もう一度お試しください。");
