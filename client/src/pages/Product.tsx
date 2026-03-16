@@ -317,7 +317,8 @@ const Product: React.FC = () => {
     if (!shapeImg) return;
 
     if (!fillImg) {
-      ctx.drawImage(shapeImg, 0, 0, w, h);
+      const masked = buildMask(shapeImg, w, h);
+      ctx.drawImage(masked, 0, 0, w, h);
       return;
     }
     if (!maskRef.current || maskForImgRef.current !== shapeImg) {
