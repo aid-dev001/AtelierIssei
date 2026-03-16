@@ -473,6 +473,9 @@ export default function Product2() {
     backDragging.current = false;
   };
 
+  const selectedArtItem = selectedArtId != null ? artworks.find((a) => a.id === selectedArtId) ?? null : null;
+  const artDetailUrl = selectedArtItem ? `${window.location.origin}/artwork/${selectedArtId}` : null;
+
   return (
     <div className="min-h-screen bg-white py-12">
       <div className="max-w-5xl mx-auto px-4">
@@ -745,6 +748,26 @@ export default function Product2() {
                 </button>
               </div>
             </div>
+          {artDetailUrl && selectedArtItem && (
+            <div className="mt-6 flex items-center gap-4 p-3 bg-gray-50 rounded-xl border border-gray-100">
+              <ScrollToTopLink href={`/artwork/${selectedArtId}`} className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity">
+                <img src={selectedArtItem.imageUrl} alt={selectedArtItem.title} className="w-12 h-12 object-cover rounded-lg border border-gray-200 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-xs text-gray-400 mb-0.5">使用した作品</p>
+                  <p className="text-sm font-medium text-black truncate">{selectedArtItem.title}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">作品を見る →</p>
+                </div>
+              </ScrollToTopLink>
+              <div className="flex-shrink-0 flex flex-col items-center gap-1">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(artDetailUrl)}`}
+                  alt="QR"
+                  className="w-16 h-16 rounded border border-gray-200"
+                />
+                <p className="text-xs text-gray-400">QR</p>
+              </div>
+            </div>
+          )}
           </>
         )}
       </div>

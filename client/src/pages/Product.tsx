@@ -479,6 +479,12 @@ const Product: React.FC = () => {
   };
 
   const isReady = !!shapeImg && selectedFillId !== null;
+  const selectedFillArt = selectedFillId != null && selectedFillId !== -1
+    ? artworks.find((a) => a.id === selectedFillId) ?? null
+    : null;
+  const artDetailUrl = selectedFillArt
+    ? `${window.location.origin}/artwork/${selectedFillId}`
+    : null;
 
   return (
     <div className="min-h-screen bg-white py-12">
@@ -696,6 +702,27 @@ const Product: React.FC = () => {
                   style={{ width: "100%", height: "100%", display: "block", pointerEvents: "none" }}
                 />
               </div>
+            </div>
+          </div>
+        )}
+
+        {artDetailUrl && selectedFillArt && (
+          <div className="mt-6 flex items-center gap-4 p-3 bg-gray-50 rounded-xl border border-gray-100">
+            <ScrollToTopLink href={`/artwork/${selectedFillId}`} className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity">
+              <img src={selectedFillArt.imageUrl} alt={selectedFillArt.title} className="w-12 h-12 object-cover rounded-lg border border-gray-200 flex-shrink-0" />
+              <div className="min-w-0">
+                <p className="text-xs text-gray-400 mb-0.5">使用した作品</p>
+                <p className="text-sm font-medium text-black truncate">{selectedFillArt.title}</p>
+                <p className="text-xs text-gray-400 mt-0.5">作品を見る →</p>
+              </div>
+            </ScrollToTopLink>
+            <div className="flex-shrink-0 flex flex-col items-center gap-1">
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(artDetailUrl)}`}
+                alt="QR"
+                className="w-16 h-16 rounded border border-gray-200"
+              />
+              <p className="text-xs text-gray-400">QR</p>
             </div>
           </div>
         )}
