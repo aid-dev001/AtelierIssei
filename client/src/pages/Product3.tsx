@@ -675,10 +675,10 @@ export default function Product3() {
             href={artDetailUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-32 mb-12 group flex overflow-hidden rounded-lg bg-white border border-gray-200 hover:shadow-md transition-shadow"
+            className="mt-32 mb-12 group flex flex-col sm:flex-row overflow-hidden rounded-lg bg-white border border-gray-200 hover:shadow-md transition-shadow"
           >
-            {/* Artwork image — full-height left edge, wider */}
-            <div className="w-52 sm:w-72 flex-shrink-0">
+            {/* Artwork image */}
+            <div className="w-full h-48 sm:h-auto sm:w-52 md:w-72 flex-shrink-0">
               <img
                 src={selectedArtItem.imageUrl}
                 alt={selectedArtItem.title}
@@ -705,7 +705,7 @@ export default function Product3() {
             </div>
 
             {/* QR — separated by subtle border */}
-            <div className="flex-shrink-0 flex flex-col items-center justify-center gap-2 px-6 sm:px-8 border-l border-gray-200">
+            <div className="flex-shrink-0 flex flex-col items-center justify-center gap-2 px-6 py-6 sm:px-8 border-t sm:border-t-0 sm:border-l border-gray-200">
               <div className="bg-gray-50 rounded p-1.5">
                 <img
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(artDetailUrl)}`}
