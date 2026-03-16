@@ -649,7 +649,7 @@ export default function Product3() {
                   <SliderRow label="Y" value={artOffsetY} min={-0.5} max={0.5} step={0.01}
                     onChange={setArtOffsetY} fmt={(v) => `${Math.round(v * 100)}`}
                   />
-                  <SliderRow label="拡縮" value={artScale} min={0.3} max={3} step={0.05}
+                  <SliderRow label="大きさ" value={artScale} min={0.3} max={3} step={0.05}
                     onChange={setArtScale} fmt={(v) => `${Math.round(v * 100)}%`}
                   />
                   <SliderRow label="回転" value={artRotation} min={-180} max={180} step={1}
