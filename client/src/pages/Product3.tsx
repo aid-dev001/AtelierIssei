@@ -643,11 +643,11 @@ export default function Product3() {
               {artImg && (
                 <div className="mt-3 bg-gray-50 rounded-xl p-3 space-y-3">
                   <p className="text-xs text-gray-500">絵の位置・拡縮・回転</p>
-                  <SliderRow label="X" value={artOffsetX} min={-0.5} max={0.5} step={0.01}
-                    onChange={setArtOffsetX} fmt={(v) => `${Math.round(v * 100)}`}
-                  />
-                  <SliderRow label="Y" value={artOffsetY} min={-0.5} max={0.5} step={0.01}
+                  <SliderRow label="縦" value={artOffsetY} min={-0.5} max={0.5} step={0.01}
                     onChange={setArtOffsetY} fmt={(v) => `${Math.round(v * 100)}`}
+                  />
+                  <SliderRow label="横" value={artOffsetX} min={-0.5} max={0.5} step={0.01}
+                    onChange={setArtOffsetX} fmt={(v) => `${Math.round(v * 100)}`}
                   />
                   <SliderRow label="大きさ" value={artScale} min={0.3} max={3} step={0.05}
                     onChange={setArtScale} fmt={(v) => `${Math.round(v * 100)}%`}
