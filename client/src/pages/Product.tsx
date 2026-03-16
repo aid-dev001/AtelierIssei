@@ -426,6 +426,9 @@ const Product: React.FC = () => {
           <ScrollToTopLink href="/product2" className="text-sm tracking-widest text-gray-400 hover:text-black transition-colors">
             PRODUCT 2
           </ScrollToTopLink>
+          <ScrollToTopLink href="/product3" className="text-sm tracking-widest text-gray-400 hover:text-black transition-colors">
+            PRODUCT 3
+          </ScrollToTopLink>
         </div>
 
         <div className="max-w-xl mx-auto mb-12 text-center space-y-4">

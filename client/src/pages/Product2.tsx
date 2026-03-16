@@ -419,6 +419,9 @@ export default function Product2() {
           <span className="text-sm tracking-widest text-black border-b-2 border-black pb-1">
             PRODUCT 2
           </span>
+          <ScrollToTopLink href="/product3" className="text-sm tracking-widest text-gray-400 hover:text-black transition-colors">
+            PRODUCT 3
+          </ScrollToTopLink>
         </div>
 
         <div className="max-w-xl mx-auto mb-12 text-center space-y-4">
