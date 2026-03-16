@@ -490,7 +490,7 @@ export default function Product3() {
                           shapeMode === m ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-black"
                         }`}
                       >
-                        {m === "and" ? "AND（重なり）" : "OR（それぞれ）"}
+                        {m === "and" ? "AND（重なり）" : "OR（すべて）"}
                       </button>
                     ))}
                   </div>
