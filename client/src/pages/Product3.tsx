@@ -529,9 +529,22 @@ export default function Product3() {
                 <div className="bg-gray-50 rounded-xl p-3 space-y-3">
                   <p className="text-xs text-gray-500">サイズ・回転</p>
                   {selectedShape.type === "circle" ? (
-                    <SliderRow label="サイズ" value={selectedShape.w} min={0.05} max={0.7} step={0.01}
-                      onChange={(v) => updateSelected({ w: v, h: v })} fmt={(v) => String(Math.round(v * 100))}
-                    />
+                    <>
+                      <SliderRow label="サイズ" value={selectedShape.w} min={0.05} max={0.7} step={0.01}
+                        onChange={(v) => {
+                          const ratio = selectedShape.w > 0 ? selectedShape.h / selectedShape.w : 1;
+                          updateSelected({ w: v, h: v * ratio });
+                        }}
+                        fmt={(v) => String(Math.round(v * 100))}
+                      />
+                      <SliderRow
+                        label="楕円"
+                        value={selectedShape.w > 0 ? selectedShape.h / selectedShape.w : 1}
+                        min={0.3} max={3.0} step={0.05}
+                        onChange={(v) => updateSelected({ h: selectedShape.w * v })}
+                        fmt={(v) => v.toFixed(2)}
+                      />
+                    </>
                   ) : (
                     <>
                       <SliderRow label="幅" value={selectedShape.w} min={0.05} max={0.7} step={0.01}
