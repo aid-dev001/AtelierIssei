@@ -72,7 +72,6 @@ export default function OrderModal({ imageDataUrl, imageDataUrl2, transparentDat
 
         {done ? (
           <div className="px-6 py-14 text-center">
-            <p className="text-lg font-light tracking-wider mb-2">ありがとうございます</p>
             <p className="text-sm text-gray-500 mb-8">注文を受け付けました。<br />追ってご連絡いたします。</p>
             <button onClick={onClose} className="px-8 py-2.5 bg-black text-white text-xs tracking-widest rounded hover:bg-gray-800 transition-colors">
               閉じる
