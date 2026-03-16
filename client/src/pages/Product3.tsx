@@ -581,7 +581,7 @@ export default function Product3() {
             </div>
 
             {/* ② 絵を選ぶ */}
-            <div className="border-t border-gray-100 pt-4">
+            {shirtLoaded && <div className="border-t border-gray-100 pt-4">
               <div className="flex items-center gap-2 mb-4">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold">2</span>
                 <span className="font-semibold text-sm tracking-wider">絵を選ぶ</span>
@@ -632,7 +632,7 @@ export default function Product3() {
                   />
                 </div>
               )}
-            </div>
+            </div>}
 
           </div>
         </div>
