@@ -193,8 +193,12 @@ function ImageModal({ src, transparentSrc, onClose }: { src: string; transparent
 }
 
 const Product: React.FC = () => {
-  const [selectedShapeId, setSelectedShapeId] = useState<number | null>(null);
-  const [selectedFillId, setSelectedFillId] = useState<number | null>(null);
+  const [selectedShapeId, setSelectedShapeId] = useState<number | null>(() => {
+    const v = localStorage.getItem("p1_shapeId"); return v ? Number(v) : null;
+  });
+  const [selectedFillId, setSelectedFillId] = useState<number | null>(() => {
+    const v = localStorage.getItem("p1_fillId"); return v ? Number(v) : null;
+  });
   const [shapeImg, setShapeImg] = useState<HTMLImageElement | null>(null);
   const [fillImg, setFillImg] = useState<HTMLImageElement | null>(null);
   const [tshirtBaseImg, setTshirtBaseImg] = useState<HTMLImageElement | null>(null);
@@ -478,6 +482,15 @@ const Product: React.FC = () => {
     tshirtDraggingRef.current = false;
   };
 
+  useEffect(() => {
+    if (selectedShapeId != null) localStorage.setItem("p1_shapeId", String(selectedShapeId));
+    else localStorage.removeItem("p1_shapeId");
+  }, [selectedShapeId]);
+  useEffect(() => {
+    if (selectedFillId != null) localStorage.setItem("p1_fillId", String(selectedFillId));
+    else localStorage.removeItem("p1_fillId");
+  }, [selectedFillId]);
+
   const isReady = !!shapeImg && selectedFillId !== null;
   const selectedFillArt = selectedFillId != null && selectedFillId !== -1
     ? artworks.find((a) => a.id === selectedFillId) ?? null
@@ -708,14 +721,14 @@ const Product: React.FC = () => {
 
         {artDetailUrl && selectedFillArt && (
           <div className="mt-6 flex items-center gap-4 p-3 bg-gray-50 rounded-xl border border-gray-100">
-            <ScrollToTopLink href={`/artwork/${selectedFillId}`} className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity">
+            <a href={artDetailUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity">
               <img src={selectedFillArt.imageUrl} alt={selectedFillArt.title} className="w-12 h-12 object-cover rounded-lg border border-gray-200 flex-shrink-0" />
               <div className="min-w-0">
                 <p className="text-xs text-gray-400 mb-0.5">使用した作品</p>
                 <p className="text-sm font-medium text-black truncate">{selectedFillArt.title}</p>
                 <p className="text-xs text-gray-400 mt-0.5">作品を見る →</p>
               </div>
-            </ScrollToTopLink>
+            </a>
             <div className="flex-shrink-0 flex flex-col items-center gap-1">
               <img
                 src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(artDetailUrl)}`}
