@@ -761,7 +761,7 @@ export default function Product2() {
               rel="noopener noreferrer"
               className="mt-32 mb-12 group flex flex-col sm:flex-row overflow-hidden rounded-lg bg-white border border-gray-200 hover:shadow-md transition-shadow"
             >
-              <div className="w-full h-48 sm:h-auto sm:w-52 md:w-72 flex-shrink-0">
+              <div className="w-full h-72 sm:h-auto sm:w-52 md:w-72 flex-shrink-0">
                 <img src={selectedArtItem.imageUrl} alt={selectedArtItem.title} className="w-full h-full object-cover" />
               </div>
               <div className="flex-1 min-w-0 flex flex-col justify-between px-7 py-7 sm:px-10 sm:py-9">

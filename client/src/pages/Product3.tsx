@@ -678,7 +678,7 @@ export default function Product3() {
             className="mt-32 mb-12 group flex flex-col sm:flex-row overflow-hidden rounded-lg bg-white border border-gray-200 hover:shadow-md transition-shadow"
           >
             {/* Artwork image */}
-            <div className="w-full h-48 sm:h-auto sm:w-52 md:w-72 flex-shrink-0">
+            <div className="w-full h-72 sm:h-auto sm:w-52 md:w-72 flex-shrink-0">
               <img
                 src={selectedArtItem.imageUrl}
                 alt={selectedArtItem.title}
