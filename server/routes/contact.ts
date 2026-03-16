@@ -35,6 +35,14 @@ router.post('/contact', async (req, res) => {
       replyTo: email
     });
 
+    await transporter.sendMail({
+      from: 'isseiart2026@gmail.com',
+      to: email,
+      subject: `[ATELIER ISSEI] お問い合わせを受け付けました`,
+      text: `${name} 様\n\nお問い合わせありがとうございます。\n以下の内容で受け付けました。\n\n---\n${message}\n---\n\n追ってご連絡いたします。\n\nATELIER ISSEI`,
+      replyTo: 'isseiart2026@gmail.com'
+    });
+
     res.status(200).json({ message: 'お問い合わせを受け付けました' });
   } catch (error) {
     console.error('Contact error:', error);
