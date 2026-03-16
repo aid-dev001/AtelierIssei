@@ -53,7 +53,7 @@ function SliderRow({
   );
 }
 
-type ArtworkItem = { id: number; title: string; imageUrl: string };
+type ArtworkItem = { id: number; title: string; imageUrl: string; description?: string };
 
 type ShapeItem = {
   id: string;
@@ -675,38 +675,45 @@ export default function Product3() {
             href={artDetailUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-10 mb-12 group relative flex overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-shadow cursor-pointer"
+            className="mt-10 mb-12 group flex overflow-hidden rounded-2xl bg-black hover:opacity-95 transition-opacity"
           >
-            <div className="absolute inset-0">
-              <img
-                src={selectedArtItem.imageUrl}
-                alt=""
-                className="w-full h-full object-cover scale-110"
-                style={{ filter: "blur(14px)" }}
-              />
-              <div className="absolute inset-0 bg-black/55" />
-            </div>
-            <div className="relative flex items-center gap-6 px-6 py-7 sm:px-10 sm:py-9 w-full">
+            {/* Artwork image — full-height left edge */}
+            <div className="w-36 sm:w-52 flex-shrink-0">
               <img
                 src={selectedArtItem.imageUrl}
                 alt={selectedArtItem.title}
-                className="w-24 h-24 sm:w-36 sm:h-36 object-cover rounded-xl border-2 border-white/50 shadow-2xl flex-shrink-0"
+                className="w-full h-full object-cover"
               />
-              <div className="flex-1 min-w-0 text-white">
-                <p className="text-[10px] tracking-[0.3em] uppercase text-white/60 mb-2">使用した作品</p>
-                <p className="text-xl sm:text-3xl font-bold tracking-wide truncate">{selectedArtItem.title}</p>
-                <p className="text-xs text-white/60 mt-4 tracking-widest group-hover:text-white/90 transition-colors">作品を見る →</p>
+            </div>
+
+            {/* Text content */}
+            <div className="flex-1 min-w-0 flex flex-col justify-between px-7 py-7 sm:px-10 sm:py-9">
+              <div>
+                <p className="text-[9px] tracking-[0.35em] uppercase text-white/35 mb-3">使用した作品</p>
+                <p className="text-lg sm:text-2xl font-light tracking-widest text-white mb-4 leading-snug">
+                  {selectedArtItem.title}
+                </p>
+                {selectedArtItem.description && (
+                  <p className="text-xs text-white/50 leading-relaxed tracking-wide line-clamp-3">
+                    {selectedArtItem.description}
+                  </p>
+                )}
               </div>
-              <div className="flex-shrink-0 flex flex-col items-center gap-2">
-                <div className="bg-white rounded-xl p-2 shadow-2xl">
-                  <img
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(artDetailUrl)}`}
-                    alt="QR"
-                    className="w-20 h-20 sm:w-24 sm:h-24"
-                  />
-                </div>
-                <p className="text-[10px] text-white/50 tracking-widest">QR CODE</p>
+              <p className="text-[10px] text-white/30 tracking-[0.2em] mt-6 group-hover:text-white/60 transition-colors">
+                作品を見る →
+              </p>
+            </div>
+
+            {/* QR — separated by subtle border */}
+            <div className="flex-shrink-0 flex flex-col items-center justify-center gap-2 px-6 sm:px-8 border-l border-white/10">
+              <div className="bg-white rounded-lg p-1.5">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(artDetailUrl)}`}
+                  alt="QR"
+                  className="w-16 h-16 sm:w-20 sm:h-20"
+                />
               </div>
+              <p className="text-[9px] text-white/25 tracking-widest">QR CODE</p>
             </div>
           </a>
         )}
