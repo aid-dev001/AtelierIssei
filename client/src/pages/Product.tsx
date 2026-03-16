@@ -14,8 +14,8 @@ function cropTextFromShirt(
   canvasH: number,
   shirtColor: "white" | "black"
 ): { canvas: HTMLCanvasElement; x: number; y: number } {
-  const TX1 = 0.50, TX2 = 0.92;
-  const TY1 = 0.612, TY2 = 0.648;
+  const TX1 = 0.44, TX2 = 0.97;
+  const TY1 = 0.605, TY2 = 0.655;
   const sw = shirtImg.naturalWidth, sh = shirtImg.naturalHeight;
   const cropX = Math.round(sw * TX1), cropY = Math.round(sh * TY1);
   const cropW = Math.round(sw * (TX2 - TX1)), cropH = Math.round(sh * (TY2 - TY1));
@@ -28,8 +28,8 @@ function cropTextFromShirt(
   for (let i = 0; i < d.length; i += 4) {
     const lum = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
     d[i + 3] = shirtColor === "white"
-      ? Math.max(0, Math.min(255, Math.round((200 - lum) * 5)))
-      : Math.max(0, Math.min(255, Math.round((lum - 50) * 5)));
+      ? Math.max(0, Math.min(255, Math.round((150 - lum) * 10)))
+      : Math.max(0, Math.min(255, Math.round((lum - 140) * 12)));
   }
   tc.putImageData(id, 0, 0);
   const scale = canvasW / sw;
