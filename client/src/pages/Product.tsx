@@ -314,16 +314,12 @@ const Product: React.FC = () => {
     const ctx = canvas.getContext("2d")!;
     ctx.clearRect(0, 0, w, h);
 
-    if (selectedShapeId === -1) {
-      if (!fillImg) return;
-      const scaleF = Math.max((w * 1.0) / fillImg.width, (h * 1.0) / fillImg.height) * fillScale;
-      const fw = fillImg.width * scaleF;
-      const fh = fillImg.height * scaleF;
-      ctx.drawImage(fillImg, (w - fw) / 2 + offset.x, (h - fh) / 2 + offset.y, fw, fh);
+    if (!shapeImg) return;
+
+    if (!fillImg) {
+      ctx.drawImage(shapeImg, 0, 0, w, h);
       return;
     }
-
-    if (!shapeImg || !fillImg) return;
     if (!maskRef.current || maskForImgRef.current !== shapeImg) {
       maskRef.current = buildMask(shapeImg, w, h);
       maskForImgRef.current = shapeImg;
@@ -335,7 +331,7 @@ const Product: React.FC = () => {
     ctx.globalCompositeOperation = "destination-in";
     ctx.drawImage(maskRef.current, 0, 0, w, h);
     ctx.globalCompositeOperation = "source-over";
-  }, [selectedShapeId, shapeImg, fillImg, offset, fillScale, canvasSize]);
+  }, [shapeImg, fillImg, offset, fillScale, canvasSize]);
 
   const renderTshirt = useCallback(() => {
     const canvas = tshirtRef.current;
