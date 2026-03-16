@@ -675,10 +675,10 @@ export default function Product3() {
             href={artDetailUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-10 mb-12 group flex overflow-hidden rounded-2xl bg-black hover:opacity-95 transition-opacity"
+            className="mt-10 mb-12 group flex overflow-hidden rounded-lg bg-white border border-gray-200 hover:shadow-md transition-shadow"
           >
-            {/* Artwork image — full-height left edge */}
-            <div className="w-36 sm:w-52 flex-shrink-0">
+            {/* Artwork image — full-height left edge, wider */}
+            <div className="w-52 sm:w-72 flex-shrink-0">
               <img
                 src={selectedArtItem.imageUrl}
                 alt={selectedArtItem.title}
@@ -689,31 +689,31 @@ export default function Product3() {
             {/* Text content */}
             <div className="flex-1 min-w-0 flex flex-col justify-between px-7 py-7 sm:px-10 sm:py-9">
               <div>
-                <p className="text-[9px] tracking-[0.35em] uppercase text-white/35 mb-3">使用した作品</p>
-                <p className="text-lg sm:text-2xl font-light tracking-widest text-white mb-4 leading-snug">
+                <p className="text-[9px] tracking-[0.35em] uppercase text-gray-400 mb-3">使用した作品</p>
+                <p className="text-lg sm:text-2xl font-light tracking-widest text-black mb-4 leading-snug">
                   {selectedArtItem.title}
                 </p>
                 {selectedArtItem.description && (
-                  <p className="text-xs text-white/50 leading-relaxed tracking-wide line-clamp-3">
+                  <p className="text-xs text-gray-500 leading-relaxed tracking-wide line-clamp-3">
                     {selectedArtItem.description}
                   </p>
                 )}
               </div>
-              <p className="text-[10px] text-white/30 tracking-[0.2em] mt-6 group-hover:text-white/60 transition-colors">
+              <p className="text-[10px] text-gray-400 tracking-[0.2em] mt-6 group-hover:text-black transition-colors">
                 作品を見る →
               </p>
             </div>
 
             {/* QR — separated by subtle border */}
-            <div className="flex-shrink-0 flex flex-col items-center justify-center gap-2 px-6 sm:px-8 border-l border-white/10">
-              <div className="bg-white rounded-lg p-1.5">
+            <div className="flex-shrink-0 flex flex-col items-center justify-center gap-2 px-6 sm:px-8 border-l border-gray-200">
+              <div className="bg-gray-50 rounded p-1.5">
                 <img
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(artDetailUrl)}`}
                   alt="QR"
                   className="w-16 h-16 sm:w-20 sm:h-20"
                 />
               </div>
-              <p className="text-[9px] text-white/25 tracking-widest">QR CODE</p>
+              <p className="text-[9px] text-gray-300 tracking-widest">QR CODE</p>
             </div>
           </a>
         )}
