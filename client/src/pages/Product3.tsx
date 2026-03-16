@@ -673,7 +673,7 @@ export default function Product3() {
         </div>
 
         {selectedArtId != null && shapes.length > 0 && (
-          <div className="mt-10 flex justify-center">
+          <div className="mt-16 flex justify-center">
             <button
               onClick={() => setOrderOpen(true)}
               className="px-14 py-4 border border-black text-black bg-white text-sm tracking-[0.5em] font-light hover:bg-black hover:text-white transition-all duration-500"
