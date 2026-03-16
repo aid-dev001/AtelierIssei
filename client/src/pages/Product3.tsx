@@ -416,7 +416,7 @@ export default function Product3() {
 
   return (
     <div className="min-h-screen bg-white py-12">
-      <div className="max-w-5xl mx-auto px-4">
+      <div className="max-w-5xl mx-auto px-4 pb-0">
         <h1 className="text-4xl font-bold mb-2 tracking-wider text-center">PRODUCTS</h1>
         <p className="text-center text-xs tracking-[0.2em] uppercase text-black mb-8">Art you can wear</p>
 
@@ -442,7 +442,9 @@ export default function Product3() {
             あなただけのTシャツデザインを。
           </p>
         </div>
+      </div>
 
+      <div className="max-w-7xl mx-auto px-4">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Canvas */}
           <div className="flex-1 min-w-0">
