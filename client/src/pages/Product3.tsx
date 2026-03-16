@@ -689,17 +689,17 @@ export default function Product3() {
             {/* Text content */}
             <div className="flex-1 min-w-0 flex flex-col justify-between px-7 py-7 sm:px-10 sm:py-9">
               <div>
-                <p className="text-[9px] tracking-[0.35em] uppercase text-gray-400 mb-3">使用した作品</p>
+                <p className="text-[9px] tracking-[0.35em] uppercase text-black mb-3">使用した作品</p>
                 <p className="text-lg sm:text-2xl font-light tracking-widest text-black mb-4 leading-snug">
                   {selectedArtItem.title}
                 </p>
                 {selectedArtItem.description && (
-                  <p className="text-xs text-gray-500 leading-relaxed tracking-wide line-clamp-3">
+                  <p className="text-xs text-black leading-relaxed tracking-wide line-clamp-3">
                     {selectedArtItem.description}
                   </p>
                 )}
               </div>
-              <p className="text-[10px] text-gray-400 tracking-[0.2em] mt-6 group-hover:text-black transition-colors">
+              <p className="text-[10px] text-black tracking-[0.2em] mt-6">
                 作品を見る →
               </p>
             </div>
