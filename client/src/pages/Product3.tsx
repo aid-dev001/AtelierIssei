@@ -192,6 +192,7 @@ export default function Product3() {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const artworkSectionRef = useRef<HTMLDivElement>(null);
   const prevShapesEmpty = useRef(true);
+  const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dragging = useRef(false);
   const didMove = useRef(false);
   const dragStart = useRef({ x: 0, y: 0 });
@@ -225,6 +226,15 @@ export default function Product3() {
     }
     prevShapesEmpty.current = isEmpty;
   }, [shapes]);
+
+  useEffect(() => {
+    if (!artImg || shapes.length === 0) return;
+    if (window.innerWidth >= 1024) return;
+    if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
+    scrollTimerRef.current = setTimeout(() => {
+      canvasContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 250);
+  }, [artImg, shapes, artOffsetX, artOffsetY, artScale, artRotation]);
 
   const render = useCallback(() => {
     const canvas = canvasRef.current;
