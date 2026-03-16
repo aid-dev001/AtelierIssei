@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 router.post('/order', async (req, res) => {
   try {
-    const { name, email, address, size, comment, product, artworkTitle, imageData, imageData2 } = req.body;
+    const { name, email, address, size, comment, product, artworkTitle, imageData, imageData2, transparentData, transparentData2 } = req.body;
 
     if (!name || !email || !imageData) {
       return res.status(400).json({ error: 'Missing required fields' });
@@ -27,6 +27,16 @@ router.post('/order', async (req, res) => {
     if (imageData2) {
       const imgBuffer2 = Buffer.from(imageData2.split(',')[1], 'base64');
       attachments.push({ filename: 'tshirt-back.png', content: imgBuffer2, contentType: 'image/png' });
+    }
+
+    if (transparentData) {
+      const tBuf = Buffer.from(transparentData.split(',')[1], 'base64');
+      attachments.push({ filename: 'tshirt-front-transparent.png', content: tBuf, contentType: 'image/png' });
+    }
+
+    if (transparentData2) {
+      const tBuf2 = Buffer.from(transparentData2.split(',')[1], 'base64');
+      attachments.push({ filename: 'tshirt-back-transparent.png', content: tBuf2, contentType: 'image/png' });
     }
 
     const body = `

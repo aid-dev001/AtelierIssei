@@ -735,6 +735,7 @@ export default function Product3() {
       {orderOpen && (
         <OrderModal
           imageDataUrl={canvasRef.current?.toDataURL("image/png") ?? ""}
+          transparentDataUrl={getTransparentPng()}
           productName="PRODUCT 3"
           artworkTitle={selectedArtItem?.title}
           onClose={() => setOrderOpen(false)}

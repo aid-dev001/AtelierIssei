@@ -807,6 +807,8 @@ export default function Product2() {
         <OrderModal
           imageDataUrl={frontRef.current?.toDataURL("image/png") ?? ""}
           imageDataUrl2={backRef.current?.toDataURL("image/png") ?? null}
+          transparentDataUrl={getFrontTransparentPng()}
+          transparentDataUrl2={getBackTransparentPng()}
           productName="PRODUCT 2"
           artworkTitle={selectedArtItem?.title}
           onClose={() => setOrderOpen(false)}

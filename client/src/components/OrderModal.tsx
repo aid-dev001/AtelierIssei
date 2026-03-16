@@ -4,6 +4,8 @@ import { X } from "lucide-react";
 type Props = {
   imageDataUrl: string;
   imageDataUrl2?: string | null;
+  transparentDataUrl?: string | null;
+  transparentDataUrl2?: string | null;
   productName: string;
   artworkTitle?: string;
   onClose: () => void;
@@ -11,7 +13,7 @@ type Props = {
 
 const SIZES = ["S", "M", "L", "XL", "XXL"];
 
-export default function OrderModal({ imageDataUrl, imageDataUrl2, productName, artworkTitle, onClose }: Props) {
+export default function OrderModal({ imageDataUrl, imageDataUrl2, transparentDataUrl, transparentDataUrl2, productName, artworkTitle, onClose }: Props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
@@ -34,7 +36,7 @@ export default function OrderModal({ imageDataUrl, imageDataUrl2, productName, a
       const res = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, address, size, comment, product: productName, artworkTitle: artworkTitle ?? "", imageData: imageDataUrl, imageData2: imageDataUrl2 ?? null })
+        body: JSON.stringify({ name, email, address, size, comment, product: productName, artworkTitle: artworkTitle ?? "", imageData: imageDataUrl, imageData2: imageDataUrl2 ?? null, transparentData: transparentDataUrl ?? null, transparentData2: transparentDataUrl2 ?? null })
       });
       if (!res.ok) throw new Error();
       setDone(true);

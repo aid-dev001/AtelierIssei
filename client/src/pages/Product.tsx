@@ -773,6 +773,7 @@ const Product: React.FC = () => {
         {orderOpen && (
           <OrderModal
             imageDataUrl={tshirtRef.current?.toDataURL("image/png") ?? ""}
+            transparentDataUrl={getTransparentPng()}
             productName="PRODUCT 1"
             artworkTitle={selectedFillArt?.title}
             onClose={() => setOrderOpen(false)}
