@@ -369,9 +369,11 @@ const Product: React.FC = () => {
     let rw = maxW, rh = rw / da;
     if (rh > maxH) { rh = maxH; rw = rh * da; }
     ctx.drawImage(dc, (W - rw) / 2 + designPos.x, H * 0.26 + designPos.y, rw, rh);
-    ctx.font = "300 17px 'Helvetica Neue', Arial, sans-serif";
-    ctx.fillStyle = "#1a1a1a";
-    ctx.fillText("ISSEI – Wearable Abstraction", W * 0.531, H * 0.634);
+    ctx.font = "400 22px 'Helvetica Neue', Arial, sans-serif";
+    (ctx as any).letterSpacing = "2px";
+    ctx.fillStyle = "#000000";
+    ctx.textAlign = "center";
+    ctx.fillText("ISSEI – Wearable Abstraction", W * 0.5, H * 0.634);
     return off.toDataURL("image/png");
   }, [tshirtColor, tshirtAspect, tshirtBlackAspect, shapeScale, designPos]);
 
