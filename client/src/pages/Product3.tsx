@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Download, X, RefreshCw, Trash2 } from "lucide-react";
+import { Download, X, RefreshCw, Trash2, Eye, EyeOff } from "lucide-react";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 
 function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
@@ -36,6 +36,7 @@ type ShapeItem = {
   cy: number;
   w: number;
   h: number;
+  rotation: number;
 };
 
 const CW = 800;
@@ -44,7 +45,7 @@ const PAGE_SIZE = 12;
 const CLICK_THRESHOLD = 6;
 
 const DEFAULT_SHAPES: ShapeItem[] = [
-  { id: "s0", type: "rect", cx: 0.5, cy: 0.35, w: 0.3, h: 0.22 },
+  { id: "s0", type: "rect", cx: 0.5, cy: 0.35, w: 0.3, h: 0.22, rotation: 0 },
 ];
 
 function loadImg(src: string): Promise<HTMLImageElement> {
@@ -64,29 +65,64 @@ function getClientXY(e: React.MouseEvent | React.TouchEvent) {
   return { x: e.clientX, y: e.clientY };
 }
 
-function drawShapePath(ctx: CanvasRenderingContext2D, shape: ShapeItem) {
-  const px = shape.cx * CW;
-  const py = shape.cy * CH;
+// 形をローカル座標（0,0中心）で描画する。呼び出し側が translate/rotate を担当
+function drawLocalPath(ctx: CanvasRenderingContext2D, shape: ShapeItem) {
   const pw = shape.w * CW;
   const ph = shape.h * CH;
   ctx.beginPath();
   if (shape.type === "rect") {
-    ctx.rect(px - pw / 2, py - ph / 2, pw, ph);
+    ctx.rect(-pw / 2, -ph / 2, pw, ph);
   } else if (shape.type === "circle") {
     const r = Math.min(pw, ph) / 2;
-    ctx.arc(px, py, r, 0, Math.PI * 2);
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
   } else {
-    ctx.moveTo(px, py - ph / 2);
-    ctx.lineTo(px + pw / 2, py + ph / 2);
-    ctx.lineTo(px - pw / 2, py + ph / 2);
+    ctx.moveTo(0, -ph / 2);
+    ctx.lineTo(pw / 2, ph / 2);
+    ctx.lineTo(-pw / 2, ph / 2);
     ctx.closePath();
   }
 }
 
+function fillShape(ctx: CanvasRenderingContext2D, shape: ShapeItem) {
+  ctx.save();
+  ctx.translate(shape.cx * CW, shape.cy * CH);
+  ctx.rotate((shape.rotation * Math.PI) / 180);
+  drawLocalPath(ctx, shape);
+  ctx.fillStyle = "black";
+  ctx.fill();
+  ctx.restore();
+}
+
+function strokeShape(
+  ctx: CanvasRenderingContext2D,
+  shape: ShapeItem,
+  color: string,
+  lineWidth: number,
+  dash: number[]
+) {
+  ctx.save();
+  ctx.translate(shape.cx * CW, shape.cy * CH);
+  ctx.rotate((shape.rotation * Math.PI) / 180);
+  drawLocalPath(ctx, shape);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lineWidth;
+  ctx.setLineDash(dash);
+  ctx.stroke();
+  ctx.restore();
+}
+
+// 回転を考慮したヒットテスト（クリック座標をシェイプのローカル空間に変換）
 function isHit(shape: ShapeItem, nx: number, ny: number): boolean {
-  const dx = Math.abs(nx - shape.cx) * CW;
-  const dy = Math.abs(ny - shape.cy) * CH;
-  return dx <= (shape.w * CW) / 2 + 8 && dy <= (shape.h * CH) / 2 + 8;
+  const dx = nx * CW - shape.cx * CW;
+  const dy = ny * CH - shape.cy * CH;
+  const rad = -(shape.rotation * Math.PI) / 180;
+  const cos = Math.cos(rad);
+  const sin = Math.sin(rad);
+  const lx = dx * cos - dy * sin;
+  const ly = dx * sin + dy * cos;
+  const hw = (shape.w * CW) / 2 + 8;
+  const hh = (shape.h * CH) / 2 + 8;
+  return Math.abs(lx) <= hw && Math.abs(ly) <= hh;
 }
 
 export default function Product3() {
@@ -103,6 +139,13 @@ export default function Product3() {
   const [tshirtColor, setTshirtColor] = useState<"white" | "black">("white");
   const [shapes, setShapes] = useState<ShapeItem[]>(DEFAULT_SHAPES);
   const [selectedId, setSelectedId] = useState<string | null>("s0");
+  const [showOutline, setShowOutline] = useState(true);
+
+  // 絵の変換
+  const [artOffsetX, setArtOffsetX] = useState(0);  // -0.5 〜 0.5 (CW比)
+  const [artOffsetY, setArtOffsetY] = useState(0);  // -0.5 〜 0.5 (CH比)
+  const [artRotation, setArtRotation] = useState(0); // degrees
+
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [page, setPage] = useState(0);
 
@@ -144,32 +187,31 @@ export default function Product3() {
     ctx.drawImage(shirt, 0, 0, CW, CH);
 
     if (artImg && shapes.length > 0) {
-      // オフスクリーンキャンバス: 全体に絵を広げ、形を窓として切り抜く
       const off = document.createElement("canvas");
       off.width = CW;
       off.height = CH;
       const offCtx = off.getContext("2d")!;
 
-      // 絵をキャンバス全体にカバー
+      // 絵をカバーサイズで計算（全体を覆う）
       const ar = artImg.width / artImg.height;
       const cr = CW / CH;
-      let dw: number, dh: number, dx: number, dy: number;
+      let dw: number, dh: number;
       if (ar > cr) {
-        dh = CH; dw = dh * ar; dx = (CW - dw) / 2; dy = 0;
+        dh = CH; dw = dh * ar;
       } else {
-        dw = CW; dh = dw / ar; dx = 0; dy = (CH - dh) / 2;
+        dw = CW; dh = dw / ar;
       }
-      offCtx.drawImage(artImg, dx, dy, dw, dh);
 
-      // 全形の合計を destination-in でマスク
+      // 絵の位置・回転をキャンバス中心基準で適用
+      offCtx.save();
+      offCtx.translate(CW / 2 + artOffsetX * CW, CH / 2 + artOffsetY * CH);
+      offCtx.rotate((artRotation * Math.PI) / 180);
+      offCtx.drawImage(artImg, -dw / 2, -dh / 2, dw, dh);
+      offCtx.restore();
+
+      // 形を窓（マスク）として適用
       offCtx.globalCompositeOperation = "destination-in";
-      shapes.forEach((shape) => {
-        offCtx.save();
-        drawShapePath(offCtx, shape);
-        offCtx.fillStyle = "black";
-        offCtx.fill();
-        offCtx.restore();
-      });
+      shapes.forEach((shape) => fillShape(offCtx, shape));
 
       // メインキャンバスにブレンド合成
       ctx.globalCompositeOperation = blend as GlobalCompositeOperation;
@@ -177,28 +219,21 @@ export default function Product3() {
       ctx.globalCompositeOperation = "source-over";
     }
 
-    // 選択中の形をダッシュ枠で表示
-    if (selectedId) {
+    // 選択中の点線枠
+    if (showOutline && selectedId) {
       const sel = shapes.find((s) => s.id === selectedId);
       if (sel) {
-        ctx.save();
-        drawShapePath(ctx, sel);
-        ctx.strokeStyle = "rgba(0,0,0,0.55)";
-        ctx.lineWidth = 2;
-        ctx.setLineDash([5, 4]);
-        ctx.stroke();
-        ctx.restore();
+        strokeShape(ctx, sel, "rgba(0,0,0,0.55)", 2, [5, 4]);
       }
     }
-  }, [shirtImg, blackShirtImg, artImg, shapes, selectedId, tshirtColor]);
+  }, [shirtImg, blackShirtImg, artImg, shapes, selectedId, showOutline, tshirtColor, artOffsetX, artOffsetY, artRotation]);
 
   useEffect(() => { render(); }, [render]);
 
-  // キーボードで削除
+  // キーボード削除
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.key === "Delete" || e.key === "Backspace") && selectedId) {
-        // input / textarea にフォーカスがある場合は無視
         const tag = (document.activeElement as HTMLElement)?.tagName;
         if (tag === "INPUT" || tag === "TEXTAREA") return;
         setShapes((prev) => prev.filter((s) => s.id !== selectedId));
@@ -264,27 +299,40 @@ export default function Product3() {
     );
   };
 
-  const onUp = () => {
-    dragging.current = false;
-  };
+  const onUp = () => { dragging.current = false; };
 
   const addShape = (type: "rect" | "triangle" | "circle") => {
     const id = `s${Date.now()}`;
-    setShapes((prev) => [...prev, { id, type, cx: 0.5, cy: 0.38, w: 0.25, h: 0.2 }]);
+    setShapes((prev) => [...prev, { id, type, cx: 0.5, cy: 0.38, w: 0.25, h: 0.2, rotation: 0 }]);
     setSelectedId(id);
     lastHitId.current = id;
   };
 
-  const deleteSelected = () => {
-    if (!selectedId) return;
-    setShapes((prev) => prev.filter((s) => s.id !== selectedId));
-    setSelectedId(null);
-    lastHitId.current = null;
+  const removeShape = (id: string) => {
+    setShapes((prev) => prev.filter((s) => s.id !== id));
+    if (selectedId === id) { setSelectedId(null); lastHitId.current = null; }
   };
 
   const selectedShape = shapes.find((s) => s.id === selectedId);
   const totalPages = Math.ceil(artworks.length / PAGE_SIZE);
   const visibleArtworks = artworks.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
+  const SliderRow = ({
+    label, value, min, max, step, onChange, fmt,
+  }: {
+    label: string; value: number; min: number; max: number; step: number;
+    onChange: (v: number) => void; fmt?: (v: number) => string;
+  }) => (
+    <div className="flex items-center gap-2">
+      <span className="text-xs text-black whitespace-nowrap w-10">{label}</span>
+      <input
+        type="range" min={min} max={max} step={step} value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="flex-1 accent-black"
+      />
+      <span className="text-xs text-gray-400 w-10 text-right">{fmt ? fmt(value) : value}</span>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-white py-12">
@@ -302,21 +350,13 @@ export default function Product3() {
         </div>
 
         <div className="flex justify-center gap-8 mb-10 border-b border-gray-200 pb-4">
-          <ScrollToTopLink href="/product" className="text-sm tracking-widest text-gray-400 hover:text-black transition-colors">
-            PRODUCT 1
-          </ScrollToTopLink>
-          <ScrollToTopLink href="/product2" className="text-sm tracking-widest text-gray-400 hover:text-black transition-colors">
-            PRODUCT 2
-          </ScrollToTopLink>
-          <span className="text-sm tracking-widest text-black border-b-2 border-black pb-1">
-            PRODUCT 3
-          </span>
+          <ScrollToTopLink href="/product" className="text-sm tracking-widest text-gray-400 hover:text-black transition-colors">PRODUCT 1</ScrollToTopLink>
+          <ScrollToTopLink href="/product2" className="text-sm tracking-widest text-gray-400 hover:text-black transition-colors">PRODUCT 2</ScrollToTopLink>
+          <span className="text-sm tracking-widest text-black border-b-2 border-black pb-1">PRODUCT 3</span>
         </div>
 
         <div className="max-w-xl mx-auto mb-12 text-center space-y-4">
-          <p className="text-sm leading-relaxed tracking-wide text-black">
-            形を選び、絵を選ぶ。
-          </p>
+          <p className="text-sm leading-relaxed tracking-wide text-black">形を選び、絵を選ぶ。</p>
           <p className="text-sm leading-relaxed tracking-wide text-black">
             ISSEIの作品を四角・丸・三角の窓越しに纏う、<br className="hidden md:block" />
             あなただけのTシャツデザインを。
@@ -328,15 +368,20 @@ export default function Product3() {
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-center mb-3 px-1">
               <span className="text-xs text-black tracking-wider">FRONT</span>
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center">
+                <button
+                  onClick={() => setShowOutline((v) => !v)}
+                  className="p-1.5 rounded-full border border-gray-200 hover:border-black transition-colors"
+                  title={showOutline ? "点線を隠す" : "点線を表示"}
+                >
+                  {showOutline ? <Eye className="w-3.5 h-3.5 text-black" /> : <EyeOff className="w-3.5 h-3.5 text-gray-400" />}
+                </button>
                 {(["white", "black"] as const).map((c) => (
                   <button
                     key={c}
                     onClick={() => setTshirtColor(c)}
                     className={`px-3 py-1 text-xs rounded-full border transition-all ${
-                      tshirtColor === c
-                        ? "bg-black text-white border-black"
-                        : "bg-white text-black border-gray-300 hover:border-black"
+                      tshirtColor === c ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-black"
                     }`}
                   >
                     {c === "white" ? "WHITE" : "BLACK"}
@@ -346,10 +391,7 @@ export default function Product3() {
             </div>
             <div className="relative rounded-2xl overflow-hidden shadow-sm bg-gray-50">
               {!shirtLoaded && (
-                <div
-                  className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10"
-                  style={{ aspectRatio: `${CW} / ${CH}` }}
-                >
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
                   <p className="text-xs text-gray-400 tracking-wider">読み込み中...</p>
                 </div>
               )}
@@ -375,11 +417,12 @@ export default function Product3() {
                 <Download className="w-4 h-4 text-black" />
               </button>
             </div>
-            <p className="text-xs text-gray-400 mt-2 text-center">形をドラッグで移動 · 右下ボタンでダウンロード</p>
+            <p className="text-xs text-gray-400 mt-2 text-center">形をドラッグで移動 · 右下でダウンロード</p>
           </div>
 
           {/* Controls */}
           <div className="w-full lg:w-80 flex flex-col gap-6">
+
             {/* ① 形を調整する */}
             <div>
               <div className="flex items-center gap-2 mb-4">
@@ -387,8 +430,7 @@ export default function Product3() {
                 <span className="font-semibold text-sm tracking-wider">形を調整する</span>
               </div>
 
-              {/* 形を追加 */}
-              <div className="mb-4">
+              <div className="mb-3">
                 <p className="text-xs text-gray-500 mb-2">形を追加</p>
                 <div className="flex gap-2">
                   <button onClick={() => addShape("rect")} className="flex-1 py-2 text-xs border border-gray-300 rounded-xl hover:border-black transition-colors">▭ 長方形</button>
@@ -397,7 +439,6 @@ export default function Product3() {
                 </div>
               </div>
 
-              {/* 形の一覧 */}
               {shapes.length > 0 && (
                 <div className="space-y-1 mb-3">
                   {shapes.map((s, i) => (
@@ -412,11 +453,7 @@ export default function Product3() {
                         {i + 1}. {s.type === "rect" ? "長方形" : s.type === "circle" ? "丸" : "三角"}
                       </span>
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setShapes((prev) => prev.filter((x) => x.id !== s.id));
-                          if (selectedId === s.id) { setSelectedId(null); lastHitId.current = null; }
-                        }}
+                        onClick={(e) => { e.stopPropagation(); removeShape(s.id); }}
                         className={`transition-colors ${selectedId === s.id ? "text-white/60 hover:text-white" : "text-gray-400 hover:text-red-500"}`}
                         title="削除"
                       >
@@ -427,50 +464,34 @@ export default function Product3() {
                 </div>
               )}
 
-              {/* 選択中の形のスライダー */}
               {selectedShape ? (
                 <div className="bg-gray-50 rounded-xl p-3 space-y-3">
-                  <p className="text-xs text-gray-500">サイズを調整</p>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-black whitespace-nowrap w-6">幅</span>
-                    <input
-                      type="range" min={0.05} max={0.8} step={0.01}
-                      value={selectedShape.w}
-                      onChange={(e) =>
-                        setShapes((prev) =>
-                          prev.map((s) => s.id === selectedId ? { ...s, w: Number(e.target.value) } : s)
-                        )
-                      }
-                      className="flex-1 accent-black"
-                    />
-                    <span className="text-xs text-gray-400 w-8">{Math.round(selectedShape.w * 100)}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-black whitespace-nowrap w-6">高さ</span>
-                    <input
-                      type="range" min={0.05} max={0.8} step={0.01}
-                      value={selectedShape.h}
-                      onChange={(e) =>
-                        setShapes((prev) =>
-                          prev.map((s) => s.id === selectedId ? { ...s, h: Number(e.target.value) } : s)
-                        )
-                      }
-                      className="flex-1 accent-black"
-                    />
-                    <span className="text-xs text-gray-400 w-8">{Math.round(selectedShape.h * 100)}</span>
-                  </div>
+                  <p className="text-xs text-gray-500">サイズ・回転を調整</p>
+                  <SliderRow label="幅" value={selectedShape.w} min={0.05} max={0.8} step={0.01}
+                    onChange={(v) => setShapes((p) => p.map((s) => s.id === selectedId ? { ...s, w: v } : s))}
+                    fmt={(v) => String(Math.round(v * 100))}
+                  />
+                  <SliderRow label="高さ" value={selectedShape.h} min={0.05} max={0.8} step={0.01}
+                    onChange={(v) => setShapes((p) => p.map((s) => s.id === selectedId ? { ...s, h: v } : s))}
+                    fmt={(v) => String(Math.round(v * 100))}
+                  />
+                  <SliderRow label="回転" value={selectedShape.rotation} min={-180} max={180} step={1}
+                    onChange={(v) => setShapes((p) => p.map((s) => s.id === selectedId ? { ...s, rotation: v } : s))}
+                    fmt={(v) => `${v}°`}
+                  />
                 </div>
               ) : (
                 shapes.length > 0 && (
-                  <p className="text-xs text-gray-400 text-center py-2">形を選ぶとサイズ調整できます</p>
+                  <p className="text-xs text-gray-400 text-center py-2">形を選ぶと調整できます</p>
                 )
               )}
 
               <button
                 onClick={() => {
-                  setShapes([...DEFAULT_SHAPES]);
+                  setShapes(DEFAULT_SHAPES.map((s) => ({ ...s })));
                   setSelectedId("s0");
                   lastHitId.current = "s0";
+                  setArtOffsetX(0); setArtOffsetY(0); setArtRotation(0);
                 }}
                 className="flex items-center gap-1.5 text-sm text-black hover:text-gray-600 transition-colors w-fit mt-4"
               >
@@ -489,7 +510,7 @@ export default function Product3() {
               {artworks.length === 0 ? (
                 <p className="text-sm text-gray-400 py-8 text-center border rounded-xl">作品がありません</p>
               ) : (
-                <div className="overflow-y-auto" style={{ maxHeight: "280px" }}>
+                <div className="overflow-y-auto" style={{ maxHeight: "220px" }}>
                   <div className="grid grid-cols-4 gap-2 pr-1">
                     {visibleArtworks.map((a) => (
                       <button
@@ -512,7 +533,24 @@ export default function Product3() {
                   <button onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1} className="px-3 py-1 text-xs rounded border disabled:opacity-30">›</button>
                 </div>
               )}
+
+              {/* 絵の位置・回転 */}
+              {artImg && (
+                <div className="mt-3 bg-gray-50 rounded-xl p-3 space-y-3">
+                  <p className="text-xs text-gray-500">絵の位置・回転</p>
+                  <SliderRow label="X" value={artOffsetX} min={-0.5} max={0.5} step={0.01}
+                    onChange={setArtOffsetX} fmt={(v) => `${Math.round(v * 100)}`}
+                  />
+                  <SliderRow label="Y" value={artOffsetY} min={-0.5} max={0.5} step={0.01}
+                    onChange={setArtOffsetY} fmt={(v) => `${Math.round(v * 100)}`}
+                  />
+                  <SliderRow label="回転" value={artRotation} min={-180} max={180} step={1}
+                    onChange={setArtRotation} fmt={(v) => `${v}°`}
+                  />
+                </div>
+              )}
             </div>
+
           </div>
         </div>
       </div>
