@@ -99,6 +99,7 @@ export default function Product3() {
   const [artImg, setArtImg] = useState<HTMLImageElement | null>(null);
   const [shirtImg, setShirtImg] = useState<HTMLImageElement | null>(null);
   const [blackShirtImg, setBlackShirtImg] = useState<HTMLImageElement | null>(null);
+  const [shirtLoaded, setShirtLoaded] = useState(false);
   const [tshirtColor, setTshirtColor] = useState<"white" | "black">("white");
   const [shapes, setShapes] = useState<ShapeItem[]>(DEFAULT_SHAPES);
   const [selectedId, setSelectedId] = useState<string | null>("s0");
@@ -113,8 +114,16 @@ export default function Product3() {
   const lastHitId = useRef<string | null>(null);
 
   useEffect(() => {
-    loadImg("/product/tshirt-base.jpg").then(setShirtImg).catch(() => {});
-    loadImg("/product/tshirt-black-base.jpg").then(setBlackShirtImg).catch(() => {});
+    Promise.all([
+      loadImg("/product/tshirt-base.jpg"),
+      loadImg("/product/tshirt-black-base.jpg"),
+    ])
+      .then(([w, b]) => {
+        setShirtImg(w);
+        setBlackShirtImg(b);
+        setShirtLoaded(true);
+      })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -134,31 +143,41 @@ export default function Product3() {
     ctx.clearRect(0, 0, CW, CH);
     ctx.drawImage(shirt, 0, 0, CW, CH);
 
-    if (artImg) {
+    if (artImg && shapes.length > 0) {
+      // オフスクリーンキャンバス: 全体に絵を広げ、形を窓として切り抜く
+      const off = document.createElement("canvas");
+      off.width = CW;
+      off.height = CH;
+      const offCtx = off.getContext("2d")!;
+
+      // 絵をキャンバス全体にカバー
+      const ar = artImg.width / artImg.height;
+      const cr = CW / CH;
+      let dw: number, dh: number, dx: number, dy: number;
+      if (ar > cr) {
+        dh = CH; dw = dh * ar; dx = (CW - dw) / 2; dy = 0;
+      } else {
+        dw = CW; dh = dw / ar; dx = 0; dy = (CH - dh) / 2;
+      }
+      offCtx.drawImage(artImg, dx, dy, dw, dh);
+
+      // 全形の合計を destination-in でマスク
+      offCtx.globalCompositeOperation = "destination-in";
       shapes.forEach((shape) => {
-        ctx.save();
-        drawShapePath(ctx, shape);
-        ctx.clip();
-        ctx.globalCompositeOperation = blend as GlobalCompositeOperation;
-        const px = shape.cx * CW;
-        const py = shape.cy * CH;
-        const pw = shape.w * CW;
-        const ph = shape.h * CH;
-        const bx = px - pw / 2;
-        const by = py - ph / 2;
-        const ar = artImg.width / artImg.height;
-        const br = pw / ph;
-        let dw: number, dh: number, dx: number, dy: number;
-        if (ar > br) {
-          dh = ph; dw = dh * ar; dx = bx + (pw - dw) / 2; dy = by;
-        } else {
-          dw = pw; dh = dw / ar; dx = bx; dy = by + (ph - dh) / 2;
-        }
-        ctx.drawImage(artImg, dx, dy, dw, dh);
-        ctx.restore();
+        offCtx.save();
+        drawShapePath(offCtx, shape);
+        offCtx.fillStyle = "black";
+        offCtx.fill();
+        offCtx.restore();
       });
+
+      // メインキャンバスにブレンド合成
+      ctx.globalCompositeOperation = blend as GlobalCompositeOperation;
+      ctx.drawImage(off, 0, 0);
+      ctx.globalCompositeOperation = "source-over";
     }
 
+    // 選択中の形をダッシュ枠で表示
     if (selectedId) {
       const sel = shapes.find((s) => s.id === selectedId);
       if (sel) {
@@ -174,6 +193,22 @@ export default function Product3() {
   }, [shirtImg, blackShirtImg, artImg, shapes, selectedId, tshirtColor]);
 
   useEffect(() => { render(); }, [render]);
+
+  // キーボードで削除
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.key === "Delete" || e.key === "Backspace") && selectedId) {
+        // input / textarea にフォーカスがある場合は無視
+        const tag = (document.activeElement as HTMLElement)?.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA") return;
+        setShapes((prev) => prev.filter((s) => s.id !== selectedId));
+        setSelectedId(null);
+        lastHitId.current = null;
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selectedId]);
 
   const onDown = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
@@ -241,6 +276,7 @@ export default function Product3() {
   };
 
   const deleteSelected = () => {
+    if (!selectedId) return;
     setShapes((prev) => prev.filter((s) => s.id !== selectedId));
     setSelectedId(null);
     lastHitId.current = null;
@@ -282,12 +318,13 @@ export default function Product3() {
             形を選び、絵を選ぶ。
           </p>
           <p className="text-sm leading-relaxed tracking-wide text-black">
-            ISSEIの作品を四角・丸・三角に切り取り、<br className="hidden md:block" />
-            Tシャツに自由に配置する、あなただけのデザインを。
+            ISSEIの作品を四角・丸・三角の窓越しに纏う、<br className="hidden md:block" />
+            あなただけのTシャツデザインを。
           </p>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
+          {/* Canvas */}
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-center mb-3 px-1">
               <span className="text-xs text-black tracking-wider">FRONT</span>
@@ -308,6 +345,14 @@ export default function Product3() {
               </div>
             </div>
             <div className="relative rounded-2xl overflow-hidden shadow-sm bg-gray-50">
+              {!shirtLoaded && (
+                <div
+                  className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10"
+                  style={{ aspectRatio: `${CW} / ${CH}` }}
+                >
+                  <p className="text-xs text-gray-400 tracking-wider">読み込み中...</p>
+                </div>
+              )}
               <canvas
                 ref={canvasRef}
                 width={CW}
@@ -333,47 +378,16 @@ export default function Product3() {
             <p className="text-xs text-gray-400 mt-2 text-center">形をドラッグで移動 · 右下ボタンでダウンロード</p>
           </div>
 
+          {/* Controls */}
           <div className="w-full lg:w-80 flex flex-col gap-6">
+            {/* ① 形を調整する */}
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold">1</span>
-                <span className="font-semibold text-sm tracking-wider">絵を選ぶ</span>
-                <span className="text-xs text-black">ISSEIの作品から選択</span>
-              </div>
-              {artworks.length === 0 ? (
-                <p className="text-sm text-gray-400 py-8 text-center border rounded-xl">作品がありません</p>
-              ) : (
-                <div className="overflow-y-auto" style={{ maxHeight: "280px" }}>
-                  <div className="grid grid-cols-4 gap-2 pr-1">
-                    {visibleArtworks.map((a) => (
-                      <button
-                        key={a.id}
-                        onClick={() => setSelectedArtId(a.id)}
-                        className={`rounded-lg overflow-hidden border-2 transition-all ${
-                          selectedArtId === a.id ? "border-black" : "border-transparent hover:border-gray-300"
-                        }`}
-                      >
-                        <img src={a.imageUrl} alt={a.title} className="w-full aspect-square object-cover" />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {totalPages > 1 && (
-                <div className="flex justify-center gap-2 mt-3">
-                  <button onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0} className="px-3 py-1 text-xs rounded border disabled:opacity-30">‹</button>
-                  <span className="text-xs py-1">{page + 1} / {totalPages}</span>
-                  <button onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1} className="px-3 py-1 text-xs rounded border disabled:opacity-30">›</button>
-                </div>
-              )}
-            </div>
-
-            <div className="border-t border-gray-100 pt-4">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold">2</span>
                 <span className="font-semibold text-sm tracking-wider">形を調整する</span>
               </div>
 
+              {/* 形を追加 */}
               <div className="mb-4">
                 <p className="text-xs text-gray-500 mb-2">形を追加</p>
                 <div className="flex gap-2">
@@ -383,16 +397,40 @@ export default function Product3() {
                 </div>
               </div>
 
+              {/* 形の一覧 */}
+              {shapes.length > 0 && (
+                <div className="space-y-1 mb-3">
+                  {shapes.map((s, i) => (
+                    <div
+                      key={s.id}
+                      onClick={() => { setSelectedId(s.id); lastHitId.current = s.id; }}
+                      className={`flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-colors ${
+                        selectedId === s.id ? "bg-black text-white" : "bg-gray-50 hover:bg-gray-100 text-black"
+                      }`}
+                    >
+                      <span className="text-xs">
+                        {i + 1}. {s.type === "rect" ? "長方形" : s.type === "circle" ? "丸" : "三角"}
+                      </span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShapes((prev) => prev.filter((x) => x.id !== s.id));
+                          if (selectedId === s.id) { setSelectedId(null); lastHitId.current = null; }
+                        }}
+                        className={`transition-colors ${selectedId === s.id ? "text-white/60 hover:text-white" : "text-gray-400 hover:text-red-500"}`}
+                        title="削除"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* 選択中の形のスライダー */}
               {selectedShape ? (
                 <div className="bg-gray-50 rounded-xl p-3 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-medium text-black">
-                      選択中: {selectedShape.type === "rect" ? "長方形" : selectedShape.type === "circle" ? "丸" : "三角"}
-                    </p>
-                    <button onClick={deleteSelected} className="text-xs text-gray-400 hover:text-red-500 transition-colors flex items-center gap-1">
-                      <Trash2 className="w-3 h-3" /> 削除
-                    </button>
-                  </div>
+                  <p className="text-xs text-gray-500">サイズを調整</p>
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-black whitespace-nowrap w-6">幅</span>
                     <input
@@ -423,7 +461,9 @@ export default function Product3() {
                   </div>
                 </div>
               ) : (
-                <p className="text-xs text-gray-400 text-center py-3">形をタップすると調整できます</p>
+                shapes.length > 0 && (
+                  <p className="text-xs text-gray-400 text-center py-2">形を選ぶとサイズ調整できます</p>
+                )
               )}
 
               <button
@@ -437,6 +477,41 @@ export default function Product3() {
                 <RefreshCw className="w-4 h-4" />
                 リセット
               </button>
+            </div>
+
+            {/* ② 絵を選ぶ */}
+            <div className="border-t border-gray-100 pt-4">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold">2</span>
+                <span className="font-semibold text-sm tracking-wider">絵を選ぶ</span>
+                <span className="text-xs text-black">ISSEIの作品から選択</span>
+              </div>
+              {artworks.length === 0 ? (
+                <p className="text-sm text-gray-400 py-8 text-center border rounded-xl">作品がありません</p>
+              ) : (
+                <div className="overflow-y-auto" style={{ maxHeight: "280px" }}>
+                  <div className="grid grid-cols-4 gap-2 pr-1">
+                    {visibleArtworks.map((a) => (
+                      <button
+                        key={a.id}
+                        onClick={() => setSelectedArtId(a.id)}
+                        className={`rounded-lg overflow-hidden border-2 transition-all ${
+                          selectedArtId === a.id ? "border-black" : "border-transparent hover:border-gray-300"
+                        }`}
+                      >
+                        <img src={a.imageUrl} alt={a.title} className="w-full aspect-square object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {totalPages > 1 && (
+                <div className="flex justify-center gap-2 mt-3">
+                  <button onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0} className="px-3 py-1 text-xs rounded border disabled:opacity-30">‹</button>
+                  <span className="text-xs py-1">{page + 1} / {totalPages}</span>
+                  <button onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1} className="px-3 py-1 text-xs rounded border disabled:opacity-30">›</button>
+                </div>
+              )}
             </div>
           </div>
         </div>
