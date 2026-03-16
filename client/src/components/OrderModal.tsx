@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
 type Props = {
@@ -19,6 +19,11 @@ export default function OrderModal({ imageDataUrl, imageDataUrl2, productName, a
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,11 +49,11 @@ export default function OrderModal({ imageDataUrl, imageDataUrl2, productName, a
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div className="bg-white rounded w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
 
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <h2 className="text-sm font-semibold tracking-widest">注文する — {productName}</h2>
-          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded-full transition-colors">
+          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded transition-colors">
             <X className="w-4 h-4" />
           </button>
         </div>

@@ -761,7 +761,7 @@ export default function Product2() {
             <div className="mt-10 flex justify-center">
               <button
                 onClick={() => setOrderOpen(true)}
-                className="px-12 py-3.5 bg-black text-white text-xs tracking-[0.3em] rounded hover:bg-gray-800 transition-colors"
+                className="px-14 py-4 border border-black text-black bg-white text-[10px] tracking-[0.5em] font-light hover:bg-black hover:text-white transition-all duration-500"
               >
                 注文する
               </button>
