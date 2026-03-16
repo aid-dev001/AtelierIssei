@@ -189,6 +189,9 @@ export default function Product3() {
   const [page, setPage] = useState(0);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const artworkSectionRef = useRef<HTMLDivElement>(null);
+  const prevShapesEmpty = useRef(true);
   const dragging = useRef(false);
   const didMove = useRef(false);
   const dragStart = useRef({ x: 0, y: 0 });
@@ -212,6 +215,16 @@ export default function Product3() {
     if (!art) return;
     loadImg(art.imageUrl).then(setArtImg).catch(() => {});
   }, [selectedArtId, artworks]);
+
+  useEffect(() => {
+    const isEmpty = shapes.length === 0;
+    if (!isEmpty && prevShapesEmpty.current && window.innerWidth < 1024) {
+      setTimeout(() => {
+        artworkSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 150);
+    }
+    prevShapesEmpty.current = isEmpty;
+  }, [shapes]);
 
   const render = useCallback(() => {
     const canvas = canvasRef.current;
@@ -474,11 +487,11 @@ export default function Product3() {
               </div>
 
               <div className="mb-3">
-                <p className="text-xs text-gray-500 mb-2">形を追加</p>
+                <p className="text-xs text-gray-500 mb-2">形を追加<span className="ml-2 text-gray-400">（何個でも重ねられます）</span></p>
                 <div className="flex gap-2">
-                  <button onClick={() => addShape("rect")} className="flex-1 py-2 text-xs border border-gray-300 rounded-xl hover:border-black transition-colors">▭ 長方形</button>
-                  <button onClick={() => addShape("circle")} className="flex-1 py-2 text-xs border border-gray-300 rounded-xl hover:border-black transition-colors">● 丸</button>
-                  <button onClick={() => addShape("triangle")} className="flex-1 py-2 text-xs border border-gray-300 rounded-xl hover:border-black transition-colors">▲ 三角</button>
+                  <button onClick={() => addShape("rect")} className="flex-1 py-2 text-xs border border-gray-300 rounded-xl hover:border-black transition-colors">＋ 長方形</button>
+                  <button onClick={() => addShape("circle")} className="flex-1 py-2 text-xs border border-gray-300 rounded-xl hover:border-black transition-colors">＋ 丸</button>
+                  <button onClick={() => addShape("triangle")} className="flex-1 py-2 text-xs border border-gray-300 rounded-xl hover:border-black transition-colors">＋ 三角</button>
                 </div>
               </div>
 
@@ -581,7 +594,7 @@ export default function Product3() {
             </div>
 
             {/* ② 絵を選ぶ */}
-            {shirtLoaded && <div className="border-t border-gray-100 pt-4">
+            {shirtLoaded && <div ref={artworkSectionRef} className="border-t border-gray-100 pt-4">
               <div className="flex items-center gap-2 mb-4">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold">2</span>
                 <span className="font-semibold text-sm tracking-wider">絵を選ぶ</span>
