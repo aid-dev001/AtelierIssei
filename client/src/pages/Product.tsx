@@ -233,6 +233,7 @@ const Product: React.FC = () => {
 
   useEffect(() => {
     if (selectedFillId == null) return;
+    if (selectedFillId === -1) { setFillImg(null); return; }
     const art = artworks.find((a) => a.id === selectedFillId);
     if (!art) return;
     let cancelled = false;
@@ -275,7 +276,7 @@ const Product: React.FC = () => {
 
   const renderComposite = useCallback(() => {
     const canvas = compositeRef.current;
-    if (!canvas || !shapeImg || !fillImg) return;
+    if (!canvas || !shapeImg) return;
     const { w, h } = canvasSize;
     canvas.width = w;
     canvas.height = h;
@@ -285,14 +286,19 @@ const Product: React.FC = () => {
       maskRef.current = buildMask(shapeImg, w, h);
       maskForImgRef.current = shapeImg;
     }
-    const scaleF = Math.max((w * 1.2) / fillImg.width, (h * 1.2) / fillImg.height) * fillScale;
-    const fw = fillImg.width * scaleF;
-    const fh = fillImg.height * scaleF;
-    ctx.drawImage(fillImg, (w - fw) / 2 + offset.x, (h - fh) / 2 + offset.y, fw, fh);
+    if (fillImg) {
+      const scaleF = Math.max((w * 1.2) / fillImg.width, (h * 1.2) / fillImg.height) * fillScale;
+      const fw = fillImg.width * scaleF;
+      const fh = fillImg.height * scaleF;
+      ctx.drawImage(fillImg, (w - fw) / 2 + offset.x, (h - fh) / 2 + offset.y, fw, fh);
+    } else {
+      ctx.fillStyle = tshirtColor === "black" ? "#ffffff" : "#000000";
+      ctx.fillRect(0, 0, w, h);
+    }
     ctx.globalCompositeOperation = "destination-in";
     ctx.drawImage(maskRef.current, 0, 0, w, h);
     ctx.globalCompositeOperation = "source-over";
-  }, [shapeImg, fillImg, offset, fillScale, canvasSize]);
+  }, [shapeImg, fillImg, offset, fillScale, canvasSize, tshirtColor]);
 
   const renderTshirt = useCallback(() => {
     const canvas = tshirtRef.current;
@@ -306,20 +312,20 @@ const Product: React.FC = () => {
   }, [tshirtBaseImg, tshirtBlackImg, tshirtAspect, tshirtBlackAspect, tshirtColor, shapeScale, designPos]);
 
   useEffect(() => {
-    if (!shapeImg || !fillImg) return;
+    if (!shapeImg || selectedFillId === null) return;
     renderComposite();
     const timer = setTimeout(() => renderTshirt(), 10);
     return () => clearTimeout(timer);
-  }, [shapeImg, fillImg, offset, fillScale, canvasSize, renderComposite, renderTshirt]);
+  }, [shapeImg, fillImg, selectedFillId, offset, fillScale, canvasSize, renderComposite, renderTshirt]);
 
   useEffect(() => {
-    if (shapeImg && fillImg) {
+    if (shapeImg && selectedFillId !== null) {
       setTimeout(() => {
         const el = previewRef.current;
         if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 100, behavior: "smooth" });
       }, 200);
     }
-  }, [shapeImg, fillImg]);
+  }, [shapeImg, selectedFillId]);
 
   useEffect(() => {
     if (!selectedShapeId || fillImg) return;
@@ -438,7 +444,7 @@ const Product: React.FC = () => {
     tshirtDraggingRef.current = false;
   };
 
-  const isReady = shapeImg && fillImg;
+  const isReady = !!shapeImg && selectedFillId !== null;
 
   return (
     <div className="min-h-screen bg-white py-12">
@@ -523,6 +529,17 @@ const Product: React.FC = () => {
                 style={artworkScrollH ? { height: `${artworkScrollH}px` } : { maxHeight: "400px" }}
               >
                 <div className="grid grid-cols-3 gap-2 pr-1">
+                  <button
+                    onClick={() => setSelectedFillId(-1)}
+                    className={`rounded-xl overflow-hidden border-2 transition-all aspect-square flex items-center justify-center bg-gray-50 ${
+                      selectedFillId === -1 ? "border-black shadow-md" : "border-transparent hover:border-gray-300"
+                    }`}
+                  >
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-xl text-gray-300">—</span>
+                      <span className="text-xs text-gray-400">中身なし</span>
+                    </div>
+                  </button>
                   {visibleArtworks.map((a) => (
                     <button
                       key={a.id}
@@ -543,15 +560,17 @@ const Product: React.FC = () => {
 
         {isReady && (
           <div ref={previewRef} className="mt-16 pt-8 mb-4 flex items-center gap-4 flex-wrap">
-            <label className="flex items-center gap-2 text-sm text-black">
-              <span className="text-xs whitespace-nowrap">型の中の絵</span>
-              <input
-                type="range" min={50} max={300} step={5} value={Math.round(fillScale * 100)}
-                onChange={(e) => setFillScale(Number(e.target.value) / 100)}
-                className="w-28 accent-black"
-              />
-              <span className="text-xs text-black w-8">{Math.round(fillScale * 100)}%</span>
-            </label>
+            {selectedFillId !== -1 && (
+              <label className="flex items-center gap-2 text-sm text-black">
+                <span className="text-xs whitespace-nowrap">型の中の絵</span>
+                <input
+                  type="range" min={50} max={300} step={5} value={Math.round(fillScale * 100)}
+                  onChange={(e) => setFillScale(Number(e.target.value) / 100)}
+                  className="w-28 accent-black"
+                />
+                <span className="text-xs text-black w-8">{Math.round(fillScale * 100)}%</span>
+              </label>
+            )}
             <label className="flex items-center gap-2 text-sm text-black">
               <span className="text-xs whitespace-nowrap">絵のサイズ</span>
               <input
