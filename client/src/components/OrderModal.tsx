@@ -57,7 +57,7 @@ export default function OrderModal({ imageDataUrl, imageDataUrl2, productName, a
           <div className="px-6 py-14 text-center">
             <p className="text-lg font-light tracking-wider mb-2">ありがとうございます</p>
             <p className="text-sm text-gray-500 mb-8">注文を受け付けました。<br />追ってご連絡いたします。</p>
-            <button onClick={onClose} className="px-8 py-2.5 bg-black text-white text-xs tracking-widest rounded-full hover:bg-gray-800 transition-colors">
+            <button onClick={onClose} className="px-8 py-2.5 bg-black text-white text-xs tracking-widest rounded hover:bg-gray-800 transition-colors">
               閉じる
             </button>
           </div>
@@ -74,6 +74,8 @@ export default function OrderModal({ imageDataUrl, imageDataUrl2, productName, a
             {artworkTitle && (
               <p className="text-[10px] tracking-[0.2em] text-gray-400 text-center">使用した作品: {artworkTitle}</p>
             )}
+
+            <p className="text-center text-sm tracking-widest font-light">¥55,000 <span className="text-[10px] text-gray-400">（税込み）</span></p>
 
             <div>
               <label className="block text-xs tracking-wider text-black mb-1.5">
@@ -103,7 +105,7 @@ export default function OrderModal({ imageDataUrl, imageDataUrl2, productName, a
                 {SIZES.map((s) => (
                   <button
                     key={s} type="button" onClick={() => setSize(s)}
-                    className={`px-4 py-1.5 text-xs rounded-full border transition-all ${
+                    className={`px-4 py-1.5 text-xs rounded border transition-all ${
                       size === s ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-black"
                     }`}
                   >
@@ -126,7 +128,7 @@ export default function OrderModal({ imageDataUrl, imageDataUrl2, productName, a
 
             <button
               type="submit" disabled={loading}
-              className="w-full py-3 bg-black text-white text-xs tracking-widest rounded-full hover:bg-gray-800 transition-colors disabled:opacity-50"
+              className="w-full py-3 bg-black text-white text-xs tracking-widest rounded hover:bg-gray-800 transition-colors disabled:opacity-50"
             >
               {loading ? "送信中..." : "送信する"}
             </button>
