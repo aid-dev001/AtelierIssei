@@ -82,10 +82,10 @@ export default function OrderModal({ imageDataUrl, imageDataUrl2, transparentDat
             </div>
 
             {artworkTitle && (
-              <p className="text-[10px] tracking-[0.2em] text-gray-400 text-center">使用した作品: {artworkTitle}</p>
+              <p className="text-[10px] tracking-[0.2em] text-black text-center">使用した作品: {artworkTitle}</p>
             )}
 
-            <p className="text-center text-sm tracking-widest font-light">¥55,000 <span className="text-[10px] text-gray-400">（税込み）</span></p>
+            <p className="text-center text-sm tracking-widest font-light">¥55,000 <span className="text-[10px] text-black">（税込み）</span></p>
 
             <div>
               <label className="block text-xs tracking-wider text-black mb-1.5">
