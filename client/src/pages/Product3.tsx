@@ -44,9 +44,19 @@ const CH = 900;
 const PAGE_SIZE = 12;
 const CLICK_THRESHOLD = 6;
 
-const DEFAULT_SHAPES: ShapeItem[] = [
-  { id: "s0", type: "rect", cx: 0.5, cy: 0.35, w: 0.3, h: 0.22, rotation: 0 },
-];
+// シャツの有効領域（正規化）
+const SHIRT_L = 0.12;
+const SHIRT_R = 0.88;
+const SHIRT_T = 0.06;
+const SHIRT_B = 0.95;
+
+function clampShapeToShirt(s: ShapeItem): ShapeItem {
+  const w = Math.min(s.w, SHIRT_R - SHIRT_L);
+  const h = Math.min(s.h, SHIRT_B - SHIRT_T);
+  const cx = Math.max(SHIRT_L + w / 2, Math.min(SHIRT_R - w / 2, s.cx));
+  const cy = Math.max(SHIRT_T + h / 2, Math.min(SHIRT_B - h / 2, s.cy));
+  return { ...s, w, h, cx, cy };
+}
 
 function loadImg(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -65,64 +75,59 @@ function getClientXY(e: React.MouseEvent | React.TouchEvent) {
   return { x: e.clientX, y: e.clientY };
 }
 
-// 形をローカル座標（0,0中心）で描画する。呼び出し側が translate/rotate を担当
-function drawLocalPath(ctx: CanvasRenderingContext2D, shape: ShapeItem) {
+function fillShape(ctx: CanvasRenderingContext2D, shape: ShapeItem) {
   const pw = shape.w * CW;
   const ph = shape.h * CH;
+  ctx.save();
+  ctx.translate(shape.cx * CW, shape.cy * CH);
+  ctx.rotate((shape.rotation * Math.PI) / 180);
   ctx.beginPath();
   if (shape.type === "rect") {
     ctx.rect(-pw / 2, -ph / 2, pw, ph);
   } else if (shape.type === "circle") {
-    const r = Math.min(pw, ph) / 2;
-    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.arc(0, 0, Math.min(pw, ph) / 2, 0, Math.PI * 2);
   } else {
     ctx.moveTo(0, -ph / 2);
     ctx.lineTo(pw / 2, ph / 2);
     ctx.lineTo(-pw / 2, ph / 2);
     ctx.closePath();
   }
-}
-
-function fillShape(ctx: CanvasRenderingContext2D, shape: ShapeItem) {
-  ctx.save();
-  ctx.translate(shape.cx * CW, shape.cy * CH);
-  ctx.rotate((shape.rotation * Math.PI) / 180);
-  drawLocalPath(ctx, shape);
   ctx.fillStyle = "black";
   ctx.fill();
   ctx.restore();
 }
 
-function strokeShape(
-  ctx: CanvasRenderingContext2D,
-  shape: ShapeItem,
-  color: string,
-  lineWidth: number,
-  dash: number[]
-) {
+function strokeShape(ctx: CanvasRenderingContext2D, shape: ShapeItem) {
+  const pw = shape.w * CW;
+  const ph = shape.h * CH;
   ctx.save();
   ctx.translate(shape.cx * CW, shape.cy * CH);
   ctx.rotate((shape.rotation * Math.PI) / 180);
-  drawLocalPath(ctx, shape);
-  ctx.strokeStyle = color;
-  ctx.lineWidth = lineWidth;
-  ctx.setLineDash(dash);
+  ctx.beginPath();
+  if (shape.type === "rect") {
+    ctx.rect(-pw / 2, -ph / 2, pw, ph);
+  } else if (shape.type === "circle") {
+    ctx.arc(0, 0, Math.min(pw, ph) / 2, 0, Math.PI * 2);
+  } else {
+    ctx.moveTo(0, -ph / 2);
+    ctx.lineTo(pw / 2, ph / 2);
+    ctx.lineTo(-pw / 2, ph / 2);
+    ctx.closePath();
+  }
+  ctx.strokeStyle = "rgba(0,0,0,0.55)";
+  ctx.lineWidth = 2;
+  ctx.setLineDash([5, 4]);
   ctx.stroke();
   ctx.restore();
 }
 
-// 回転を考慮したヒットテスト（クリック座標をシェイプのローカル空間に変換）
 function isHit(shape: ShapeItem, nx: number, ny: number): boolean {
   const dx = nx * CW - shape.cx * CW;
   const dy = ny * CH - shape.cy * CH;
   const rad = -(shape.rotation * Math.PI) / 180;
-  const cos = Math.cos(rad);
-  const sin = Math.sin(rad);
-  const lx = dx * cos - dy * sin;
-  const ly = dx * sin + dy * cos;
-  const hw = (shape.w * CW) / 2 + 8;
-  const hh = (shape.h * CH) / 2 + 8;
-  return Math.abs(lx) <= hw && Math.abs(ly) <= hh;
+  const lx = dx * Math.cos(rad) - dy * Math.sin(rad);
+  const ly = dx * Math.sin(rad) + dy * Math.cos(rad);
+  return Math.abs(lx) <= (shape.w * CW) / 2 + 8 && Math.abs(ly) <= (shape.h * CH) / 2 + 8;
 }
 
 export default function Product3() {
@@ -137,15 +142,12 @@ export default function Product3() {
   const [blackShirtImg, setBlackShirtImg] = useState<HTMLImageElement | null>(null);
   const [shirtLoaded, setShirtLoaded] = useState(false);
   const [tshirtColor, setTshirtColor] = useState<"white" | "black">("white");
-  const [shapes, setShapes] = useState<ShapeItem[]>(DEFAULT_SHAPES);
-  const [selectedId, setSelectedId] = useState<string | null>("s0");
+  const [shapes, setShapes] = useState<ShapeItem[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showOutline, setShowOutline] = useState(true);
-
-  // 絵の変換
-  const [artOffsetX, setArtOffsetX] = useState(0);  // -0.5 〜 0.5 (CW比)
-  const [artOffsetY, setArtOffsetY] = useState(0);  // -0.5 〜 0.5 (CH比)
-  const [artRotation, setArtRotation] = useState(0); // degrees
-
+  const [artOffsetX, setArtOffsetX] = useState(0);
+  const [artOffsetY, setArtOffsetY] = useState(0);
+  const [artRotation, setArtRotation] = useState(0);
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [page, setPage] = useState(0);
 
@@ -153,20 +155,18 @@ export default function Product3() {
   const dragging = useRef(false);
   const didMove = useRef(false);
   const dragStart = useRef({ x: 0, y: 0 });
-  const dragStartPos = useRef({ cx: 0.5, cy: 0.35 });
+  const dragStartPos = useRef({ cx: 0.5, cy: 0.4 });
   const lastHitId = useRef<string | null>(null);
 
   useEffect(() => {
     Promise.all([
       loadImg("/product/tshirt-base.jpg"),
       loadImg("/product/tshirt-black-base.jpg"),
-    ])
-      .then(([w, b]) => {
-        setShirtImg(w);
-        setBlackShirtImg(b);
-        setShirtLoaded(true);
-      })
-      .catch(() => {});
+    ]).then(([w, b]) => {
+      setShirtImg(w);
+      setBlackShirtImg(b);
+      setShirtLoaded(true);
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -181,50 +181,42 @@ export default function Product3() {
     const shirt = tshirtColor === "black" ? blackShirtImg : shirtImg;
     if (!canvas || !shirt) return;
     const ctx = canvas.getContext("2d")!;
-    const blend = tshirtColor === "black" ? "screen" : "multiply";
 
     ctx.clearRect(0, 0, CW, CH);
     ctx.drawImage(shirt, 0, 0, CW, CH);
 
     if (artImg && shapes.length > 0) {
+      // オフスクリーン: 全体に絵を敷いて形でマスク
       const off = document.createElement("canvas");
       off.width = CW;
       off.height = CH;
       const offCtx = off.getContext("2d")!;
 
-      // 絵をカバーサイズで計算（全体を覆う）
+      // 絵をカバーモードで配置（位置・回転適用）
       const ar = artImg.width / artImg.height;
       const cr = CW / CH;
       let dw: number, dh: number;
-      if (ar > cr) {
-        dh = CH; dw = dh * ar;
-      } else {
-        dw = CW; dh = dw / ar;
-      }
+      if (ar > cr) { dh = CH; dw = dh * ar; }
+      else { dw = CW; dh = dw / ar; }
 
-      // 絵の位置・回転をキャンバス中心基準で適用
       offCtx.save();
       offCtx.translate(CW / 2 + artOffsetX * CW, CH / 2 + artOffsetY * CH);
       offCtx.rotate((artRotation * Math.PI) / 180);
       offCtx.drawImage(artImg, -dw / 2, -dh / 2, dw, dh);
       offCtx.restore();
 
-      // 形を窓（マスク）として適用
+      // 形を窓として切り抜き
       offCtx.globalCompositeOperation = "destination-in";
-      shapes.forEach((shape) => fillShape(offCtx, shape));
+      shapes.forEach((s) => fillShape(offCtx, s));
 
-      // メインキャンバスにブレンド合成
-      ctx.globalCompositeOperation = blend as GlobalCompositeOperation;
+      // シャツに直接貼り付け（ブレンドなし・鮮明に）
       ctx.drawImage(off, 0, 0);
-      ctx.globalCompositeOperation = "source-over";
     }
 
-    // 選択中の点線枠
+    // 選択枠（点線）
     if (showOutline && selectedId) {
       const sel = shapes.find((s) => s.id === selectedId);
-      if (sel) {
-        strokeShape(ctx, sel, "rgba(0,0,0,0.55)", 2, [5, 4]);
-      }
+      if (sel) strokeShape(ctx, sel);
     }
   }, [shirtImg, blackShirtImg, artImg, shapes, selectedId, showOutline, tshirtColor, artOffsetX, artOffsetY, artRotation]);
 
@@ -278,32 +270,38 @@ export default function Product3() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const { x, y } = getClientXY(e);
-    const mx = Math.abs(x - dragStart.current.x);
-    const my = Math.abs(y - dragStart.current.y);
-    if (mx > CLICK_THRESHOLD || my > CLICK_THRESHOLD) didMove.current = true;
+    if (Math.abs(x - dragStart.current.x) > CLICK_THRESHOLD || Math.abs(y - dragStart.current.y) > CLICK_THRESHOLD) {
+      didMove.current = true;
+    }
     if (!didMove.current) return;
     const rect = canvas.getBoundingClientRect();
     const ndx = (x - dragStart.current.x) / rect.width;
     const ndy = (y - dragStart.current.y) / rect.height;
     const id = lastHitId.current;
     setShapes((prev) =>
-      prev.map((s) =>
-        s.id === id
-          ? {
-              ...s,
-              cx: Math.max(0.05, Math.min(0.95, dragStartPos.current.cx + ndx)),
-              cy: Math.max(0.05, Math.min(0.95, dragStartPos.current.cy + ndy)),
-            }
-          : s
-      )
+      prev.map((s) => {
+        if (s.id !== id) return s;
+        return clampShapeToShirt({
+          ...s,
+          cx: dragStartPos.current.cx + ndx,
+          cy: dragStartPos.current.cy + ndy,
+        });
+      })
     );
   };
 
-  const onUp = () => { dragging.current = false; };
+  const onUp = () => {
+    // 形に触れずクリックした → 拡大モーダル
+    if (dragging.current && !didMove.current && lastHitId.current === null) {
+      setModalImg(canvasRef.current?.toDataURL("image/png") ?? null);
+    }
+    dragging.current = false;
+  };
 
   const addShape = (type: "rect" | "triangle" | "circle") => {
     const id = `s${Date.now()}`;
-    setShapes((prev) => [...prev, { id, type, cx: 0.5, cy: 0.38, w: 0.25, h: 0.2, rotation: 0 }]);
+    const shape = clampShapeToShirt({ id, type, cx: 0.5, cy: 0.4, w: 0.25, h: 0.22, rotation: 0 });
+    setShapes((prev) => [...prev, shape]);
     setSelectedId(id);
     lastHitId.current = id;
   };
@@ -311,6 +309,12 @@ export default function Product3() {
   const removeShape = (id: string) => {
     setShapes((prev) => prev.filter((s) => s.id !== id));
     if (selectedId === id) { setSelectedId(null); lastHitId.current = null; }
+  };
+
+  const updateSelected = (patch: Partial<ShapeItem>) => {
+    setShapes((prev) =>
+      prev.map((s) => s.id === selectedId ? clampShapeToShirt({ ...s, ...patch }) : s)
+    );
   };
 
   const selectedShape = shapes.find((s) => s.id === selectedId);
@@ -358,7 +362,7 @@ export default function Product3() {
         <div className="max-w-xl mx-auto mb-12 text-center space-y-4">
           <p className="text-sm leading-relaxed tracking-wide text-black">形を選び、絵を選ぶ。</p>
           <p className="text-sm leading-relaxed tracking-wide text-black">
-            ISSEIの作品を四角・丸・三角の窓越しに纏う、<br className="hidden md:block" />
+            ISSEIの作品を四角・丸・三角の窓に映し出す、<br className="hidden md:block" />
             あなただけのTシャツデザインを。
           </p>
         </div>
@@ -374,7 +378,9 @@ export default function Product3() {
                   className="p-1.5 rounded-full border border-gray-200 hover:border-black transition-colors"
                   title={showOutline ? "点線を隠す" : "点線を表示"}
                 >
-                  {showOutline ? <Eye className="w-3.5 h-3.5 text-black" /> : <EyeOff className="w-3.5 h-3.5 text-gray-400" />}
+                  {showOutline
+                    ? <Eye className="w-3.5 h-3.5 text-black" />
+                    : <EyeOff className="w-3.5 h-3.5 text-gray-400" />}
                 </button>
                 {(["white", "black"] as const).map((c) => (
                   <button
@@ -389,6 +395,7 @@ export default function Product3() {
                 ))}
               </div>
             </div>
+
             <div className="relative rounded-2xl overflow-hidden shadow-sm bg-gray-50">
               {!shirtLoaded && (
                 <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
@@ -409,15 +416,8 @@ export default function Product3() {
                 onTouchMove={onMove}
                 onTouchEnd={onUp}
               />
-              <button
-                onClick={() => setModalImg(canvasRef.current?.toDataURL("image/png") ?? null)}
-                className="absolute bottom-3 right-3 bg-white/80 hover:bg-white rounded-full p-2 shadow transition-colors"
-                title="拡大・ダウンロード"
-              >
-                <Download className="w-4 h-4 text-black" />
-              </button>
             </div>
-            <p className="text-xs text-gray-400 mt-2 text-center">形をドラッグで移動 · 右下でダウンロード</p>
+            <p className="text-xs text-gray-400 mt-2 text-center">形をドラッグで移動 · 空白クリックで拡大</p>
           </div>
 
           {/* Controls */}
@@ -455,7 +455,6 @@ export default function Product3() {
                       <button
                         onClick={(e) => { e.stopPropagation(); removeShape(s.id); }}
                         className={`transition-colors ${selectedId === s.id ? "text-white/60 hover:text-white" : "text-gray-400 hover:text-red-500"}`}
-                        title="削除"
                       >
                         <Trash2 className="w-3 h-3" />
                       </button>
@@ -464,33 +463,30 @@ export default function Product3() {
                 </div>
               )}
 
-              {selectedShape ? (
+              {shapes.length === 0 && (
+                <p className="text-xs text-gray-400 text-center py-3">上のボタンで形を追加してください</p>
+              )}
+
+              {selectedShape && (
                 <div className="bg-gray-50 rounded-xl p-3 space-y-3">
-                  <p className="text-xs text-gray-500">サイズ・回転を調整</p>
-                  <SliderRow label="幅" value={selectedShape.w} min={0.05} max={0.8} step={0.01}
-                    onChange={(v) => setShapes((p) => p.map((s) => s.id === selectedId ? { ...s, w: v } : s))}
-                    fmt={(v) => String(Math.round(v * 100))}
+                  <p className="text-xs text-gray-500">サイズ・回転</p>
+                  <SliderRow label="幅" value={selectedShape.w} min={0.05} max={0.7} step={0.01}
+                    onChange={(v) => updateSelected({ w: v })} fmt={(v) => String(Math.round(v * 100))}
                   />
-                  <SliderRow label="高さ" value={selectedShape.h} min={0.05} max={0.8} step={0.01}
-                    onChange={(v) => setShapes((p) => p.map((s) => s.id === selectedId ? { ...s, h: v } : s))}
-                    fmt={(v) => String(Math.round(v * 100))}
+                  <SliderRow label="高さ" value={selectedShape.h} min={0.05} max={0.7} step={0.01}
+                    onChange={(v) => updateSelected({ h: v })} fmt={(v) => String(Math.round(v * 100))}
                   />
                   <SliderRow label="回転" value={selectedShape.rotation} min={-180} max={180} step={1}
-                    onChange={(v) => setShapes((p) => p.map((s) => s.id === selectedId ? { ...s, rotation: v } : s))}
-                    fmt={(v) => `${v}°`}
+                    onChange={(v) => updateSelected({ rotation: v })} fmt={(v) => `${v}°`}
                   />
                 </div>
-              ) : (
-                shapes.length > 0 && (
-                  <p className="text-xs text-gray-400 text-center py-2">形を選ぶと調整できます</p>
-                )
               )}
 
               <button
                 onClick={() => {
-                  setShapes(DEFAULT_SHAPES.map((s) => ({ ...s })));
-                  setSelectedId("s0");
-                  lastHitId.current = "s0";
+                  setShapes([]);
+                  setSelectedId(null);
+                  lastHitId.current = null;
                   setArtOffsetX(0); setArtOffsetY(0); setArtRotation(0);
                 }}
                 className="flex items-center gap-1.5 text-sm text-black hover:text-gray-600 transition-colors w-fit mt-4"
@@ -507,6 +503,7 @@ export default function Product3() {
                 <span className="font-semibold text-sm tracking-wider">絵を選ぶ</span>
                 <span className="text-xs text-black">ISSEIの作品から選択</span>
               </div>
+
               {artworks.length === 0 ? (
                 <p className="text-sm text-gray-400 py-8 text-center border rounded-xl">作品がありません</p>
               ) : (
@@ -534,7 +531,6 @@ export default function Product3() {
                 </div>
               )}
 
-              {/* 絵の位置・回転 */}
               {artImg && (
                 <div className="mt-3 bg-gray-50 rounded-xl p-3 space-y-3">
                   <p className="text-xs text-gray-500">絵の位置・回転</p>
