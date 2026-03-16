@@ -755,24 +755,36 @@ export default function Product2() {
               </div>
             </div>
           {artDetailUrl && selectedArtItem && (
-            <div className="mt-6 flex items-center gap-4 p-3 bg-gray-50 rounded-xl border border-gray-100">
-              <a href={artDetailUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity">
-                <img src={selectedArtItem.imageUrl} alt={selectedArtItem.title} className="w-12 h-12 object-cover rounded-lg border border-gray-200 flex-shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-xs text-gray-400 mb-0.5">使用した作品</p>
-                  <p className="text-sm font-medium text-black truncate">{selectedArtItem.title}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">作品を見る →</p>
-                </div>
-              </a>
-              <div className="flex-shrink-0 flex flex-col items-center gap-1">
-                <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(artDetailUrl)}`}
-                  alt="QR"
-                  className="w-16 h-16 rounded border border-gray-200"
-                />
-                <p className="text-xs text-gray-400">QR</p>
+            <a
+              href={artDetailUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-20 mb-12 group flex overflow-hidden rounded-lg bg-white border border-gray-200 hover:shadow-md transition-shadow"
+            >
+              <div className="w-52 sm:w-72 flex-shrink-0">
+                <img src={selectedArtItem.imageUrl} alt={selectedArtItem.title} className="w-full h-full object-cover" />
               </div>
-            </div>
+              <div className="flex-1 min-w-0 flex flex-col justify-between px-7 py-7 sm:px-10 sm:py-9">
+                <div>
+                  <p className="text-[9px] tracking-[0.35em] uppercase text-black mb-3">使用した作品</p>
+                  <p className="text-lg sm:text-2xl font-light tracking-widest text-black mb-4 leading-snug">{selectedArtItem.title}</p>
+                  {selectedArtItem.description && (
+                    <p className="text-xs text-black leading-relaxed tracking-wide line-clamp-3">{selectedArtItem.description}</p>
+                  )}
+                </div>
+                <p className="text-[10px] text-black tracking-[0.2em] mt-6">作品を見る →</p>
+              </div>
+              <div className="flex-shrink-0 flex flex-col items-center justify-center gap-2 px-6 sm:px-8 border-l border-gray-200">
+                <div className="bg-gray-50 rounded p-1.5">
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(artDetailUrl)}`}
+                    alt="QR"
+                    className="w-16 h-16 sm:w-20 sm:h-20"
+                  />
+                </div>
+                <p className="text-[9px] text-gray-300 tracking-widest">QR CODE</p>
+              </div>
+            </a>
           )}
           </>
         )}
