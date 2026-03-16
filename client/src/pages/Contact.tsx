@@ -112,7 +112,7 @@ const Contact = () => {
           <Button
             type="submit"
             className="w-full"
-            disabled={true}
+            disabled={mutation.isPending}
           >
             {mutation.isPending ? "送信中..." : "送信する"}
           </Button>
