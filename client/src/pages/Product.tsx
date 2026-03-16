@@ -113,11 +113,11 @@ function drawTshirt(
   }
 }
 
-function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
-  const download = () => {
+function ImageModal({ src, transparentSrc, onClose }: { src: string; transparentSrc?: string; onClose: () => void }) {
+  const dl = (href: string, name: string) => {
     const a = document.createElement("a");
-    a.href = src;
-    a.download = "issei-design.png";
+    a.href = href;
+    a.download = name;
     a.click();
   };
   return (
@@ -131,8 +131,18 @@ function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
       >
         <img src={src} alt="拡大プレビュー" className="w-full rounded-2xl shadow-2xl" />
         <div className="absolute top-3 right-3 flex gap-2">
+          {transparentSrc && (
+            <button
+              onClick={() => dl(transparentSrc, "issei-print.png")}
+              className="bg-white/90 hover:bg-white rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5"
+              title="透過PNG（プリント部分のみ）"
+            >
+              <Download className="w-4 h-4 text-black" />
+              <span className="text-xs text-black font-medium">透過</span>
+            </button>
+          )}
           <button
-            onClick={download}
+            onClick={() => dl(src, "issei-design.png")}
             className="bg-white/90 hover:bg-white rounded-full p-2.5 shadow transition-colors"
             title="ダウンロード"
           >
@@ -167,6 +177,7 @@ const Product: React.FC = () => {
   const [designPos, setDesignPos] = useState({ x: 0, y: 0 });
   const [canvasSize, setCanvasSize] = useState({ w: 480, h: 480 });
   const [modalImg, setModalImg] = useState<string | null>(null);
+  const [modalTransparentImg, setModalTransparentImg] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [artworkScrollH, setArtworkScrollH] = useState<number | null>(null);
 
@@ -344,7 +355,9 @@ const Product: React.FC = () => {
   };
   const onUp = () => {
     if (draggingRef.current && !dragMovedRef.current) {
-      setModalImg(compositeRef.current?.toDataURL("image/png") ?? null);
+      const t = compositeRef.current?.toDataURL("image/png") ?? null;
+      setModalImg(t);
+      setModalTransparentImg(t);
     }
     draggingRef.current = false;
   };
@@ -364,7 +377,9 @@ const Product: React.FC = () => {
   };
   const onTouchEnd = () => {
     if (draggingRef.current && !dragMovedRef.current) {
-      setModalImg(compositeRef.current?.toDataURL("image/png") ?? null);
+      const t = compositeRef.current?.toDataURL("image/png") ?? null;
+      setModalImg(t);
+      setModalTransparentImg(t);
     }
     draggingRef.current = false;
   };
@@ -396,6 +411,7 @@ const Product: React.FC = () => {
   const onTshirtUp = () => {
     if (tshirtDraggingRef.current && !dragMovedRef.current) {
       setModalImg(tshirtRef.current?.toDataURL("image/png") ?? null);
+      setModalTransparentImg(compositeRef.current?.toDataURL("image/png") ?? null);
     }
     tshirtDraggingRef.current = false;
   };
@@ -404,7 +420,7 @@ const Product: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white py-12">
-      {modalImg && <ImageModal src={modalImg} onClose={() => setModalImg(null)} />}
+      {modalImg && <ImageModal src={modalImg} transparentSrc={modalTransparentImg ?? undefined} onClose={() => { setModalImg(null); setModalTransparentImg(null); }} />}
 
       <div className="max-w-5xl mx-auto px-4">
         <h1 className="text-4xl font-bold mb-2 tracking-wider text-center">PRODUCT</h1>

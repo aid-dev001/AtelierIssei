@@ -3,11 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Download, X, RefreshCw, Trash2, Eye, EyeOff } from "lucide-react";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 
-function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
-  const download = () => {
+function ImageModal({ src, transparentSrc, onClose }: { src: string; transparentSrc?: string; onClose: () => void }) {
+  const dl = (href: string, name: string) => {
     const a = document.createElement("a");
-    a.href = src;
-    a.download = "issei-design.png";
+    a.href = href;
+    a.download = name;
     a.click();
   };
   return (
@@ -15,7 +15,13 @@ function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
       <div className="relative max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
         <img src={src} alt="拡大プレビュー" className="w-full rounded-2xl shadow-2xl" />
         <div className="absolute top-3 right-3 flex gap-2">
-          <button onClick={download} className="bg-white/90 hover:bg-white rounded-full p-2.5 shadow transition-colors" title="ダウンロード">
+          {transparentSrc && (
+            <button onClick={() => dl(transparentSrc, "issei-print.png")} className="bg-white/90 hover:bg-white rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5" title="透過PNG（プリント部分のみ）">
+              <Download className="w-4 h-4 text-black" />
+              <span className="text-xs text-black font-medium">透過</span>
+            </button>
+          )}
+          <button onClick={() => dl(src, "issei-design.png")} className="bg-white/90 hover:bg-white rounded-full p-2.5 shadow transition-colors" title="ダウンロード">
             <Download className="w-5 h-5 text-black" />
           </button>
           <button onClick={onClose} className="bg-white/90 hover:bg-white rounded-full p-2.5 shadow transition-colors" title="閉じる">
@@ -179,6 +185,7 @@ export default function Product3() {
   const [artRotation, setArtRotation] = useState(0);
   const [artScale, setArtScale] = useState(1);
   const [modalImg, setModalImg] = useState<string | null>(null);
+  const [modalTransparentImg, setModalTransparentImg] = useState<string | null>(null);
   const [page, setPage] = useState(0);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -252,6 +259,29 @@ export default function Product3() {
 
   useEffect(() => { render(); }, [render]);
 
+  const getTransparentPng = useCallback((): string | null => {
+    if (!artImg || shapes.length === 0) return null;
+    const off = document.createElement("canvas");
+    off.width = CW;
+    off.height = CH;
+    const offCtx = off.getContext("2d")!;
+    const ar = artImg.width / artImg.height;
+    const cr = CW / CH;
+    let dw: number, dh: number;
+    if (ar > cr) { dh = CH; dw = dh * ar; }
+    else { dw = CW; dh = dw / ar; }
+    offCtx.save();
+    offCtx.translate(CW / 2 + artOffsetX * CW, CH / 2 + artOffsetY * CH);
+    offCtx.rotate((artRotation * Math.PI) / 180);
+    offCtx.scale(artScale, artScale);
+    offCtx.drawImage(artImg, -dw / 2, -dh / 2, dw, dh);
+    offCtx.restore();
+    const mask = buildMask(shapes, shapeMode);
+    offCtx.globalCompositeOperation = "destination-in";
+    offCtx.drawImage(mask, 0, 0);
+    return off.toDataURL("image/png");
+  }, [artImg, shapes, shapeMode, artOffsetX, artOffsetY, artRotation, artScale]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.key === "Delete" || e.key === "Backspace") && selectedId) {
@@ -319,13 +349,14 @@ export default function Product3() {
   const onUp = () => {
     if (dragging.current && !didMove.current && lastHitId.current === null) {
       setModalImg(canvasRef.current?.toDataURL("image/png") ?? null);
+      setModalTransparentImg(getTransparentPng());
     }
     dragging.current = false;
   };
 
   const addShape = (type: "rect" | "triangle" | "circle") => {
     const id = `s${Date.now()}`;
-    const shape = clampShapeToShirt({ id, type, cx: 0.5, cy: 0.4, w: 0.25, h: 0.22, rotation: 0 });
+    const shape = clampShapeToShirt({ id, type, cx: 0.5, cy: 0.4, w: 0.25, h: type === "circle" ? 0.25 : 0.22, rotation: 0 });
     setShapes((prev) => [...prev, shape]);
     setSelectedId(id);
     lastHitId.current = id;
@@ -497,12 +528,20 @@ export default function Product3() {
               {selectedShape && (
                 <div className="bg-gray-50 rounded-xl p-3 space-y-3">
                   <p className="text-xs text-gray-500">サイズ・回転</p>
-                  <SliderRow label="幅" value={selectedShape.w} min={0.05} max={0.7} step={0.01}
-                    onChange={(v) => updateSelected({ w: v })} fmt={(v) => String(Math.round(v * 100))}
-                  />
-                  <SliderRow label="高さ" value={selectedShape.h} min={0.05} max={0.7} step={0.01}
-                    onChange={(v) => updateSelected({ h: v })} fmt={(v) => String(Math.round(v * 100))}
-                  />
+                  {selectedShape.type === "circle" ? (
+                    <SliderRow label="サイズ" value={selectedShape.w} min={0.05} max={0.7} step={0.01}
+                      onChange={(v) => updateSelected({ w: v, h: v })} fmt={(v) => String(Math.round(v * 100))}
+                    />
+                  ) : (
+                    <>
+                      <SliderRow label="幅" value={selectedShape.w} min={0.05} max={0.7} step={0.01}
+                        onChange={(v) => updateSelected({ w: v })} fmt={(v) => String(Math.round(v * 100))}
+                      />
+                      <SliderRow label="高さ" value={selectedShape.h} min={0.05} max={0.7} step={0.01}
+                        onChange={(v) => updateSelected({ h: v })} fmt={(v) => String(Math.round(v * 100))}
+                      />
+                    </>
+                  )}
                   <SliderRow label="回転" value={selectedShape.rotation} min={-180} max={180} step={1}
                     onChange={(v) => updateSelected({ rotation: v })} fmt={(v) => `${v}°`}
                   />
@@ -582,7 +621,7 @@ export default function Product3() {
         </div>
       </div>
 
-      {modalImg && <ImageModal src={modalImg} onClose={() => setModalImg(null)} />}
+      {modalImg && <ImageModal src={modalImg} transparentSrc={modalTransparentImg ?? undefined} onClose={() => { setModalImg(null); setModalTransparentImg(null); }} />}
     </div>
   );
 }
