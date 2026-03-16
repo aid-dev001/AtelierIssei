@@ -474,7 +474,7 @@ export default function Product2() {
   return (
     <div className="min-h-screen bg-white py-12">
       <div className="max-w-5xl mx-auto px-4">
-        <h1 className="text-4xl font-bold mb-2 tracking-wider text-center">PRODUCT</h1>
+        <h1 className="text-4xl font-bold mb-2 tracking-wider text-center">PRODUCTS</h1>
         <p className="text-center text-xs tracking-[0.2em] uppercase text-black mb-8">Art you can wear</p>
 
         <div className="text-center mb-10 space-y-2">
