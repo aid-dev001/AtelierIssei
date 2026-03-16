@@ -416,7 +416,7 @@ export default function Product3() {
 
   return (
     <div className="min-h-screen bg-white py-12">
-      <div className="max-w-5xl mx-auto px-4 pb-0">
+      <div className="max-w-5xl mx-auto px-4">
         <h1 className="text-4xl font-bold mb-2 tracking-wider text-center">PRODUCTS</h1>
         <p className="text-center text-xs tracking-[0.2em] uppercase text-black mb-8">Art you can wear</p>
 
@@ -442,9 +442,7 @@ export default function Product3() {
             あなただけのTシャツデザインを。
           </p>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Canvas */}
           <div className="flex-1 min-w-0">
@@ -669,28 +667,49 @@ export default function Product3() {
               )}
             </div>}
 
-            {artDetailUrl && selectedArtItem && (
-              <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-xl border border-gray-100">
-                <a href={artDetailUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-80 transition-opacity">
-                  <img src={selectedArtItem.imageUrl} alt={selectedArtItem.title} className="w-12 h-12 object-cover rounded-lg border border-gray-200 flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-xs text-gray-400 mb-0.5">使用した作品</p>
-                    <p className="text-sm font-medium text-black truncate">{selectedArtItem.title}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">作品を見る →</p>
-                  </div>
-                </a>
-                <div className="flex-shrink-0 flex flex-col items-center gap-1">
-                  <img
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(artDetailUrl)}`}
-                    alt="QR"
-                    className="w-16 h-16 rounded border border-gray-200"
-                  />
-                  <p className="text-xs text-gray-400">QR</p>
-                </div>
-              </div>
-            )}
           </div>
         </div>
+
+        {artDetailUrl && selectedArtItem && (
+          <a
+            href={artDetailUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-10 mb-12 group relative flex overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-shadow cursor-pointer"
+          >
+            <div className="absolute inset-0">
+              <img
+                src={selectedArtItem.imageUrl}
+                alt=""
+                className="w-full h-full object-cover scale-110"
+                style={{ filter: "blur(14px)" }}
+              />
+              <div className="absolute inset-0 bg-black/55" />
+            </div>
+            <div className="relative flex items-center gap-6 px-6 py-7 sm:px-10 sm:py-9 w-full">
+              <img
+                src={selectedArtItem.imageUrl}
+                alt={selectedArtItem.title}
+                className="w-24 h-24 sm:w-36 sm:h-36 object-cover rounded-xl border-2 border-white/50 shadow-2xl flex-shrink-0"
+              />
+              <div className="flex-1 min-w-0 text-white">
+                <p className="text-[10px] tracking-[0.3em] uppercase text-white/60 mb-2">使用した作品</p>
+                <p className="text-xl sm:text-3xl font-bold tracking-wide truncate">{selectedArtItem.title}</p>
+                <p className="text-xs text-white/60 mt-4 tracking-widest group-hover:text-white/90 transition-colors">作品を見る →</p>
+              </div>
+              <div className="flex-shrink-0 flex flex-col items-center gap-2">
+                <div className="bg-white rounded-xl p-2 shadow-2xl">
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(artDetailUrl)}`}
+                    alt="QR"
+                    className="w-20 h-20 sm:w-24 sm:h-24"
+                  />
+                </div>
+                <p className="text-[10px] text-white/50 tracking-widest">QR CODE</p>
+              </div>
+            </div>
+          </a>
+        )}
       </div>
 
       {modalImg && <ImageModal src={modalImg} transparentSrc={modalTransparentImg ?? undefined} onClose={() => { setModalImg(null); setModalTransparentImg(null); }} />}
