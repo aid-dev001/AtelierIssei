@@ -4,7 +4,9 @@ import nodemailer from 'nodemailer';
 const router = Router();
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
   auth: {
     user: 'isseiart2026@gmail.com',
     pass: (process.env.GMAIL_APP_PASSWORD ?? '').replace(/\s/g, '')
