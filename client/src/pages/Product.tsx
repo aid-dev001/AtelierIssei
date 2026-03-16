@@ -747,7 +747,6 @@ const Product: React.FC = () => {
                   className="w-16 h-16 sm:w-20 sm:h-20"
                 />
               </div>
-              <p className="text-[9px] text-gray-300 tracking-widest">QR CODE</p>
             </div>
           </a>
         )}
