@@ -731,7 +731,7 @@ const Product: React.FC = () => {
             </div>
             <div className="flex-1 min-w-0 flex flex-col justify-between px-7 py-7 sm:px-10 sm:py-9">
               <div>
-                <p className="text-[9px] tracking-[0.35em] uppercase text-black mb-3">使用した作品</p>
+                <p className="text-xs tracking-[0.35em] uppercase text-black mb-3">使用した作品</p>
                 <p className="text-lg sm:text-2xl font-light tracking-widest text-black mb-4 leading-snug">{selectedFillArt.title}</p>
                 {selectedFillArt.description && (
                   <p className="text-xs text-black leading-relaxed tracking-wide line-clamp-3">{selectedFillArt.description}</p>
