@@ -759,7 +759,7 @@ export default function Product2() {
               href={artDetailUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-20 mb-12 group flex overflow-hidden rounded-lg bg-white border border-gray-200 hover:shadow-md transition-shadow"
+              className="mt-32 mb-12 group flex overflow-hidden rounded-lg bg-white border border-gray-200 hover:shadow-md transition-shadow"
             >
               <div className="w-52 sm:w-72 flex-shrink-0">
                 <img src={selectedArtItem.imageUrl} alt={selectedArtItem.title} className="w-full h-full object-cover" />

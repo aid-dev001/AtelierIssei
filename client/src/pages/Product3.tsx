@@ -675,7 +675,7 @@ export default function Product3() {
             href={artDetailUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-20 mb-12 group flex overflow-hidden rounded-lg bg-white border border-gray-200 hover:shadow-md transition-shadow"
+            className="mt-32 mb-12 group flex overflow-hidden rounded-lg bg-white border border-gray-200 hover:shadow-md transition-shadow"
           >
             {/* Artwork image — full-height left edge, wider */}
             <div className="w-52 sm:w-72 flex-shrink-0">
