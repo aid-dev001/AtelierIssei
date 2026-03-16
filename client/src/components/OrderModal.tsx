@@ -14,6 +14,7 @@ const SIZES = ["S", "M", "L", "XL", "XXL"];
 export default function OrderModal({ imageDataUrl, imageDataUrl2, productName, artworkTitle, onClose }: Props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
   const [size, setSize] = useState("M");
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
@@ -33,7 +34,7 @@ export default function OrderModal({ imageDataUrl, imageDataUrl2, productName, a
       const res = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, size, comment, product: productName, artworkTitle: artworkTitle ?? "", imageData: imageDataUrl, imageData2: imageDataUrl2 ?? null })
+        body: JSON.stringify({ name, email, address, size, comment, product: productName, artworkTitle: artworkTitle ?? "", imageData: imageDataUrl, imageData2: imageDataUrl2 ?? null })
       });
       if (!res.ok) throw new Error();
       setDone(true);
@@ -101,6 +102,17 @@ export default function OrderModal({ imageDataUrl, imageDataUrl2, productName, a
                 type="email" required value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black transition-colors"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs tracking-wider text-black mb-1.5">
+                住所 <span className="text-red-400">*</span>
+              </label>
+              <textarea
+                required value={address} onChange={(e) => setAddress(e.target.value)} rows={3}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black transition-colors resize-none"
+                placeholder="〒000-0000 都道府県市区町村番地..."
               />
             </div>
 

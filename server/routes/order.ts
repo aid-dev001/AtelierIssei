@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 router.post('/order', async (req, res) => {
   try {
-    const { name, email, size, comment, product, artworkTitle, imageData, imageData2 } = req.body;
+    const { name, email, address, size, comment, product, artworkTitle, imageData, imageData2 } = req.body;
 
     if (!name || !email || !imageData) {
       return res.status(400).json({ error: 'Missing required fields' });
@@ -34,6 +34,7 @@ Tシャツ注文が届きました。
 
 お名前: ${name}
 メールアドレス: ${email}
+住所: ${address || '未入力'}
 プロダクト: ${product}
 使用した作品: ${artworkTitle || '未選択'}
 サイズ: ${size}

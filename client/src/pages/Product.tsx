@@ -725,7 +725,7 @@ const Product: React.FC = () => {
           <div className="mt-10 flex justify-center">
             <button
               onClick={() => setOrderOpen(true)}
-              className="px-14 py-4 border border-black text-black bg-white text-[10px] tracking-[0.5em] font-light hover:bg-black hover:text-white transition-all duration-500"
+              className="px-14 py-4 border border-black text-black bg-white text-sm tracking-[0.5em] font-light hover:bg-black hover:text-white transition-all duration-500"
             >
               注文する
             </button>
