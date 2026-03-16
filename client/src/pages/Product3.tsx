@@ -27,6 +27,26 @@ function ImageModal({ src, onClose }: { src: string; onClose: () => void }) {
   );
 }
 
+// コンポーネント外で定義してリマウントを防ぐ
+function SliderRow({
+  label, value, min, max, step, onChange, fmt,
+}: {
+  label: string; value: number; min: number; max: number; step: number;
+  onChange: (v: number) => void; fmt?: (v: number) => string;
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-xs text-black whitespace-nowrap w-10">{label}</span>
+      <input
+        type="range" min={min} max={max} step={step} value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="flex-1 accent-black"
+      />
+      <span className="text-xs text-gray-400 w-12 text-right">{fmt ? fmt(value) : value}</span>
+    </div>
+  );
+}
+
 type ArtworkItem = { id: number; title: string; imageUrl: string };
 
 type ShapeItem = {
@@ -43,8 +63,6 @@ const CW = 800;
 const CH = 900;
 const PAGE_SIZE = 12;
 const CLICK_THRESHOLD = 6;
-
-// シャツの有効領域（正規化）
 const SHIRT_L = 0.12;
 const SHIRT_R = 0.88;
 const SHIRT_T = 0.06;
@@ -75,7 +93,7 @@ function getClientXY(e: React.MouseEvent | React.TouchEvent) {
   return { x: e.clientX, y: e.clientY };
 }
 
-function fillShape(ctx: CanvasRenderingContext2D, shape: ShapeItem) {
+function drawShapeOnCtx(ctx: CanvasRenderingContext2D, shape: ShapeItem, mode: "fill" | "stroke") {
   const pw = shape.w * CW;
   const ph = shape.h * CH;
   ctx.save();
@@ -92,33 +110,43 @@ function fillShape(ctx: CanvasRenderingContext2D, shape: ShapeItem) {
     ctx.lineTo(-pw / 2, ph / 2);
     ctx.closePath();
   }
-  ctx.fillStyle = "black";
-  ctx.fill();
+  if (mode === "fill") {
+    ctx.fillStyle = "black";
+    ctx.fill();
+  } else {
+    ctx.strokeStyle = "rgba(0,0,0,0.55)";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.stroke();
+  }
   ctx.restore();
 }
 
-function strokeShape(ctx: CanvasRenderingContext2D, shape: ShapeItem) {
-  const pw = shape.w * CW;
-  const ph = shape.h * CH;
-  ctx.save();
-  ctx.translate(shape.cx * CW, shape.cy * CH);
-  ctx.rotate((shape.rotation * Math.PI) / 180);
-  ctx.beginPath();
-  if (shape.type === "rect") {
-    ctx.rect(-pw / 2, -ph / 2, pw, ph);
-  } else if (shape.type === "circle") {
-    ctx.arc(0, 0, Math.min(pw, ph) / 2, 0, Math.PI * 2);
+function buildMask(shapes: ShapeItem[], mode: "and" | "or"): HTMLCanvasElement {
+  const mask = document.createElement("canvas");
+  mask.width = CW;
+  mask.height = CH;
+  const ctx = mask.getContext("2d")!;
+
+  if (mode === "or") {
+    // 全形の合計 (union)
+    shapes.forEach((s) => drawShapeOnCtx(ctx, s, "fill"));
   } else {
-    ctx.moveTo(0, -ph / 2);
-    ctx.lineTo(pw / 2, ph / 2);
-    ctx.lineTo(-pw / 2, ph / 2);
-    ctx.closePath();
+    // 全形の交差 (intersection)
+    // まず全体を塗りつぶし、形ごとに destination-in で絞る
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, CW, CH);
+    shapes.forEach((s) => {
+      const tmp = document.createElement("canvas");
+      tmp.width = CW;
+      tmp.height = CH;
+      const tmpCtx = tmp.getContext("2d")!;
+      drawShapeOnCtx(tmpCtx, s, "fill");
+      ctx.globalCompositeOperation = "destination-in";
+      ctx.drawImage(tmp, 0, 0);
+    });
   }
-  ctx.strokeStyle = "rgba(0,0,0,0.55)";
-  ctx.lineWidth = 2;
-  ctx.setLineDash([5, 4]);
-  ctx.stroke();
-  ctx.restore();
+  return mask;
 }
 
 function isHit(shape: ShapeItem, nx: number, ny: number): boolean {
@@ -144,10 +172,12 @@ export default function Product3() {
   const [tshirtColor, setTshirtColor] = useState<"white" | "black">("white");
   const [shapes, setShapes] = useState<ShapeItem[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [shapeMode, setShapeMode] = useState<"and" | "or">("and");
   const [showOutline, setShowOutline] = useState(true);
   const [artOffsetX, setArtOffsetX] = useState(0);
   const [artOffsetY, setArtOffsetY] = useState(0);
   const [artRotation, setArtRotation] = useState(0);
+  const [artScale, setArtScale] = useState(1);
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [page, setPage] = useState(0);
 
@@ -186,13 +216,12 @@ export default function Product3() {
     ctx.drawImage(shirt, 0, 0, CW, CH);
 
     if (artImg && shapes.length > 0) {
-      // オフスクリーン: 全体に絵を敷いて形でマスク
       const off = document.createElement("canvas");
       off.width = CW;
       off.height = CH;
       const offCtx = off.getContext("2d")!;
 
-      // 絵をカバーモードで配置（位置・回転適用）
+      // 絵をカバーモード + 位置・回転・スケール適用
       const ar = artImg.width / artImg.height;
       const cr = CW / CH;
       let dw: number, dh: number;
@@ -202,27 +231,27 @@ export default function Product3() {
       offCtx.save();
       offCtx.translate(CW / 2 + artOffsetX * CW, CH / 2 + artOffsetY * CH);
       offCtx.rotate((artRotation * Math.PI) / 180);
+      offCtx.scale(artScale, artScale);
       offCtx.drawImage(artImg, -dw / 2, -dh / 2, dw, dh);
       offCtx.restore();
 
-      // 形を窓として切り抜き
+      // AND/OR マスクを生成して適用
+      const mask = buildMask(shapes, shapeMode);
       offCtx.globalCompositeOperation = "destination-in";
-      shapes.forEach((s) => fillShape(offCtx, s));
+      offCtx.drawImage(mask, 0, 0);
 
-      // シャツに直接貼り付け（ブレンドなし・鮮明に）
       ctx.drawImage(off, 0, 0);
     }
 
-    // 選択枠（点線）
+    // 選択枠
     if (showOutline && selectedId) {
       const sel = shapes.find((s) => s.id === selectedId);
-      if (sel) strokeShape(ctx, sel);
+      if (sel) drawShapeOnCtx(ctx, sel, "stroke");
     }
-  }, [shirtImg, blackShirtImg, artImg, shapes, selectedId, showOutline, tshirtColor, artOffsetX, artOffsetY, artRotation]);
+  }, [shirtImg, blackShirtImg, artImg, shapes, shapeMode, selectedId, showOutline, tshirtColor, artOffsetX, artOffsetY, artRotation, artScale]);
 
   useEffect(() => { render(); }, [render]);
 
-  // キーボード削除
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.key === "Delete" || e.key === "Backspace") && selectedId) {
@@ -275,23 +304,19 @@ export default function Product3() {
     }
     if (!didMove.current) return;
     const rect = canvas.getBoundingClientRect();
+    const id = lastHitId.current;
     const ndx = (x - dragStart.current.x) / rect.width;
     const ndy = (y - dragStart.current.y) / rect.height;
-    const id = lastHitId.current;
     setShapes((prev) =>
-      prev.map((s) => {
-        if (s.id !== id) return s;
-        return clampShapeToShirt({
-          ...s,
-          cx: dragStartPos.current.cx + ndx,
-          cy: dragStartPos.current.cy + ndy,
-        });
-      })
+      prev.map((s) => s.id !== id ? s : clampShapeToShirt({
+        ...s,
+        cx: dragStartPos.current.cx + ndx,
+        cy: dragStartPos.current.cy + ndy,
+      }))
     );
   };
 
   const onUp = () => {
-    // 形に触れずクリックした → 拡大モーダル
     if (dragging.current && !didMove.current && lastHitId.current === null) {
       setModalImg(canvasRef.current?.toDataURL("image/png") ?? null);
     }
@@ -320,23 +345,6 @@ export default function Product3() {
   const selectedShape = shapes.find((s) => s.id === selectedId);
   const totalPages = Math.ceil(artworks.length / PAGE_SIZE);
   const visibleArtworks = artworks.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
-
-  const SliderRow = ({
-    label, value, min, max, step, onChange, fmt,
-  }: {
-    label: string; value: number; min: number; max: number; step: number;
-    onChange: (v: number) => void; fmt?: (v: number) => string;
-  }) => (
-    <div className="flex items-center gap-2">
-      <span className="text-xs text-black whitespace-nowrap w-10">{label}</span>
-      <input
-        type="range" min={min} max={max} step={step} value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="flex-1 accent-black"
-      />
-      <span className="text-xs text-gray-400 w-10 text-right">{fmt ? fmt(value) : value}</span>
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-white py-12">
@@ -439,6 +447,25 @@ export default function Product3() {
                 </div>
               </div>
 
+              {shapes.length > 1 && (
+                <div className="mb-3">
+                  <p className="text-xs text-gray-500 mb-2">複数の形の表示</p>
+                  <div className="flex gap-2">
+                    {(["and", "or"] as const).map((m) => (
+                      <button
+                        key={m}
+                        onClick={() => setShapeMode(m)}
+                        className={`flex-1 py-1.5 text-xs rounded-lg border transition-all ${
+                          shapeMode === m ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-black"
+                        }`}
+                      >
+                        {m === "and" ? "AND（重なり）" : "OR（それぞれ）"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {shapes.length > 0 && (
                 <div className="space-y-1 mb-3">
                   {shapes.map((s, i) => (
@@ -487,7 +514,8 @@ export default function Product3() {
                   setShapes([]);
                   setSelectedId(null);
                   lastHitId.current = null;
-                  setArtOffsetX(0); setArtOffsetY(0); setArtRotation(0);
+                  setShapeMode("and");
+                  setArtOffsetX(0); setArtOffsetY(0); setArtRotation(0); setArtScale(1);
                 }}
                 className="flex items-center gap-1.5 text-sm text-black hover:text-gray-600 transition-colors w-fit mt-4"
               >
@@ -533,12 +561,15 @@ export default function Product3() {
 
               {artImg && (
                 <div className="mt-3 bg-gray-50 rounded-xl p-3 space-y-3">
-                  <p className="text-xs text-gray-500">絵の位置・回転</p>
+                  <p className="text-xs text-gray-500">絵の位置・拡縮・回転</p>
                   <SliderRow label="X" value={artOffsetX} min={-0.5} max={0.5} step={0.01}
                     onChange={setArtOffsetX} fmt={(v) => `${Math.round(v * 100)}`}
                   />
                   <SliderRow label="Y" value={artOffsetY} min={-0.5} max={0.5} step={0.01}
                     onChange={setArtOffsetY} fmt={(v) => `${Math.round(v * 100)}`}
+                  />
+                  <SliderRow label="拡縮" value={artScale} min={0.3} max={3} step={0.05}
+                    onChange={setArtScale} fmt={(v) => `${Math.round(v * 100)}%`}
                   />
                   <SliderRow label="回転" value={artRotation} min={-180} max={180} step={1}
                     onChange={setArtRotation} fmt={(v) => `${v}°`}
