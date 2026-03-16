@@ -724,9 +724,9 @@ const Product: React.FC = () => {
             href={artDetailUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-32 mb-12 group flex overflow-hidden rounded-lg bg-white border border-gray-200 hover:shadow-md transition-shadow"
+            className="mt-32 mb-12 group flex flex-col sm:flex-row overflow-hidden rounded-lg bg-white border border-gray-200 hover:shadow-md transition-shadow"
           >
-            <div className="w-52 sm:w-72 flex-shrink-0">
+            <div className="w-full h-48 sm:h-auto sm:w-52 md:w-72 flex-shrink-0">
               <img src={selectedFillArt.imageUrl} alt={selectedFillArt.title} className="w-full h-full object-cover" />
             </div>
             <div className="flex-1 min-w-0 flex flex-col justify-between px-7 py-7 sm:px-10 sm:py-9">
@@ -739,7 +739,7 @@ const Product: React.FC = () => {
               </div>
               <p className="text-[10px] text-black tracking-[0.2em] mt-6">作品を見る →</p>
             </div>
-            <div className="flex-shrink-0 flex flex-col items-center justify-center gap-2 px-6 sm:px-8 border-l border-gray-200">
+            <div className="flex-shrink-0 flex flex-col items-center justify-center gap-2 px-6 py-6 sm:px-8 border-t sm:border-t-0 sm:border-l border-gray-200">
               <div className="bg-gray-50 rounded p-1.5">
                 <img
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(artDetailUrl)}`}
