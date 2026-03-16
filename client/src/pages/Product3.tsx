@@ -3,6 +3,37 @@ import { useQuery } from "@tanstack/react-query";
 import { Download, X, RefreshCw, Trash2, Eye, EyeOff } from "lucide-react";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 
+function cropTextFromShirt(
+  shirtImg: HTMLImageElement,
+  canvasW: number,
+  canvasH: number,
+  shirtColor: "white" | "black"
+): { canvas: HTMLCanvasElement; x: number; y: number } {
+  const TX1 = 0.50, TX2 = 0.92;
+  const TY1 = 0.612, TY2 = 0.648;
+  const sw = shirtImg.naturalWidth, sh = shirtImg.naturalHeight;
+  const cropX = Math.round(sw * TX1), cropY = Math.round(sh * TY1);
+  const cropW = Math.round(sw * (TX2 - TX1)), cropH = Math.round(sh * (TY2 - TY1));
+  const temp = document.createElement("canvas");
+  temp.width = cropW; temp.height = cropH;
+  const tc = temp.getContext("2d")!;
+  tc.drawImage(shirtImg, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+  const id = tc.getImageData(0, 0, cropW, cropH);
+  const d = id.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const lum = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+    d[i + 3] = shirtColor === "white"
+      ? Math.max(0, Math.min(255, Math.round((200 - lum) * 5)))
+      : Math.max(0, Math.min(255, Math.round((lum - 50) * 5)));
+  }
+  tc.putImageData(id, 0, 0);
+  const scale = canvasW / sw;
+  const out = document.createElement("canvas");
+  out.width = Math.round(cropW * scale); out.height = Math.round(cropH * scale);
+  out.getContext("2d")!.drawImage(temp, 0, 0, out.width, out.height);
+  return { canvas: out, x: TX1 * canvasW, y: TY1 * canvasH };
+}
+
 function ImageModal({ src, transparentSrc, onClose }: { src: string; transparentSrc?: string; onClose: () => void }) {
   const dl = (href: string, name: string) => {
     const a = document.createElement("a");
@@ -303,13 +334,13 @@ export default function Product3() {
     offCtx.globalCompositeOperation = "destination-in";
     offCtx.drawImage(mask, 0, 0);
     offCtx.globalCompositeOperation = "source-over";
-    offCtx.font = "400 12px 'Helvetica Neue', Arial, sans-serif";
-    (offCtx as any).letterSpacing = "1px";
-    offCtx.fillStyle = "#000000";
-    offCtx.textAlign = "center";
-    offCtx.fillText("ISSEI – Wearable Abstraction", CW * 0.5, CH * 0.634);
+    const shirtForText = tshirtColor === "black" ? blackShirtImg : shirtImg;
+    if (shirtForText) {
+      const { canvas: tc, x: tx, y: ty } = cropTextFromShirt(shirtForText, CW, CH, tshirtColor);
+      offCtx.drawImage(tc, tx, ty);
+    }
     return off.toDataURL("image/png");
-  }, [artImg, shapes, shapeMode, artOffsetX, artOffsetY, artRotation, artScale]);
+  }, [artImg, shapes, shapeMode, artOffsetX, artOffsetY, artRotation, artScale, tshirtColor, shirtImg, blackShirtImg]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
