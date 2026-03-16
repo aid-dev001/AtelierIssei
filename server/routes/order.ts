@@ -65,7 +65,7 @@ Tシャツ注文が届きました。
       from: 'isseiart2026@gmail.com',
       to: email,
       subject: `[ATELIER ISSEI] ご注文を受け付けました`,
-      text: `${name} 様\n\nご注文ありがとうございます。\n以下の内容で受け付けました。\n\nプロダクト: ${product}\n使用した作品: ${artworkTitle || '未選択'}\nサイズ: ${size}\n住所: ${address || '未入力'}\nコメント: ${comment || 'なし'}\n\n追ってご連絡いたします。\n\nATELIER ISSEI`,
+      text: `${name} 様\n\nご注文ありがとうございます。\n以下の内容で受け付けました。\n\nプロダクト: ${product}\n使用した作品: ${artworkTitle || '未選択'}\nサイズ: ${size}\n住所: ${address || '未入力'}\nコメント: ${comment || 'なし'}\n\n追って担当者よりご連絡させて頂きます。\n\nATELIER ISSEI`,
       replyTo: 'isseiart2026@gmail.com'
     });
 
