@@ -409,13 +409,13 @@ const Product: React.FC = () => {
     let rw = maxW, rh = rw / da;
     if (rh > maxH) { rh = maxH; rw = rh * da; }
     ctx.drawImage(dc, (W - rw) / 2 + designPos.x, H * 0.26 + designPos.y, rw, rh);
-    const shirtForText = tshirtColor === "black" ? tshirtBlackImg : tshirtBaseImg;
-    if (shirtForText) {
-      const { canvas: tc, x: tx, y: ty } = cropTextFromShirt(shirtForText, W, H, tshirtColor);
-      ctx.drawImage(tc, tx, ty);
-    }
+    ctx.fillStyle = tshirtColor === "black" ? "#ffffff" : "#000000";
+    ctx.font = "400 26px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    ctx.textAlign = "right";
+    (ctx as any).letterSpacing = "3px";
+    ctx.fillText("ISSEI – Wearable Abstraction", W * 0.87, H * 0.634);
     return off.toDataURL("image/png");
-  }, [tshirtColor, tshirtAspect, tshirtBlackAspect, shapeScale, designPos, tshirtBaseImg, tshirtBlackImg]);
+  }, [tshirtColor, tshirtAspect, tshirtBlackAspect, shapeScale, designPos]);
 
   const onUp = () => {
     if (draggingRef.current && !dragMovedRef.current) {
