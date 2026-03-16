@@ -44,6 +44,9 @@ const Contact = () => {
     },
   });
 
+  const { name, email, message } = form.watch();
+  const isFormFilled = name.trim() !== "" && email.trim() !== "" && message.trim() !== "";
+
   const onSubmit = (data: InsertContact) => {
     mutation.mutate(data);
   };
@@ -112,7 +115,7 @@ const Contact = () => {
           <Button
             type="submit"
             className="w-full"
-            disabled={mutation.isPending}
+            disabled={!isFormFilled || mutation.isPending}
           >
             {mutation.isPending ? "送信中..." : "送信する"}
           </Button>
