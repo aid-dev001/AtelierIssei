@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { RefreshCw, Download, X } from "lucide-react";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
+import OrderModal from "@/components/OrderModal";
 
 type ProductShape = { id: number; title: string; imageUrl: string };
 type ArtworkItem = { id: number; title: string; imageUrl: string; description?: string };
@@ -492,6 +493,7 @@ const Product: React.FC = () => {
   }, [selectedFillId]);
 
   const isReady = !!shapeImg && selectedFillId !== null;
+  const [orderOpen, setOrderOpen] = useState(false);
   const selectedFillArt = selectedFillId != null && selectedFillId !== -1
     ? artworks.find((a) => a.id === selectedFillId) ?? null
     : null;
@@ -719,6 +721,17 @@ const Product: React.FC = () => {
           </div>
         )}
 
+        {isReady && (
+          <div className="mt-10 flex justify-center">
+            <button
+              onClick={() => setOrderOpen(true)}
+              className="px-12 py-3.5 bg-black text-white text-xs tracking-[0.3em] rounded-full hover:bg-gray-800 transition-colors"
+            >
+              注文する
+            </button>
+          </div>
+        )}
+
         {artDetailUrl && selectedFillArt && (
           <a
             href={artDetailUrl}
@@ -755,6 +768,15 @@ const Product: React.FC = () => {
           <div className="text-center py-20 text-black text-sm tracking-wider">
             ①②で絵を選ぶとプレビューが表示されます
           </div>
+        )}
+
+        {orderOpen && (
+          <OrderModal
+            imageDataUrl={tshirtRef.current?.toDataURL("image/png") ?? ""}
+            productName="PRODUCT 1"
+            artworkTitle={selectedFillArt?.title}
+            onClose={() => setOrderOpen(false)}
+          />
         )}
       </div>
     </div>

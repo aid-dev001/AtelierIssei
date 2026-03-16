@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Download, X, RefreshCw, Trash2, Eye, EyeOff } from "lucide-react";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
+import OrderModal from "@/components/OrderModal";
 
 function ImageModal({ src, transparentSrc, onClose }: { src: string; transparentSrc?: string; onClose: () => void }) {
   const dl = (href: string, name: string) => {
@@ -412,6 +413,7 @@ export default function Product3() {
   const totalPages = Math.ceil(artworks.length / PAGE_SIZE);
   const visibleArtworks = artworks.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
   const selectedArtItem = selectedArtId != null ? artworks.find((a) => a.id === selectedArtId) ?? null : null;
+  const [orderOpen, setOrderOpen] = useState(false);
   const artDetailUrl = selectedArtItem ? `${window.location.origin}/artwork/${selectedArtId}` : null;
 
   return (
@@ -670,6 +672,17 @@ export default function Product3() {
           </div>
         </div>
 
+        {selectedArtId != null && shapes.length > 0 && (
+          <div className="mt-10 flex justify-center">
+            <button
+              onClick={() => setOrderOpen(true)}
+              className="px-12 py-3.5 bg-black text-white text-xs tracking-[0.3em] rounded-full hover:bg-gray-800 transition-colors"
+            >
+              注文する
+            </button>
+          </div>
+        )}
+
         {artDetailUrl && selectedArtItem && (
           <a
             href={artDetailUrl}
@@ -719,6 +732,14 @@ export default function Product3() {
       </div>
 
       {modalImg && <ImageModal src={modalImg} transparentSrc={modalTransparentImg ?? undefined} onClose={() => { setModalImg(null); setModalTransparentImg(null); }} />}
+      {orderOpen && (
+        <OrderModal
+          imageDataUrl={canvasRef.current?.toDataURL("image/png") ?? ""}
+          productName="PRODUCT 3"
+          artworkTitle={selectedArtItem?.title}
+          onClose={() => setOrderOpen(false)}
+        />
+      )}
     </div>
   );
 }

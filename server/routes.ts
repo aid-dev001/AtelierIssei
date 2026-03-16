@@ -48,10 +48,12 @@ async function saveImageToDB(file: Express.Multer.File): Promise<string> {
 }
 
 import contactRouter from './routes/contact';
+import orderRouter from './routes/order';
 
 export default function setupRoutes(app: express.Express) {
   // Contact routes
   app.use('/api', contactRouter);
+  app.use('/api', orderRouter);
 
   // DBから画像を配信するエンドポイント
   app.get("/api/images/:id", async (req, res) => {
