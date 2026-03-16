@@ -8,7 +8,7 @@ const router = Router();
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'isseiart2018@gmail.com',
+    user: 'isseiart2026@gmail.com',
     pass: process.env.GMAIL_APP_PASSWORD // Gmailのアプリパスワードを使用
   }
 });
@@ -35,7 +35,7 @@ router.post('/contact', async (req, res) => {
     // メール送信
     const mailOptions = {
       from: email,
-      to: 'isseiart2018@gmail.com',
+      to: 'isseiart2026@gmail.com',
       subject: `[ATELIER ISSEI] お問い合わせ: ${name}様より`,
       text: `
 お名前: ${name}
