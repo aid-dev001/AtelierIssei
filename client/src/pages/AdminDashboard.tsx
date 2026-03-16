@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useLocation } from "wouter";
-import { PenLine, Trash2, Wand2, Loader2 } from "lucide-react";
+import { PenLine, Wand2, Loader2, Eye, EyeOff } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -79,19 +79,19 @@ const updateExhibitionMutation = useMutation({
   },
 });
 
-const deleteExhibitionMutation = useMutation({
+const toggleExhibitionMutation = useMutation({
   mutationFn: async (exhibitionId: number) => {
-    const response = await fetch(`${adminPath}/exhibitions/${exhibitionId}`, {
-      method: 'DELETE',
+    const response = await fetch(`${adminPath}/exhibitions/${exhibitionId}/toggle`, {
+      method: 'PATCH',
     });
-    if (!response.ok) throw new Error('展示会の削除に失敗しました');
+    if (!response.ok) throw new Error('展示会の更新に失敗しました');
   },
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ["exhibitions"] });
-    toast({ title: "展示会を削除しました" });
+    toast({ title: "展示会の表示設定を変更しました" });
   },
   onError: () => {
-    toast({ variant: "destructive", title: "展示会の削除に失敗しました" });
+    toast({ variant: "destructive", title: "展示会の更新に失敗しました" });
   },
 });
   const [activeTab, setActiveTab] = useState<'artworks' | 'collections' | 'exhibitions' | 'product'>('artworks');
@@ -302,19 +302,19 @@ const deleteExhibitionMutation = useMutation({
     },
   });
 
-  const deleteArtworkMutation = useMutation({
+  const toggleArtworkMutation = useMutation({
     mutationFn: async (artworkId: number) => {
-      const response = await fetch(`${adminPath}/artworks/${artworkId}`, {
-        method: 'DELETE',
+      const response = await fetch(`${adminPath}/artworks/${artworkId}/toggle`, {
+        method: 'PATCH',
       });
-      if (!response.ok) throw new Error('Failed to delete artwork');
+      if (!response.ok) throw new Error('Failed to toggle artwork');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`${adminPath}/artworks`] });
-      toast({ title: "作品を削除しました" });
+      toast({ title: "作品の表示設定を変更しました" });
     },
     onError: () => {
-      toast({ variant: "destructive", title: "作品の削除に失敗しました" });
+      toast({ variant: "destructive", title: "作品の更新に失敗しました" });
     },
   });
 
@@ -720,6 +720,7 @@ interface Artwork {
   collectionId: number | null;
   interiorImageUrls?: string[];
   interiorImageDescriptions: string[];
+  isActive?: boolean;
 }
 
 interface ExhibitionFormProps {
@@ -1513,35 +1514,15 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
                       <PenLine className="w-3 h-3 mr-1" />
                       編集
                     </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button 
-                          variant="destructive" 
-                          size="sm" 
-                          className="flex-1"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <Trash2 className="w-4 h-4 mr-2" />
-                          削除
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>作品を削除しますか？</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            この操作は取り消せません。本当に削除してもよろしいですか？
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <div className="flex justify-end gap-4">
-                          <AlertDialogCancel>キャンセル</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => deleteArtworkMutation.mutate(artwork.id)}
-                          >
-                            削除
-                          </AlertDialogAction>
-                        </div>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                      onClick={(e) => { e.stopPropagation(); toggleArtworkMutation.mutate(artwork.id); }}
+                    >
+                      {artwork.isActive === false ? <Eye className="w-4 h-4 mr-2" /> : <EyeOff className="w-4 h-4 mr-2" />}
+                      {artwork.isActive === false ? "表示" : "非表示"}
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -1630,30 +1611,15 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
                         <PenLine className="w-4 h-4 mr-2" />
                         編集
                       </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="destructive" size="sm" className="flex-1">
-                            <Trash2 className="w-4 h-4 mr-2" />
-                            削除
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>展示会を削除しますか？</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              この操作は取り消せません。本当に削除してもよろしいですか？
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <div className="flex justify-end gap-4">
-                            <AlertDialogCancel>キャンセル</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => deleteExhibitionMutation.mutate(exhibition.id)}
-                            >
-                              削除
-                            </AlertDialogAction>
-                          </div>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => toggleExhibitionMutation.mutate(exhibition.id)}
+                      >
+                        {exhibition.isActive === false ? <Eye className="w-4 h-4 mr-2" /> : <EyeOff className="w-4 h-4 mr-2" />}
+                        {exhibition.isActive === false ? "表示" : "非表示"}
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -1965,51 +1931,24 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
                         </form>
                       </DialogContent>
                     </Dialog>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="destructive" size="sm" className="flex-1">
-                          <Trash2 className="w-3 h-3 mr-1" />
-                          削除
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>コレクションを削除しますか？</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            この操作は取り消せません。本当に削除してもよろしいですか？<br />
-                            コレクション名: {collection.title}
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <div className="flex justify-end gap-4">
-                          <AlertDialogCancel>キャンセル</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={async () => {
-                              try {
-                                const response = await fetch(`${adminPath}/collections/${collection.id}`, {
-                                  method: 'DELETE',
-                                });
-
-                                if (!response.ok) {
-                                  throw new Error('コレクションの削除に失敗しました');
-                                }
-
-                                queryClient.invalidateQueries({ queryKey: ["collections"] });
-                                toast({ title: "コレクションを削除しました" });
-                              } catch (error) {
-                                console.error('Collection deletion error:', error);
-                                toast({ 
-                                  variant: "destructive", 
-                                  title: "エラー",
-                                  description: error instanceof Error ? error.message : "予期せぬエラーが発生しました"
-                                });
-                              }
-                            }}
-                          >
-                            削除
-                          </AlertDialogAction>
-                        </div>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                      onClick={async () => {
+                        try {
+                          const response = await fetch(`${adminPath}/collections/${collection.id}/toggle`, { method: 'PATCH' });
+                          if (!response.ok) throw new Error('コレクションの更新に失敗しました');
+                          queryClient.invalidateQueries({ queryKey: ["collections"] });
+                          toast({ title: "コレクションの表示設定を変更しました" });
+                        } catch (error) {
+                          toast({ variant: "destructive", title: "エラー", description: error instanceof Error ? error.message : "予期せぬエラーが発生しました" });
+                        }
+                      }}
+                    >
+                      {collection.isActive === false ? <Eye className="w-3 h-3 mr-1" /> : <EyeOff className="w-3 h-3 mr-1" />}
+                      {collection.isActive === false ? "表示" : "非表示"}
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -2025,7 +1964,7 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
   );
 };
 
-type ShapeItem = { id: number; title: string; imageUrl: string };
+type ShapeItem = { id: number; title: string; imageUrl: string; isActive?: boolean };
 
 function DragDropImage({
   preview,
@@ -2125,16 +2064,16 @@ function ProductShapesTab({ adminPath }: { adminPath: string }) {
     onError: (e: Error) => toast({ variant: 'destructive', title: e.message }),
   });
 
-  const deleteMutation = useMutation({
+  const toggleShapeMutation = useMutation({
     mutationFn: async (id: number) => {
-      const res = await fetch(`${adminPath}/product-shapes/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('削除失敗');
+      const res = await fetch(`${adminPath}/product-shapes/${id}/toggle`, { method: 'PATCH' });
+      if (!res.ok) throw new Error('更新失敗');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['product-shapes'] });
-      toast({ title: '削除しました' });
+      toast({ title: '表示設定を変更しました' });
     },
-    onError: () => toast({ variant: 'destructive', title: '削除に失敗しました' }),
+    onError: () => toast({ variant: 'destructive', title: '更新に失敗しました' }),
   });
 
   const openEdit = (shape: ShapeItem) => {
@@ -2182,21 +2121,15 @@ function ProductShapesTab({ adminPath }: { adminPath: string }) {
                   <Button size="sm" variant="outline" className="w-full text-xs" onClick={() => openEdit(shape)}>
                     編集
                   </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="destructive" size="sm" className="w-full text-xs">削除</Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>削除しますか？</AlertDialogTitle>
-                        <AlertDialogDescription>この操作は元に戻せません</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <div className="flex justify-end gap-2">
-                        <AlertDialogCancel>キャンセル</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => deleteMutation.mutate(shape.id)}>削除</AlertDialogAction>
-                      </div>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full text-xs"
+                    onClick={() => toggleShapeMutation.mutate(shape.id)}
+                  >
+                    {shape.isActive === false ? <Eye className="w-3 h-3 mr-1" /> : <EyeOff className="w-3 h-3 mr-1" />}
+                    {shape.isActive === false ? "表示" : "非表示"}
+                  </Button>
                 </div>
               </div>
             ))}

@@ -202,6 +202,18 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     }
   });
 
+  app.patch(`/admin/${ADMIN_URL_PATH}/collections/:id/toggle`, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const [current] = await db.select().from(collections).where(eq(collections.id, id));
+      if (!current) return res.status(404).json({ error: "見つかりません" });
+      await db.update(collections).set({ isActive: !current.isActive }).where(eq(collections.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "更新に失敗しました" });
+    }
+  });
+
   app.get("/api/artworks/:id", async (req, res) => {
     try {
       const artwork = await db.query.artworks.findFirst({
@@ -465,6 +477,18 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     }
   });
 
+  app.patch(`/admin/${ADMIN_URL_PATH}/artworks/:id/toggle`, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const [current] = await db.select().from(artworks).where(eq(artworks.id, id));
+      if (!current) return res.status(404).json({ error: "見つかりません" });
+      await db.update(artworks).set({ isActive: !current.isActive }).where(eq(artworks.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "更新に失敗しました" });
+    }
+  });
+
   // Contact form submission
   // Exhibitions CRUD endpoints
   app.get("/api/exhibitions", async (req, res) => {
@@ -579,6 +603,18 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     } catch (error) {
       console.error("Error deleting exhibition:", error);
       res.status(500).json({ error: "展示会の削除に失敗しました" });
+    }
+  });
+
+  app.patch(`/admin/${ADMIN_URL_PATH}/exhibitions/:id/toggle`, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const [current] = await db.select().from(exhibitions).where(eq(exhibitions.id, id));
+      if (!current) return res.status(404).json({ error: "見つかりません" });
+      await db.update(exhibitions).set({ isActive: !current.isActive }).where(eq(exhibitions.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "更新に失敗しました" });
     }
   });
 
@@ -730,6 +766,18 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     } catch (error) {
       console.error("Error deleting product shape:", error);
       res.status(500).json({ error: "型の絵の削除に失敗しました" });
+    }
+  });
+
+  app.patch(`/admin/${ADMIN_URL_PATH}/product-shapes/:id/toggle`, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const [current] = await db.select().from(productShapes).where(eq(productShapes.id, id));
+      if (!current) return res.status(404).json({ error: "見つかりません" });
+      await db.update(productShapes).set({ isActive: !current.isActive }).where(eq(productShapes.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "更新に失敗しました" });
     }
   });
 
