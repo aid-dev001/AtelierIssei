@@ -163,7 +163,7 @@ const ArtworkDetail = () => {
                 {artwork.status === 'available' && (
                   <div className="mt-4">
                     <Button asChild className="w-full">
-                      <Link href="/contact">お問い合わせ</Link>
+                      <Link href={`/contact?title=${encodeURIComponent(artwork.title)}&artworkUrl=${encodeURIComponent(window.location.href)}`}>お問い合わせ</Link>
                     </Button>
                   </div>
                 )}

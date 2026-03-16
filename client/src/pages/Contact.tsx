@@ -12,12 +12,20 @@ const CONTACT_EMAIL = 'isseiart2026@gmail.com';
 
 const Contact = () => {
   const { toast } = useToast();
+
+  const params = new URLSearchParams(window.location.search);
+  const artworkTitle = params.get("title");
+  const artworkUrl = params.get("artworkUrl");
+  const defaultMessage = artworkTitle
+    ? `「${artworkTitle}」についてお問い合わせします。\n\n${artworkUrl ?? ""}\n\n`
+    : "";
+
   const form = useForm<InsertContact>({
     resolver: zodResolver(insertContactSchema),
     defaultValues: {
       name: "",
       email: "",
-      message: "",
+      message: defaultMessage,
     },
   });
 
