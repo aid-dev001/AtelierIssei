@@ -8,6 +8,37 @@ type ArtworkItem = { id: number; title: string; imageUrl: string };
 
 const PAGE_SIZE = 12;
 
+function cropTextFromShirt(
+  shirtImg: HTMLImageElement,
+  canvasW: number,
+  canvasH: number,
+  shirtColor: "white" | "black"
+): { canvas: HTMLCanvasElement; x: number; y: number } {
+  const TX1 = 0.50, TX2 = 0.92;
+  const TY1 = 0.612, TY2 = 0.648;
+  const sw = shirtImg.naturalWidth, sh = shirtImg.naturalHeight;
+  const cropX = Math.round(sw * TX1), cropY = Math.round(sh * TY1);
+  const cropW = Math.round(sw * (TX2 - TX1)), cropH = Math.round(sh * (TY2 - TY1));
+  const temp = document.createElement("canvas");
+  temp.width = cropW; temp.height = cropH;
+  const tc = temp.getContext("2d")!;
+  tc.drawImage(shirtImg, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+  const id = tc.getImageData(0, 0, cropW, cropH);
+  const d = id.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const lum = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+    d[i + 3] = shirtColor === "white"
+      ? Math.max(0, Math.min(255, Math.round((200 - lum) * 5)))
+      : Math.max(0, Math.min(255, Math.round((lum - 50) * 5)));
+  }
+  tc.putImageData(id, 0, 0);
+  const scale = canvasW / sw;
+  const out = document.createElement("canvas");
+  out.width = Math.round(cropW * scale); out.height = Math.round(cropH * scale);
+  out.getContext("2d")!.drawImage(temp, 0, 0, out.width, out.height);
+  return { canvas: out, x: TX1 * canvasW, y: TY1 * canvasH };
+}
+
 function loadImg(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -211,9 +242,6 @@ const Product: React.FC = () => {
 
   useEffect(() => {
     if (selectedShapeId == null) return;
-    const shape = shapes.find((s) => s.id === selectedShapeId);
-    if (!shape) return;
-    let cancelled = false;
     maskRef.current = null;
     maskForImgRef.current = null;
     setShapeImg(null);
@@ -221,6 +249,9 @@ const Product: React.FC = () => {
     setFillScale(1.0);
     setShapeScale(1.0);
     setDesignPos({ x: 0, y: 0 });
+    const shape = shapes.find((s) => s.id === selectedShapeId);
+    if (!shape) return;
+    let cancelled = false;
     loadImg(shape.imageUrl).then((img) => {
       if (cancelled) return;
       const maxW = Math.min(480, window.innerWidth - 48);
@@ -276,29 +307,35 @@ const Product: React.FC = () => {
 
   const renderComposite = useCallback(() => {
     const canvas = compositeRef.current;
-    if (!canvas || !shapeImg) return;
+    if (!canvas) return;
     const { w, h } = canvasSize;
     canvas.width = w;
     canvas.height = h;
     const ctx = canvas.getContext("2d")!;
     ctx.clearRect(0, 0, w, h);
+
+    if (selectedShapeId === -1) {
+      if (!fillImg) return;
+      const scaleF = Math.max((w * 1.0) / fillImg.width, (h * 1.0) / fillImg.height) * fillScale;
+      const fw = fillImg.width * scaleF;
+      const fh = fillImg.height * scaleF;
+      ctx.drawImage(fillImg, (w - fw) / 2 + offset.x, (h - fh) / 2 + offset.y, fw, fh);
+      return;
+    }
+
+    if (!shapeImg || !fillImg) return;
     if (!maskRef.current || maskForImgRef.current !== shapeImg) {
       maskRef.current = buildMask(shapeImg, w, h);
       maskForImgRef.current = shapeImg;
     }
-    if (fillImg) {
-      const scaleF = Math.max((w * 1.2) / fillImg.width, (h * 1.2) / fillImg.height) * fillScale;
-      const fw = fillImg.width * scaleF;
-      const fh = fillImg.height * scaleF;
-      ctx.drawImage(fillImg, (w - fw) / 2 + offset.x, (h - fh) / 2 + offset.y, fw, fh);
-    } else {
-      ctx.fillStyle = tshirtColor === "black" ? "#ffffff" : "#000000";
-      ctx.fillRect(0, 0, w, h);
-    }
+    const scaleF = Math.max((w * 1.2) / fillImg.width, (h * 1.2) / fillImg.height) * fillScale;
+    const fw = fillImg.width * scaleF;
+    const fh = fillImg.height * scaleF;
+    ctx.drawImage(fillImg, (w - fw) / 2 + offset.x, (h - fh) / 2 + offset.y, fw, fh);
     ctx.globalCompositeOperation = "destination-in";
     ctx.drawImage(maskRef.current, 0, 0, w, h);
     ctx.globalCompositeOperation = "source-over";
-  }, [shapeImg, fillImg, offset, fillScale, canvasSize, tshirtColor]);
+  }, [selectedShapeId, shapeImg, fillImg, offset, fillScale, canvasSize]);
 
   const renderTshirt = useCallback(() => {
     const canvas = tshirtRef.current;
@@ -375,17 +412,17 @@ const Product: React.FC = () => {
     let rw = maxW, rh = rw / da;
     if (rh > maxH) { rh = maxH; rw = rh * da; }
     ctx.drawImage(dc, (W - rw) / 2 + designPos.x, H * 0.26 + designPos.y, rw, rh);
-    ctx.font = "400 22px 'Helvetica Neue', Arial, sans-serif";
-    (ctx as any).letterSpacing = "2px";
-    ctx.fillStyle = "#000000";
-    ctx.textAlign = "center";
-    ctx.fillText("ISSEI – Wearable Abstraction", W * 0.5, H * 0.634);
+    const shirtForText = tshirtColor === "black" ? tshirtBlackImg : tshirtBaseImg;
+    if (shirtForText) {
+      const { canvas: tc, x: tx, y: ty } = cropTextFromShirt(shirtForText, W, H, tshirtColor);
+      ctx.drawImage(tc, tx, ty);
+    }
     return off.toDataURL("image/png");
-  }, [tshirtColor, tshirtAspect, tshirtBlackAspect, shapeScale, designPos]);
+  }, [tshirtColor, tshirtAspect, tshirtBlackAspect, shapeScale, designPos, tshirtBaseImg, tshirtBlackImg]);
 
   const onUp = () => {
     if (draggingRef.current && !dragMovedRef.current) {
-      setModalImg(compositeRef.current?.toDataURL("image/png") ?? null);
+      setModalImg(tshirtRef.current?.toDataURL("image/png") ?? null);
       setModalTransparentImg(getTransparentPng());
     }
     draggingRef.current = false;
@@ -406,7 +443,7 @@ const Product: React.FC = () => {
   };
   const onTouchEnd = () => {
     if (draggingRef.current && !dragMovedRef.current) {
-      setModalImg(compositeRef.current?.toDataURL("image/png") ?? null);
+      setModalImg(tshirtRef.current?.toDataURL("image/png") ?? null);
       setModalTransparentImg(getTransparentPng());
     }
     draggingRef.current = false;

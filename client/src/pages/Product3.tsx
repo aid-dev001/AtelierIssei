@@ -306,8 +306,8 @@ export default function Product3() {
     offCtx.font = "400 12px 'Helvetica Neue', Arial, sans-serif";
     (offCtx as any).letterSpacing = "1px";
     offCtx.fillStyle = "#000000";
-    offCtx.textAlign = "center";
-    offCtx.fillText("ISSEI – Wearable Abstraction", CW * 0.5, CH * 0.634);
+    offCtx.textAlign = "right";
+    offCtx.fillText("ISSEI – Wearable Abstraction", CW * 0.87, CH * 0.634);
     return off.toDataURL("image/png");
   }, [artImg, shapes, shapeMode, artOffsetX, artOffsetY, artRotation, artScale]);
 
