@@ -47,7 +47,7 @@ export default function OrderModal({ imageDataUrl, imageDataUrl2, productName, a
 
   return (
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 p-4"
+      className="fixed inset-x-0 bottom-0 top-16 z-[200] flex items-center justify-center bg-black/60 p-4"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div className="bg-white rounded w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
