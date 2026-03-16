@@ -48,11 +48,13 @@ export default function OrderModal({ imageDataUrl, imageDataUrl2, transparentDat
   };
 
   return (
-    <div
-      className="fixed inset-x-0 bottom-0 top-16 z-[200] flex items-center justify-center bg-black/60 p-4"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      <div className="bg-white rounded w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
+    <>
+      <div className="fixed top-0 left-0 right-0 h-16 bg-black/50 z-[150]" onClick={onClose} />
+      <div
+        className="fixed inset-x-0 bottom-0 top-16 z-[200] flex items-center justify-center bg-black/60 p-4"
+        onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      >
+      <div className="bg-white rounded w-full max-w-lg max-h-[78vh] overflow-y-auto shadow-2xl">
 
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <h2 className="text-sm font-semibold tracking-widest">注文する — {productName}</h2>
@@ -154,6 +156,7 @@ export default function OrderModal({ imageDataUrl, imageDataUrl2, transparentDat
           </form>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }
