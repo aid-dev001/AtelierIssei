@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import nodemailer from 'nodemailer';
 import Stripe from 'stripe';
-import { exec } from 'child_process';
+import { exec, execSync } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs';
 import os from 'os';
@@ -13,8 +13,28 @@ const execAsync = (cmd: string) => _exec(cmd, { maxBuffer: 100 * 1024 * 1024, ti
 const router = Router();
 
 const ICC_JAPAN = path.resolve('public/icc/JapanColor2001Coated.icc');
-const TIFICC = '/nix/store/bhkrx8pzqy12v6jmil17lkl8zgcyck0l-lcms2-2.16-bin/bin/tificc';
-const MAGICK = '/nix/store/5vmw6hyi0q1mk7dj0zhda515vscryr4a-imagemagick-7.1.2-7/bin/magick';
+
+function findBin(name: string, fallbacks: string[]): string {
+  try {
+    const p = execSync(`which ${name} 2>/dev/null`, { encoding: 'utf8', timeout: 5000 }).trim();
+    if (p && fs.existsSync(p)) return p;
+  } catch {}
+  for (const p of fallbacks) {
+    if (fs.existsSync(p)) return p;
+  }
+  return name;
+}
+
+const TIFICC = findBin('tificc', [
+  '/nix/store/bhkrx8pzqy12v6jmil17lkl8zgcyck0l-lcms2-2.16-bin/bin/tificc',
+  '/usr/bin/tificc',
+]);
+const MAGICK = findBin('magick', [
+  '/nix/store/5vmw6hyi0q1mk7dj0zhda515vscryr4a-imagemagick-7.1.2-7/bin/magick',
+  '/nix/store/1izdxwml9nsifjrh53rdfiglhjmrnx2s-imagemagick-7.1.1-32/bin/magick',
+  '/usr/bin/magick',
+  '/usr/local/bin/magick',
+]);
 
 async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise<void> {
   const id = path.basename(inputPng, '.png');
