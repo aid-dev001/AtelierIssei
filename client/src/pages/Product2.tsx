@@ -126,7 +126,7 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
         <div className="relative w-full">
           <img src={src} alt="拡大プレビュー" className="w-full rounded-2xl shadow-2xl" />
           {cmykPreview && cmykSrc && (
-            <img src={cmykSrc} alt="印刷イメージ確認" className="absolute inset-0 w-full h-full rounded-2xl" style={{ objectFit: "cover" }} />
+            <img src={cmykSrc} alt="印刷イメージ確認" className="absolute inset-0 w-full h-full rounded-2xl" style={{ objectFit: "fill" }} />
           )}
         </div>
         <div className="absolute top-3 right-3 flex gap-2">
