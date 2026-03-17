@@ -1,10 +1,60 @@
 import { Router } from 'express';
 import nodemailer from 'nodemailer';
+import Stripe from 'stripe';
 
 const router = Router();
 
+function getStripe() {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new Error('STRIPE_SECRET_KEY not set');
+  return new Stripe(key, { apiVersion: '2026-02-25.clover' });
+}
+
+router.get('/stripe-config', (_req, res) => {
+  const publishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
+  if (!publishableKey) return res.status(500).json({ error: 'Stripe not configured' });
+  res.json({ publishableKey });
+});
+
+router.post('/create-payment-intent', async (req, res) => {
+  try {
+    const stripe = getStripe();
+    const { name, email, product } = req.body;
+    const intent = await stripe.paymentIntents.create({
+      amount: 55000,
+      currency: 'jpy',
+      metadata: { name: name ?? '', email: email ?? '', product: product ?? '' },
+    });
+    res.json({ clientSecret: intent.client_secret });
+  } catch (error) {
+    console.error('PaymentIntent error:', error);
+    res.status(500).json({ error: 'Failed to create payment intent' });
+  }
+});
+
 router.post('/order', async (req, res) => {
   try {
+    const { name, email, address, size, comment, product, artworkTitle, imageData, imageData2, transparentData, transparentData2, paymentIntentId } = req.body;
+
+    if (!name || !email || !imageData) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Verify payment succeeded
+    if (paymentIntentId) {
+      try {
+        const stripe = getStripe();
+        const intent = await stripe.paymentIntents.retrieve(paymentIntentId);
+        if (intent.status !== 'succeeded') {
+          return res.status(402).json({ error: '支払いが完了していません' });
+        }
+      } catch {
+        return res.status(402).json({ error: '支払いの確認に失敗しました' });
+      }
+    } else {
+      return res.status(402).json({ error: '支払いが必要です' });
+    }
+
     const pass = (process.env.GMAIL_APP_PASSWORD ?? '').replace(/\s/g, '');
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
@@ -12,11 +62,6 @@ router.post('/order', async (req, res) => {
       secure: true,
       auth: { user: 'isseiart2026@gmail.com', pass }
     });
-    const { name, email, address, size, comment, product, artworkTitle, imageData, imageData2, transparentData, transparentData2 } = req.body;
-
-    if (!name || !email || !imageData) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
 
     const attachments: { filename: string; content: Buffer; contentType: string }[] = [];
 
@@ -48,6 +93,7 @@ Tシャツ注文が届きました。
 使用した作品: ${artworkTitle || '未選択'}
 サイズ: ${size}
 コメント: ${comment || 'なし'}
+決済ID: ${paymentIntentId}
 
 デザイン画像を添付しています。
     `.trim();
