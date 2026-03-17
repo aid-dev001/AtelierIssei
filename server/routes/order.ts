@@ -32,15 +32,18 @@ async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise
 
 async function pngBase64ToCmykTiff(base64: string): Promise<Buffer> {
   const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  const inputPath = path.join(os.tmpdir(), `issei-in-${id}.png`);
-  const outputPath = path.join(os.tmpdir(), `issei-cmyk-${id}.tif`);
+  const inputPath  = path.join(os.tmpdir(), `issei-in-${id}.png`);
+  const cmykPath   = path.join(os.tmpdir(), `issei-cmyk-${id}.tif`);
+  const alphaPath  = path.join(os.tmpdir(), `issei-alpha-${id}.png`);
+  const outputPath = path.join(os.tmpdir(), `issei-out-${id}.tif`);
   try {
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    await pngToJapanColorTiff(inputPath, outputPath);
+    await execAsync(`magick "${inputPath}" -alpha extract "${alphaPath}"`);
+    await pngToJapanColorTiff(inputPath, cmykPath);
+    await execAsync(`magick "${cmykPath}" -alpha on "${alphaPath}" -compose CopyOpacity -composite -compress lzw "${outputPath}"`);
     return fs.readFileSync(outputPath);
   } finally {
-    try { fs.unlinkSync(inputPath); } catch {}
-    try { fs.unlinkSync(outputPath); } catch {}
+    for (const p of [inputPath, cmykPath, alphaPath, outputPath]) try { fs.unlinkSync(p); } catch {}
   }
 }
 
