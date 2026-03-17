@@ -175,7 +175,7 @@ router.post('/cmyk-preview', async (req, res) => {
     // 2. Convert to CMYK (same as download), then simulate macOS ColorSync rendering:
     //    convert back to sRGB and apply -modulate 80,60,100 to approximate the desaturation+darkening
     //    that macOS Preview applies when displaying CMYK TIFFs via ColorSync
-    await execAsync(`magick "${inputPath}" -alpha off -colorspace sRGB -color-matrix "1 0 0  0 1 0.12  0.20 0 1" -modulate 100,150,100 -colorspace CMYK -colorspace sRGB -modulate 80,60,100 "${rgbPath}"`);
+    await execAsync(`magick "${inputPath}" -alpha off -colorspace sRGB -color-matrix "1 0 0  0 1 0.12  0.20 0 1" -modulate 100,150,100 -colorspace CMYK -colorspace sRGB -modulate 70,38,100 "${rgbPath}"`);
     // 3. Re-apply original alpha so transparent areas stay transparent
     await execAsync(`magick "${rgbPath}" "${alphaPath}" -compose CopyOpacity -composite "${outputPath}"`);
 
