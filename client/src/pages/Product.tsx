@@ -416,7 +416,7 @@ const Product: React.FC = () => {
   const [labelImgEn, setLabelImgEn] = useState<HTMLImageElement | null>(null);
   const [labelImgJa, setLabelImgJa] = useState<HTMLImageElement | null>(null);
   const labelImg = labelLang === "en" ? labelImgEn : labelImgJa;
-  const [labelOffset, setLabelOffset] = useState({ x: 0, y: 0 });
+  const [labelOffset, setLabelOffset] = useState({ x: 100, y: 50 });
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [artworkScrollH, setArtworkScrollH] = useState<number | null>(null);
 
