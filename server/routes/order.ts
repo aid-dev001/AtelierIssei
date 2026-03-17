@@ -170,12 +170,28 @@ router.post('/cmyk-preview', async (req, res) => {
     fs.writeFileSync(shirtPath, Buffer.from(shirtBase64, 'base64'));
 
     if (artworkData) {
-      // Convert only the artwork to CMYK colors, then composite onto the original shirt canvas
       const artBase64 = artworkData.split(',')[1] ?? artworkData;
       fs.writeFileSync(artworkPath, Buffer.from(artBase64, 'base64'));
-      await execAsync(`magick "${shirtPath}" \\( "${artworkPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,200,100 -colorspace CMYK -colorspace sRGB \\) -composite "${outputPath}"`);
+
+      const alphaPath   = path.join(os.tmpdir(), `issei-prev-alpha-${ts}.png`);
+      const cmykArtPath = path.join(os.tmpdir(), `issei-prev-cmykart-${ts}.png`);
+      const cmykAlphaPath = path.join(os.tmpdir(), `issei-prev-cmykalpha-${ts}.png`);
+
+      try {
+        // 1. Extract alpha mask from artwork
+        await execAsync(`magick "${artworkPath}" -alpha extract "${alphaPath}"`);
+        // 2. Convert artwork RGB to CMYK and back (same as download), ignoring alpha
+        await execAsync(`magick "${artworkPath}" -alpha off -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,200,100 -colorspace CMYK -colorspace sRGB "${cmykArtPath}"`);
+        // 3. Re-apply original alpha so transparent areas stay transparent
+        await execAsync(`magick "${cmykArtPath}" "${alphaPath}" -compose CopyOpacity -composite "${cmykAlphaPath}"`);
+        // 4. Composite CMYK artwork onto shirt
+        await execAsync(`magick "${shirtPath}" "${cmykAlphaPath}" -composite "${outputPath}"`);
+      } finally {
+        try { fs.unlinkSync(alphaPath); } catch {}
+        try { fs.unlinkSync(cmykArtPath); } catch {}
+        try { fs.unlinkSync(cmykAlphaPath); } catch {}
+      }
     } else {
-      // Fallback: convert full canvas
       await execAsync(`magick "${shirtPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,200,100 -colorspace CMYK -colorspace sRGB "${outputPath}"`);
     }
 
