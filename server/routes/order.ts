@@ -10,6 +10,20 @@ import path from 'path';
 const execAsync = promisify(exec);
 const router = Router();
 
+async function pngBase64ToCmykTiff(base64: string): Promise<Buffer> {
+  const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const inputPath = path.join(os.tmpdir(), `issei-in-${id}.png`);
+  const outputPath = path.join(os.tmpdir(), `issei-cmyk-${id}.tif`);
+  try {
+    fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
+    await execAsync(`magick "${inputPath}" -colorspace CMYK -compress lzw "${outputPath}"`);
+    return fs.readFileSync(outputPath);
+  } finally {
+    try { fs.unlinkSync(inputPath); } catch {}
+    try { fs.unlinkSync(outputPath); } catch {}
+  }
+}
+
 function getStripe() {
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) throw new Error('STRIPE_SECRET_KEY not set');
@@ -80,13 +94,25 @@ router.post('/order', async (req, res) => {
     }
 
     if (transparentData) {
-      const tBuf = Buffer.from(transparentData.split(',')[1], 'base64');
-      attachments.push({ filename: 'tshirt-front-transparent.png', content: tBuf, contentType: 'image/png' });
+      const b64 = transparentData.split(',')[1];
+      attachments.push({ filename: 'tshirt-front-transparent.png', content: Buffer.from(b64, 'base64'), contentType: 'image/png' });
+      try {
+        const cmykBuf = await pngBase64ToCmykTiff(b64);
+        attachments.push({ filename: 'tshirt-front-cmyk.tif', content: cmykBuf, contentType: 'image/tiff' });
+      } catch (e) {
+        console.error('CMYK front convert error:', e);
+      }
     }
 
     if (transparentData2) {
-      const tBuf2 = Buffer.from(transparentData2.split(',')[1], 'base64');
-      attachments.push({ filename: 'tshirt-back-transparent.png', content: tBuf2, contentType: 'image/png' });
+      const b64 = transparentData2.split(',')[1];
+      attachments.push({ filename: 'tshirt-back-transparent.png', content: Buffer.from(b64, 'base64'), contentType: 'image/png' });
+      try {
+        const cmykBuf2 = await pngBase64ToCmykTiff(b64);
+        attachments.push({ filename: 'tshirt-back-cmyk.tif', content: cmykBuf2, contentType: 'image/tiff' });
+      } catch (e) {
+        console.error('CMYK back convert error:', e);
+      }
     }
 
     const body = `
