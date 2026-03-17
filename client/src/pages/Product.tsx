@@ -51,6 +51,11 @@ function loadImg(src: string): Promise<HTMLImageElement> {
   });
 }
 
+function thumb(url: string, w = 200): string {
+  if (!url || url.startsWith('data:')) return url;
+  return `/api/thumb?src=${encodeURIComponent(url)}&w=${w}`;
+}
+
 function buildMask(img: HTMLImageElement, w: number, h: number): HTMLCanvasElement {
   const c = document.createElement("canvas");
   c.width = w;
@@ -871,7 +876,7 @@ const Product: React.FC = () => {
                     }`}
                   >
                     <div className="flex-1 w-full bg-gray-50 min-h-0">
-                      <img src={s.imageUrl} alt={s.title} className="w-full h-full object-contain p-1" />
+                      <img src={thumb(s.imageUrl)} alt={s.title} className="w-full h-full object-contain p-1" loading="lazy" />
                     </div>
                     <p className="text-xs text-center px-1 truncate w-full text-black shrink-0" style={{ height: "1.75rem", lineHeight: "1.75rem" }}>{s.title}</p>
                   </button>
@@ -913,7 +918,7 @@ const Product: React.FC = () => {
                         selectedFillId === a.id ? "border-black shadow-md" : "border-transparent hover:border-gray-300"
                       }`}
                     >
-                      <img src={a.imageUrl} alt={a.title} className="w-full h-full object-cover bg-gray-50" loading="lazy" />
+                      <img src={thumb(a.imageUrl)} alt={a.title} className="w-full h-full object-cover bg-gray-50" loading="lazy" />
                     </button>
                   ))}
                 </div>

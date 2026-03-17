@@ -282,6 +282,11 @@ function loadImg(src: string): Promise<HTMLImageElement> {
   });
 }
 
+function thumb(url: string, w = 200): string {
+  if (!url || url.startsWith('data:')) return url;
+  return `/api/thumb?src=${encodeURIComponent(url)}&w=${w}`;
+}
+
 const LABEL_TEXT_EN = "ISSEI – Wearable Abstraction";
 const LABEL_TEXT_JA = "ISSEI – 着るアブストラクション";
 
@@ -816,7 +821,7 @@ export default function Product2() {
                       selectedArtId === a.id ? "border-black shadow-md" : "border-transparent hover:border-gray-300"
                     }`}
                   >
-                    <img src={a.imageUrl} alt={a.title} className="w-full h-full object-cover bg-gray-50" loading="lazy" />
+                    <img src={thumb(a.imageUrl)} alt={a.title} className="w-full h-full object-cover bg-gray-50" loading="lazy" />
                   </button>
                 ))}
               </div>

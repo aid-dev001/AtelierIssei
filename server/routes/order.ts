@@ -245,4 +245,48 @@ router.post('/convert-cmyk', async (req, res) => {
   }
 });
 
+// On-demand thumbnail endpoint — caches resized images in public/thumbs/
+router.get('/thumb', async (req, res) => {
+  const src = req.query.src as string;
+  const w = Math.min(parseInt(req.query.w as string) || 200, 800);
+  if (!src || (!/^\/artworks\//.test(src) && !/^\/api\/images\/\d+$/.test(src))) {
+    return res.status(400).end();
+  }
+  const cacheKey = Buffer.from(`${w}::${src}`).toString('base64').replace(/[^a-zA-Z0-9]/g, '_');
+  const thumbDir = path.resolve('public/thumbs');
+  const thumbPath = path.join(thumbDir, `${cacheKey}.jpg`);
+  if (fs.existsSync(thumbPath)) {
+    res.set('Content-Type', 'image/jpeg');
+    res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    return res.sendFile(path.resolve(thumbPath));
+  }
+  const tmpInput = path.join(os.tmpdir(), `thumb_in_${Date.now()}_${Math.random().toString(36).slice(2)}`);
+  try {
+    fs.mkdirSync(thumbDir, { recursive: true });
+    // Try direct file path for /artworks/ URLs
+    let resolved = false;
+    if (/^\/artworks\//.test(src)) {
+      const candidate = path.resolve(`public${src}`);
+      if (fs.existsSync(candidate)) {
+        await execAsync(`"${MAGICK}" "${candidate}" -resize ${w}x${w}\\> -quality 82 -strip "${thumbPath}"`);
+        resolved = true;
+      }
+    }
+    if (!resolved) {
+      const resp = await (globalThis as any).fetch(`http://localhost:5000${src}`);
+      if (!resp.ok) return res.status(404).end();
+      const buf = Buffer.from(await resp.arrayBuffer());
+      fs.writeFileSync(tmpInput, buf);
+      await execAsync(`"${MAGICK}" "${tmpInput}" -resize ${w}x${w}\\> -quality 82 -strip "${thumbPath}"`);
+    }
+    res.set('Content-Type', 'image/jpeg');
+    res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    res.sendFile(path.resolve(thumbPath));
+  } catch {
+    res.redirect(src);
+  } finally {
+    try { fs.unlinkSync(tmpInput); } catch {}
+  }
+});
+
 export default router;
