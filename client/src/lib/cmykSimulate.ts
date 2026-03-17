@@ -20,3 +20,19 @@ export function applyCmykSimulation(src: HTMLCanvasElement, dst: HTMLCanvasEleme
   }
   dCtx.putImageData(id, 0, 0);
 }
+
+export function simulateCmykDataUrl(dataUrl: string): Promise<string> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const src = document.createElement("canvas");
+      src.width = img.naturalWidth;
+      src.height = img.naturalHeight;
+      src.getContext("2d")!.drawImage(img, 0, 0);
+      const dst = document.createElement("canvas");
+      applyCmykSimulation(src, dst);
+      resolve(dst.toDataURL("image/png"));
+    };
+    img.src = dataUrl;
+  });
+}

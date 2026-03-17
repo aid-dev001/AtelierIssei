@@ -3,11 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { RefreshCw, Download, X } from "lucide-react";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 import OrderModal from "@/components/OrderModal";
-import { applyCmykSimulation } from "@/lib/cmykSimulate";
+import { simulateCmykDataUrl } from "@/lib/cmykSimulate";
 import { injectDpi300 } from "@/lib/pngDpi";
 
 function ImageModal({ src, transparentSrc, onClose }: { src: string; transparentSrc?: string; onClose: () => void }) {
   const [cmykLoading, setCmykLoading] = useState(false);
+  const [cmykPreview, setCmykPreview] = useState(false);
+  const [cmykSrc, setCmykSrc] = useState<string | null>(null);
+  const [simulating, setSimulating] = useState(false);
   const dl = (href: string, name: string) => {
     const a = document.createElement("a");
     a.href = href;
@@ -35,11 +38,31 @@ function ImageModal({ src, transparentSrc, onClose }: { src: string; transparent
       setCmykLoading(false);
     }
   };
+  const toggleCmykPreview = async () => {
+    if (cmykPreview) { setCmykPreview(false); return; }
+    if (cmykSrc) { setCmykPreview(true); return; }
+    setSimulating(true);
+    try {
+      const result = await simulateCmykDataUrl(src);
+      setCmykSrc(result);
+      setCmykPreview(true);
+    } finally {
+      setSimulating(false);
+    }
+  };
   return (
     <div className="fixed inset-0 bg-black/85 z-[200] flex items-center justify-center p-4" onClick={onClose}>
       <div className="relative max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
-        <img src={src} alt="拡大プレビュー" className="w-full rounded-2xl shadow-2xl" />
+        <img src={cmykPreview && cmykSrc ? cmykSrc : src} alt="拡大プレビュー" className="w-full rounded-2xl shadow-2xl" />
+        {cmykPreview && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xs px-3 py-1 rounded-full">
+            CMYKシミュレーション中
+          </div>
+        )}
         <div className="absolute top-3 right-3 flex gap-2">
+          <button onClick={toggleCmykPreview} disabled={simulating} className={`rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5 disabled:opacity-60 ${cmykPreview ? "bg-black text-white" : "bg-white/90 hover:bg-white text-black"}`} title="CMYKシミュレーション（印刷色の確認）">
+            <span className="text-xs font-medium">{simulating ? "処理中…" : "CMYK確認"}</span>
+          </button>
           {transparentSrc && (
             <button onClick={() => dl(transparentSrc, "issei-print.png")} className="bg-white/90 hover:bg-white rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5" title="透過PNG（プリント部分のみ）">
               <Download className="w-4 h-4 text-black" />
@@ -49,7 +72,7 @@ function ImageModal({ src, transparentSrc, onClose }: { src: string; transparent
           {transparentSrc && (
             <button onClick={downloadCmyk} disabled={cmykLoading} className="bg-white/90 hover:bg-white rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5 disabled:opacity-60" title="CMYK TIFFダウンロード（印刷用）">
               <Download className="w-4 h-4 text-black" />
-              <span className="text-xs text-black font-medium">{cmykLoading ? "変換中…" : "CMYK"}</span>
+              <span className="text-xs text-black font-medium">{cmykLoading ? "変換中…" : "CMYK↓"}</span>
             </button>
           )}
           <button onClick={() => dl(src, "issei-design.png")} className="bg-white/90 hover:bg-white rounded-full p-2.5 shadow transition-colors" title="ダウンロード">
@@ -181,7 +204,6 @@ export default function Product2() {
   const [frontBlackShirtImg, setFrontBlackShirtImg] = useState<HTMLImageElement | null>(null);
   const [backBlackShirtImg, setBackBlackShirtImg] = useState<HTMLImageElement | null>(null);
   const [tshirtColor, setTshirtColor] = useState<"white" | "black">("white");
-  const [cmykPreview, setCmykPreview] = useState(false);
 
   const [lang, setLang] = useState<"ja" | "en" | "fr">("en");
   const [phraseIdx, setPhraseIdx] = useState(0);
@@ -218,9 +240,6 @@ export default function Product2() {
 
   const frontRef = useRef<HTMLCanvasElement>(null);
   const backRef = useRef<HTMLCanvasElement>(null);
-  const cmykFrontRef = useRef<HTMLCanvasElement>(null);
-  const cmykBackRef = useRef<HTMLCanvasElement>(null);
-  const cmykPreviewRef = useRef(false);
   const previewRef = useRef<HTMLDivElement>(null);
   const fillSectionRef = useRef<HTMLDivElement>(null);
 
@@ -356,10 +375,6 @@ export default function Product2() {
       });
       ctx.restore();
     }
-    if (cmykPreviewRef.current && cmykFrontRef.current) {
-      const src = canvas, dst = cmykFrontRef.current;
-      setTimeout(() => { if (src && dst) applyCmykSimulation(src, dst); }, 0);
-    }
   }, [frontShirtImg, frontBlackShirtImg, artImg, frontPos, lineWidth, artVertOffset, customText, tshirtColor]);
 
   const renderBack = useCallback(() => {
@@ -391,10 +406,6 @@ export default function Product2() {
     ctx.restore();
     ctx.globalCompositeOperation = "source-over";
     drawLabelOnCtx(ctx, BACK_CW, BACK_CH, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
-    if (cmykPreviewRef.current && cmykBackRef.current) {
-      const src = canvas, dst = cmykBackRef.current;
-      setTimeout(() => { if (src && dst) applyCmykSimulation(src, dst); }, 0);
-    }
   }, [backShirtImg, backBlackShirtImg, artImg, backPos, designScale, cropScale, artOffset, tshirtColor, labelImg, labelVisible, labelLang, labelOffset]);
 
   const getFrontTransparentPng = useCallback((): string | null => {
@@ -470,17 +481,6 @@ export default function Product2() {
 
   useEffect(() => { renderFront(); }, [renderFront]);
   useEffect(() => { renderBack(); }, [renderBack]);
-
-  useEffect(() => {
-    cmykPreviewRef.current = cmykPreview;
-    if (cmykPreview) {
-      renderFront();
-      renderBack();
-    } else {
-      if (cmykFrontRef.current) cmykFrontRef.current.width = 0;
-      if (cmykBackRef.current) cmykBackRef.current.width = 0;
-    }
-  }, [cmykPreview, renderFront, renderBack]);
 
   useEffect(() => {
     if (artImg) {
@@ -675,10 +675,6 @@ export default function Product2() {
                     tshirtColor === "black" ? "bg-black text-white border-black" : "bg-white text-gray-500 border-gray-300 hover:border-gray-500"
                   }`}
                 >黒</button>
-                <button
-                  onClick={() => setCmykPreview((v) => !v)}
-                  className={`px-3 py-1 rounded-full text-xs border transition-colors ${cmykPreview ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-gray-500"}`}
-                >CMYK</button>
               </div>
             </div>
 
@@ -700,9 +696,6 @@ export default function Product2() {
                       onTouchMove={onFrontMove}
                       onTouchEnd={onFrontUp}
                     />
-                    {cmykPreview && (
-                      <canvas ref={cmykFrontRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }} />
-                    )}
                   </div>
                   <button
                     onClick={() => { setModalImg(frontRef.current?.toDataURL("image/png") ?? null); setModalTransparentImg(getFrontTransparentPng()); }}
@@ -808,9 +801,6 @@ export default function Product2() {
                       onTouchMove={onBackMove}
                       onTouchEnd={onBackUp}
                     />
-                    {cmykPreview && (
-                      <canvas ref={cmykBackRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }} />
-                    )}
                   </div>
                   <button
                     onClick={() => { setModalImg(backRef.current?.toDataURL("image/png") ?? null); setModalTransparentImg(getBackTransparentPng()); }}

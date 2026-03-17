@@ -3,11 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Download, X, RefreshCw, Trash2, Eye, EyeOff } from "lucide-react";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 import OrderModal from "@/components/OrderModal";
-import { applyCmykSimulation } from "@/lib/cmykSimulate";
+import { simulateCmykDataUrl } from "@/lib/cmykSimulate";
 import { injectDpi300 } from "@/lib/pngDpi";
 
 function ImageModal({ src, transparentSrc, onClose }: { src: string; transparentSrc?: string; onClose: () => void }) {
   const [cmykLoading, setCmykLoading] = useState(false);
+  const [cmykPreview, setCmykPreview] = useState(false);
+  const [cmykSrc, setCmykSrc] = useState<string | null>(null);
+  const [simulating, setSimulating] = useState(false);
   const dl = (href: string, name: string) => {
     const a = document.createElement("a");
     a.href = href;
@@ -35,11 +38,31 @@ function ImageModal({ src, transparentSrc, onClose }: { src: string; transparent
       setCmykLoading(false);
     }
   };
+  const toggleCmykPreview = async () => {
+    if (cmykPreview) { setCmykPreview(false); return; }
+    if (cmykSrc) { setCmykPreview(true); return; }
+    setSimulating(true);
+    try {
+      const result = await simulateCmykDataUrl(src);
+      setCmykSrc(result);
+      setCmykPreview(true);
+    } finally {
+      setSimulating(false);
+    }
+  };
   return (
     <div className="fixed inset-0 bg-black/85 z-[200] flex items-center justify-center p-4" onClick={onClose}>
       <div className="relative max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
-        <img src={src} alt="拡大プレビュー" className="w-full rounded-2xl shadow-2xl" />
+        <img src={cmykPreview && cmykSrc ? cmykSrc : src} alt="拡大プレビュー" className="w-full rounded-2xl shadow-2xl" />
+        {cmykPreview && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xs px-3 py-1 rounded-full">
+            CMYKシミュレーション中
+          </div>
+        )}
         <div className="absolute top-3 right-3 flex gap-2">
+          <button onClick={toggleCmykPreview} disabled={simulating} className={`rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5 disabled:opacity-60 ${cmykPreview ? "bg-black text-white" : "bg-white/90 hover:bg-white text-black"}`} title="CMYKシミュレーション（印刷色の確認）">
+            <span className="text-xs font-medium">{simulating ? "処理中…" : "CMYK確認"}</span>
+          </button>
           {transparentSrc && (
             <button onClick={() => dl(transparentSrc, "issei-print.png")} className="bg-white/90 hover:bg-white rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5" title="透過PNG（プリント部分のみ）">
               <Download className="w-4 h-4 text-black" />
@@ -49,7 +72,7 @@ function ImageModal({ src, transparentSrc, onClose }: { src: string; transparent
           {transparentSrc && (
             <button onClick={downloadCmyk} disabled={cmykLoading} className="bg-white/90 hover:bg-white rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5 disabled:opacity-60" title="CMYK TIFFダウンロード（印刷用）">
               <Download className="w-4 h-4 text-black" />
-              <span className="text-xs text-black font-medium">{cmykLoading ? "変換中…" : "CMYK"}</span>
+              <span className="text-xs text-black font-medium">{cmykLoading ? "変換中…" : "CMYK↓"}</span>
             </button>
           )}
           <button onClick={() => dl(src, "issei-design.png")} className="bg-white/90 hover:bg-white rounded-full p-2.5 shadow transition-colors" title="ダウンロード">
@@ -261,7 +284,6 @@ export default function Product3() {
   const [blackShirtImg, setBlackShirtImg] = useState<HTMLImageElement | null>(null);
   const [shirtLoaded, setShirtLoaded] = useState(false);
   const [tshirtColor, setTshirtColor] = useState<"white" | "black">("white");
-  const [cmykPreview, setCmykPreview] = useState(false);
   const [shapes, setShapes] = useState<ShapeItem[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [shapeMode, setShapeMode] = useState<"and" | "or">("and");
@@ -279,8 +301,6 @@ export default function Product3() {
   const [page, setPage] = useState(0);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const cmykCanvasRef = useRef<HTMLCanvasElement>(null);
-  const cmykPreviewRef = useRef(false);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const artworkSectionRef = useRef<HTMLDivElement>(null);
   const prevShapesEmpty = useRef(true);
@@ -378,22 +398,9 @@ export default function Product3() {
     }
 
     drawLabelOnCtx(ctx, CW, CH, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
-    if (cmykPreviewRef.current && cmykCanvasRef.current) {
-      const src = canvas, dst = cmykCanvasRef.current;
-      setTimeout(() => { if (src && dst) applyCmykSimulation(src, dst); }, 0);
-    }
   }, [shirtImg, blackShirtImg, artImg, shapes, shapeMode, selectedId, showOutline, tshirtColor, artOffsetX, artOffsetY, artRotation, artScale, labelImg, labelVisible, labelLang, labelOffset]);
 
   useEffect(() => { render(); }, [render]);
-
-  useEffect(() => {
-    cmykPreviewRef.current = cmykPreview;
-    if (cmykPreview) {
-      render();
-    } else if (cmykCanvasRef.current) {
-      cmykCanvasRef.current.width = 0;
-    }
-  }, [cmykPreview, render]);
 
   const getTransparentPng = useCallback((): string | null => {
     if (!artImg || shapes.length === 0) return null;
@@ -583,12 +590,6 @@ export default function Product3() {
                     {c === "white" ? "WHITE" : "BLACK"}
                   </button>
                 ))}
-                <button
-                  onClick={() => setCmykPreview((v) => !v)}
-                  className={`px-3 py-1 text-xs rounded-full border transition-all ${cmykPreview ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-black"}`}
-                >
-                  CMYK
-                </button>
               </div>
             </div>
 
@@ -612,9 +613,6 @@ export default function Product3() {
                 onTouchMove={onMove}
                 onTouchEnd={onUp}
               />
-              {cmykPreview && (
-                <canvas ref={cmykCanvasRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }} />
-              )}
             </div>
             <p className="text-xs text-gray-400 mt-2 text-center">形をドラッグで移動 · 空白クリックで拡大</p>
             <div className="mt-3 flex flex-wrap items-center gap-2">
