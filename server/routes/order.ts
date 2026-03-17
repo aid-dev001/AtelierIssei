@@ -43,8 +43,10 @@ async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise
     // Step 1: PNG → 8-bit sRGB TIFF (flatten alpha onto white, force TrueColor)
     await execAsync(`"${MAGICK}" "${inputPng}" -background white -flatten -type TrueColor -depth 8 -compress lzw "${rgbTif}"`);
     // Step 2: tificc: sRGB → Japan Color 2001 Coated CMYK
-    // -t0 = Perceptual intent | -b = Black Point Compensation
-    await execAsync(`"${TIFICC}" -i"*sRGB" -o"${ICC_JAPAN}" -t0 -b "${rgbTif}" "${outputTif}"`);
+    // -t1 = Relative Colorimetric | -b = Black Point Compensation
+    // Relative Colorimetric clips out-of-gamut colors to the gamut boundary,
+    // preserving in-gamut colors accurately → better vibrancy than Perceptual (-t0)
+    await execAsync(`"${TIFICC}" -i"*sRGB" -o"${ICC_JAPAN}" -t1 -b "${rgbTif}" "${outputTif}"`);
     // Step 3: Embed ICC + reduce K (black ink) by 30% → brighter, more vivid result
     await execAsync(`"${MAGICK}" "${outputTif}" -profile "${ICC_JAPAN}" -channel Black -evaluate multiply 0.70 +channel -compress lzw "${outputTif}"`);
   } finally {
