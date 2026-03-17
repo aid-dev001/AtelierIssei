@@ -192,7 +192,7 @@ Tシャツ注文が届きました。
 デザイン画像を添付しています。
     `.trim();
 
-    send('email-admin', 'スタッフへメールを送信中...');
+    send('email-admin', 'メールを送信中...');
     await transporter.sendMail({
       from: 'isseiart2018@gmail.com',
       to: ['chatnoir710@gmail.com', 'isseiart2018@gmail.com'],
@@ -202,7 +202,7 @@ Tシャツ注文が届きました。
       attachments
     });
 
-    send('email-customer', 'お客様へ確認メールを送信中...');
+    send('email-customer', '確認メールを送信中...');
     await transporter.sendMail({
       from: 'isseiart2018@gmail.com',
       to: email,
