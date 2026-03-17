@@ -698,7 +698,7 @@ const Product: React.FC = () => {
     let rw = maxW, rh = rw / da;
     if (rh > maxH) { rh = maxH; rw = rh * da; }
     ctx.drawImage(dc, (W - rw) / 2 + designPos.x * PRINT_SCALE, H * 0.26 + designPos.y * PRINT_SCALE, rw, rh);
-    drawLabelOnCtx(ctx, W, H, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
+    drawLabelOnCtx(ctx, W, H, labelImg, labelVisible, labelLang, { x: labelOffset.x * PRINT_SCALE, y: labelOffset.y * PRINT_SCALE }, tshirtColor);
     return injectDpi300(off.toDataURL("image/png"));
   }, [tshirtColor, tshirtAspect, tshirtBlackAspect, shapeScale, designPos, labelImg, labelVisible, labelLang, labelOffset]);
 

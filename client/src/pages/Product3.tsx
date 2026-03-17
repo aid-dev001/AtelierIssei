@@ -584,7 +584,7 @@ export default function Product3() {
     offCtx.globalCompositeOperation = "destination-in";
     offCtx.drawImage(mask, 0, 0);
     offCtx.globalCompositeOperation = "source-over";
-    drawLabelOnCtx(offCtx, W, H, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
+    drawLabelOnCtx(offCtx, W, H, labelImg, labelVisible, labelLang, { x: labelOffset.x * PS, y: labelOffset.y * PS }, tshirtColor);
     return injectDpi300(off.toDataURL("image/png"));
   }, [artImg, shapes, shapeMode, artOffsetX, artOffsetY, artRotation, artScale, labelImg, labelVisible, labelLang, labelOffset, tshirtColor]);
 
