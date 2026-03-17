@@ -778,6 +778,8 @@ export default function Product2() {
 
   const selectedArtItem = selectedArtId != null ? artworks.find((a) => a.id === selectedArtId) ?? null : null;
   const [orderOpen, setOrderOpen] = useState(false);
+  const [cachedFrontDataUrl, setCachedFrontDataUrl] = useState<string>("");
+  const [cachedBackDataUrl, setCachedBackDataUrl] = useState<string | null>(null);
   const artDetailUrl = selectedArtItem ? `${window.location.origin}/artwork/${selectedArtId}` : null;
 
   return (
@@ -1096,7 +1098,7 @@ export default function Product2() {
           {selectedArtId != null && (
             <div className="mt-16 flex justify-center">
               <button
-                onClick={() => setOrderOpen(true)}
+                onClick={() => { setCachedFrontDataUrl(frontRef.current?.toDataURL("image/png") ?? ""); setCachedBackDataUrl(backRef.current?.toDataURL("image/png") ?? null); setOrderOpen(true); }}
                 className="px-14 py-4 border border-black text-black bg-white text-sm tracking-[0.5em] font-light hover:bg-black hover:text-white transition-all duration-500"
               >
                 注文する
@@ -1141,12 +1143,12 @@ export default function Product2() {
       <ImageModal isOpen={!!modalImg} src={modalImg ?? ''} transparentSrc={modalTransparentImg ?? undefined} compositeWithCmyk={modalCompositeWithCmyk} onClose={() => { setModalImg(null); setModalTransparentImg(null); setModalCompositeWithCmyk(undefined); }} />
       {orderOpen && (
         <OrderModal
-          imageDataUrl={frontRef.current?.toDataURL("image/png") ?? ""}
-          imageDataUrl2={backRef.current?.toDataURL("image/png") ?? null}
-          transparentDataUrl={getFrontTransparentPng()}
-          transparentDataUrl2={getBackTransparentPng()}
+          imageDataUrl={cachedFrontDataUrl}
+          imageDataUrl2={cachedBackDataUrl}
           productName="PRODUCT 2"
           artworkTitle={selectedArtItem?.title}
+          onGetTransparentPng={getFrontTransparentPng}
+          onGetTransparentPng2={getBackTransparentPng}
           onClose={() => setOrderOpen(false)}
         />
       )}

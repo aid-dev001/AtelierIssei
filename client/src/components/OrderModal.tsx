@@ -4,11 +4,11 @@ import { X } from "lucide-react";
 type Props = {
   imageDataUrl: string;
   imageDataUrl2?: string | null;
-  transparentDataUrl?: string | null;
-  transparentDataUrl2?: string | null;
   productName: string;
   artworkTitle?: string;
   onClose: () => void;
+  onGetTransparentPng?: () => string | null;
+  onGetTransparentPng2?: () => string | null;
 };
 
 const SIZES = ["S", "M", "L", "XL", "XXL"];
@@ -16,11 +16,11 @@ const SIZES = ["S", "M", "L", "XL", "XXL"];
 export default function OrderModal({
   imageDataUrl,
   imageDataUrl2,
-  transparentDataUrl,
-  transparentDataUrl2,
   productName,
   artworkTitle,
   onClose,
+  onGetTransparentPng,
+  onGetTransparentPng2,
 }: Props) {
   const [name, setName] = useState(() => localStorage.getItem("order_name") ?? "");
   const [email, setEmail] = useState(() => localStorage.getItem("order_email") ?? "");
@@ -30,6 +30,7 @@ export default function OrderModal({
 
   const [step, setStep] = useState<"form" | "done">("form");
   const [loading, setLoading] = useState(false);
+  const [progressMsg, setProgressMsg] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => { localStorage.setItem("order_name", name); }, [name]);
@@ -47,6 +48,13 @@ export default function OrderModal({
     e.preventDefault();
     setLoading(true);
     setError("");
+    setProgressMsg("デザインを準備中...");
+
+    await new Promise(resolve => setTimeout(resolve, 60));
+
+    const transparentData = onGetTransparentPng?.() ?? null;
+    const transparentData2 = onGetTransparentPng2?.() ?? null;
+
     try {
       const res = await fetch("/api/order", {
         method: "POST",
@@ -57,17 +65,49 @@ export default function OrderModal({
           artworkTitle: artworkTitle ?? "",
           imageData: imageDataUrl,
           imageData2: imageDataUrl2 ?? null,
-          transparentData: transparentDataUrl ?? null,
-          transparentData2: transparentDataUrl2 ?? null,
+          transparentData,
+          transparentData2,
         }),
       });
-      if (!res.ok) throw new Error();
-      ["order_name","order_email","order_address","order_size","order_comment"].forEach(k => localStorage.removeItem(k));
+
+      if (!res.ok || !res.body) throw new Error("server error");
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let isDone = false;
+      let errorMsg = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          try {
+            const data = JSON.parse(line);
+            if (data.step === "done") {
+              isDone = true;
+            } else if (data.step === "error") {
+              errorMsg = data.msg;
+            } else {
+              setProgressMsg(data.msg);
+            }
+          } catch {}
+        }
+      }
+
+      if (!isDone) throw new Error(errorMsg || "不明なエラー");
+
+      ["order_name", "order_email", "order_address", "order_size", "order_comment"].forEach(k => localStorage.removeItem(k));
       setStep("done");
     } catch {
       setError("注文の送信に失敗しました。サポートにお問い合わせください。");
     } finally {
       setLoading(false);
+      setProgressMsg("");
     }
   };
 
@@ -75,9 +115,10 @@ export default function OrderModal({
     <>
       {loading && (
         <div className="fixed inset-0 z-[400] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
-          <div className="bg-black/80 text-white rounded-2xl px-8 py-6 flex flex-col items-center gap-3 shadow-2xl">
-            <div className="text-sm font-bold tracking-widest animate-pulse">注文送信中...</div>
-            <div className="text-xs text-white/60">この処理には数十秒かかります</div>
+          <div className="bg-black/85 text-white rounded-2xl px-10 py-8 flex flex-col items-center gap-4 shadow-2xl min-w-[260px]">
+            <div className="w-7 h-7 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className="text-sm font-semibold tracking-widest text-center">{progressMsg || "処理中..."}</div>
+            <div className="text-xs text-white/50">この処理には数十秒かかります</div>
           </div>
         </div>
       )}

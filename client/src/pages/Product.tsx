@@ -839,7 +839,6 @@ const Product: React.FC = () => {
 
   const isReady = !!shapeImg && selectedFillId !== null;
   const [orderOpen, setOrderOpen] = useState(false);
-  const [cachedTransparentPng, setCachedTransparentPng] = useState<string | null>(null);
   const [cachedImageDataUrl, setCachedImageDataUrl] = useState<string>("");
   const selectedFillArt = selectedFillId != null && selectedFillId !== -1
     ? artworks.find((a) => a.id === selectedFillId) ?? null
@@ -1118,7 +1117,7 @@ const Product: React.FC = () => {
         {isReady && (
           <div className="mt-16 flex justify-center">
             <button
-              onClick={() => { setCachedImageDataUrl(tshirtRef.current?.toDataURL("image/png") ?? ""); setCachedTransparentPng(null); setOrderOpen(true); }}
+              onClick={() => { setCachedImageDataUrl(tshirtRef.current?.toDataURL("image/png") ?? ""); setOrderOpen(true); }}
               className="px-14 py-4 border border-black text-black bg-white text-sm tracking-[0.5em] font-light hover:bg-black hover:text-white transition-all duration-500"
             >
               注文する
@@ -1167,9 +1166,9 @@ const Product: React.FC = () => {
         {orderOpen && (
           <OrderModal
             imageDataUrl={cachedImageDataUrl}
-            transparentDataUrl={cachedTransparentPng}
             productName="PRODUCT 1"
             artworkTitle={selectedFillArt?.title}
+            onGetTransparentPng={getTransparentPng}
             onClose={() => setOrderOpen(false)}
           />
         )}

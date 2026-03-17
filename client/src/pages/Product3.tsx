@@ -711,6 +711,7 @@ export default function Product3() {
   const visibleArtworks = artworks.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
   const selectedArtItem = selectedArtId != null ? artworks.find((a) => a.id === selectedArtId) ?? null : null;
   const [orderOpen, setOrderOpen] = useState(false);
+  const [cachedImageDataUrl, setCachedImageDataUrl] = useState<string>("");
   const artDetailUrl = selectedArtItem ? `${window.location.origin}/artwork/${selectedArtId}` : null;
 
   return (
@@ -1012,7 +1013,7 @@ export default function Product3() {
         {selectedArtId != null && shapes.length > 0 && (
           <div className="mt-16 flex justify-center">
             <button
-              onClick={() => setOrderOpen(true)}
+              onClick={() => { setCachedImageDataUrl(canvasRef.current?.toDataURL("image/png") ?? ""); setOrderOpen(true); }}
               className="px-14 py-4 border border-black text-black bg-white text-sm tracking-[0.5em] font-light hover:bg-black hover:text-white transition-all duration-500"
             >
               注文する
@@ -1071,10 +1072,10 @@ export default function Product3() {
       <ImageModal isOpen={!!modalImg} src={modalImg ?? ''} transparentSrc={modalTransparentImg ?? undefined} compositeWithCmyk={modalCompositeWithCmyk} onClose={() => { setModalImg(null); setModalTransparentImg(null); setModalCompositeWithCmyk(undefined); }} />
       {orderOpen && (
         <OrderModal
-          imageDataUrl={canvasRef.current?.toDataURL("image/png") ?? ""}
-          transparentDataUrl={getTransparentPng()}
+          imageDataUrl={cachedImageDataUrl}
           productName="PRODUCT 3"
           artworkTitle={selectedArtItem?.title}
+          onGetTransparentPng={getTransparentPng}
           onClose={() => setOrderOpen(false)}
         />
       )}

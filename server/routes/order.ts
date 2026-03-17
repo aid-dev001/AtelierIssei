@@ -15,7 +15,7 @@ const router = Router();
 const ICC_JAPAN = path.resolve('public/icc/JapanColor2001Coated.icc');
 
 // CMYKをスキップしてメール配信テストする場合はtrueに設定
-const SKIP_CMYK = true;
+const SKIP_CMYK = false;
 
 function findBin(name: string, fallbacks: string[]): string {
   try {
@@ -109,14 +109,28 @@ router.post('/create-payment-intent', async (req, res) => {
 });
 
 router.post('/order', async (req, res) => {
-  // Disable socket timeout — CMYK pipeline can take 60+ seconds
   req.socket.setTimeout(0);
+
+  // NDJSONストリームでリアルタイム進捗を送信
+  res.setHeader('Content-Type', 'application/x-ndjson');
+  res.setHeader('Transfer-Encoding', 'chunked');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.flushHeaders();
+
+  const send = (step: string, msg: string) => {
+    res.write(JSON.stringify({ step, msg }) + '\n');
+  };
+
   try {
-    const { name, email, address, size, comment, product, artworkTitle, imageData, imageData2, transparentData, transparentData2, paymentIntentId } = req.body;
+    const { name, email, address, size, comment, product, artworkTitle, imageData, imageData2, transparentData, transparentData2 } = req.body;
 
     if (!name || !email || !imageData) {
-      return res.status(400).json({ error: 'Missing required fields' });
+      send('error', '必須項目が不足しています');
+      res.end();
+      return;
     }
+
+    send('preparing', '注文内容を確認中...');
 
     const pass = (process.env.GMAIL_APP_PASSWORD ?? '').replace(/\s/g, '');
     const transporter = nodemailer.createTransport({
@@ -140,6 +154,7 @@ router.post('/order', async (req, res) => {
       const b64 = transparentData.split(',')[1];
       attachments.push({ filename: 'tshirt-front-transparent.png', content: Buffer.from(b64, 'base64'), contentType: 'image/png' });
       if (!SKIP_CMYK) {
+        send('cmyk-front', 'フロントデザインをCMYK変換中...');
         try {
           const cmykBuf = await pngBase64ToCmykTiff(b64);
           attachments.push({ filename: 'tshirt-front-cmyk.tif', content: cmykBuf, contentType: 'image/tiff' });
@@ -153,6 +168,7 @@ router.post('/order', async (req, res) => {
       const b64 = transparentData2.split(',')[1];
       attachments.push({ filename: 'tshirt-back-transparent.png', content: Buffer.from(b64, 'base64'), contentType: 'image/png' });
       if (!SKIP_CMYK) {
+        send('cmyk-back', 'バックデザインをCMYK変換中...');
         try {
           const cmykBuf2 = await pngBase64ToCmykTiff(b64);
           attachments.push({ filename: 'tshirt-back-cmyk.tif', content: cmykBuf2, contentType: 'image/tiff' });
@@ -172,33 +188,35 @@ Tシャツ注文が届きました。
 使用した作品: ${artworkTitle || '未選択'}
 サイズ: ${size}
 コメント: ${comment || 'なし'}
-決済ID: ${paymentIntentId}
 
 デザイン画像を添付しています。
     `.trim();
 
-    // バックグラウンドでメール送信（レスポンスをブロックしない）
-    res.status(200).json({ message: '注文を受け付けました' });
-
-    transporter.sendMail({
+    send('email-admin', 'スタッフへメールを送信中...');
+    await transporter.sendMail({
       from: 'isseiart2018@gmail.com',
       to: ['chatnoir710@gmail.com', 'isseiart2018@gmail.com'],
       subject: `[ATELIER ISSEI] Tシャツ注文: ${name}様`,
       text: body,
       replyTo: email,
       attachments
-    }).catch((e: unknown) => console.error('Order mail error (admin):', e));
+    });
 
-    transporter.sendMail({
+    send('email-customer', 'お客様へ確認メールを送信中...');
+    await transporter.sendMail({
       from: 'isseiart2018@gmail.com',
       to: email,
       subject: `[ATELIER ISSEI] ご注文を受け付けました`,
       text: `${name} 様\n\nご注文ありがとうございます。\n以下の内容で受け付けました。\n\nプロダクト: ${product}\n使用した作品: ${artworkTitle || '未選択'}\nサイズ: ${size}\n住所: ${address || '未入力'}\nコメント: ${comment || 'なし'}\n\n追って担当者よりご連絡させて頂きます。\n\nATELIER ISSEI`,
       replyTo: 'isseiart2018@gmail.com'
-    }).catch((e: unknown) => console.error('Order mail error (customer):', e));
+    });
+
+    send('done', '完了');
+    res.end();
   } catch (error) {
     console.error('Order error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    send('error', 'エラーが発生しました。サポートにお問い合わせください。');
+    res.end();
   }
 });
 
