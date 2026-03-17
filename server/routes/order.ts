@@ -164,7 +164,7 @@ router.post('/cmyk-preview', async (req, res) => {
   try {
     const base64 = imageData.split(',')[1] ?? imageData;
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    await execAsync(`magick "${inputPath}" -colorspace sRGB -modulate 100,115,100 -colorspace CMYK -colorspace sRGB "${outputPath}"`);
+    await execAsync(`magick "${inputPath}" -colorspace sRGB -colorspace CMYK -colorspace sRGB "${outputPath}"`);
     const pngBuf = fs.readFileSync(outputPath);
     res.set('Content-Type', 'image/png');
     res.send(pngBuf);

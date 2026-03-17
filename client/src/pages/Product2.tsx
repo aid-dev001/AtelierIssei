@@ -48,11 +48,12 @@ function ImageModal({ src, transparentSrc, onClose }: { src: string; transparent
     if (cmykSrc) { setCmykPreview(true); return; }
     setSimulating(true);
     try {
+      const previewInput = transparentSrc || src;
       const [previewRes, tiffRes] = await Promise.all([
         fetch("/api/cmyk-preview", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imageData: src }),
+          body: JSON.stringify({ imageData: previewInput }),
         }),
         transparentSrc ? fetch("/api/convert-cmyk", {
           method: "POST",
@@ -72,10 +73,16 @@ function ImageModal({ src, transparentSrc, onClose }: { src: string; transparent
   return (
     <div className="fixed inset-0 bg-black/85 z-[200] flex items-center justify-center p-4" onClick={onClose}>
       <div className="relative max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
-        <img src={cmykPreview && cmykSrc ? cmykSrc : src} alt="拡大プレビュー" className="w-full rounded-2xl shadow-2xl" />
+        {cmykPreview && cmykSrc ? (
+          <div className="w-full rounded-2xl bg-white flex items-center justify-center p-6 shadow-2xl">
+            <img src={cmykSrc} alt="CMYKプレビュー" className="max-w-full max-h-[60vh] object-contain" />
+          </div>
+        ) : (
+          <img src={src} alt="拡大プレビュー" className="w-full rounded-2xl shadow-2xl" />
+        )}
         {cmykPreview && (
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xs px-3 py-1 rounded-full">
-            CMYKシミュレーション中
+            CMYKシミュレーション（白背景）
           </div>
         )}
         <div className="absolute top-3 right-3 flex gap-2">
