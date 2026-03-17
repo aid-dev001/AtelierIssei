@@ -5,6 +5,27 @@ import ScrollToTopLink from "@/components/ScrollToTopLink";
 import OrderModal from "@/components/OrderModal";
 import { injectDpi300 } from "@/lib/pngDpi";
 
+function boostSat(r: number, g: number, b: number, factor: number): [number, number, number] {
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  if (max === min) return [r, g, b];
+  const l = (max + min) / 2;
+  const d = max - min;
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  const ns = Math.min(1, s * factor);
+  const q = l < 0.5 ? l * (1 + ns) : l + ns - l * ns;
+  const p = 2 * l - q;
+  const h2r = (pp: number, qq: number, t: number) => {
+    if (t < 0) t += 1; if (t > 1) t -= 1;
+    if (t < 1/6) return pp + (qq - pp) * 6 * t;
+    if (t < 1/2) return qq;
+    if (t < 2/3) return pp + (qq - pp) * (2/3 - t) * 6;
+    return pp;
+  };
+  let h = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  h /= 6;
+  return [h2r(p, q, h + 1/3), h2r(p, q, h), h2r(p, q, h - 1/3)];
+}
+
 async function simulateCmykOnCanvas(dataUrl: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -18,15 +39,20 @@ async function simulateCmykOnCanvas(dataUrl: string): Promise<string> {
       const d = id.data;
       for (let i = 0; i < d.length; i += 4) {
         if (d[i + 3] === 0) continue;
-        const r = d[i] / 255, g = d[i + 1] / 255, b = d[i + 2] / 255;
+        let r = d[i] / 255, g = d[i + 1] / 255, b = d[i + 2] / 255;
+        b = Math.min(1, b + 0.20 * r);
         const k = 1 - Math.max(r, g, b);
         if (k >= 1) { d[i] = d[i + 1] = d[i + 2] = 0; continue; }
         const c = (1 - r - k) / (1 - k);
         const m = (1 - g - k) / (1 - k);
         const y = (1 - b - k) / (1 - k);
-        d[i]     = Math.round((1 - c) * (1 - k) * 255);
-        d[i + 1] = Math.round((1 - m) * (1 - k) * 255);
-        d[i + 2] = Math.round((1 - y) * (1 - k) * 255);
+        let ro = (1 - c) * (1 - k);
+        let go = (1 - m) * (1 - k);
+        let bo = (1 - y) * (1 - k);
+        [ro, go, bo] = boostSat(ro, go, bo, 2.0);
+        d[i]     = Math.round(Math.max(0, Math.min(1, ro)) * 255);
+        d[i + 1] = Math.round(Math.max(0, Math.min(1, go)) * 255);
+        d[i + 2] = Math.round(Math.max(0, Math.min(1, bo)) * 255);
       }
       ctx.putImageData(id, 0, 0);
       resolve(canvas.toDataURL("image/png"));
