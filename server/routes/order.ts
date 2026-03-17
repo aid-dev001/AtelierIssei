@@ -20,7 +20,8 @@ async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise
     // Step 1: PNG → 8-bit sRGB TIFF (flatten alpha onto white, force TrueColor)
     await execAsync(`magick "${inputPng}" -background white -flatten -type TrueColor -depth 8 -compress lzw "${rgbTif}"`);
     // Step 2: tificc: sRGB → Japan Color 2001 Coated CMYK (lcms2, built-in *sRGB source)
-    await execAsync(`"${TIFICC}" -i"*sRGB" -o"${ICC_JAPAN}" -t1 "${rgbTif}" "${outputTif}"`);
+    // -t2 = Saturation intent: maximises ink saturation for out-of-gamut vivid colours (e.g. bright greens)
+    await execAsync(`"${TIFICC}" -i"*sRGB" -o"${ICC_JAPAN}" -t2 "${rgbTif}" "${outputTif}"`);
     // Step 3: Embed Japan Color ICC profile explicitly (tificc may omit it)
     await execAsync(`magick "${outputTif}" -profile "${ICC_JAPAN}" -compress lzw "${outputTif}"`);
   } finally {
@@ -192,8 +193,8 @@ router.post('/cmyk-preview', async (req, res) => {
     await execAsync(`magick "${inputPath}" -alpha extract "${alphaPath}"`);
     // 2. tificc: sRGB → Japan Color 2001 Coated CMYK
     await pngToJapanColorTiff(inputPath, cmykTiffPath);
-    // 3. tificc: CMYK → sRGB roundtrip via ICC (same as macOS ColorSync rendering)
-    await execAsync(`"${TIFICC}" -i"${ICC_JAPAN}" -o"*sRGB" -t1 "${cmykTiffPath}" "${rgbTifPath}"`);
+    // 3. tificc: CMYK → sRGB roundtrip via ICC (same intent as forward pass)
+    await execAsync(`"${TIFICC}" -i"${ICC_JAPAN}" -o"*sRGB" -t2 "${cmykTiffPath}" "${rgbTifPath}"`);
     await execAsync(`magick "${rgbTifPath}" "${rgbPath}"`);
     // 4. Re-apply original alpha so transparent areas stay transparent
     await execAsync(`magick "${rgbPath}" "${alphaPath}" -compose CopyOpacity -composite "${outputPath}"`);
