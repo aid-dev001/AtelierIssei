@@ -123,7 +123,7 @@ function drawLabelOnCtx(
   color: "white" | "black"
 ) {
   if (!labelVisible) return;
-  const defaultX = canvasW * 0.73;
+  const defaultX = canvasW * 0.5;
   const defaultY = canvasH * 0.57;
   const lx = defaultX + labelOffset.x;
   const ly = defaultY + labelOffset.y;
