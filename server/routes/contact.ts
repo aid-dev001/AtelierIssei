@@ -23,7 +23,7 @@ router.post('/contact', async (req, res) => {
 
     await resend.emails.send({
       from: 'ATELIER ISSEI <onboarding@resend.dev>',
-      to: ['isseiart2026@gmail.com'],
+      to: ['isseiart2018@gmail.com'],
       subject: `[ATELIER ISSEI] お問い合わせ: ${name}様より`,
       text: `お名前: ${name}\nメールアドレス: ${email}\n\nお問い合わせ内容:\n${message}`,
       replyTo: email
