@@ -239,8 +239,7 @@ async function simulateCmykOnCanvas(dataUrl: string): Promise<string> {
       const d = id.data;
       for (let i = 0; i < d.length; i += 4) {
         if (d[i + 3] === 0) continue;
-        let r = d[i] / 255, g = d[i + 1] / 255, b = d[i + 2] / 255;
-        b = Math.min(1, b + 0.20 * r);
+        const r = d[i] / 255, g = d[i + 1] / 255, b = d[i + 2] / 255;
         const k = 1 - Math.max(r, g, b);
         if (k >= 1) { d[i] = d[i + 1] = d[i + 2] = 0; continue; }
         const c = (1 - r - k) / (1 - k);
