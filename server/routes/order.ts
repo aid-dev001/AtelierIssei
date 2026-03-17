@@ -175,9 +175,10 @@ router.post('/cmyk-preview', async (req, res) => {
     await execAsync(`magick "${inputPath}" -alpha extract "${alphaPath}"`);
     // 2. Apply same corrections as download → save as CMYK TIFF (identical to download pipeline)
     await execAsync(`magick "${inputPath}" -alpha off -colorspace sRGB -color-matrix "1 0 0  0 1 0.12  0.20 0 1" -modulate 100,150,100 -colorspace CMYK -compress lzw "${cmykTiffPath}"`);
-    // 3. Read the CMYK TIFF back and convert to sRGB — this roundtrip through the TIFF format
-    //    gives the most accurate approximation of how the downloaded file renders
-    await execAsync(`magick "${cmykTiffPath}" -colorspace sRGB "${rgbPath}"`);
+    // 3. Read the CMYK TIFF back and convert to sRGB, then apply desaturation/darkening
+    //    to approximate macOS Preview's ColorSync rendering of the CMYK TIFF.
+    //    ImageMagick's CMYK→sRGB keeps more saturation than ColorSync does.
+    await execAsync(`magick "${cmykTiffPath}" -colorspace sRGB -modulate 88,55,100 "${rgbPath}"`);
     // 4. Re-apply original alpha so transparent areas stay transparent
     await execAsync(`magick "${rgbPath}" "${alphaPath}" -compose CopyOpacity -composite "${outputPath}"`);
 
