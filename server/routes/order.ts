@@ -18,13 +18,13 @@ async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise
   const rgbTif = path.join(os.tmpdir(), `issei-rgb-${id}.tif`);
   try {
     // Step 1: PNG → 8-bit sRGB TIFF (flatten alpha onto white, force TrueColor)
-    // +18% blue channel boost so Japan Color maps blues to more C+M ink (less K) → brighter blues
-    await execAsync(`magick "${inputPng}" -background white -flatten -type TrueColor -depth 8 -channel Blue -evaluate multiply 1.18 +channel -compress lzw "${rgbTif}"`);
-    // Step 2: tificc: sRGB → Japan Color 2001 Coated CMYK (lcms2, built-in *sRGB source)
-    // -t2 = Saturation intent: maximises ink saturation for out-of-gamut vivid colours (e.g. bright greens)
-    await execAsync(`"${TIFICC}" -i"*sRGB" -o"${ICC_JAPAN}" -t2 "${rgbTif}" "${outputTif}"`);
-    // Step 3: Embed Japan Color ICC profile explicitly (tificc may omit it)
-    await execAsync(`magick "${outputTif}" -profile "${ICC_JAPAN}" -compress lzw "${outputTif}"`);
+    await execAsync(`magick "${inputPng}" -background white -flatten -type TrueColor -depth 8 -compress lzw "${rgbTif}"`);
+    // Step 2: tificc: sRGB → Japan Color 2001 Coated CMYK
+    // -t0 = Perceptual intent: proportionally maps full sRGB gamut → avoids over-inking vivid colours
+    // -b  = Black Point Compensation: better shadow detail
+    await execAsync(`"${TIFICC}" -i"*sRGB" -o"${ICC_JAPAN}" -t0 -b "${rgbTif}" "${outputTif}"`);
+    // Step 3: Embed ICC + reduce K (black ink) by 20% → brighter, more vivid result
+    await execAsync(`magick "${outputTif}" -profile "${ICC_JAPAN}" -channel Black -evaluate multiply 0.80 +channel -compress lzw "${outputTif}"`);
   } finally {
     try { fs.unlinkSync(rgbTif); } catch {}
   }
@@ -197,8 +197,8 @@ router.post('/cmyk-preview', async (req, res) => {
     await execAsync(`magick "${inputPath}" -alpha extract "${alphaPath}"`);
     // 2. tificc: sRGB → Japan Color 2001 Coated CMYK
     await pngToJapanColorTiff(inputPath, cmykTiffPath);
-    // 3. tificc: CMYK → sRGB roundtrip via ICC (same intent as forward pass)
-    await execAsync(`"${TIFICC}" -i"${ICC_JAPAN}" -o"*sRGB" -t2 "${cmykTiffPath}" "${rgbTifPath}"`);
+    // 3. tificc: CMYK → sRGB roundtrip via ICC (perceptual, matches forward pass)
+    await execAsync(`"${TIFICC}" -i"${ICC_JAPAN}" -o"*sRGB" -t0 -b "${cmykTiffPath}" "${rgbTifPath}"`);
     await execAsync(`magick "${rgbTifPath}" "${rgbPath}"`);
     // 4. Re-apply original alpha so transparent areas stay transparent
     await execAsync(`magick "${rgbPath}" "${alphaPath}" -compose CopyOpacity -composite "${outputPath}"`);
