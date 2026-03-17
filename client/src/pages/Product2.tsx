@@ -231,7 +231,7 @@ function drawLabelOnCtx(
   labelVisible: boolean,
   labelLang: "en" | "ja",
   labelOffset: { x: number; y: number },
-  _color: "white" | "black"
+  color: "white" | "black"
 ) {
   if (!labelVisible || !labelImg) return;
   const defaultX = canvasW * 0.73;
@@ -240,8 +240,10 @@ function drawLabelOnCtx(
   const ly = defaultY + labelOffset.y;
   const scale = canvasW / 1600;
   const lw = 368 * 0.6 * scale;
-  const lh = 64 * 0.6 * scale;
+  const lh = lw * (labelImg.naturalHeight / labelImg.naturalWidth);
+  if (color === "black") ctx.filter = "invert(1)";
   ctx.drawImage(labelImg, lx - lw, ly - lh * 0.75, lw, lh);
+  ctx.filter = "none";
 }
 
 function getClientXY(e: React.MouseEvent | React.TouchEvent) {
@@ -288,13 +290,9 @@ export default function Product2() {
   const [modalTransparentImg, setModalTransparentImg] = useState<string | null>(null);
   const [labelVisible, setLabelVisible] = useState(true);
   const [labelLang, setLabelLang] = useState<"en" | "ja">("en");
-  const [labelImgEnWhite, setLabelImgEnWhite] = useState<HTMLImageElement | null>(null);
-  const [labelImgEnBlack, setLabelImgEnBlack] = useState<HTMLImageElement | null>(null);
-  const [labelImgJaWhite, setLabelImgJaWhite] = useState<HTMLImageElement | null>(null);
-  const [labelImgJaBlack, setLabelImgJaBlack] = useState<HTMLImageElement | null>(null);
-  const labelImg = tshirtColor === "black"
-    ? (labelLang === "en" ? labelImgEnWhite : labelImgJaWhite)
-    : (labelLang === "en" ? labelImgEnBlack : labelImgJaBlack);
+  const [labelImgEn, setLabelImgEn] = useState<HTMLImageElement | null>(null);
+  const [labelImgJa, setLabelImgJa] = useState<HTMLImageElement | null>(null);
+  const labelImg = labelLang === "en" ? labelImgEn : labelImgJa;
   const [labelOffset, setLabelOffset] = useState({ x: 0, y: 0 });
 
   const [page, setPage] = useState(1);
@@ -328,10 +326,8 @@ export default function Product2() {
     loadImg("/product/tshirt2-back.jpg").then(setBackShirtImg);
     loadImg("/product/tshirt2-black-front.jpg").then(setFrontBlackShirtImg);
     loadImg("/product/tshirt2-black-back.jpg").then(setBackBlackShirtImg);
-    loadImg("/product/label-en-white.png").then(setLabelImgEnWhite).catch(() => {});
-    loadImg("/product/label-en-black.png").then(setLabelImgEnBlack).catch(() => {});
-    loadImg("/product/label-ja-white.png").then(setLabelImgJaWhite).catch(() => {});
-    loadImg("/product/label-ja-black.png").then(setLabelImgJaBlack).catch(() => {});
+    loadImg("/product/label-en-white.png").then(setLabelImgEn).catch(() => {});
+    loadImg("/product/label-ja-white.png").then(setLabelImgJa).catch(() => {});
   }, []);
 
   useEffect(() => {
