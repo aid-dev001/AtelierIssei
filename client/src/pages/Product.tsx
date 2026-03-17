@@ -935,7 +935,7 @@ const Product: React.FC = () => {
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-black w-5">←→</span>
-                          <input type="range" min={-200} max={100} value={labelOffset.x}
+                          <input type="range" min={-150} max={150} value={labelOffset.x}
                             onChange={(e) => setLabelOffset((p) => ({ ...p, x: Number(e.target.value) }))}
                             className="w-28 accent-black" />
                         </div>
