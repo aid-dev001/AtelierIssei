@@ -1122,7 +1122,7 @@ const Product: React.FC = () => {
             >
               注文する
             </button>
-            <p className="text-[10px] text-gray-400 tracking-wider text-center">
+            <p className="text-[10px] text-black tracking-wider text-center">
               デザインの生成・送信のため、数分〜5分程度かかります
             </p>
           </div>
