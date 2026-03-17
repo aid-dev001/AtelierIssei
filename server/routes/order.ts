@@ -17,8 +17,8 @@ async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise
   const id = path.basename(inputPng, '.png');
   const rgbTif = path.join(os.tmpdir(), `issei-rgb-${id}.tif`);
   try {
-    // Step 1: PNG → 8-bit sRGB TIFF (strip alpha, force TrueColor)
-    await execAsync(`magick "${inputPng}" -alpha off -type TrueColor -depth 8 -compress lzw "${rgbTif}"`);
+    // Step 1: PNG → 8-bit sRGB TIFF (flatten alpha onto white, force TrueColor)
+    await execAsync(`magick "${inputPng}" -background white -flatten -type TrueColor -depth 8 -compress lzw "${rgbTif}"`);
     // Step 2: tificc: sRGB → Japan Color 2001 Coated CMYK (lcms2, built-in *sRGB source)
     await execAsync(`"${TIFICC}" -i"*sRGB" -o"${ICC_JAPAN}" -t1 "${rgbTif}" "${outputTif}"`);
     // Step 3: Embed Japan Color ICC profile explicitly (tificc may omit it)
@@ -179,20 +179,22 @@ router.post('/cmyk-preview', async (req, res) => {
   if (!imageData) return res.status(400).json({ error: 'No image data' });
 
   const ts = Date.now();
-  const inputPath   = path.join(os.tmpdir(), `issei-prev-in-${ts}.png`);
-  const alphaPath   = path.join(os.tmpdir(), `issei-prev-alpha-${ts}.png`);
+  const inputPath    = path.join(os.tmpdir(), `issei-prev-in-${ts}.png`);
+  const alphaPath    = path.join(os.tmpdir(), `issei-prev-alpha-${ts}.png`);
   const cmykTiffPath = path.join(os.tmpdir(), `issei-prev-cmyk-${ts}.tif`);
-  const rgbPath     = path.join(os.tmpdir(), `issei-prev-rgb-${ts}.png`);
-  const outputPath  = path.join(os.tmpdir(), `issei-prev-out-${ts}.png`);
+  const rgbTifPath   = path.join(os.tmpdir(), `issei-prev-rgb-${ts}.tif`);
+  const rgbPath      = path.join(os.tmpdir(), `issei-prev-rgb-${ts}.png`);
+  const outputPath   = path.join(os.tmpdir(), `issei-prev-out-${ts}.png`);
 
   try {
     fs.writeFileSync(inputPath, Buffer.from(imageData.split(',')[1] ?? imageData, 'base64'));
     // 1. Extract original alpha mask
     await execAsync(`magick "${inputPath}" -alpha extract "${alphaPath}"`);
-    // 2. tificc: sRGB → Japan Color 2001 Coated CMYK (lcms2 ICC color management)
+    // 2. tificc: sRGB → Japan Color 2001 Coated CMYK
     await pngToJapanColorTiff(inputPath, cmykTiffPath);
-    // 3. Round-trip CMYK → sRGB (approximates macOS ColorSync rendering of this CMYK TIFF)
-    await execAsync(`magick "${cmykTiffPath}" -colorspace sRGB "${rgbPath}"`);
+    // 3. tificc: CMYK → sRGB roundtrip via ICC (same as macOS ColorSync rendering)
+    await execAsync(`"${TIFICC}" -i"${ICC_JAPAN}" -o"*sRGB" -t1 "${cmykTiffPath}" "${rgbTifPath}"`);
+    await execAsync(`magick "${rgbTifPath}" "${rgbPath}"`);
     // 4. Re-apply original alpha so transparent areas stay transparent
     await execAsync(`magick "${rgbPath}" "${alphaPath}" -compose CopyOpacity -composite "${outputPath}"`);
 
@@ -202,7 +204,7 @@ router.post('/cmyk-preview', async (req, res) => {
     console.error('CMYK preview error:', err);
     res.status(500).json({ error: 'CMYK preview failed' });
   } finally {
-    for (const p of [inputPath, alphaPath, cmykTiffPath, rgbPath, outputPath]) try { fs.unlinkSync(p); } catch {}
+    for (const p of [inputPath, alphaPath, cmykTiffPath, rgbTifPath, rgbPath, outputPath]) try { fs.unlinkSync(p); } catch {}
   }
 });
 
