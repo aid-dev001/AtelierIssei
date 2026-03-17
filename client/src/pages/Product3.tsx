@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Download, X, RefreshCw, Trash2, Eye, EyeOff } from "lucide-react";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 import OrderModal from "@/components/OrderModal";
+import { applyCmykSimulation } from "@/lib/cmykSimulate";
 import { injectDpi300 } from "@/lib/pngDpi";
 
 function ImageModal({ src, transparentSrc, onClose }: { src: string; transparentSrc?: string; onClose: () => void }) {
@@ -260,6 +261,7 @@ export default function Product3() {
   const [blackShirtImg, setBlackShirtImg] = useState<HTMLImageElement | null>(null);
   const [shirtLoaded, setShirtLoaded] = useState(false);
   const [tshirtColor, setTshirtColor] = useState<"white" | "black">("white");
+  const [cmykPreview, setCmykPreview] = useState(false);
   const [shapes, setShapes] = useState<ShapeItem[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [shapeMode, setShapeMode] = useState<"and" | "or">("and");
@@ -277,6 +279,8 @@ export default function Product3() {
   const [page, setPage] = useState(0);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const cmykCanvasRef = useRef<HTMLCanvasElement>(null);
+  const cmykPreviewRef = useRef(false);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const artworkSectionRef = useRef<HTMLDivElement>(null);
   const prevShapesEmpty = useRef(true);
@@ -374,9 +378,22 @@ export default function Product3() {
     }
 
     drawLabelOnCtx(ctx, CW, CH, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
+    if (cmykPreviewRef.current && cmykCanvasRef.current) {
+      const src = canvas, dst = cmykCanvasRef.current;
+      setTimeout(() => { if (src && dst) applyCmykSimulation(src, dst); }, 0);
+    }
   }, [shirtImg, blackShirtImg, artImg, shapes, shapeMode, selectedId, showOutline, tshirtColor, artOffsetX, artOffsetY, artRotation, artScale, labelImg, labelVisible, labelLang, labelOffset]);
 
   useEffect(() => { render(); }, [render]);
+
+  useEffect(() => {
+    cmykPreviewRef.current = cmykPreview;
+    if (cmykPreview) {
+      render();
+    } else if (cmykCanvasRef.current) {
+      cmykCanvasRef.current.width = 0;
+    }
+  }, [cmykPreview, render]);
 
   const getTransparentPng = useCallback((): string | null => {
     if (!artImg || shapes.length === 0) return null;
@@ -566,6 +583,12 @@ export default function Product3() {
                     {c === "white" ? "WHITE" : "BLACK"}
                   </button>
                 ))}
+                <button
+                  onClick={() => setCmykPreview((v) => !v)}
+                  className={`px-3 py-1 text-xs rounded-full border transition-all ${cmykPreview ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-black"}`}
+                >
+                  CMYK
+                </button>
               </div>
             </div>
 
@@ -589,6 +612,9 @@ export default function Product3() {
                 onTouchMove={onMove}
                 onTouchEnd={onUp}
               />
+              {cmykPreview && (
+                <canvas ref={cmykCanvasRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }} />
+              )}
             </div>
             <p className="text-xs text-gray-400 mt-2 text-center">形をドラッグで移動 · 空白クリックで拡大</p>
             <div className="mt-3 flex flex-wrap items-center gap-2">

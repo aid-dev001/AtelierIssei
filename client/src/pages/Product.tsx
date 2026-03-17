@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { RefreshCw, Download, X } from "lucide-react";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 import OrderModal from "@/components/OrderModal";
+import { applyCmykSimulation } from "@/lib/cmykSimulate";
 import { injectDpi300 } from "@/lib/pngDpi";
 
 type ProductShape = { id: number; title: string; imageUrl: string };
@@ -300,6 +301,7 @@ const Product: React.FC = () => {
   const [tshirtAspect, setTshirtAspect] = useState(960 / 1080);
   const [tshirtBlackAspect, setTshirtBlackAspect] = useState(976 / 1079);
   const [tshirtColor, setTshirtColor] = useState<"white" | "black">("white");
+  const [cmykPreview, setCmykPreview] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [fillScale, setFillScale] = useState(1.0);
   const [shapeScale, setShapeScale] = useState(1.0);
@@ -316,6 +318,8 @@ const Product: React.FC = () => {
 
   const compositeRef = useRef<HTMLCanvasElement>(null);
   const tshirtRef = useRef<HTMLCanvasElement>(null);
+  const cmykCanvasRef = useRef<HTMLCanvasElement>(null);
+  const cmykPreviewRef = useRef(false);
   const maskRef = useRef<HTMLCanvasElement | null>(null);
   const maskForImgRef = useRef<HTMLImageElement | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
@@ -446,6 +450,10 @@ const Product: React.FC = () => {
     canvas.width = W;
     canvas.height = H;
     drawTshirt(canvas, compositeRef.current, tshirtBaseImg, tshirtBlackImg, tshirtColor, shapeScale, designPos, labelImg, labelVisible, labelLang, labelOffset);
+    if (cmykPreviewRef.current && cmykCanvasRef.current) {
+      const src = canvas, dst = cmykCanvasRef.current;
+      setTimeout(() => { if (src && dst) applyCmykSimulation(src, dst); }, 0);
+    }
   }, [tshirtBaseImg, tshirtBlackImg, tshirtAspect, tshirtBlackAspect, tshirtColor, shapeScale, designPos, labelImg, labelVisible, labelLang, labelOffset]);
 
   useEffect(() => {
@@ -454,6 +462,15 @@ const Product: React.FC = () => {
     const timer = setTimeout(() => renderTshirt(), 10);
     return () => clearTimeout(timer);
   }, [shapeImg, fillImg, selectedFillId, offset, fillScale, canvasSize, renderComposite, renderTshirt]);
+
+  useEffect(() => {
+    cmykPreviewRef.current = cmykPreview;
+    if (cmykPreview) {
+      renderTshirt();
+    } else if (cmykCanvasRef.current) {
+      cmykCanvasRef.current.width = 0;
+    }
+  }, [cmykPreview, renderTshirt]);
 
   useEffect(() => {
     if (shapeImg && selectedFillId !== null) {
@@ -799,7 +816,7 @@ const Product: React.FC = () => {
               </div>
               <p className="text-xs text-black mb-3">ドラッグ: 絵の位置調整 / クリック: 拡大</p>
               <div
-                className="rounded-2xl overflow-hidden shadow-lg border border-gray-100 cursor-grab active:cursor-grabbing select-none"
+                className="relative rounded-2xl overflow-hidden shadow-lg border border-gray-100 cursor-grab active:cursor-grabbing select-none"
                 style={{ width: "100%", aspectRatio: tshirtColor === "black" ? `${tshirtBlackAspect}` : `${tshirtAspect}` }}
                 onMouseDown={onTshirtDown}
                 onMouseMove={onTshirtMove}
@@ -813,8 +830,20 @@ const Product: React.FC = () => {
                   ref={tshirtRef}
                   style={{ width: "100%", height: "100%", display: "block", pointerEvents: "none" }}
                 />
+                {cmykPreview && (
+                  <canvas
+                    ref={cmykCanvasRef}
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}
+                  />
+                )}
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => setCmykPreview((v) => !v)}
+                  className={`px-3 py-1 rounded-full text-xs border transition-colors ${cmykPreview ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-gray-500"}`}
+                >
+                  CMYK
+                </button>
                 <span className="text-xs text-black tracking-wider">ロゴ</span>
                 <button
                   onClick={() => setLabelVisible((v) => !v)}

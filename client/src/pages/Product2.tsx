@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { RefreshCw, Download, X } from "lucide-react";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 import OrderModal from "@/components/OrderModal";
+import { applyCmykSimulation } from "@/lib/cmykSimulate";
 import { injectDpi300 } from "@/lib/pngDpi";
 
 function ImageModal({ src, transparentSrc, onClose }: { src: string; transparentSrc?: string; onClose: () => void }) {
@@ -180,6 +181,7 @@ export default function Product2() {
   const [frontBlackShirtImg, setFrontBlackShirtImg] = useState<HTMLImageElement | null>(null);
   const [backBlackShirtImg, setBackBlackShirtImg] = useState<HTMLImageElement | null>(null);
   const [tshirtColor, setTshirtColor] = useState<"white" | "black">("white");
+  const [cmykPreview, setCmykPreview] = useState(false);
 
   const [lang, setLang] = useState<"ja" | "en" | "fr">("en");
   const [phraseIdx, setPhraseIdx] = useState(0);
@@ -216,6 +218,9 @@ export default function Product2() {
 
   const frontRef = useRef<HTMLCanvasElement>(null);
   const backRef = useRef<HTMLCanvasElement>(null);
+  const cmykFrontRef = useRef<HTMLCanvasElement>(null);
+  const cmykBackRef = useRef<HTMLCanvasElement>(null);
+  const cmykPreviewRef = useRef(false);
   const previewRef = useRef<HTMLDivElement>(null);
   const fillSectionRef = useRef<HTMLDivElement>(null);
 
@@ -351,6 +356,10 @@ export default function Product2() {
       });
       ctx.restore();
     }
+    if (cmykPreviewRef.current && cmykFrontRef.current) {
+      const src = canvas, dst = cmykFrontRef.current;
+      setTimeout(() => { if (src && dst) applyCmykSimulation(src, dst); }, 0);
+    }
   }, [frontShirtImg, frontBlackShirtImg, artImg, frontPos, lineWidth, artVertOffset, customText, tshirtColor]);
 
   const renderBack = useCallback(() => {
@@ -382,6 +391,10 @@ export default function Product2() {
     ctx.restore();
     ctx.globalCompositeOperation = "source-over";
     drawLabelOnCtx(ctx, BACK_CW, BACK_CH, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
+    if (cmykPreviewRef.current && cmykBackRef.current) {
+      const src = canvas, dst = cmykBackRef.current;
+      setTimeout(() => { if (src && dst) applyCmykSimulation(src, dst); }, 0);
+    }
   }, [backShirtImg, backBlackShirtImg, artImg, backPos, designScale, cropScale, artOffset, tshirtColor, labelImg, labelVisible, labelLang, labelOffset]);
 
   const getFrontTransparentPng = useCallback((): string | null => {
@@ -457,6 +470,17 @@ export default function Product2() {
 
   useEffect(() => { renderFront(); }, [renderFront]);
   useEffect(() => { renderBack(); }, [renderBack]);
+
+  useEffect(() => {
+    cmykPreviewRef.current = cmykPreview;
+    if (cmykPreview) {
+      renderFront();
+      renderBack();
+    } else {
+      if (cmykFrontRef.current) cmykFrontRef.current.width = 0;
+      if (cmykBackRef.current) cmykBackRef.current.width = 0;
+    }
+  }, [cmykPreview, renderFront, renderBack]);
 
   useEffect(() => {
     if (artImg) {
@@ -651,6 +675,10 @@ export default function Product2() {
                     tshirtColor === "black" ? "bg-black text-white border-black" : "bg-white text-gray-500 border-gray-300 hover:border-gray-500"
                   }`}
                 >黒</button>
+                <button
+                  onClick={() => setCmykPreview((v) => !v)}
+                  className={`px-3 py-1 rounded-full text-xs border transition-colors ${cmykPreview ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-gray-500"}`}
+                >CMYK</button>
               </div>
             </div>
 
@@ -658,7 +686,7 @@ export default function Product2() {
               <div>
                 <div className="relative">
                   <div
-                    className="rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-gray-50"
+                    className="relative rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-gray-50"
                     style={{ width: "100%", aspectRatio: `${FRONT_CW} / ${FRONT_CH}` }}
                   >
                     <canvas
@@ -672,6 +700,9 @@ export default function Product2() {
                       onTouchMove={onFrontMove}
                       onTouchEnd={onFrontUp}
                     />
+                    {cmykPreview && (
+                      <canvas ref={cmykFrontRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }} />
+                    )}
                   </div>
                   <button
                     onClick={() => { setModalImg(frontRef.current?.toDataURL("image/png") ?? null); setModalTransparentImg(getFrontTransparentPng()); }}
@@ -763,7 +794,7 @@ export default function Product2() {
               <div>
                 <div className="relative">
                   <div
-                    className="rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-gray-50"
+                    className="relative rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-gray-50"
                     style={{ width: "100%", aspectRatio: `${BACK_CW} / ${BACK_CH}` }}
                   >
                     <canvas
@@ -777,6 +808,9 @@ export default function Product2() {
                       onTouchMove={onBackMove}
                       onTouchEnd={onBackUp}
                     />
+                    {cmykPreview && (
+                      <canvas ref={cmykBackRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }} />
+                    )}
                   </div>
                   <button
                     onClick={() => { setModalImg(backRef.current?.toDataURL("image/png") ?? null); setModalTransparentImg(getBackTransparentPng()); }}
