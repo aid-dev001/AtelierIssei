@@ -154,6 +154,29 @@ Tシャツ注文が届きました。
   }
 });
 
+router.post('/cmyk-preview', async (req, res) => {
+  const { imageData } = req.body as { imageData?: string };
+  if (!imageData) return res.status(400).json({ error: 'No image data' });
+
+  const inputPath = path.join(os.tmpdir(), `issei-prev-in-${Date.now()}.png`);
+  const outputPath = path.join(os.tmpdir(), `issei-prev-out-${Date.now()}.png`);
+
+  try {
+    const base64 = imageData.split(',')[1] ?? imageData;
+    fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
+    await execAsync(`magick "${inputPath}" -colorspace sRGB -modulate 100,115,100 -colorspace CMYK -colorspace sRGB "${outputPath}"`);
+    const pngBuf = fs.readFileSync(outputPath);
+    res.set('Content-Type', 'image/png');
+    res.send(pngBuf);
+  } catch (err) {
+    console.error('CMYK preview error:', err);
+    res.status(500).json({ error: 'CMYK preview failed' });
+  } finally {
+    try { fs.unlinkSync(inputPath); } catch {}
+    try { fs.unlinkSync(outputPath); } catch {}
+  }
+});
+
 router.post('/convert-cmyk', async (req, res) => {
   const { imageData } = req.body as { imageData?: string };
   if (!imageData) return res.status(400).json({ error: 'No image data' });

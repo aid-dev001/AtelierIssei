@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Download, X, RefreshCw, Trash2, Eye, EyeOff } from "lucide-react";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 import OrderModal from "@/components/OrderModal";
-import { simulateCmykDataUrl } from "@/lib/cmykSimulate";
 import { injectDpi300 } from "@/lib/pngDpi";
 
 function ImageModal({ src, transparentSrc, onClose }: { src: string; transparentSrc?: string; onClose: () => void }) {
@@ -43,8 +42,15 @@ function ImageModal({ src, transparentSrc, onClose }: { src: string; transparent
     if (cmykSrc) { setCmykPreview(true); return; }
     setSimulating(true);
     try {
-      const result = await simulateCmykDataUrl(src);
-      setCmykSrc(result);
+      const res = await fetch("/api/cmyk-preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageData: src }),
+      });
+      if (!res.ok) throw new Error();
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      setCmykSrc(url);
       setCmykPreview(true);
     } finally {
       setSimulating(false);
