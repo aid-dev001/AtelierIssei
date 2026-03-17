@@ -136,10 +136,14 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
       <div className="relative max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
         <div className="relative w-full">
           <img
+            key={cmykPreview ? "cmyk" : "rgb"}
             src={cmykPreview && cmykSrc ? cmykSrc : src}
             alt={cmykPreview ? "印刷イメージ確認" : "拡大プレビュー"}
             className="w-full rounded-2xl shadow-2xl"
           />
+          {cmykPreview && (
+            <div className="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-2 py-1 rounded font-bold">CMYK印刷色</div>
+          )}
         </div>
         <div className="absolute top-3 right-3 flex gap-2">
           <button onClick={toggleCmykPreview} disabled={simulating || !transparentSrc} style={{ border: "2.5px solid #000" }} className={`rounded-full px-3 py-2 shadow transition-all flex items-center gap-1.5 disabled:opacity-50 text-xs ${cmykPreview ? "bg-black text-white" : "bg-white/90 hover:bg-white text-black"}`} title="CMYKシミュレーション（印刷色の確認）">

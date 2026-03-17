@@ -346,10 +346,14 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
       >
         <div className="relative w-full">
           <img
+            key={cmykPreview ? "cmyk" : "rgb"}
             src={cmykPreview && cmykSrc ? cmykSrc : src}
             alt={cmykPreview ? "印刷イメージ確認" : "拡大プレビュー"}
             className="w-full rounded-2xl shadow-2xl"
           />
+          {cmykPreview && (
+            <div className="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-2 py-1 rounded font-bold">CMYK印刷色</div>
+          )}
         </div>
         <div className="absolute top-3 right-3 flex gap-2">
           <button
