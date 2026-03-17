@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 import Stripe from 'stripe';
 import { exec, execSync } from 'child_process';
 import { promisify } from 'util';
@@ -118,25 +118,31 @@ router.post('/order', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const pass = (process.env.GMAIL_APP_PASSWORD ?? '').replace(/\s/g, '');
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: { user: 'isseiart2018@gmail.com', pass }
+    });
 
-    const attachments: { filename: string; content: Buffer }[] = [];
+    const attachments: { filename: string; content: Buffer; contentType: string }[] = [];
 
     const imgBuffer = Buffer.from(imageData.split(',')[1], 'base64');
-    attachments.push({ filename: 'tshirt-front.png', content: imgBuffer });
+    attachments.push({ filename: 'tshirt-front.png', content: imgBuffer, contentType: 'image/png' });
 
     if (imageData2) {
       const imgBuffer2 = Buffer.from(imageData2.split(',')[1], 'base64');
-      attachments.push({ filename: 'tshirt-back.png', content: imgBuffer2 });
+      attachments.push({ filename: 'tshirt-back.png', content: imgBuffer2, contentType: 'image/png' });
     }
 
     if (transparentData) {
       const b64 = transparentData.split(',')[1];
-      attachments.push({ filename: 'tshirt-front-transparent.png', content: Buffer.from(b64, 'base64') });
+      attachments.push({ filename: 'tshirt-front-transparent.png', content: Buffer.from(b64, 'base64'), contentType: 'image/png' });
       if (!SKIP_CMYK) {
         try {
           const cmykBuf = await pngBase64ToCmykTiff(b64);
-          attachments.push({ filename: 'tshirt-front-cmyk.tif', content: cmykBuf });
+          attachments.push({ filename: 'tshirt-front-cmyk.tif', content: cmykBuf, contentType: 'image/tiff' });
         } catch (e) {
           console.error('CMYK front convert error:', e);
         }
@@ -145,11 +151,11 @@ router.post('/order', async (req, res) => {
 
     if (transparentData2) {
       const b64 = transparentData2.split(',')[1];
-      attachments.push({ filename: 'tshirt-back-transparent.png', content: Buffer.from(b64, 'base64') });
+      attachments.push({ filename: 'tshirt-back-transparent.png', content: Buffer.from(b64, 'base64'), contentType: 'image/png' });
       if (!SKIP_CMYK) {
         try {
           const cmykBuf2 = await pngBase64ToCmykTiff(b64);
-          attachments.push({ filename: 'tshirt-back-cmyk.tif', content: cmykBuf2 });
+          attachments.push({ filename: 'tshirt-back-cmyk.tif', content: cmykBuf2, contentType: 'image/tiff' });
         } catch (e) {
           console.error('CMYK back convert error:', e);
         }
@@ -171,8 +177,8 @@ Tシャツ注文が届きました。
 デザイン画像を添付しています。
     `.trim();
 
-    await resend.emails.send({
-      from: 'ATELIER ISSEI <onboarding@resend.dev>',
+    await transporter.sendMail({
+      from: 'isseiart2018@gmail.com',
       to: ['chatnoir710@gmail.com', 'isseiart2018@gmail.com'],
       subject: `[ATELIER ISSEI] Tシャツ注文: ${name}様`,
       text: body,
@@ -180,9 +186,9 @@ Tシャツ注文が届きました。
       attachments
     });
 
-    await resend.emails.send({
-      from: 'ATELIER ISSEI <onboarding@resend.dev>',
-      to: [email],
+    await transporter.sendMail({
+      from: 'isseiart2018@gmail.com',
+      to: email,
       subject: `[ATELIER ISSEI] ご注文を受け付けました`,
       text: `${name} 様\n\nご注文ありがとうございます。\n以下の内容で受け付けました。\n\nプロダクト: ${product}\n使用した作品: ${artworkTitle || '未選択'}\nサイズ: ${size}\n住所: ${address || '未入力'}\nコメント: ${comment || 'なし'}\n\n追って担当者よりご連絡させて頂きます。\n\nATELIER ISSEI`,
       replyTo: 'isseiart2018@gmail.com'
