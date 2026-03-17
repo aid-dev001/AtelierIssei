@@ -121,7 +121,7 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
       const res = await fetch("/api/cmyk-preview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageData: src }),
+        body: JSON.stringify({ imageData: src, artworkData: transparentSrc }),
       });
       if (!res.ok) throw new Error("cmyk-preview failed");
       const blob = await res.blob();

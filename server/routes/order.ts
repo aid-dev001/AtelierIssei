@@ -157,17 +157,28 @@ Tシャツ注文が届きました。
 });
 
 router.post('/cmyk-preview', async (req, res) => {
-  const { imageData } = req.body as { imageData?: string };
+  const { imageData, artworkData } = req.body as { imageData?: string; artworkData?: string };
   if (!imageData) return res.status(400).json({ error: 'No image data' });
 
-  const inputPath = path.join(os.tmpdir(), `issei-prev-in-${Date.now()}.png`);
-  const outputPath = path.join(os.tmpdir(), `issei-prev-out-${Date.now()}.png`);
+  const ts = Date.now();
+  const shirtPath   = path.join(os.tmpdir(), `issei-prev-shirt-${ts}.png`);
+  const artworkPath = path.join(os.tmpdir(), `issei-prev-art-${ts}.png`);
+  const outputPath  = path.join(os.tmpdir(), `issei-prev-out-${ts}.png`);
 
   try {
-    const base64 = imageData.split(',')[1] ?? imageData;
-    fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    // Same conversion as the download CMYK TIFF, but output sRGB PNG for browser display
-    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,200,100 -colorspace CMYK -colorspace sRGB "${outputPath}"`);
+    const shirtBase64 = imageData.split(',')[1] ?? imageData;
+    fs.writeFileSync(shirtPath, Buffer.from(shirtBase64, 'base64'));
+
+    if (artworkData) {
+      // Convert only the artwork to CMYK colors, then composite onto the original shirt canvas
+      const artBase64 = artworkData.split(',')[1] ?? artworkData;
+      fs.writeFileSync(artworkPath, Buffer.from(artBase64, 'base64'));
+      await execAsync(`magick "${shirtPath}" \\( "${artworkPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,200,100 -colorspace CMYK -colorspace sRGB \\) -composite "${outputPath}"`);
+    } else {
+      // Fallback: convert full canvas
+      await execAsync(`magick "${shirtPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,200,100 -colorspace CMYK -colorspace sRGB "${outputPath}"`);
+    }
+
     const pngBuf = fs.readFileSync(outputPath);
     res.set('Content-Type', 'image/png');
     res.send(pngBuf);
@@ -175,7 +186,8 @@ router.post('/cmyk-preview', async (req, res) => {
     console.error('CMYK preview error:', err);
     res.status(500).json({ error: 'CMYK preview failed' });
   } finally {
-    try { fs.unlinkSync(inputPath); } catch {}
+    try { fs.unlinkSync(shirtPath); } catch {}
+    try { fs.unlinkSync(artworkPath); } catch {}
     try { fs.unlinkSync(outputPath); } catch {}
   }
 });
