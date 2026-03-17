@@ -18,7 +18,8 @@ async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise
   const rgbTif = path.join(os.tmpdir(), `issei-rgb-${id}.tif`);
   try {
     // Step 1: PNG → 8-bit sRGB TIFF (flatten alpha onto white, force TrueColor)
-    await execAsync(`magick "${inputPng}" -background white -flatten -type TrueColor -depth 8 -compress lzw "${rgbTif}"`);
+    // +18% blue channel boost so Japan Color maps blues to more C+M ink (less K) → brighter blues
+    await execAsync(`magick "${inputPng}" -background white -flatten -type TrueColor -depth 8 -channel Blue -evaluate multiply 1.18 +channel -compress lzw "${rgbTif}"`);
     // Step 2: tificc: sRGB → Japan Color 2001 Coated CMYK (lcms2, built-in *sRGB source)
     // -t2 = Saturation intent: maximises ink saturation for out-of-gamut vivid colours (e.g. bright greens)
     await execAsync(`"${TIFICC}" -i"*sRGB" -o"${ICC_JAPAN}" -t2 "${rgbTif}" "${outputTif}"`);
