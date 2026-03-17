@@ -789,8 +789,8 @@ const Product: React.FC = () => {
     const rect = tshirtRef.current.getBoundingClientRect();
     const scale = 1600 / rect.width;
     setDesignPos({
-      x: Math.max(-280, Math.min(280, tshirtDragStartOffsetRef.current.x + dx * scale)),
-      y: Math.max(-80, Math.min(260, tshirtDragStartOffsetRef.current.y + dy * scale)),
+      x: Math.max(-150, Math.min(150, tshirtDragStartOffsetRef.current.x + dx * scale)),
+      y: Math.max(-80, Math.min(140, tshirtDragStartOffsetRef.current.y + dy * scale)),
     });
   };
   const onTshirtUp = () => {
