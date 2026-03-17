@@ -566,23 +566,26 @@ export default function Product3() {
                     <button onClick={() => setLabelLang("en")} className={`px-3 py-1 transition-colors ${labelLang === "en" ? "bg-black text-white" : "bg-white text-black hover:bg-gray-100"}`}>EN</button>
                     <button onClick={() => setLabelLang("fr")} className={`px-3 py-1 transition-colors ${labelLang === "fr" ? "bg-black text-white" : "bg-white text-black hover:bg-gray-100"}`}>FR</button>
                   </div>
-                  <div className="flex flex-col gap-1 ml-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-black w-5">←→</span>
-                      <input type="range" min={-250} max={100} value={labelOffset.x}
-                        onChange={(e) => setLabelOffset((p) => ({ ...p, x: Number(e.target.value) }))}
-                        className="w-24 accent-black" />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-black w-5">↑↓</span>
-                      <input type="range" min={-150} max={150} value={labelOffset.y}
-                        onChange={(e) => setLabelOffset((p) => ({ ...p, y: Number(e.target.value) }))}
-                        className="w-24 accent-black" />
+                  <div className="flex items-center gap-3 ml-1">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-black w-5">←→</span>
+                        <input type="range" min={-250} max={100} value={labelOffset.x}
+                          onChange={(e) => setLabelOffset((p) => ({ ...p, x: Number(e.target.value) }))}
+                          className="w-24 accent-black" />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-black w-5">↑↓</span>
+                        <input type="range" min={-150} max={150} value={labelOffset.y}
+                          onChange={(e) => setLabelOffset((p) => ({ ...p, y: Number(e.target.value) }))}
+                          className="w-24 accent-black" />
+                      </div>
                     </div>
                     <button
                       onClick={() => setLabelOffset({ x: 0, y: 0 })}
-                      className="text-xs text-black underline text-left hover:opacity-60 transition-opacity"
+                      className="flex items-center gap-1.5 text-xs text-black hover:text-gray-600 transition-colors"
                     >
+                      <RefreshCw className="w-3.5 h-3.5" />
                       reset
                     </button>
                   </div>
