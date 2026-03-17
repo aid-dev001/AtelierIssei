@@ -130,7 +130,7 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
           className="w-full rounded-2xl shadow-2xl"
         />
         <div className="absolute top-3 right-3 flex gap-2">
-          <button onClick={toggleCmykPreview} disabled={simulating} className={`rounded-full px-3 py-2 shadow transition-all flex items-center gap-1.5 disabled:opacity-50 text-xs ${cmykPreview ? "bg-white text-black border-2 border-gray-600" : "bg-white/90 hover:bg-white text-black border border-gray-400"}`} title="CMYKシミュレーション（印刷色の確認）">
+          <button onClick={toggleCmykPreview} disabled={simulating} className={`rounded-full px-3 py-2 shadow transition-all flex items-center gap-1.5 disabled:opacity-50 text-xs border-2 border-black ${cmykPreview ? "bg-white text-black" : "bg-white/90 hover:bg-white text-black"}`} title="CMYKシミュレーション（印刷色の確認）">
             <span>{simulating ? "処理中…" : "印刷イメージ確認"}</span>
           </button>
           {transparentSrc && (
