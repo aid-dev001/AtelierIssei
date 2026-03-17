@@ -56,7 +56,7 @@ async function simulateCmykOnCanvas(dataUrl: string): Promise<string> {
           go = Math.min(1, go * lift);
           bo = Math.min(1, bo * lift);
         }
-        [ro, go, bo] = boostSat(ro, go, bo, 1.5);
+        [ro, go, bo] = boostSat(ro, go, bo, 1.3);
         d[i]     = Math.round(Math.max(0, Math.min(1, ro)) * 255);
         d[i + 1] = Math.round(Math.max(0, Math.min(1, go)) * 255);
         d[i + 2] = Math.round(Math.max(0, Math.min(1, bo)) * 255);
@@ -69,7 +69,7 @@ async function simulateCmykOnCanvas(dataUrl: string): Promise<string> {
   });
 }
 
-function ImageModal({ src, transparentSrc, backgroundSrc, onClose, isOpen }: { src: string; transparentSrc?: string; backgroundSrc?: string; onClose: () => void; isOpen: boolean }) {
+function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; transparentSrc?: string; onClose: () => void; isOpen: boolean }) {
   const [cmykLoading, setCmykLoading] = useState(false);
   const [cmykPreview, setCmykPreview] = useState(false);
   const [cmykSrc, setCmykSrc] = useState<string | null>(null);
@@ -146,12 +146,6 @@ function ImageModal({ src, transparentSrc, backgroundSrc, onClose, isOpen }: { s
             <button onClick={() => dl(transparentSrc, "issei-print.png")} className="bg-white/90 hover:bg-white rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5" title="透過PNG（プリント部分のみ）">
               <Download className="w-4 h-4 text-black" />
               <span className="text-xs text-black font-medium">透過</span>
-            </button>
-          )}
-          {backgroundSrc && (
-            <button onClick={() => dl(backgroundSrc, "issei-background.png")} className="bg-white/90 hover:bg-white rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5" title="背景画像 300DPI">
-              <Download className="w-4 h-4 text-black" />
-              <span className="text-xs text-black font-medium">背景</span>
             </button>
           )}
           {transparentSrc && (
@@ -320,27 +314,33 @@ function drawShapeOnCtx(ctx: CanvasRenderingContext2D, shape: ShapeItem, mode: "
 }
 
 function buildMask(shapes: ShapeItem[], mode: "and" | "or"): HTMLCanvasElement {
-  const mask = document.createElement("canvas");
-  mask.width = CW;
-  mask.height = CH;
-  const ctx = mask.getContext("2d")!;
+  return buildMaskAt(shapes, mode, CW, CH);
+}
 
+function buildMaskAt(shapes: ShapeItem[], mode: "and" | "or", W: number, H: number): HTMLCanvasElement {
+  const drawS = (ctx: CanvasRenderingContext2D, s: ShapeItem) => {
+    const pw = s.w * W; const ph = s.h * H;
+    ctx.save();
+    ctx.translate(s.cx * W, s.cy * H);
+    ctx.rotate((s.rotation * Math.PI) / 180);
+    ctx.beginPath();
+    if (s.type === "rect") { ctx.rect(-pw / 2, -ph / 2, pw, ph); }
+    else if (s.type === "circle") { ctx.arc(0, 0, Math.min(pw, ph) / 2, 0, Math.PI * 2); }
+    else { ctx.moveTo(0, -ph / 2); ctx.lineTo(pw / 2, ph / 2); ctx.lineTo(-pw / 2, ph / 2); ctx.closePath(); }
+    ctx.fillStyle = "black"; ctx.fill();
+    ctx.restore();
+  };
+  const mask = document.createElement("canvas");
+  mask.width = W; mask.height = H;
+  const ctx = mask.getContext("2d")!;
   if (mode === "or") {
-    // 全形の合計 (union)
-    shapes.forEach((s) => drawShapeOnCtx(ctx, s, "fill"));
+    shapes.forEach((s) => drawS(ctx, s));
   } else {
-    // 全形の交差 (intersection)
-    // まず全体を塗りつぶし、形ごとに destination-in で絞る
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, CW, CH);
+    ctx.fillStyle = "black"; ctx.fillRect(0, 0, W, H);
     shapes.forEach((s) => {
-      const tmp = document.createElement("canvas");
-      tmp.width = CW;
-      tmp.height = CH;
-      const tmpCtx = tmp.getContext("2d")!;
-      drawShapeOnCtx(tmpCtx, s, "fill");
-      ctx.globalCompositeOperation = "destination-in";
-      ctx.drawImage(tmp, 0, 0);
+      const tmp = document.createElement("canvas"); tmp.width = W; tmp.height = H;
+      const tmpCtx = tmp.getContext("2d")!; drawS(tmpCtx, s);
+      ctx.globalCompositeOperation = "destination-in"; ctx.drawImage(tmp, 0, 0);
     });
   }
   return mask;
@@ -379,7 +379,6 @@ export default function Product3() {
   const [artScale, setArtScale] = useState(1);
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [modalTransparentImg, setModalTransparentImg] = useState<string | null>(null);
-  const [modalBackgroundImg, setModalBackgroundImg] = useState<string | null>(null);
   const [labelVisible, setLabelVisible] = useState(true);
   const [labelLang, setLabelLang] = useState<"en" | "fr">("en");
   const [labelImg, setLabelImg] = useState<HTMLImageElement | null>(null);
@@ -491,57 +490,39 @@ export default function Product3() {
   const getTransparentPng = useCallback((): string | null => {
     if (!artImg || shapes.length === 0) return null;
     const off = document.createElement("canvas");
-    off.width = CW;
-    off.height = CH;
+    const PS = Math.max(3, Math.min(
+      Math.max(artImg.naturalWidth, artImg.naturalHeight) / Math.max(CW, CH), 5
+    ));
+    const W = Math.round(CW * PS);
+    const H = Math.round(CH * PS);
+    off.width = W;
+    off.height = H;
     const offCtx = off.getContext("2d")!;
+    offCtx.imageSmoothingEnabled = true;
+    offCtx.imageSmoothingQuality = "high";
     const ar = artImg.width / artImg.height;
-    const cr = CW / CH;
+    const cr = W / H;
     let dw: number, dh: number;
-    if (ar > cr) { dh = CH; dw = dh * ar; }
-    else { dw = CW; dh = dw / ar; }
+    if (ar > cr) { dh = H; dw = dh * ar; }
+    else { dw = W; dh = dw / ar; }
     offCtx.save();
-    offCtx.translate(CW / 2 + artOffsetX * CW, CH / 2 + artOffsetY * CH);
+    offCtx.translate(W / 2 + artOffsetX * W, H / 2 + artOffsetY * H);
     offCtx.rotate((artRotation * Math.PI) / 180);
     offCtx.scale(artScale, artScale);
     offCtx.drawImage(artImg, -dw / 2, -dh / 2, dw, dh);
     offCtx.restore();
-    const mask = buildMask(shapes, shapeMode);
+    const mask = buildMaskAt(shapes, shapeMode, W, H);
     offCtx.globalCompositeOperation = "destination-in";
     offCtx.drawImage(mask, 0, 0);
     offCtx.globalCompositeOperation = "source-over";
-
-    // Upscale 3x for 300 DPI print quality
-    const PS = 3;
-    const print = document.createElement("canvas");
-    print.width = CW * PS;
-    print.height = CH * PS;
-    const printCtx = print.getContext("2d")!;
-    printCtx.imageSmoothingEnabled = true;
-    printCtx.imageSmoothingQuality = "high";
-    printCtx.drawImage(off, 0, 0, print.width, print.height);
-    drawLabelOnCtx(printCtx, print.width, print.height, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
-    return injectDpi300(print.toDataURL("image/png"));
-  }, [artImg, shapes, shapeMode, artOffsetX, artOffsetY, artRotation, artScale, labelImg, labelVisible, labelLang, labelOffset, tshirtColor]);
-
-  const getBackgroundPng = useCallback((): string | null => {
-    if (!artImg) return null;
-    const scale = Math.max(4800 / artImg.naturalWidth, 4800 / artImg.naturalHeight);
-    const W = Math.round(artImg.naturalWidth * scale);
-    const H = Math.round(artImg.naturalHeight * scale);
-    const off = document.createElement("canvas");
-    off.width = W; off.height = H;
-    const ctx = off.getContext("2d")!;
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(artImg, 0, 0, W, H);
+    drawLabelOnCtx(offCtx, W, H, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
     return injectDpi300(off.toDataURL("image/png"));
-  }, [artImg]);
+  }, [artImg, shapes, shapeMode, artOffsetX, artOffsetY, artRotation, artScale, labelImg, labelVisible, labelLang, labelOffset, tshirtColor]);
 
   const openModal = useCallback(() => {
     setModalImg(canvasRef.current?.toDataURL("image/png") ?? null);
     setModalTransparentImg(getTransparentPng());
-    setModalBackgroundImg(getBackgroundPng());
-  }, [getTransparentPng, getBackgroundPng]);
+  }, [getTransparentPng]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -993,7 +974,7 @@ export default function Product3() {
         )}
       </div>
 
-      <ImageModal isOpen={!!modalImg} src={modalImg ?? ''} transparentSrc={modalTransparentImg ?? undefined} backgroundSrc={modalBackgroundImg ?? undefined} onClose={() => { setModalImg(null); setModalTransparentImg(null); setModalBackgroundImg(null); }} />
+      <ImageModal isOpen={!!modalImg} src={modalImg ?? ''} transparentSrc={modalTransparentImg ?? undefined} onClose={() => { setModalImg(null); setModalTransparentImg(null); }} />
       {orderOpen && (
         <OrderModal
           imageDataUrl={canvasRef.current?.toDataURL("image/png") ?? ""}
