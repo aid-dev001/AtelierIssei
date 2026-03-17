@@ -113,8 +113,19 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
     if (cmykSrc) { setCmykPreview(true); return; }
     setSimulating(true);
     try {
-      const result = await simulateCmykOnCanvas(transparentSrc);
-      setCmykSrc(result);
+      const res = await fetch("/api/cmyk-preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageData: src }),
+      });
+      if (!res.ok) throw new Error("cmyk-preview failed");
+      const blob = await res.blob();
+      const dataUrl = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.readAsDataURL(blob);
+      });
+      setCmykSrc(dataUrl);
       setCmykPreview(true);
     } finally {
       setSimulating(false);
@@ -124,10 +135,11 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
     <div className="fixed inset-0 bg-black/85 z-[200] flex items-center justify-center p-4" onClick={onClose}>
       <div className="relative max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
         <div className="relative w-full">
-          <img src={src} alt="拡大プレビュー" className="w-full rounded-2xl shadow-2xl" />
-          {cmykPreview && cmykSrc && (
-            <img src={cmykSrc} alt="印刷イメージ確認" className="absolute inset-0 w-full h-full rounded-2xl" style={{ objectFit: "cover" }} />
-          )}
+          <img
+            src={cmykPreview && cmykSrc ? cmykSrc : src}
+            alt={cmykPreview ? "印刷イメージ確認" : "拡大プレビュー"}
+            className="w-full rounded-2xl shadow-2xl"
+          />
         </div>
         <div className="absolute top-3 right-3 flex gap-2">
           <button onClick={toggleCmykPreview} disabled={simulating || !transparentSrc} style={{ border: "2.5px solid #000" }} className={`rounded-full px-3 py-2 shadow transition-all flex items-center gap-1.5 disabled:opacity-50 text-xs ${cmykPreview ? "bg-white text-black" : "bg-white/90 hover:bg-white text-black"}`} title="CMYKシミュレーション（印刷色の確認）">
