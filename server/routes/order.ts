@@ -167,9 +167,9 @@ router.post('/cmyk-preview', async (req, res) => {
   try {
     const base64 = imageData.split(',')[1] ?? imageData;
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    // Apply same pre-compensation as download so preview matches corrected CMYK output
-    // G += 0.25*B (blue fix), B += 0.20*R (pink fix)
-    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0.25  0.20 0 1" -colorspace CMYK -colorspace sRGB "${outputPath}"`);
+    // Honest CMYK round-trip for preview (no pre-compensation — that's only for the download TIFF)
+    // Color matrix shifts neutral grays/whites on the full-shirt image, so we skip it here
+    await execAsync(`magick "${inputPath}" -colorspace sRGB -colorspace CMYK -colorspace sRGB "${outputPath}"`);
     const pngBuf = fs.readFileSync(outputPath);
     res.set('Content-Type', 'image/png');
     res.send(pngBuf);
