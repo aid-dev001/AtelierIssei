@@ -787,12 +787,10 @@ const Product: React.FC = () => {
                 </button>
                 {labelVisible && (
                   <>
-                    <button
-                      onClick={() => setLabelLang((l) => l === "en" ? "fr" : "en")}
-                      className="px-3 py-1 rounded-full text-xs border border-gray-300 hover:border-gray-500 bg-white text-black transition-colors"
-                    >
-                      {labelLang === "en" ? "EN → FR" : "FR → EN"}
-                    </button>
+                    <div className="flex rounded-full border border-gray-300 overflow-hidden text-xs">
+                      <button onClick={() => setLabelLang("en")} className={`px-3 py-1 transition-colors ${labelLang === "en" ? "bg-black text-white" : "bg-white text-black hover:bg-gray-100"}`}>EN</button>
+                      <button onClick={() => setLabelLang("fr")} className={`px-3 py-1 transition-colors ${labelLang === "fr" ? "bg-black text-white" : "bg-white text-black hover:bg-gray-100"}`}>FR</button>
+                    </div>
                     <div className="flex flex-col gap-1 ml-1">
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-black w-5">←→</span>
