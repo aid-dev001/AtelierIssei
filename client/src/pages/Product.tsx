@@ -241,22 +241,20 @@ async function simulateCmykOnCanvas(dataUrl: string): Promise<string> {
       for (let i = 0; i < d.length; i += 4) {
         if (d[i + 3] === 0) continue;
         const r = d[i] / 255, g = d[i + 1] / 255, b = d[i + 2] / 255;
-        const k = 1 - Math.max(r, g, b);
-        if (k >= 1) { d[i] = d[i + 1] = d[i + 2] = 0; continue; }
-        const c = (1 - r - k) / (1 - k);
-        const m = (1 - g - k) / (1 - k);
-        const y = (1 - b - k) / (1 - k);
-        let ro = (1 - c) * (1 - k);
-        let go = (1 - m) * (1 - k);
-        let bo = (1 - y) * (1 - k);
-        // Simulate dot gain: midtones darken slightly in CMYK print
-        const gain = 0.12;
-        ro = ro - ro * (1 - ro) * gain;
-        go = go - go * (1 - go) * gain;
-        bo = bo - bo * (1 - bo) * gain;
-        d[i]     = Math.round(Math.max(0, Math.min(1, ro)) * 255);
-        d[i + 1] = Math.round(Math.max(0, Math.min(1, go)) * 255);
-        d[i + 2] = Math.round(Math.max(0, Math.min(1, bo)) * 255);
+        // Saturation boost: simulates vibrant DTG pigment inks
+        const gray = (r + g + b) / 3;
+        const sat = 1.14;
+        let r2 = Math.max(0, Math.min(1, gray + (r - gray) * sat));
+        let g2 = Math.max(0, Math.min(1, gray + (g - gray) * sat));
+        let b2 = Math.max(0, Math.min(1, gray + (b - gray) * sat));
+        // Shadow dot gain: only dark areas (< 0.38) get slightly darker
+        const sdg = (v: number) => {
+          const f = Math.max(0, 1 - v / 0.38);
+          return v * (1 - f * 0.13);
+        };
+        d[i]     = Math.round(sdg(r2) * 255);
+        d[i + 1] = Math.round(sdg(g2) * 255);
+        d[i + 2] = Math.round(sdg(b2) * 255);
       }
       ctx.putImageData(id, 0, 0);
       resolve(canvas.toDataURL("image/png"));
