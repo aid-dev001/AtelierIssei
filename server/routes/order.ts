@@ -16,7 +16,7 @@ async function pngBase64ToCmykTiff(base64: string): Promise<Buffer> {
   const outputPath = path.join(os.tmpdir(), `issei-cmyk-${id}.tif`);
   try {
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    await execAsync(`magick "${inputPath}" -colorspace sRGB -modulate 100,143,100 -colorspace CMYK -compress lzw "${outputPath}"`);
+    await execAsync(`magick "${inputPath}" -colorspace sRGB -modulate 100,160,100 -colorspace CMYK -compress lzw "${outputPath}"`);
     return fs.readFileSync(outputPath);
   } finally {
     try { fs.unlinkSync(inputPath); } catch {}
@@ -188,7 +188,7 @@ router.post('/convert-cmyk', async (req, res) => {
   try {
     const base64 = imageData.split(',')[1] ?? imageData;
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    await execAsync(`magick "${inputPath}" -colorspace sRGB -modulate 100,143,100 -colorspace CMYK -compress lzw "${outputPath}"`);
+    await execAsync(`magick "${inputPath}" -colorspace sRGB -modulate 100,160,100 -colorspace CMYK -compress lzw "${outputPath}"`);
     const tifBuf = fs.readFileSync(outputPath);
     res.set('Content-Type', 'image/tiff');
     res.set('Content-Disposition', 'attachment; filename="issei-print-cmyk.tif"');

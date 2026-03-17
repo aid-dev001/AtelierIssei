@@ -238,17 +238,34 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
     if (!transparentSrc) return;
     setCmykLoading(true);
     try {
-      const res = await fetch("/api/convert-cmyk", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageData: transparentSrc }),
-      });
-      if (!res.ok) throw new Error();
-      const blob = await res.blob();
-      setCmykTiffBlob(blob);
-      const url = URL.createObjectURL(blob);
-      dl(url, "issei-print-cmyk.tif");
-      URL.revokeObjectURL(url);
+      const fetches: Promise<void>[] = [
+        fetch("/api/convert-cmyk", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ imageData: transparentSrc }),
+        }).then(async (res) => {
+          if (!res.ok) throw new Error();
+          const blob = await res.blob();
+          setCmykTiffBlob(blob);
+          const url = URL.createObjectURL(blob);
+          dl(url, "issei-print-cmyk.tif");
+          URL.revokeObjectURL(url);
+        }),
+      ];
+      if (!cmykSrc) {
+        fetches.push(
+          fetch("/api/cmyk-preview", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ imageData: src }),
+          }).then(async (res) => {
+            if (!res.ok) return;
+            const blob = await res.blob();
+            setCmykSrc(URL.createObjectURL(blob));
+          })
+        );
+      }
+      await Promise.all(fetches);
     } finally {
       setCmykLoading(false);
     }
@@ -258,12 +275,11 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
     if (cmykSrc) { setCmykPreview(true); return; }
     setSimulating(true);
     try {
-      const previewInput = transparentSrc || src;
       const [previewRes, tiffRes] = await Promise.all([
         fetch("/api/cmyk-preview", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imageData: previewInput }),
+          body: JSON.stringify({ imageData: src }),
         }),
         transparentSrc ? fetch("/api/convert-cmyk", {
           method: "POST",
@@ -289,16 +305,10 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
         className="relative max-w-2xl w-full"
         onClick={(e) => e.stopPropagation()}
       >
-        {cmykPreview && cmykSrc ? (
-          <div className="w-full rounded-2xl bg-white flex items-center justify-center p-6 shadow-2xl">
-            <img src={cmykSrc} alt="CMYKプレビュー" className="max-w-full max-h-[60vh] object-contain" />
-          </div>
-        ) : (
-          <img src={src} alt="拡大プレビュー" className="w-full rounded-2xl shadow-2xl" />
-        )}
+        <img src={cmykPreview && cmykSrc ? cmykSrc : src} alt="拡大プレビュー" className="w-full rounded-2xl shadow-2xl" />
         {cmykPreview && (
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xs px-3 py-1 rounded-full">
-            CMYKシミュレーション（白背景）
+            CMYKシミュレーション
           </div>
         )}
         <div className="absolute top-3 right-3 flex gap-2">
