@@ -115,6 +115,7 @@ function buildMask(img: HTMLImageElement, w: number, h: number): HTMLCanvasEleme
 }
 
 const LABEL_TEXT_EN = "ISSEI – Wearable Abstraction";
+const LABEL_TEXT_FR = "ISSEI – L'abstraction à porter";
 const LABEL_TEXT_JA = "ISSEI – 着るアブストラクション";
 
 function drawLabelOnCtx(
@@ -140,7 +141,7 @@ function drawLabelOnCtx(
     ctx.drawImage(labelImg, lx - lw, ly - lh * 0.75, lw, lh);
     ctx.filter = "none";
   } else {
-    const text = labelLang === "fr" ? LABEL_TEXT_JA : LABEL_TEXT_EN;
+    const text = labelLang === "fr" ? LABEL_TEXT_FR : LABEL_TEXT_EN;
     const fs = Math.round(canvasW * 0.011);
     ctx.save();
     ctx.fillStyle = color === "black" ? "#ffffff" : "#1a1a1a";
@@ -499,7 +500,7 @@ const Product: React.FC = () => {
   const [labelImgFr, setLabelImgFr] = useState<HTMLImageElement | null>(null);
   const labelImg = labelLang === "en" ? labelImgEn : labelImgFr;
   const [labelOffset, setLabelOffset] = useState({ x: 100, y: 50 });
-  const [showGuide, setShowGuide] = useState(true);
+  const [showGuide, setShowGuide] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [artworkScrollH, setArtworkScrollH] = useState<number | null>(null);
 
