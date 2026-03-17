@@ -1011,7 +1011,7 @@ export default function Product3() {
         </div>
 
         {selectedArtId != null && shapes.length > 0 && (
-          <div className="mt-24 mb-10 flex flex-col items-center gap-6">
+          <div className="mt-24 mb-20 flex flex-col items-center gap-6">
             <button
               onClick={() => { setCachedImageDataUrl(canvasRef.current?.toDataURL("image/png") ?? ""); setOrderOpen(true); }}
               className="px-14 py-4 border border-black text-black bg-white text-sm tracking-[0.5em] font-light hover:bg-black hover:text-white transition-all duration-500"
