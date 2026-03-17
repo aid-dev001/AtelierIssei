@@ -122,14 +122,14 @@ function drawLabelOnCtx(
   color: "white" | "black"
 ) {
   if (!labelVisible) return;
-  const defaultX = canvasW * 0.87;
-  const defaultY = canvasH * 0.634;
+  const defaultX = canvasW * 0.73;
+  const defaultY = canvasH * 0.57;
   const lx = defaultX + labelOffset.x;
   const ly = defaultY + labelOffset.y;
   if (labelLang === "en" && labelImg) {
     const scale = canvasW / 1600;
-    const lw = 368 * scale;
-    const lh = 64 * scale;
+    const lw = 368 * 0.6 * scale;
+    const lh = 64 * 0.6 * scale;
     if (color === "black") ctx.filter = "invert(1)";
     ctx.drawImage(labelImg, lx - lw, ly - lh * 0.75, lw, lh);
     ctx.filter = "none";
@@ -137,12 +137,27 @@ function drawLabelOnCtx(
     const text = labelLang === "fr" ? LABEL_FR : LABEL_EN;
     ctx.save();
     ctx.fillStyle = color === "black" ? "#ffffff" : "#000000";
-    ctx.font = `400 ${Math.round(canvasW * 0.016)}px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+    ctx.font = `400 ${Math.round(canvasW * 0.010)}px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
     ctx.textAlign = "right";
-    (ctx as any).letterSpacing = `${Math.round(canvasW * 0.002)}px`;
+    (ctx as any).letterSpacing = `${Math.round(canvasW * 0.001)}px`;
     ctx.fillText(text, lx, ly);
     ctx.restore();
   }
+}
+
+function coverShirtText(ctx: CanvasRenderingContext2D, shirtImg: HTMLImageElement, W: number, H: number) {
+  const TX1 = 0.44, TX2 = 0.97;
+  const TY1 = 0.605, TY2 = 0.655;
+  const sampleTY = 0.565;
+  const sw = shirtImg.naturalWidth;
+  const sh = shirtImg.naturalHeight;
+  ctx.drawImage(
+    shirtImg,
+    Math.round(sw * TX1), Math.round(sh * sampleTY),
+    Math.round(sw * (TX2 - TX1)), Math.round(sh * 0.025),
+    W * TX1, H * TY1,
+    W * (TX2 - TX1), H * (TY2 - TY1)
+  );
 }
 
 function drawTshirt(
@@ -166,6 +181,7 @@ function drawTshirt(
   const shirt = color === "white" ? baseImg : blackImg;
   if (shirt) {
     ctx.drawImage(shirt, 0, 0, W, H);
+    coverShirtText(ctx, shirt, W, H);
   } else {
     ctx.fillStyle = color === "white" ? "#cccccc" : "#1a1a1a";
     ctx.fillRect(0, 0, W, H);
@@ -777,20 +793,22 @@ const Product: React.FC = () => {
                     >
                       {labelLang === "en" ? "EN → FR" : "FR → EN"}
                     </button>
-                    <div className="flex items-center gap-1 ml-1">
-                      <span className="text-xs text-black">位置</span>
-                      {([["↑", 0, -30], ["↓", 0, 30], ["←", -30, 0], ["→", 30, 0]] as [string, number, number][]).map(([arrow, dx, dy]) => (
-                        <button
-                          key={arrow}
-                          onClick={() => setLabelOffset((p) => ({ x: p.x + dx * 3, y: p.y + dy * 3 }))}
-                          className="w-7 h-7 flex items-center justify-center rounded border border-gray-300 text-xs hover:border-gray-500 transition-colors"
-                        >
-                          {arrow}
-                        </button>
-                      ))}
+                    <div className="flex flex-col gap-1 ml-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-black w-5">←→</span>
+                        <input type="range" min={-500} max={200} value={labelOffset.x}
+                          onChange={(e) => setLabelOffset((p) => ({ ...p, x: Number(e.target.value) }))}
+                          className="w-28 accent-black" />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-black w-5">↑↓</span>
+                        <input type="range" min={-200} max={200} value={labelOffset.y}
+                          onChange={(e) => setLabelOffset((p) => ({ ...p, y: Number(e.target.value) }))}
+                          className="w-28 accent-black" />
+                      </div>
                       <button
                         onClick={() => setLabelOffset({ x: 0, y: 0 })}
-                        className="px-2 py-1 text-xs border border-gray-300 rounded hover:border-gray-500 transition-colors text-black"
+                        className="text-xs text-black underline text-left hover:opacity-60 transition-opacity"
                       >
                         reset
                       </button>
