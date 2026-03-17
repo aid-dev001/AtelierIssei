@@ -199,7 +199,7 @@ function ImageModal({ src, transparentSrc, compositeWithCmyk, onClose, isOpen }:
         </div>
         <div className="absolute top-3 right-3 flex gap-2">
           <button onClick={toggleCmykPreview} disabled={simulating || !transparentSrc} style={{ border: "2.5px solid #000" }} className={`rounded-full px-3 py-2 shadow transition-all flex items-center gap-1.5 disabled:opacity-50 text-xs ${cmykPreview ? "bg-black text-white" : "bg-white/90 hover:bg-white text-black"}`} title="CMYKシミュレーション（印刷色の確認）">
-            <span>{simulating ? "処理中…" : "印刷イメージ確認"}</span>
+            <span className="font-medium">{simulating ? "処理中…" : "印刷イメージ確認"}</span>
           </button>
           {transparentSrc && (
             <button onClick={() => dl(transparentSrc, "issei-print.png")} className="bg-white/90 hover:bg-white rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5" title="透過PNG（プリント部分のみ）">
