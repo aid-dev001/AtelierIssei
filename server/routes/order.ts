@@ -12,19 +12,20 @@ const router = Router();
 
 const ICC_JAPAN = path.resolve('public/icc/JapanColor2001Coated.icc');
 const TIFICC = '/nix/store/bhkrx8pzqy12v6jmil17lkl8zgcyck0l-lcms2-2.16-bin/bin/tificc';
+const MAGICK = '/nix/store/5vmw6hyi0q1mk7dj0zhda515vscryr4a-imagemagick-7.1.2-7/bin/magick';
 
 async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise<void> {
   const id = path.basename(inputPng, '.png');
   const rgbTif = path.join(os.tmpdir(), `issei-rgb-${id}.tif`);
   try {
     // Step 1: PNG → 8-bit sRGB TIFF (flatten alpha onto white, force TrueColor)
-    await execAsync(`magick "${inputPng}" -background white -flatten -type TrueColor -depth 8 -compress lzw "${rgbTif}"`);
+    await execAsync(`"${MAGICK}" "${inputPng}" -background white -flatten -type TrueColor -depth 8 -compress lzw "${rgbTif}"`);
     // Step 2: tificc: sRGB → Japan Color 2001 Coated CMYK
     // -t0 = Perceptual intent: proportionally maps full sRGB gamut → avoids over-inking vivid colours
     // -b  = Black Point Compensation: better shadow detail
     await execAsync(`"${TIFICC}" -i"*sRGB" -o"${ICC_JAPAN}" -t0 -b "${rgbTif}" "${outputTif}"`);
     // Step 3: Embed ICC + reduce K (black ink) by 30% → brighter, more vivid result
-    await execAsync(`magick "${outputTif}" -profile "${ICC_JAPAN}" -channel Black -evaluate multiply 0.70 +channel -compress lzw "${outputTif}"`);
+    await execAsync(`"${MAGICK}" "${outputTif}" -profile "${ICC_JAPAN}" -channel Black -evaluate multiply 0.70 +channel -compress lzw "${outputTif}"`);
   } finally {
     try { fs.unlinkSync(rgbTif); } catch {}
   }
@@ -38,9 +39,9 @@ async function pngBase64ToCmykTiff(base64: string): Promise<Buffer> {
   const outputPath = path.join(os.tmpdir(), `issei-out-${id}.tif`);
   try {
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    await execAsync(`magick "${inputPath}" -alpha extract "${alphaPath}"`);
+    await execAsync(`"${MAGICK}" "${inputPath}" -alpha extract "${alphaPath}"`);
     await pngToJapanColorTiff(inputPath, cmykPath);
-    await execAsync(`magick "${cmykPath}" -alpha on "${alphaPath}" -compose CopyOpacity -composite -compress lzw "${outputPath}"`);
+    await execAsync(`"${MAGICK}" "${cmykPath}" -alpha on "${alphaPath}" -compose CopyOpacity -composite -compress lzw "${outputPath}"`);
     return fs.readFileSync(outputPath);
   } finally {
     for (const p of [inputPath, cmykPath, alphaPath, outputPath]) try { fs.unlinkSync(p); } catch {}
@@ -194,14 +195,14 @@ router.post('/cmyk-preview', async (req, res) => {
   try {
     fs.writeFileSync(inputPath, Buffer.from(imageData.split(',')[1] ?? imageData, 'base64'));
     // 1. Extract original alpha mask
-    await execAsync(`magick "${inputPath}" -alpha extract "${alphaPath}"`);
+    await execAsync(`"${MAGICK}" "${inputPath}" -alpha extract "${alphaPath}"`);
     // 2. tificc: sRGB → Japan Color 2001 Coated CMYK
     await pngToJapanColorTiff(inputPath, cmykTiffPath);
     // 3. tificc: CMYK → sRGB roundtrip via ICC (perceptual, matches forward pass)
     await execAsync(`"${TIFICC}" -i"${ICC_JAPAN}" -o"*sRGB" -t0 -b "${cmykTiffPath}" "${rgbTifPath}"`);
-    await execAsync(`magick "${rgbTifPath}" "${rgbPath}"`);
+    await execAsync(`"${MAGICK}" "${rgbTifPath}" "${rgbPath}"`);
     // 4. Re-apply original alpha so transparent areas stay transparent
-    await execAsync(`magick "${rgbPath}" "${alphaPath}" -compose CopyOpacity -composite "${outputPath}"`);
+    await execAsync(`"${MAGICK}" "${rgbPath}" "${alphaPath}" -compose CopyOpacity -composite "${outputPath}"`);
 
     res.set('Content-Type', 'image/png');
     res.send(fs.readFileSync(outputPath));
@@ -227,11 +228,11 @@ router.post('/convert-cmyk', async (req, res) => {
     const base64 = imageData.split(',')[1] ?? imageData;
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
     // 1. Extract original alpha mask
-    await execAsync(`magick "${inputPath}" -alpha extract "${alphaPath}"`);
+    await execAsync(`"${MAGICK}" "${inputPath}" -alpha extract "${alphaPath}"`);
     // 2. tificc: sRGB → Japan Color 2001 Coated CMYK (flattens to white internally for tificc)
     await pngToJapanColorTiff(inputPath, cmykPath);
     // 3. Re-apply original alpha to CMYK TIFF (transparent areas = no ink)
-    await execAsync(`magick "${cmykPath}" -alpha on "${alphaPath}" -compose CopyOpacity -composite -compress lzw "${outputPath}"`);
+    await execAsync(`"${MAGICK}" "${cmykPath}" -alpha on "${alphaPath}" -compose CopyOpacity -composite -compress lzw "${outputPath}"`);
     const tifBuf = fs.readFileSync(outputPath);
     res.set('Content-Type', 'image/tiff');
     res.set('Content-Disposition', 'attachment; filename="issei-print-cmyk.tif"');
