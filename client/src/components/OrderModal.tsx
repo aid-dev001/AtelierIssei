@@ -73,6 +73,14 @@ export default function OrderModal({
 
   return (
     <>
+      {loading && (
+        <div className="fixed inset-0 z-[400] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-black/80 text-white rounded-2xl px-8 py-6 flex flex-col items-center gap-3 shadow-2xl">
+            <div className="text-sm font-bold tracking-widest animate-pulse">注文送信中...</div>
+            <div className="text-xs text-white/60">この処理には数十秒かかります</div>
+          </div>
+        </div>
+      )}
       <div className="fixed top-0 left-0 right-0 h-16 bg-black/50 z-[150]" onClick={onClose} />
       <div
         className="fixed inset-x-0 bottom-0 top-16 z-[200] flex items-center justify-center bg-black/60 p-4"

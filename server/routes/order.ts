@@ -54,7 +54,7 @@ async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise
     // Power-2 curve naturally spares high-K (black areas: 90%→81%) while
     // aggressively cutting mid-K (mint greens at K≈55% drop to K≈30%).
     // Linear K×0.70 treated both equally; this is image-content aware.
-    await execAsync(`"${MAGICK}" "${outputTif}" -profile "${ICC_JAPAN}" -channel Black -evaluate pow 2.0 +channel -compress lzw "${outputTif}"`);
+    await execAsync(`"${MAGICK}" "${outputTif}" -profile "${ICC_JAPAN}" -channel Black -evaluate pow 3.0 +channel -compress lzw "${outputTif}"`);
   } finally {
     try { fs.unlinkSync(rgbTif); } catch {}
   }
