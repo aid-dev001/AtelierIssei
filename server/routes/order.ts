@@ -16,10 +16,9 @@ async function pngBase64ToCmykTiff(base64: string): Promise<Buffer> {
   const outputPath = path.join(os.tmpdir(), `issei-cmyk-${id}.tif`);
   try {
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    // Pre-compensate CMYK gamut shifts before conversion:
-    //   G += 0.25*B  → blues shift toward cyan (reduces Magenta, avoids purple cast)
-    //   B += 0.20*R  → pinks/reds get more Blue (reduces Yellow, avoids salmon/orange cast)
-    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0.25  0.20 0 1" -modulate 100,160,100 -colorspace CMYK -compress lzw "${outputPath}"`);
+    // Pre-compensate CMYK blue→purple shift: G += 0.25*B shifts blues toward cyan,
+    // reducing Magenta component in CMYK output and avoiding purple cast
+    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0.25  0 0 1" -modulate 100,160,100 -colorspace CMYK -compress lzw "${outputPath}"`);
     return fs.readFileSync(outputPath);
   } finally {
     try { fs.unlinkSync(inputPath); } catch {}
@@ -192,9 +191,8 @@ router.post('/convert-cmyk', async (req, res) => {
   try {
     const base64 = imageData.split(',')[1] ?? imageData;
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    // Shift blues toward cyan before CMYK (reduces purple cast from Magenta ink)
-    // color-matrix: G_out = G + 0.25*B, reducing Magenta component for blue hues
-    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0.25  0.20 0 1" -modulate 100,160,100 -colorspace CMYK -compress lzw "${outputPath}"`);
+    // Pre-compensate CMYK blue→purple shift: G += 0.25*B shifts blues toward cyan
+    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0.25  0 0 1" -modulate 100,160,100 -colorspace CMYK -compress lzw "${outputPath}"`);
     const tifBuf = fs.readFileSync(outputPath);
     res.set('Content-Type', 'image/tiff');
     res.set('Content-Disposition', 'attachment; filename="issei-print-cmyk.tif"');
