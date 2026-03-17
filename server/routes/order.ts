@@ -47,6 +47,10 @@ async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise
     // more vivid and prevents muddy/dull results on colorful artwork.
     // format: modulate brightness,saturation,hue (100 = unchanged)
     await execAsync(`"${MAGICK}" "${rgbTif}" -modulate 108,125,100 -clamp -compress lzw "${rgbTif}"`);
+    // Step 1.6: Targeted green channel micro-boost (×1.08) to reduce K assigned to
+    // mint/cyan-green hues by Japan Color. Black pixels (R≈G≈B≈0) are unaffected
+    // since G×1.08 of near-zero = near-zero. Non-green hues: negligible shift.
+    await execAsync(`"${MAGICK}" "${rgbTif}" -channel G -evaluate multiply 1.08 -clamp +channel -compress lzw "${rgbTif}"`);
     // Step 2: tificc: sRGB → Japan Color 2001 Coated CMYK
     // -t1 = Relative Colorimetric | -b = Black Point Compensation
     // Relative Colorimetric clips out-of-gamut colors to the gamut boundary,
