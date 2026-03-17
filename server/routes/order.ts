@@ -42,6 +42,11 @@ async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise
   try {
     // Step 1: PNG → 8-bit sRGB TIFF (flatten alpha onto white, force TrueColor)
     await execAsync(`"${MAGICK}" "${inputPng}" -background white -flatten -type TrueColor -depth 8 -compress lzw "${rgbTif}"`);
+    // Step 1.5: Pre-boost brightness (+8%) and saturation (+25%) before ICC conversion.
+    // Japan Color gamut is narrower than sRGB; boosting input makes CMYK output
+    // more vivid and prevents muddy/dull results on colorful artwork.
+    // format: modulate brightness,saturation,hue (100 = unchanged)
+    await execAsync(`"${MAGICK}" "${rgbTif}" -modulate 108,125,100 -clamp -compress lzw "${rgbTif}"`);
     // Step 2: tificc: sRGB → Japan Color 2001 Coated CMYK
     // -t1 = Relative Colorimetric | -b = Black Point Compensation
     // Relative Colorimetric clips out-of-gamut colors to the gamut boundary,
