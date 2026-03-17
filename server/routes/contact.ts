@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { insertContactSchema, contacts } from '../../db/schema';
 import { db } from '../../db';
 
@@ -19,25 +19,19 @@ router.post('/contact', async (req, res) => {
 
     await db.insert(contacts).values({ name, email, message });
 
-    const pass = (process.env.GMAIL_APP_PASSWORD ?? '').replace(/\s/g, '');
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: { user: 'isseiart2026@gmail.com', pass }
-    });
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
-    await transporter.sendMail({
-      from: 'isseiart2026@gmail.com',
-      to: ['isseiart2026@gmail.com', 'chatnoir710@gmail.com'],
+    await resend.emails.send({
+      from: 'ATELIER ISSEI <onboarding@resend.dev>',
+      to: ['isseiart2026@gmail.com'],
       subject: `[ATELIER ISSEI] お問い合わせ: ${name}様より`,
       text: `お名前: ${name}\nメールアドレス: ${email}\n\nお問い合わせ内容:\n${message}`,
       replyTo: email
     });
 
-    await transporter.sendMail({
-      from: 'isseiart2026@gmail.com',
-      to: email,
+    await resend.emails.send({
+      from: 'ATELIER ISSEI <onboarding@resend.dev>',
+      to: [email],
       subject: `[ATELIER ISSEI] お問い合わせを受け付けました`,
       text: `${name} 様\n\nお問い合わせありがとうございます。\n以下の内容で受け付けました。\n\n---\n${message}\n---\n\n追って担当者よりご連絡させて頂きます。\n\nATELIER ISSEI`,
       replyTo: 'isseiart2026@gmail.com'
