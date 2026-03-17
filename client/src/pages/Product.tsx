@@ -387,7 +387,12 @@ function ImageModal({ src, transparentSrc, designSrc, compositeWithCmyk, onClose
       onClick={onClose}
     >
       {(simulating || cmykLoading) && (
-        <div className="fixed inset-0 z-[300]" onClick={(e) => e.stopPropagation()} />
+        <div className="fixed inset-0 z-[300] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-black/80 text-white rounded-2xl px-8 py-6 flex flex-col items-center gap-3 shadow-2xl">
+            <div className="text-sm font-bold tracking-widest animate-pulse">CMYK 変換中...</div>
+            <div className="text-xs text-white/60">この処理には数十秒かかります</div>
+          </div>
+        </div>
       )}
       <div
         className="relative max-w-2xl w-full"
