@@ -173,7 +173,9 @@ router.post('/cmyk-preview', async (req, res) => {
     // 1. Extract original alpha mask
     await execAsync(`magick "${inputPath}" -alpha extract "${alphaPath}"`);
     // 2. Convert to CMYK (same as download), convert back using linear RGB (no gamma) to better match TIFF viewer appearance
-    await execAsync(`magick "${inputPath}" -alpha off -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,200,100 -colorspace CMYK -colorspace RGB "${rgbPath}"`);
+    // color-matrix: row3=0.20*R+B (pink fix: adds B to R-heavy pinks), row2=0.12*B+G (blue fix: shifts B-heavy pixels toward cyan to reduce purple shift in CMYK)
+    // saturation 150 (reduced from 200 to avoid over-saturation of blues while still helping pinks)
+    await execAsync(`magick "${inputPath}" -alpha off -colorspace sRGB -color-matrix "1 0 0  0 1 0.12  0.20 0 1" -modulate 100,150,100 -colorspace CMYK -colorspace RGB "${rgbPath}"`);
     // 3. Re-apply original alpha so transparent areas stay transparent
     await execAsync(`magick "${rgbPath}" "${alphaPath}" -compose CopyOpacity -composite "${outputPath}"`);
 
@@ -197,8 +199,9 @@ router.post('/convert-cmyk', async (req, res) => {
   try {
     const base64 = imageData.split(',')[1] ?? imageData;
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    // Pre-compensate CMYK pink→salmon shift (same as pngBase64ToCmykTiff helper above)
-    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,200,100 -colorspace CMYK -compress lzw "${outputPath}"`);
+    // color-matrix: row3=0.20*R+B (pink fix), row2=0.12*B+G (blue fix: cyan-shift for blues to reduce CMYK purple cast)
+    // saturation 150 (reduced from 200 to prevent over-saturation of blues)
+    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0.12  0.20 0 1" -modulate 100,150,100 -colorspace CMYK -compress lzw "${outputPath}"`);
     const tifBuf = fs.readFileSync(outputPath);
     res.set('Content-Type', 'image/tiff');
     res.set('Content-Disposition', 'attachment; filename="issei-print-cmyk.tif"');
