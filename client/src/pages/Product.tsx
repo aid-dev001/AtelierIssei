@@ -205,6 +205,37 @@ function drawTshirt(
   drawLabelOnCtx(ctx, W, H, labelImg, labelVisible, labelLang, labelOffset, color);
 }
 
+async function simulateCmykOnCanvas(dataUrl: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d")!;
+      ctx.drawImage(img, 0, 0);
+      const id = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const d = id.data;
+      for (let i = 0; i < d.length; i += 4) {
+        if (d[i + 3] === 0) continue;
+        const r = d[i] / 255, g = d[i + 1] / 255, b = d[i + 2] / 255;
+        const k = 1 - Math.max(r, g, b);
+        if (k >= 1) { d[i] = d[i + 1] = d[i + 2] = 0; continue; }
+        const c = (1 - r - k) / (1 - k);
+        const m = (1 - g - k) / (1 - k);
+        const y = (1 - b - k) / (1 - k);
+        d[i]     = Math.round((1 - c) * (1 - k) * 255);
+        d[i + 1] = Math.round((1 - m) * (1 - k) * 255);
+        d[i + 2] = Math.round((1 - y) * (1 - k) * 255);
+      }
+      ctx.putImageData(id, 0, 0);
+      resolve(canvas.toDataURL("image/png"));
+    };
+    img.onerror = reject;
+    img.src = dataUrl;
+  });
+}
+
 function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; transparentSrc?: string; onClose: () => void; isOpen: boolean }) {
   const [cmykLoading, setCmykLoading] = useState(false);
   const [cmykPreview, setCmykPreview] = useState(false);
@@ -238,34 +269,17 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
     if (!transparentSrc) return;
     setCmykLoading(true);
     try {
-      const fetches: Promise<void>[] = [
-        fetch("/api/convert-cmyk", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imageData: transparentSrc }),
-        }).then(async (res) => {
-          if (!res.ok) throw new Error();
-          const blob = await res.blob();
-          setCmykTiffBlob(blob);
-          const url = URL.createObjectURL(blob);
-          dl(url, "issei-print-cmyk.tif");
-          URL.revokeObjectURL(url);
-        }),
-      ];
-      if (!cmykSrc) {
-        fetches.push(
-          fetch("/api/cmyk-preview", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ imageData: src }),
-          }).then(async (res) => {
-            if (!res.ok) return;
-            const blob = await res.blob();
-            setCmykSrc(URL.createObjectURL(blob));
-          })
-        );
-      }
-      await Promise.all(fetches);
+      const res = await fetch("/api/convert-cmyk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageData: transparentSrc }),
+      });
+      if (!res.ok) throw new Error();
+      const blob = await res.blob();
+      setCmykTiffBlob(blob);
+      const url = URL.createObjectURL(blob);
+      dl(url, "issei-print-cmyk.tif");
+      URL.revokeObjectURL(url);
     } finally {
       setCmykLoading(false);
     }
@@ -275,22 +289,8 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
     if (cmykSrc) { setCmykPreview(true); return; }
     setSimulating(true);
     try {
-      const [previewRes, tiffRes] = await Promise.all([
-        fetch("/api/cmyk-preview", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imageData: src }),
-        }),
-        transparentSrc ? fetch("/api/convert-cmyk", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imageData: transparentSrc }),
-        }) : Promise.resolve(null),
-      ]);
-      if (!previewRes.ok) throw new Error();
-      const previewBlob = await previewRes.blob();
-      setCmykSrc(URL.createObjectURL(previewBlob));
-      if (tiffRes && tiffRes.ok) setCmykTiffBlob(await tiffRes.blob());
+      const result = await simulateCmykOnCanvas(src);
+      setCmykSrc(result);
       setCmykPreview(true);
     } finally {
       setSimulating(false);
