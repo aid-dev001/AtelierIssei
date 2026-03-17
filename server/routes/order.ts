@@ -166,12 +166,8 @@ router.post('/cmyk-preview', async (req, res) => {
   try {
     const base64 = imageData.split(',')[1] ?? imageData;
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    // CMYK print simulation: reduce saturation (smaller gamut) + slight darkening (dot gain)
-    // sRGB→CMYK→sRGB is mathematically reversible without ICC profiles (no visible change),
-    // so instead we directly simulate how CMYK printing looks vs screen:
-    //   -modulate 100,72,100 : saturation to 72% (CMYK gamut ~30% narrower than sRGB)
-    //   -brightness-contrast -6,0 : dot gain darkening
-    await execAsync(`magick "${inputPath}" -colorspace sRGB -modulate 100,72,100 -brightness-contrast -6,0 "${outputPath}"`);
+    // Same conversion as the download CMYK TIFF, but output sRGB PNG for browser display
+    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,200,100 -colorspace CMYK -colorspace sRGB "${outputPath}"`);
     const pngBuf = fs.readFileSync(outputPath);
     res.set('Content-Type', 'image/png');
     res.send(pngBuf);
