@@ -140,7 +140,7 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
         )}
         <div className="absolute top-3 right-3 flex gap-2">
           <button onClick={toggleCmykPreview} disabled={simulating} className={`rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5 disabled:opacity-60 ${cmykPreview ? "bg-black text-white" : "bg-white/90 hover:bg-white text-black"}`} title="CMYKシミュレーション（印刷色の確認）">
-            <span className="text-xs font-medium">{simulating ? "処理中…" : "CMYK確認"}</span>
+            <span className="text-xs font-medium">{simulating ? "処理中…" : "印刷イメージ確認"}</span>
           </button>
           {transparentSrc && (
             <button onClick={() => dl(transparentSrc, "issei-print.png")} className="bg-white/90 hover:bg-white rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5" title="透過PNG（プリント部分のみ）">
@@ -223,41 +223,25 @@ function loadImg(src: string): Promise<HTMLImageElement> {
   });
 }
 
-const LABEL_EN = "ISSEI – Wearable Abstraction";
-const LABEL_FR = "ISSEI – L'abstraction à porter";
-
 function drawLabelOnCtx(
   ctx: CanvasRenderingContext2D,
   canvasW: number,
   canvasH: number,
   labelImg: HTMLImageElement | null,
   labelVisible: boolean,
-  labelLang: "en" | "fr",
+  labelLang: "en" | "ja",
   labelOffset: { x: number; y: number },
-  color: "white" | "black"
+  _color: "white" | "black"
 ) {
-  if (!labelVisible) return;
+  if (!labelVisible || !labelImg) return;
   const defaultX = canvasW * 0.73;
   const defaultY = canvasH * 0.57;
   const lx = defaultX + labelOffset.x;
   const ly = defaultY + labelOffset.y;
-  if (labelLang === "en" && labelImg) {
-    const scale = canvasW / 1600;
-    const lw = 368 * 0.6 * scale;
-    const lh = 64 * 0.6 * scale;
-    if (color === "black") ctx.filter = "invert(1)";
-    ctx.drawImage(labelImg, lx - lw, ly - lh * 0.75, lw, lh);
-    ctx.filter = "none";
-  } else {
-    const text = labelLang === "fr" ? LABEL_FR : LABEL_EN;
-    ctx.save();
-    ctx.fillStyle = color === "black" ? "#ffffff" : "#000000";
-    ctx.font = `400 ${Math.round(canvasW * 0.010)}px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
-    ctx.textAlign = "right";
-    (ctx as any).letterSpacing = `${Math.round(canvasW * 0.001)}px`;
-    ctx.fillText(text, lx, ly);
-    ctx.restore();
-  }
+  const scale = canvasW / 1600;
+  const lw = 368 * 0.6 * scale;
+  const lh = 64 * 0.6 * scale;
+  ctx.drawImage(labelImg, lx - lw, ly - lh * 0.75, lw, lh);
 }
 
 function getClientXY(e: React.MouseEvent | React.TouchEvent) {
@@ -303,8 +287,14 @@ export default function Product2() {
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [modalTransparentImg, setModalTransparentImg] = useState<string | null>(null);
   const [labelVisible, setLabelVisible] = useState(true);
-  const [labelLang, setLabelLang] = useState<"en" | "fr">("en");
-  const [labelImg, setLabelImg] = useState<HTMLImageElement | null>(null);
+  const [labelLang, setLabelLang] = useState<"en" | "ja">("en");
+  const [labelImgEnWhite, setLabelImgEnWhite] = useState<HTMLImageElement | null>(null);
+  const [labelImgEnBlack, setLabelImgEnBlack] = useState<HTMLImageElement | null>(null);
+  const [labelImgJaWhite, setLabelImgJaWhite] = useState<HTMLImageElement | null>(null);
+  const [labelImgJaBlack, setLabelImgJaBlack] = useState<HTMLImageElement | null>(null);
+  const labelImg = tshirtColor === "black"
+    ? (labelLang === "en" ? labelImgEnWhite : labelImgJaWhite)
+    : (labelLang === "en" ? labelImgEnBlack : labelImgJaBlack);
   const [labelOffset, setLabelOffset] = useState({ x: 0, y: 0 });
 
   const [page, setPage] = useState(1);
@@ -338,7 +328,10 @@ export default function Product2() {
     loadImg("/product/tshirt2-back.jpg").then(setBackShirtImg);
     loadImg("/product/tshirt2-black-front.jpg").then(setFrontBlackShirtImg);
     loadImg("/product/tshirt2-black-back.jpg").then(setBackBlackShirtImg);
-    loadImg("/product/label-text.png").then(setLabelImg).catch(() => {});
+    loadImg("/product/label-en-white.png").then(setLabelImgEnWhite).catch(() => {});
+    loadImg("/product/label-en-black.png").then(setLabelImgEnBlack).catch(() => {});
+    loadImg("/product/label-ja-white.png").then(setLabelImgJaWhite).catch(() => {});
+    loadImg("/product/label-ja-black.png").then(setLabelImgJaBlack).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -625,8 +618,8 @@ export default function Product2() {
     const dx = (x - frontDragScreen.current.x) / rect.width;
     const dy = (y - frontDragScreen.current.y) / rect.height;
     setFrontPos({
-      x: Math.max(0.1, Math.min(0.9, frontDragStartPos.current.x + dx)),
-      y: Math.max(0.05, Math.min(0.85, frontDragStartPos.current.y + dy)),
+      x: Math.max(0.22, Math.min(0.78, frontDragStartPos.current.x + dx)),
+      y: Math.max(0.22, Math.min(0.72, frontDragStartPos.current.y + dy)),
     });
   };
   const onFrontUp = () => {
@@ -656,8 +649,8 @@ export default function Product2() {
     const dy = (y - backDragScreen.current.y) / rect.height;
     if (backMode === "shirt") {
       setBackPos({
-        x: Math.max(0.1, Math.min(0.9, backDragStartPos.current.x + dx)),
-        y: Math.max(0.1, Math.min(0.9, backDragStartPos.current.y + dy)),
+        x: Math.max(0.22, Math.min(0.78, backDragStartPos.current.x + dx)),
+        y: Math.max(0.20, Math.min(0.78, backDragStartPos.current.y + dy)),
       });
     } else {
       const sq = BACK_SQUARE_BASE * designScale;
@@ -909,7 +902,7 @@ export default function Product2() {
                     <>
                       <div className="flex rounded-full border border-gray-300 overflow-hidden text-xs">
                         <button onClick={() => setLabelLang("en")} className={`px-3 py-1 transition-colors ${labelLang === "en" ? "bg-black text-white" : "bg-white text-black hover:bg-gray-100"}`}>EN</button>
-                        <button onClick={() => setLabelLang("fr")} className={`px-3 py-1 transition-colors ${labelLang === "fr" ? "bg-black text-white" : "bg-white text-black hover:bg-gray-100"}`}>FR</button>
+                        <button onClick={() => setLabelLang("ja")} className={`px-3 py-1 transition-colors ${labelLang === "ja" ? "bg-black text-white" : "bg-white text-black hover:bg-gray-100"}`}>JP</button>
                       </div>
                       <div className="flex items-center gap-3 ml-1">
                         <div className="flex flex-col gap-1">
