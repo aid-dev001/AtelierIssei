@@ -73,6 +73,7 @@ function ImageModal({ src, transparentSrc, compositeWithCmyk, onClose, isOpen }:
   const [simulating, setSimulating] = useState(false);
   const cmykBlobUrlRef = useRef<string | null>(null);
   const prevSrcRef = useRef<string>('');
+  const abortRef = useRef<AbortController | null>(null);
   useEffect(() => {
     if (src && src !== prevSrcRef.current) {
       prevSrcRef.current = src;
@@ -85,6 +86,13 @@ function ImageModal({ src, transparentSrc, compositeWithCmyk, onClose, isOpen }:
   useEffect(() => {
     return () => { if (cmykBlobUrlRef.current) URL.revokeObjectURL(cmykBlobUrlRef.current); };
   }, []);
+  useEffect(() => {
+    if (!isOpen) {
+      if (abortRef.current) { abortRef.current.abort(); abortRef.current = null; }
+      setCmykLoading(false);
+      setSimulating(false);
+    }
+  }, [isOpen]);
   if (!isOpen) return null;
   const dl = (href: string, name: string) => {
     const a = document.createElement("a");
@@ -101,11 +109,12 @@ function ImageModal({ src, transparentSrc, compositeWithCmyk, onClose, isOpen }:
       return;
     }
     if (!transparentSrc) return;
+    const ac = new AbortController(); abortRef.current = ac;
     setCmykLoading(true);
     try {
       const [tiffRes, previewRes] = await Promise.all([
-        fetch("/api/convert-cmyk", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: transparentSrc }) }),
-        !cmykSrc ? fetch("/api/cmyk-preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: transparentSrc }) }) : Promise.resolve(null),
+        fetch("/api/convert-cmyk", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: transparentSrc }), signal: ac.signal }),
+        !cmykSrc ? fetch("/api/cmyk-preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: transparentSrc }), signal: ac.signal }) : Promise.resolve(null),
       ]);
       if (!tiffRes.ok) throw new Error();
       const tiffBlob = await tiffRes.blob();
@@ -126,7 +135,10 @@ function ImageModal({ src, transparentSrc, compositeWithCmyk, onClose, isOpen }:
           setCmykSrc(blobUrl);
         }
       }
+    } catch(e) {
+      if ((e as Error).name === 'AbortError') return;
     } finally {
+      if (abortRef.current === ac) abortRef.current = null;
       setCmykLoading(false);
     }
   };
@@ -134,11 +146,12 @@ function ImageModal({ src, transparentSrc, compositeWithCmyk, onClose, isOpen }:
     if (cmykPreview) { setCmykPreview(false); return; }
     if (!transparentSrc) return;
     if (cmykSrc) { setCmykPreview(true); return; }
+    const ac = new AbortController(); abortRef.current = ac;
     setSimulating(true);
     try {
       const [previewRes, tiffRes] = await Promise.all([
-        fetch("/api/cmyk-preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: transparentSrc }) }),
-        fetch("/api/convert-cmyk", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: transparentSrc }) }),
+        fetch("/api/cmyk-preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: transparentSrc }), signal: ac.signal }),
+        fetch("/api/convert-cmyk", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: transparentSrc }), signal: ac.signal }),
       ]);
       if (!previewRes.ok) throw new Error("cmyk-preview failed");
       const blob = await previewRes.blob();
@@ -154,7 +167,10 @@ function ImageModal({ src, transparentSrc, compositeWithCmyk, onClose, isOpen }:
       }
       if (tiffRes.ok) setCmykTiffBlob(await tiffRes.blob());
       setCmykPreview(true);
+    } catch(e) {
+      if ((e as Error).name === 'AbortError') return;
     } finally {
+      if (abortRef.current === ac) abortRef.current = null;
       setSimulating(false);
     }
   };

@@ -278,6 +278,7 @@ function ImageModal({ src, transparentSrc, designSrc, compositeWithCmyk, onClose
   const [simulating, setSimulating] = useState(false);
   const cmykBlobUrlRef = useRef<string | null>(null);
   const prevSrcRef = useRef<string>('');
+  const abortRef = useRef<AbortController | null>(null);
   useEffect(() => {
     if (src && src !== prevSrcRef.current) {
       prevSrcRef.current = src;
@@ -290,6 +291,13 @@ function ImageModal({ src, transparentSrc, designSrc, compositeWithCmyk, onClose
   useEffect(() => {
     return () => { if (cmykBlobUrlRef.current) URL.revokeObjectURL(cmykBlobUrlRef.current); };
   }, []);
+  useEffect(() => {
+    if (!isOpen) {
+      if (abortRef.current) { abortRef.current.abort(); abortRef.current = null; }
+      setCmykLoading(false);
+      setSimulating(false);
+    }
+  }, [isOpen]);
   if (!isOpen) return null;
   const dl = (href: string, name: string) => {
     const a = document.createElement("a");
@@ -306,12 +314,13 @@ function ImageModal({ src, transparentSrc, designSrc, compositeWithCmyk, onClose
       return;
     }
     if (!transparentSrc) return;
+    const ac = new AbortController(); abortRef.current = ac;
     setCmykLoading(true);
     try {
       const previewSrc = designSrc ?? transparentSrc;
       const [tiffRes, previewRes] = await Promise.all([
-        fetch("/api/convert-cmyk", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: transparentSrc }) }),
-        !cmykSrc && previewSrc ? fetch("/api/cmyk-preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: previewSrc }) }) : Promise.resolve(null),
+        fetch("/api/convert-cmyk", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: transparentSrc }), signal: ac.signal }),
+        !cmykSrc && previewSrc ? fetch("/api/cmyk-preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: previewSrc }), signal: ac.signal }) : Promise.resolve(null),
       ]);
       if (!tiffRes.ok) throw new Error();
       const tiffBlob = await tiffRes.blob();
@@ -332,7 +341,10 @@ function ImageModal({ src, transparentSrc, designSrc, compositeWithCmyk, onClose
           setCmykSrc(blobUrl);
         }
       }
+    } catch(e) {
+      if ((e as Error).name === 'AbortError') return;
     } finally {
+      if (abortRef.current === ac) abortRef.current = null;
       setCmykLoading(false);
     }
   };
@@ -340,12 +352,13 @@ function ImageModal({ src, transparentSrc, designSrc, compositeWithCmyk, onClose
     if (cmykPreview) { setCmykPreview(false); return; }
     if (!designSrc && !transparentSrc) return;
     if (cmykSrc) { setCmykPreview(true); return; }
+    const ac = new AbortController(); abortRef.current = ac;
     setSimulating(true);
     try {
       const tiffSrc = transparentSrc ?? designSrc;
       const [previewRes, tiffRes] = await Promise.all([
-        fetch("/api/cmyk-preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: designSrc ?? transparentSrc }) }),
-        tiffSrc ? fetch("/api/convert-cmyk", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: tiffSrc }) }) : Promise.resolve(null),
+        fetch("/api/cmyk-preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: designSrc ?? transparentSrc }), signal: ac.signal }),
+        tiffSrc ? fetch("/api/convert-cmyk", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: tiffSrc }), signal: ac.signal }) : Promise.resolve(null),
       ]);
       if (!previewRes.ok) throw new Error("cmyk-preview failed");
       const blob = await previewRes.blob();
@@ -361,7 +374,10 @@ function ImageModal({ src, transparentSrc, designSrc, compositeWithCmyk, onClose
       }
       if (tiffRes?.ok) setCmykTiffBlob(await tiffRes.blob());
       setCmykPreview(true);
+    } catch(e) {
+      if ((e as Error).name === 'AbortError') return;
     } finally {
+      if (abortRef.current === ac) abortRef.current = null;
       setSimulating(false);
     }
   };
