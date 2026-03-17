@@ -1096,7 +1096,7 @@ export default function Product2() {
             </div>
 
           {selectedArtId != null && (
-            <div className="mt-16 flex flex-col items-center gap-6">
+            <div className="mt-24 mb-10 flex flex-col items-center gap-6">
               <button
                 onClick={() => { setCachedFrontDataUrl(frontRef.current?.toDataURL("image/png") ?? ""); setCachedBackDataUrl(backRef.current?.toDataURL("image/png") ?? null); setOrderOpen(true); }}
                 className="px-14 py-4 border border-black text-black bg-white text-sm tracking-[0.5em] font-light hover:bg-black hover:text-white transition-all duration-500"
