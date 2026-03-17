@@ -387,7 +387,7 @@ function ImageModal({ src, transparentSrc, designSrc, compositeWithCmyk, onClose
       onClick={onClose}
     >
       {(simulating || cmykLoading) && (
-        <div className="fixed inset-0 z-[300] cursor-wait" onClick={(e) => e.stopPropagation()} />
+        <div className="fixed inset-0 z-[300]" onClick={(e) => e.stopPropagation()} />
       )}
       <div
         className="relative max-w-2xl w-full"
@@ -399,6 +399,7 @@ function ImageModal({ src, transparentSrc, designSrc, compositeWithCmyk, onClose
             src={cmykPreview && cmykSrc ? cmykSrc : src}
             alt={cmykPreview ? "印刷イメージ確認" : "拡大プレビュー"}
             className="w-full rounded-2xl shadow-2xl"
+            style={cmykPreview && cmykSrc ? { filter: "brightness(1.15)" } : undefined}
           />
           {cmykPreview && (
             <div className="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-2 py-1 rounded font-bold">CMYK印刷色</div>
