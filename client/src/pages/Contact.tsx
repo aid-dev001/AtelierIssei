@@ -8,7 +8,7 @@ import { insertContactSchema, type InsertContact } from "@db/schema";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 
-const CONTACT_EMAIL = 'isseiart2026@gmail.com';
+const CONTACT_EMAIL = 'isseiart2018@gmail.com';
 
 const Contact = () => {
   const { toast } = useToast();
@@ -69,7 +69,7 @@ const Contact = () => {
               作品のお問い合わせや展示についてのご相談は、 下記メールアドレスもしくは各種SNSまで直接ご連絡ください。
             </p>
             <div className="text-xl mt-8 space-y-2">
-              <p>isseiart2026@gmail.com</p>
+              <p>isseiart2018@gmail.com</p>
               <p>chatnoir710@gmail.com</p>
             </div>
           </div>

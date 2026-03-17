@@ -636,7 +636,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
     try {
       const contactData = {
         ...req.body,
-        email: "isseiart2026@gmail.com", // 送信先メールアドレスを固定
+        email: "isseiart2018@gmail.com", // 送信先メールアドレスを固定
       };
       const contact = await db.insert(contacts).values(contactData);
       res.json(contact);
