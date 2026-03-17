@@ -7,7 +7,9 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-const execAsync = promisify(exec);
+const _exec = promisify(exec);
+// Wrap with sensible limits: 100 MB buffer, 3-minute timeout per command
+const execAsync = (cmd: string) => _exec(cmd, { maxBuffer: 100 * 1024 * 1024, timeout: 180_000 });
 const router = Router();
 
 const ICC_JAPAN = path.resolve('public/icc/JapanColor2001Coated.icc');
@@ -21,8 +23,7 @@ async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise
     // Step 1: PNG → 8-bit sRGB TIFF (flatten alpha onto white, force TrueColor)
     await execAsync(`"${MAGICK}" "${inputPng}" -background white -flatten -type TrueColor -depth 8 -compress lzw "${rgbTif}"`);
     // Step 2: tificc: sRGB → Japan Color 2001 Coated CMYK
-    // -t0 = Perceptual intent: proportionally maps full sRGB gamut → avoids over-inking vivid colours
-    // -b  = Black Point Compensation: better shadow detail
+    // -t0 = Perceptual intent | -b = Black Point Compensation
     await execAsync(`"${TIFICC}" -i"*sRGB" -o"${ICC_JAPAN}" -t0 -b "${rgbTif}" "${outputTif}"`);
     // Step 3: Embed ICC + reduce K (black ink) by 30% → brighter, more vivid result
     await execAsync(`"${MAGICK}" "${outputTif}" -profile "${ICC_JAPAN}" -channel Black -evaluate multiply 0.70 +channel -compress lzw "${outputTif}"`);
@@ -77,6 +78,8 @@ router.post('/create-payment-intent', async (req, res) => {
 });
 
 router.post('/order', async (req, res) => {
+  // Disable socket timeout — CMYK pipeline can take 60+ seconds
+  req.socket.setTimeout(0);
   try {
     const { name, email, address, size, comment, product, artworkTitle, imageData, imageData2, transparentData, transparentData2, paymentIntentId } = req.body;
 
@@ -179,6 +182,7 @@ Tシャツ注文が届きました。
 });
 
 router.post('/cmyk-preview', async (req, res) => {
+  req.socket.setTimeout(0);
   // Receives the raw design canvas (no shirt background).
   // Returns the same design with CMYK-converted colors, alpha preserved.
   const { imageData } = req.body as { imageData?: string };
@@ -215,6 +219,7 @@ router.post('/cmyk-preview', async (req, res) => {
 });
 
 router.post('/convert-cmyk', async (req, res) => {
+  req.socket.setTimeout(0);
   const { imageData } = req.body as { imageData?: string };
   if (!imageData) return res.status(400).json({ error: 'No image data' });
 
