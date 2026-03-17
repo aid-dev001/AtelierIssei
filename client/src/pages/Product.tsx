@@ -123,8 +123,8 @@ function drawLabelOnCtx(
   color: "white" | "black"
 ) {
   if (!labelVisible) return;
-  const defaultX = canvasW * 0.75;
-  const defaultY = canvasH * 0.85;
+  const defaultX = canvasW * 0.60;
+  const defaultY = canvasH * 0.57;
   const lx = defaultX + labelOffset.x;
   const ly = defaultY + labelOffset.y;
   const scale = canvasW / 1600;
