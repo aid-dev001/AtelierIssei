@@ -499,6 +499,7 @@ const Product: React.FC = () => {
   const [labelImgFr, setLabelImgFr] = useState<HTMLImageElement | null>(null);
   const labelImg = labelLang === "en" ? labelImgEn : labelImgFr;
   const [labelOffset, setLabelOffset] = useState({ x: 100, y: 50 });
+  const [showGuide, setShowGuide] = useState(true);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [artworkScrollH, setArtworkScrollH] = useState<number | null>(null);
 
@@ -635,7 +636,17 @@ const Product: React.FC = () => {
     canvas.width = W;
     canvas.height = H;
     drawTshirt(canvas, compositeRef.current, tshirtBaseImg, tshirtBlackImg, tshirtColor, shapeScale, designPos, labelImg, labelVisible, labelLang, labelOffset);
-  }, [tshirtBaseImg, tshirtBlackImg, tshirtAspect, tshirtBlackAspect, tshirtColor, shapeScale, designPos, labelImg, labelVisible, labelLang, labelOffset]);
+    if (showGuide) {
+      const ctx = canvas.getContext("2d")!;
+      const clipW0 = W * 0.38, clipH0 = H * 0.34;
+      ctx.save();
+      ctx.strokeStyle = "rgba(70, 130, 210, 0.65)";
+      ctx.lineWidth = 4;
+      ctx.setLineDash([18, 10]);
+      ctx.strokeRect((W - clipW0) / 2 - 120 + 2, H * 0.26 - 130 + 2, clipW0 + 210 - 4, clipH0 + 270 - 4);
+      ctx.restore();
+    }
+  }, [tshirtBaseImg, tshirtBlackImg, tshirtAspect, tshirtBlackAspect, tshirtColor, shapeScale, designPos, labelImg, labelVisible, labelLang, labelOffset, showGuide]);
 
   useEffect(() => {
     if (!shapeImg || selectedFillId === null) return;
@@ -1051,7 +1062,14 @@ const Product: React.FC = () => {
                 />
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-2">
-                <span className="text-xs text-black tracking-wider">ロゴ</span>
+                <span className="text-xs text-black tracking-wider">ガイド</span>
+                <button
+                  onClick={() => setShowGuide((v) => !v)}
+                  className={`px-3 py-1 rounded-full text-xs border transition-colors ${showGuide ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-gray-500"}`}
+                >
+                  {showGuide ? "ON" : "OFF"}
+                </button>
+                <span className="text-xs text-black tracking-wider ml-2">ロゴ</span>
                 <button
                   onClick={() => setLabelVisible((v) => !v)}
                   className={`px-3 py-1 rounded-full text-xs border transition-colors ${labelVisible ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-gray-500"}`}
