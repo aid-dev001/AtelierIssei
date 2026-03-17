@@ -172,8 +172,8 @@ router.post('/cmyk-preview', async (req, res) => {
     fs.writeFileSync(inputPath, Buffer.from(imageData.split(',')[1] ?? imageData, 'base64'));
     // 1. Extract original alpha mask
     await execAsync(`magick "${inputPath}" -alpha extract "${alphaPath}"`);
-    // 2. Convert to CMYK (same as download), convert back to sRGB, apply slight darkening to match TIFF viewer appearance
-    await execAsync(`magick "${inputPath}" -alpha off -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,200,100 -colorspace CMYK -colorspace sRGB -modulate 88,100,100 "${rgbPath}"`);
+    // 2. Convert to CMYK (same as download), convert back using linear RGB (no gamma) to better match TIFF viewer appearance
+    await execAsync(`magick "${inputPath}" -alpha off -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,200,100 -colorspace CMYK -colorspace RGB "${rgbPath}"`);
     // 3. Re-apply original alpha so transparent areas stay transparent
     await execAsync(`magick "${rgbPath}" "${alphaPath}" -compose CopyOpacity -composite "${outputPath}"`);
 
