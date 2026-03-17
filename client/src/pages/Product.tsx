@@ -386,6 +386,9 @@ function ImageModal({ src, transparentSrc, designSrc, compositeWithCmyk, onClose
       className="fixed inset-0 bg-black/85 z-[200] flex items-center justify-center p-4"
       onClick={onClose}
     >
+      {(simulating || cmykLoading) && (
+        <div className="fixed inset-0 z-[300] cursor-wait" onClick={(e) => e.stopPropagation()} />
+      )}
       <div
         className="relative max-w-2xl w-full"
         onClick={(e) => e.stopPropagation()}
