@@ -308,17 +308,30 @@ function ImageModal({ src, transparentSrc, designSrc, compositeWithCmyk, onClose
     if (!transparentSrc) return;
     setCmykLoading(true);
     try {
-      const res = await fetch("/api/convert-cmyk", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageData: transparentSrc }),
-      });
-      if (!res.ok) throw new Error();
-      const blob = await res.blob();
-      setCmykTiffBlob(blob);
-      const url = URL.createObjectURL(blob);
+      const previewSrc = designSrc ?? transparentSrc;
+      const [tiffRes, previewRes] = await Promise.all([
+        fetch("/api/convert-cmyk", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: transparentSrc }) }),
+        !cmykSrc && previewSrc ? fetch("/api/cmyk-preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: previewSrc }) }) : Promise.resolve(null),
+      ]);
+      if (!tiffRes.ok) throw new Error();
+      const tiffBlob = await tiffRes.blob();
+      setCmykTiffBlob(tiffBlob);
+      const url = URL.createObjectURL(tiffBlob);
       dl(url, "issei-print-cmyk.tif");
       URL.revokeObjectURL(url);
+      if (previewRes?.ok) {
+        const previewBlob = await previewRes.blob();
+        const blobUrl = URL.createObjectURL(previewBlob);
+        if (compositeWithCmyk) {
+          const compositeDataUrl = await compositeWithCmyk(blobUrl);
+          URL.revokeObjectURL(blobUrl);
+          setCmykSrc(compositeDataUrl);
+        } else {
+          if (cmykBlobUrlRef.current) URL.revokeObjectURL(cmykBlobUrlRef.current);
+          cmykBlobUrlRef.current = blobUrl;
+          setCmykSrc(blobUrl);
+        }
+      }
     } finally {
       setCmykLoading(false);
     }
