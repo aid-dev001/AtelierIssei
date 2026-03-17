@@ -315,10 +315,9 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
   const toggleCmykPreview = async () => {
     if (cmykPreview) { setCmykPreview(false); return; }
     if (cmykSrc) { setCmykPreview(true); return; }
-    if (!transparentSrc) return;
     setSimulating(true);
     try {
-      const result = await simulateCmykOnCanvas(transparentSrc);
+      const result = await simulateCmykOnCanvas(src);
       setCmykSrc(result);
       setCmykPreview(true);
     } finally {
@@ -334,18 +333,15 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
         className="relative max-w-2xl w-full"
         onClick={(e) => e.stopPropagation()}
       >
-        {cmykPreview && cmykSrc ? (
-          <div className="w-full rounded-2xl overflow-hidden shadow-2xl bg-white p-6">
-            <img src={cmykSrc} alt="印刷イメージ確認" className="w-full" />
-            <p className="text-center text-xs text-gray-400 mt-3 tracking-wider">CMYKシミュレーション（印刷色目安）</p>
-          </div>
-        ) : (
-          <img src={src} alt="拡大プレビュー" className="w-full rounded-2xl shadow-2xl" />
-        )}
+        <img
+          src={cmykPreview && cmykSrc ? cmykSrc : src}
+          alt={cmykPreview ? "印刷イメージ確認" : "拡大プレビュー"}
+          className="w-full rounded-2xl shadow-2xl"
+        />
         <div className="absolute top-3 right-3 flex gap-2">
           <button
             onClick={toggleCmykPreview}
-            disabled={simulating || !transparentSrc}
+            disabled={simulating}
             className={`rounded-full px-3 py-2 shadow transition-all flex items-center gap-1.5 disabled:opacity-50 text-xs ${cmykPreview ? "bg-white text-black border-2 border-gray-600" : "bg-white/90 hover:bg-white text-black border border-gray-400"}`}
             title="CMYKシミュレーション（印刷色の確認）"
           >
