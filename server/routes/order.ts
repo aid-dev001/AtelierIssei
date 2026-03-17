@@ -23,8 +23,8 @@ async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise
     // -t0 = Perceptual intent: proportionally maps full sRGB gamut → avoids over-inking vivid colours
     // -b  = Black Point Compensation: better shadow detail
     await execAsync(`"${TIFICC}" -i"*sRGB" -o"${ICC_JAPAN}" -t0 -b "${rgbTif}" "${outputTif}"`);
-    // Step 3: Embed ICC + reduce K (black ink) by 20% → brighter, more vivid result
-    await execAsync(`magick "${outputTif}" -profile "${ICC_JAPAN}" -channel Black -evaluate multiply 0.80 +channel -compress lzw "${outputTif}"`);
+    // Step 3: Embed ICC + reduce K (black ink) by 25% → brighter, more vivid result
+    await execAsync(`magick "${outputTif}" -profile "${ICC_JAPAN}" -channel Black -evaluate multiply 0.75 +channel -compress lzw "${outputTif}"`);
   } finally {
     try { fs.unlinkSync(rgbTif); } catch {}
   }
