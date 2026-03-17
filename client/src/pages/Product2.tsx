@@ -91,6 +91,43 @@ function loadImg(src: string): Promise<HTMLImageElement> {
   });
 }
 
+const LABEL_EN = "ISSEI – Wearable Abstraction";
+const LABEL_FR = "ISSEI – L'abstraction à porter";
+
+function drawLabelOnCtx(
+  ctx: CanvasRenderingContext2D,
+  canvasW: number,
+  canvasH: number,
+  labelImg: HTMLImageElement | null,
+  labelVisible: boolean,
+  labelLang: "en" | "fr",
+  labelOffset: { x: number; y: number },
+  color: "white" | "black"
+) {
+  if (!labelVisible) return;
+  const defaultX = canvasW * 0.87;
+  const defaultY = canvasH * 0.634;
+  const lx = defaultX + labelOffset.x;
+  const ly = defaultY + labelOffset.y;
+  if (labelLang === "en" && labelImg) {
+    const scale = canvasW / 1600;
+    const lw = 368 * scale;
+    const lh = 64 * scale;
+    if (color === "black") ctx.filter = "invert(1)";
+    ctx.drawImage(labelImg, lx - lw, ly - lh * 0.75, lw, lh);
+    ctx.filter = "none";
+  } else {
+    const text = labelLang === "fr" ? LABEL_FR : LABEL_EN;
+    ctx.save();
+    ctx.fillStyle = color === "black" ? "#ffffff" : "#000000";
+    ctx.font = `400 ${Math.round(canvasW * 0.016)}px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+    ctx.textAlign = "right";
+    (ctx as any).letterSpacing = `${Math.round(canvasW * 0.002)}px`;
+    ctx.fillText(text, lx, ly);
+    ctx.restore();
+  }
+}
+
 function getClientXY(e: React.MouseEvent | React.TouchEvent) {
   if ("touches" in e) {
     return { x: e.touches[0]?.clientX ?? 0, y: e.touches[0]?.clientY ?? 0 };
@@ -133,6 +170,10 @@ export default function Product2() {
   const [backMode, setBackMode] = useState<"shirt" | "art">("shirt");
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [modalTransparentImg, setModalTransparentImg] = useState<string | null>(null);
+  const [labelVisible, setLabelVisible] = useState(true);
+  const [labelLang, setLabelLang] = useState<"en" | "fr">("en");
+  const [labelImg, setLabelImg] = useState<HTMLImageElement | null>(null);
+  const [labelOffset, setLabelOffset] = useState({ x: 0, y: 0 });
 
   const [page, setPage] = useState(1);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -165,6 +206,7 @@ export default function Product2() {
     loadImg("/product/tshirt2-back.jpg").then(setBackShirtImg);
     loadImg("/product/tshirt2-black-front.jpg").then(setFrontBlackShirtImg);
     loadImg("/product/tshirt2-black-back.jpg").then(setBackBlackShirtImg);
+    loadImg("/product/label-text.png").then(setLabelImg).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -309,7 +351,9 @@ export default function Product2() {
     ctx.globalCompositeOperation = tshirtColor === "black" ? "screen" : "multiply";
     ctx.drawImage(artImg, dx, dy, dw, dh);
     ctx.restore();
-  }, [backShirtImg, backBlackShirtImg, artImg, backPos, designScale, cropScale, artOffset, tshirtColor]);
+    ctx.globalCompositeOperation = "source-over";
+    drawLabelOnCtx(ctx, BACK_CW, BACK_CH, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
+  }, [backShirtImg, backBlackShirtImg, artImg, backPos, designScale, cropScale, artOffset, tshirtColor, labelImg, labelVisible, labelLang, labelOffset]);
 
   const getFrontTransparentPng = useCallback((): string | null => {
     if (!artImg) return null;
@@ -366,13 +410,9 @@ export default function Product2() {
     const dy = sy + (sq - dh) / 2 + artOffset.y;
     ctx.drawImage(artImg, dx, dy, dw, dh);
     ctx.restore();
-    ctx.font = "400 14px 'Helvetica Neue', Arial, sans-serif";
-    (ctx as any).letterSpacing = "2px";
-    ctx.fillStyle = "#000000";
-    ctx.textAlign = "right";
-    ctx.fillText("ISSEI – Wearable Abstraction", BACK_CW * 0.87, BACK_CH * 0.634);
+    drawLabelOnCtx(ctx, BACK_CW, BACK_CH, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
     return off.toDataURL("image/png");
-  }, [artImg, backPos, designScale, cropScale, artOffset, BACK_CW, BACK_CH, BACK_SQUARE_BASE]);
+  }, [artImg, backPos, designScale, cropScale, artOffset, BACK_CW, BACK_CH, BACK_SQUARE_BASE, labelImg, labelVisible, labelLang, labelOffset, tshirtColor]);
 
   useEffect(() => { renderFront(); }, [renderFront]);
   useEffect(() => { renderBack(); }, [renderBack]);
@@ -704,6 +744,43 @@ export default function Product2() {
                   >
                     <Download className="w-4 h-4 text-black" />
                   </button>
+                </div>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <span className="text-xs text-black tracking-wider">ロゴ</span>
+                  <button
+                    onClick={() => setLabelVisible((v) => !v)}
+                    className={`px-3 py-1 rounded-full text-xs border transition-colors ${labelVisible ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-gray-500"}`}
+                  >
+                    {labelVisible ? "ON" : "OFF"}
+                  </button>
+                  {labelVisible && (
+                    <>
+                      <button
+                        onClick={() => setLabelLang((l) => l === "en" ? "fr" : "en")}
+                        className="px-3 py-1 rounded-full text-xs border border-gray-300 hover:border-gray-500 bg-white text-black transition-colors"
+                      >
+                        {labelLang === "en" ? "EN → FR" : "FR → EN"}
+                      </button>
+                      <div className="flex items-center gap-1 ml-1">
+                        <span className="text-xs text-black">位置</span>
+                        {([["↑", 0, -30], ["↓", 0, 30], ["←", -30, 0], ["→", 30, 0]] as [string, number, number][]).map(([arrow, dx, dy]) => (
+                          <button
+                            key={arrow}
+                            onClick={() => setLabelOffset((p) => ({ x: p.x + dx * 3, y: p.y + dy * 3 }))}
+                            className="w-7 h-7 flex items-center justify-center rounded border border-gray-300 text-xs hover:border-gray-500 transition-colors"
+                          >
+                            {arrow}
+                          </button>
+                        ))}
+                        <button
+                          onClick={() => setLabelOffset({ x: 0, y: 0 })}
+                          className="px-2 py-1 text-xs border border-gray-300 rounded hover:border-gray-500 transition-colors text-black"
+                        >
+                          reset
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 

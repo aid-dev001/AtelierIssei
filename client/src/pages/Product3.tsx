@@ -93,6 +93,43 @@ function loadImg(src: string): Promise<HTMLImageElement> {
   });
 }
 
+const LABEL_EN = "ISSEI – Wearable Abstraction";
+const LABEL_FR = "ISSEI – L'abstraction à porter";
+
+function drawLabelOnCtx(
+  ctx: CanvasRenderingContext2D,
+  canvasW: number,
+  canvasH: number,
+  labelImg: HTMLImageElement | null,
+  labelVisible: boolean,
+  labelLang: "en" | "fr",
+  labelOffset: { x: number; y: number },
+  color: "white" | "black"
+) {
+  if (!labelVisible) return;
+  const defaultX = canvasW * 0.87;
+  const defaultY = canvasH * 0.634;
+  const lx = defaultX + labelOffset.x;
+  const ly = defaultY + labelOffset.y;
+  if (labelLang === "en" && labelImg) {
+    const scale = canvasW / 1600;
+    const lw = 368 * scale;
+    const lh = 64 * scale;
+    if (color === "black") ctx.filter = "invert(1)";
+    ctx.drawImage(labelImg, lx - lw, ly - lh * 0.75, lw, lh);
+    ctx.filter = "none";
+  } else {
+    const text = labelLang === "fr" ? LABEL_FR : LABEL_EN;
+    ctx.save();
+    ctx.fillStyle = color === "black" ? "#ffffff" : "#000000";
+    ctx.font = `400 ${Math.round(canvasW * 0.016)}px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+    ctx.textAlign = "right";
+    (ctx as any).letterSpacing = `${Math.round(canvasW * 0.002)}px`;
+    ctx.fillText(text, lx, ly);
+    ctx.restore();
+  }
+}
+
 function getClientXY(e: React.MouseEvent | React.TouchEvent) {
   if ("touches" in e) {
     return { x: e.touches[0]?.clientX ?? 0, y: e.touches[0]?.clientY ?? 0 };
@@ -189,6 +226,10 @@ export default function Product3() {
   const [artScale, setArtScale] = useState(1);
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [modalTransparentImg, setModalTransparentImg] = useState<string | null>(null);
+  const [labelVisible, setLabelVisible] = useState(true);
+  const [labelLang, setLabelLang] = useState<"en" | "fr">("en");
+  const [labelImg, setLabelImg] = useState<HTMLImageElement | null>(null);
+  const [labelOffset, setLabelOffset] = useState({ x: 0, y: 0 });
   const [page, setPage] = useState(0);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -211,6 +252,7 @@ export default function Product3() {
       setBlackShirtImg(b);
       setShirtLoaded(true);
     }).catch(() => {});
+    loadImg("/product/label-text.png").then(setLabelImg).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -285,7 +327,9 @@ export default function Product3() {
       const sel = shapes.find((s) => s.id === selectedId);
       if (sel) drawShapeOnCtx(ctx, sel, "stroke");
     }
-  }, [shirtImg, blackShirtImg, artImg, shapes, shapeMode, selectedId, showOutline, tshirtColor, artOffsetX, artOffsetY, artRotation, artScale]);
+
+    drawLabelOnCtx(ctx, CW, CH, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
+  }, [shirtImg, blackShirtImg, artImg, shapes, shapeMode, selectedId, showOutline, tshirtColor, artOffsetX, artOffsetY, artRotation, artScale, labelImg, labelVisible, labelLang, labelOffset]);
 
   useEffect(() => { render(); }, [render]);
 
@@ -310,13 +354,9 @@ export default function Product3() {
     offCtx.globalCompositeOperation = "destination-in";
     offCtx.drawImage(mask, 0, 0);
     offCtx.globalCompositeOperation = "source-over";
-    offCtx.font = "400 12px 'Helvetica Neue', Arial, sans-serif";
-    (offCtx as any).letterSpacing = "1px";
-    offCtx.fillStyle = "#000000";
-    offCtx.textAlign = "right";
-    offCtx.fillText("ISSEI – Wearable Abstraction", CW * 0.87, CH * 0.634);
+    drawLabelOnCtx(offCtx, CW, CH, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
     return off.toDataURL("image/png");
-  }, [artImg, shapes, shapeMode, artOffsetX, artOffsetY, artRotation, artScale]);
+  }, [artImg, shapes, shapeMode, artOffsetX, artOffsetY, artRotation, artScale, labelImg, labelVisible, labelLang, labelOffset, tshirtColor]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -496,6 +536,43 @@ export default function Product3() {
               />
             </div>
             <p className="text-xs text-gray-400 mt-2 text-center">形をドラッグで移動 · 空白クリックで拡大</p>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className="text-xs text-black tracking-wider">ロゴ</span>
+              <button
+                onClick={() => setLabelVisible((v) => !v)}
+                className={`px-3 py-1 rounded-full text-xs border transition-colors ${labelVisible ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-gray-500"}`}
+              >
+                {labelVisible ? "ON" : "OFF"}
+              </button>
+              {labelVisible && (
+                <>
+                  <button
+                    onClick={() => setLabelLang((l) => l === "en" ? "fr" : "en")}
+                    className="px-3 py-1 rounded-full text-xs border border-gray-300 hover:border-gray-500 bg-white text-black transition-colors"
+                  >
+                    {labelLang === "en" ? "EN → FR" : "FR → EN"}
+                  </button>
+                  <div className="flex items-center gap-1 ml-1">
+                    <span className="text-xs text-black">位置</span>
+                    {([["↑", 0, -10], ["↓", 0, 10], ["←", -10, 0], ["→", 10, 0]] as [string, number, number][]).map(([arrow, dx, dy]) => (
+                      <button
+                        key={arrow}
+                        onClick={() => setLabelOffset((p) => ({ x: p.x + dx * 2, y: p.y + dy * 2 }))}
+                        className="w-7 h-7 flex items-center justify-center rounded border border-gray-300 text-xs hover:border-gray-500 transition-colors"
+                      >
+                        {arrow}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => setLabelOffset({ x: 0, y: 0 })}
+                      className="px-2 py-1 text-xs border border-gray-300 rounded hover:border-gray-500 transition-colors text-black"
+                    >
+                      reset
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
 
           {/* Controls */}

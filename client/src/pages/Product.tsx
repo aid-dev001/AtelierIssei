@@ -108,6 +108,43 @@ function buildMask(img: HTMLImageElement, w: number, h: number): HTMLCanvasEleme
   return c;
 }
 
+const LABEL_EN = "ISSEI – Wearable Abstraction";
+const LABEL_FR = "ISSEI – L'abstraction à porter";
+
+function drawLabelOnCtx(
+  ctx: CanvasRenderingContext2D,
+  canvasW: number,
+  canvasH: number,
+  labelImg: HTMLImageElement | null,
+  labelVisible: boolean,
+  labelLang: "en" | "fr",
+  labelOffset: { x: number; y: number },
+  color: "white" | "black"
+) {
+  if (!labelVisible) return;
+  const defaultX = canvasW * 0.87;
+  const defaultY = canvasH * 0.634;
+  const lx = defaultX + labelOffset.x;
+  const ly = defaultY + labelOffset.y;
+  if (labelLang === "en" && labelImg) {
+    const scale = canvasW / 1600;
+    const lw = 368 * scale;
+    const lh = 64 * scale;
+    if (color === "black") ctx.filter = "invert(1)";
+    ctx.drawImage(labelImg, lx - lw, ly - lh * 0.75, lw, lh);
+    ctx.filter = "none";
+  } else {
+    const text = labelLang === "fr" ? LABEL_FR : LABEL_EN;
+    ctx.save();
+    ctx.fillStyle = color === "black" ? "#ffffff" : "#000000";
+    ctx.font = `400 ${Math.round(canvasW * 0.016)}px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+    ctx.textAlign = "right";
+    (ctx as any).letterSpacing = `${Math.round(canvasW * 0.002)}px`;
+    ctx.fillText(text, lx, ly);
+    ctx.restore();
+  }
+}
+
 function drawTshirt(
   canvas: HTMLCanvasElement,
   designCanvas: HTMLCanvasElement | null,
@@ -115,7 +152,11 @@ function drawTshirt(
   blackImg: HTMLImageElement | null,
   color: "white" | "black",
   designScale: number,
-  designPos: { x: number; y: number }
+  designPos: { x: number; y: number },
+  labelImg: HTMLImageElement | null,
+  labelVisible: boolean,
+  labelLang: "en" | "fr",
+  labelOffset: { x: number; y: number }
 ) {
   const W = canvas.width;
   const H = canvas.height;
@@ -143,6 +184,8 @@ function drawTshirt(
     ctx.drawImage(designCanvas, dx, dy, rw, rh);
     ctx.globalCompositeOperation = "source-over";
   }
+
+  drawLabelOnCtx(ctx, W, H, labelImg, labelVisible, labelLang, labelOffset, color);
 }
 
 function ImageModal({ src, transparentSrc, onClose }: { src: string; transparentSrc?: string; onClose: () => void }) {
@@ -214,6 +257,10 @@ const Product: React.FC = () => {
   const [canvasSize, setCanvasSize] = useState({ w: 480, h: 480 });
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [modalTransparentImg, setModalTransparentImg] = useState<string | null>(null);
+  const [labelVisible, setLabelVisible] = useState(true);
+  const [labelLang, setLabelLang] = useState<"en" | "fr">("en");
+  const [labelImg, setLabelImg] = useState<HTMLImageElement | null>(null);
+  const [labelOffset, setLabelOffset] = useState({ x: 0, y: 0 });
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [artworkScrollH, setArtworkScrollH] = useState<number | null>(null);
 
@@ -286,6 +333,7 @@ const Product: React.FC = () => {
       setTshirtBlackImg(img);
       setTshirtBlackAspect(img.naturalWidth / img.naturalHeight);
     }).catch(() => {});
+    loadImg("/product/label-text.png").then(setLabelImg).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -347,8 +395,8 @@ const Product: React.FC = () => {
     const H = Math.round(W / aspect);
     canvas.width = W;
     canvas.height = H;
-    drawTshirt(canvas, compositeRef.current, tshirtBaseImg, tshirtBlackImg, tshirtColor, shapeScale, designPos);
-  }, [tshirtBaseImg, tshirtBlackImg, tshirtAspect, tshirtBlackAspect, tshirtColor, shapeScale, designPos]);
+    drawTshirt(canvas, compositeRef.current, tshirtBaseImg, tshirtBlackImg, tshirtColor, shapeScale, designPos, labelImg, labelVisible, labelLang, labelOffset);
+  }, [tshirtBaseImg, tshirtBlackImg, tshirtAspect, tshirtBlackAspect, tshirtColor, shapeScale, designPos, labelImg, labelVisible, labelLang, labelOffset]);
 
   useEffect(() => {
     if (!shapeImg || selectedFillId === null) return;
@@ -414,13 +462,9 @@ const Product: React.FC = () => {
     let rw = maxW, rh = rw / da;
     if (rh > maxH) { rh = maxH; rw = rh * da; }
     ctx.drawImage(dc, (W - rw) / 2 + designPos.x, H * 0.26 + designPos.y, rw, rh);
-    ctx.fillStyle = tshirtColor === "black" ? "#ffffff" : "#000000";
-    ctx.font = "400 26px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-    ctx.textAlign = "right";
-    (ctx as any).letterSpacing = "3px";
-    ctx.fillText("ISSEI – Wearable Abstraction", W * 0.87, H * 0.634);
+    drawLabelOnCtx(ctx, W, H, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
     return off.toDataURL("image/png");
-  }, [tshirtColor, tshirtAspect, tshirtBlackAspect, shapeScale, designPos]);
+  }, [tshirtColor, tshirtAspect, tshirtBlackAspect, shapeScale, designPos, labelImg, labelVisible, labelLang, labelOffset]);
 
   const onUp = () => {
     if (draggingRef.current && !dragMovedRef.current) {
@@ -716,6 +760,43 @@ const Product: React.FC = () => {
                   ref={tshirtRef}
                   style={{ width: "100%", height: "100%", display: "block", pointerEvents: "none" }}
                 />
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span className="text-xs text-black tracking-wider">ロゴ</span>
+                <button
+                  onClick={() => setLabelVisible((v) => !v)}
+                  className={`px-3 py-1 rounded-full text-xs border transition-colors ${labelVisible ? "bg-black text-white border-black" : "bg-white text-black border-gray-300 hover:border-gray-500"}`}
+                >
+                  {labelVisible ? "ON" : "OFF"}
+                </button>
+                {labelVisible && (
+                  <>
+                    <button
+                      onClick={() => setLabelLang((l) => l === "en" ? "fr" : "en")}
+                      className="px-3 py-1 rounded-full text-xs border border-gray-300 hover:border-gray-500 bg-white text-black transition-colors"
+                    >
+                      {labelLang === "en" ? "EN → FR" : "FR → EN"}
+                    </button>
+                    <div className="flex items-center gap-1 ml-1">
+                      <span className="text-xs text-black">位置</span>
+                      {([["↑", 0, -30], ["↓", 0, 30], ["←", -30, 0], ["→", 30, 0]] as [string, number, number][]).map(([arrow, dx, dy]) => (
+                        <button
+                          key={arrow}
+                          onClick={() => setLabelOffset((p) => ({ x: p.x + dx * 3, y: p.y + dy * 3 }))}
+                          className="w-7 h-7 flex items-center justify-center rounded border border-gray-300 text-xs hover:border-gray-500 transition-colors"
+                        >
+                          {arrow}
+                        </button>
+                      ))}
+                      <button
+                        onClick={() => setLabelOffset({ x: 0, y: 0 })}
+                        className="px-2 py-1 text-xs border border-gray-300 rounded hover:border-gray-500 transition-colors text-black"
+                      >
+                        reset
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
