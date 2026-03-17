@@ -124,13 +124,12 @@ function ImageModal({ src, transparentSrc, compositeWithCmyk, onClose, isOpen }:
     if (cmykSrc) { setCmykPreview(true); return; }
     setSimulating(true);
     try {
-      const res = await fetch("/api/cmyk-preview", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageData: transparentSrc }),
-      });
-      if (!res.ok) throw new Error("cmyk-preview failed");
-      const blob = await res.blob();
+      const [previewRes, tiffRes] = await Promise.all([
+        fetch("/api/cmyk-preview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: transparentSrc }) }),
+        fetch("/api/convert-cmyk", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageData: transparentSrc }) }),
+      ]);
+      if (!previewRes.ok) throw new Error("cmyk-preview failed");
+      const blob = await previewRes.blob();
       const cmykDesignBlobUrl = URL.createObjectURL(blob);
       if (compositeWithCmyk) {
         const compositeDataUrl = await compositeWithCmyk(cmykDesignBlobUrl);
@@ -141,6 +140,7 @@ function ImageModal({ src, transparentSrc, compositeWithCmyk, onClose, isOpen }:
         cmykBlobUrlRef.current = cmykDesignBlobUrl;
         setCmykSrc(cmykDesignBlobUrl);
       }
+      if (tiffRes.ok) setCmykTiffBlob(await tiffRes.blob());
       setCmykPreview(true);
     } finally {
       setSimulating(false);
