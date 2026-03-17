@@ -206,11 +206,33 @@ function drawTshirt(
 }
 
 function ImageModal({ src, transparentSrc, onClose }: { src: string; transparentSrc?: string; onClose: () => void }) {
+  const [cmykLoading, setCmykLoading] = useState(false);
   const dl = (href: string, name: string) => {
     const a = document.createElement("a");
     a.href = href;
     a.download = name;
     a.click();
+  };
+  const downloadCmyk = async () => {
+    if (!transparentSrc || cmykLoading) return;
+    setCmykLoading(true);
+    try {
+      const res = await fetch("/api/convert-cmyk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageData: transparentSrc }),
+      });
+      if (!res.ok) throw new Error();
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "issei-print-cmyk.tif";
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setCmykLoading(false);
+    }
   };
   return (
     <div
@@ -231,6 +253,17 @@ function ImageModal({ src, transparentSrc, onClose }: { src: string; transparent
             >
               <Download className="w-4 h-4 text-black" />
               <span className="text-xs text-black font-medium">透過</span>
+            </button>
+          )}
+          {transparentSrc && (
+            <button
+              onClick={downloadCmyk}
+              disabled={cmykLoading}
+              className="bg-white/90 hover:bg-white rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5 disabled:opacity-60"
+              title="CMYK TIFFダウンロード（印刷用）"
+            >
+              <Download className="w-4 h-4 text-black" />
+              <span className="text-xs text-black font-medium">{cmykLoading ? "変換中…" : "CMYK"}</span>
             </button>
           )}
           <button

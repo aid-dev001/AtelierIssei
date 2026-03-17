@@ -1,7 +1,13 @@
 import { Router } from 'express';
 import nodemailer from 'nodemailer';
 import Stripe from 'stripe';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 
+const execAsync = promisify(exec);
 const router = Router();
 
 function getStripe() {
@@ -119,6 +125,30 @@ Tシャツ注文が届きました。
   } catch (error) {
     console.error('Order error:', error);
     res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/convert-cmyk', async (req, res) => {
+  const { imageData } = req.body as { imageData?: string };
+  if (!imageData) return res.status(400).json({ error: 'No image data' });
+
+  const inputPath = path.join(os.tmpdir(), `issei-in-${Date.now()}.png`);
+  const outputPath = path.join(os.tmpdir(), `issei-cmyk-${Date.now()}.tif`);
+
+  try {
+    const base64 = imageData.split(',')[1] ?? imageData;
+    fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
+    await execAsync(`magick "${inputPath}" -colorspace CMYK -compress lzw "${outputPath}"`);
+    const tifBuf = fs.readFileSync(outputPath);
+    res.set('Content-Type', 'image/tiff');
+    res.set('Content-Disposition', 'attachment; filename="issei-print-cmyk.tif"');
+    res.send(tifBuf);
+  } catch (err) {
+    console.error('CMYK convert error:', err);
+    res.status(500).json({ error: 'CMYK conversion failed' });
+  } finally {
+    try { fs.unlinkSync(inputPath); } catch {}
+    try { fs.unlinkSync(outputPath); } catch {}
   }
 });
 
