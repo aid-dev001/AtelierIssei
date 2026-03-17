@@ -59,7 +59,13 @@ async function simulateCmykOnCanvas(dataUrl: string): Promise<string> {
   });
 }
 
-function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; transparentSrc?: string; onClose: () => void; isOpen: boolean }) {
+function ImageModal({ src, transparentSrc, compositeWithCmyk, onClose, isOpen }: {
+  src: string;
+  transparentSrc?: string;
+  compositeWithCmyk?: (cmykBlobUrl: string) => Promise<string>;
+  onClose: () => void;
+  isOpen: boolean;
+}) {
   const [cmykLoading, setCmykLoading] = useState(false);
   const [cmykPreview, setCmykPreview] = useState(false);
   const [cmykSrc, setCmykSrc] = useState<string | null>(null);
@@ -121,14 +127,20 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
       const res = await fetch("/api/cmyk-preview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageData: src, artworkData: transparentSrc }),
+        body: JSON.stringify({ imageData: transparentSrc }),
       });
       if (!res.ok) throw new Error("cmyk-preview failed");
       const blob = await res.blob();
-      if (cmykBlobUrlRef.current) URL.revokeObjectURL(cmykBlobUrlRef.current);
-      const blobUrl = URL.createObjectURL(blob);
-      cmykBlobUrlRef.current = blobUrl;
-      setCmykSrc(blobUrl);
+      const cmykDesignBlobUrl = URL.createObjectURL(blob);
+      if (compositeWithCmyk) {
+        const compositeDataUrl = await compositeWithCmyk(cmykDesignBlobUrl);
+        URL.revokeObjectURL(cmykDesignBlobUrl);
+        setCmykSrc(compositeDataUrl);
+      } else {
+        if (cmykBlobUrlRef.current) URL.revokeObjectURL(cmykBlobUrlRef.current);
+        cmykBlobUrlRef.current = cmykDesignBlobUrl;
+        setCmykSrc(cmykDesignBlobUrl);
+      }
       setCmykPreview(true);
     } finally {
       setSimulating(false);
@@ -390,6 +402,7 @@ export default function Product3() {
   const [artScale, setArtScale] = useState(1);
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [modalTransparentImg, setModalTransparentImg] = useState<string | null>(null);
+  const [modalCompositeWithCmyk, setModalCompositeWithCmyk] = useState<((url: string) => Promise<string>) | undefined>(undefined);
   const [labelVisible, setLabelVisible] = useState(true);
   const [labelLang, setLabelLang] = useState<"en" | "ja">("en");
   const [labelImgEn, setLabelImgEn] = useState<HTMLImageElement | null>(null);
@@ -536,7 +549,17 @@ export default function Product3() {
   const openModal = useCallback(() => {
     setModalImg(canvasRef.current?.toDataURL("image/png") ?? null);
     setModalTransparentImg(getTransparentPng());
-  }, [getTransparentPng]);
+    const shirtI = tshirtColor === "black" ? blackShirtImg : shirtImg;
+    const W = CW, H = CH, blend = tshirtColor === "black" ? "screen" : "multiply";
+    setModalCompositeWithCmyk(() => (cmykBlobUrl: string) => new Promise<string>((resolve, reject) => {
+      const off = document.createElement("canvas"); off.width = W; off.height = H;
+      const ctx = off.getContext("2d")!;
+      if (shirtI) { ctx.drawImage(shirtI, 0, 0, W, H); coverShirtText(ctx, shirtI, W, H); }
+      const img = new window.Image();
+      img.onload = () => { ctx.globalCompositeOperation = blend as GlobalCompositeOperation; ctx.drawImage(img, 0, 0, W, H); ctx.globalCompositeOperation = "source-over"; resolve(off.toDataURL("image/png")); };
+      img.onerror = () => reject(new Error("load failed")); img.src = cmykBlobUrl;
+    }));
+  }, [getTransparentPng, tshirtColor, shirtImg, blackShirtImg]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -988,7 +1011,7 @@ export default function Product3() {
         )}
       </div>
 
-      <ImageModal isOpen={!!modalImg} src={modalImg ?? ''} transparentSrc={modalTransparentImg ?? undefined} onClose={() => { setModalImg(null); setModalTransparentImg(null); }} />
+      <ImageModal isOpen={!!modalImg} src={modalImg ?? ''} transparentSrc={modalTransparentImg ?? undefined} compositeWithCmyk={modalCompositeWithCmyk} onClose={() => { setModalImg(null); setModalTransparentImg(null); setModalCompositeWithCmyk(undefined); }} />
       {orderOpen && (
         <OrderModal
           imageDataUrl={canvasRef.current?.toDataURL("image/png") ?? ""}

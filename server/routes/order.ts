@@ -157,54 +157,33 @@ Tシャツ注文が届きました。
 });
 
 router.post('/cmyk-preview', async (req, res) => {
-  const { imageData, artworkData } = req.body as { imageData?: string; artworkData?: string };
+  // Receives the raw design canvas (no shirt background).
+  // Returns the same design with CMYK-converted colors, alpha preserved.
+  const { imageData } = req.body as { imageData?: string };
   if (!imageData) return res.status(400).json({ error: 'No image data' });
 
   const ts = Date.now();
-  const shirtPath   = path.join(os.tmpdir(), `issei-prev-shirt-${ts}.png`);
-  const artworkPath = path.join(os.tmpdir(), `issei-prev-art-${ts}.png`);
+  const inputPath   = path.join(os.tmpdir(), `issei-prev-in-${ts}.png`);
+  const alphaPath   = path.join(os.tmpdir(), `issei-prev-alpha-${ts}.png`);
+  const rgbPath     = path.join(os.tmpdir(), `issei-prev-rgb-${ts}.png`);
   const outputPath  = path.join(os.tmpdir(), `issei-prev-out-${ts}.png`);
 
   try {
-    const shirtBase64 = imageData.split(',')[1] ?? imageData;
-    fs.writeFileSync(shirtPath, Buffer.from(shirtBase64, 'base64'));
+    fs.writeFileSync(inputPath, Buffer.from(imageData.split(',')[1] ?? imageData, 'base64'));
+    // 1. Extract original alpha mask
+    await execAsync(`magick "${inputPath}" -alpha extract "${alphaPath}"`);
+    // 2. Convert RGB colors to CMYK and back (same conversion as download TIFF), ignoring alpha
+    await execAsync(`magick "${inputPath}" -alpha off -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,200,100 -colorspace CMYK -colorspace sRGB "${rgbPath}"`);
+    // 3. Re-apply original alpha so transparent areas stay transparent
+    await execAsync(`magick "${rgbPath}" "${alphaPath}" -compose CopyOpacity -composite "${outputPath}"`);
 
-    if (artworkData) {
-      const artBase64 = artworkData.split(',')[1] ?? artworkData;
-      fs.writeFileSync(artworkPath, Buffer.from(artBase64, 'base64'));
-
-      const alphaPath   = path.join(os.tmpdir(), `issei-prev-alpha-${ts}.png`);
-      const cmykArtPath = path.join(os.tmpdir(), `issei-prev-cmykart-${ts}.png`);
-      const cmykAlphaPath = path.join(os.tmpdir(), `issei-prev-cmykalpha-${ts}.png`);
-
-      try {
-        // 1. Extract alpha mask from artwork
-        await execAsync(`magick "${artworkPath}" -alpha extract "${alphaPath}"`);
-        // 2. Convert artwork RGB to CMYK and back (same as download), ignoring alpha
-        await execAsync(`magick "${artworkPath}" -alpha off -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,200,100 -colorspace CMYK -colorspace sRGB "${cmykArtPath}"`);
-        // 3. Re-apply original alpha so transparent areas stay transparent
-        await execAsync(`magick "${cmykArtPath}" "${alphaPath}" -compose CopyOpacity -composite "${cmykAlphaPath}"`);
-        // 4. Composite CMYK artwork onto shirt
-        await execAsync(`magick "${shirtPath}" "${cmykAlphaPath}" -composite "${outputPath}"`);
-      } finally {
-        try { fs.unlinkSync(alphaPath); } catch {}
-        try { fs.unlinkSync(cmykArtPath); } catch {}
-        try { fs.unlinkSync(cmykAlphaPath); } catch {}
-      }
-    } else {
-      await execAsync(`magick "${shirtPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,200,100 -colorspace CMYK -colorspace sRGB "${outputPath}"`);
-    }
-
-    const pngBuf = fs.readFileSync(outputPath);
     res.set('Content-Type', 'image/png');
-    res.send(pngBuf);
+    res.send(fs.readFileSync(outputPath));
   } catch (err) {
     console.error('CMYK preview error:', err);
     res.status(500).json({ error: 'CMYK preview failed' });
   } finally {
-    try { fs.unlinkSync(shirtPath); } catch {}
-    try { fs.unlinkSync(artworkPath); } catch {}
-    try { fs.unlinkSync(outputPath); } catch {}
+    for (const p of [inputPath, alphaPath, rgbPath, outputPath]) try { fs.unlinkSync(p); } catch {}
   }
 });
 

@@ -263,7 +263,14 @@ async function simulateCmykOnCanvas(dataUrl: string): Promise<string> {
   });
 }
 
-function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; transparentSrc?: string; onClose: () => void; isOpen: boolean }) {
+function ImageModal({ src, transparentSrc, designSrc, compositeWithCmyk, onClose, isOpen }: {
+  src: string;
+  transparentSrc?: string;
+  designSrc?: string;
+  compositeWithCmyk?: (cmykBlobUrl: string) => Promise<string>;
+  onClose: () => void;
+  isOpen: boolean;
+}) {
   const [cmykLoading, setCmykLoading] = useState(false);
   const [cmykPreview, setCmykPreview] = useState(false);
   const [cmykSrc, setCmykSrc] = useState<string | null>(null);
@@ -318,21 +325,29 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
   };
   const toggleCmykPreview = async () => {
     if (cmykPreview) { setCmykPreview(false); return; }
-    if (!transparentSrc) return;
+    if (!designSrc && !transparentSrc) return;
     if (cmykSrc) { setCmykPreview(true); return; }
     setSimulating(true);
     try {
+      // Send only the raw design (no shirt background) for CMYK color conversion
       const res = await fetch("/api/cmyk-preview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageData: src, artworkData: transparentSrc }),
+        body: JSON.stringify({ imageData: designSrc ?? transparentSrc }),
       });
       if (!res.ok) throw new Error("cmyk-preview failed");
       const blob = await res.blob();
-      if (cmykBlobUrlRef.current) URL.revokeObjectURL(cmykBlobUrlRef.current);
-      const blobUrl = URL.createObjectURL(blob);
-      cmykBlobUrlRef.current = blobUrl;
-      setCmykSrc(blobUrl);
+      const cmykDesignBlobUrl = URL.createObjectURL(blob);
+      if (compositeWithCmyk) {
+        // Composite CMYK design onto clean shirt on the client
+        const compositeDataUrl = await compositeWithCmyk(cmykDesignBlobUrl);
+        URL.revokeObjectURL(cmykDesignBlobUrl);
+        setCmykSrc(compositeDataUrl);
+      } else {
+        if (cmykBlobUrlRef.current) URL.revokeObjectURL(cmykBlobUrlRef.current);
+        cmykBlobUrlRef.current = cmykDesignBlobUrl;
+        setCmykSrc(cmykDesignBlobUrl);
+      }
       setCmykPreview(true);
     } finally {
       setSimulating(false);
@@ -430,6 +445,7 @@ const Product: React.FC = () => {
   const [canvasSize, setCanvasSize] = useState({ w: 480, h: 480 });
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [modalTransparentImg, setModalTransparentImg] = useState<string | null>(null);
+  const [modalDesignImg, setModalDesignImg] = useState<string | null>(null);
   const [labelVisible, setLabelVisible] = useState(true);
   const [labelLang, setLabelLang] = useState<"en" | "ja">("en");
   const [labelImgEn, setLabelImgEn] = useState<HTMLImageElement | null>(null);
@@ -648,7 +664,42 @@ const Product: React.FC = () => {
   const openModal = useCallback(() => {
     setModalImg(tshirtRef.current?.toDataURL("image/png") ?? null);
     setModalTransparentImg(getTransparentPng());
+    setModalDesignImg(compositeRef.current?.toDataURL("image/png") ?? null);
   }, [getTransparentPng]);
+
+  const compositeWithCmyk = useCallback((cmykBlobUrl: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const canvas = tshirtRef.current;
+      if (!canvas) { reject(new Error("no canvas")); return; }
+      const W = canvas.width, H = canvas.height;
+      const off = document.createElement("canvas");
+      off.width = W; off.height = H;
+      const ctx = off.getContext("2d")!;
+      const shirt = tshirtColor === "white" ? tshirtBaseImg : tshirtBlackImg;
+      if (shirt) { ctx.drawImage(shirt, 0, 0, W, H); coverShirtText(ctx, shirt, W, H); }
+      else { ctx.fillStyle = tshirtColor === "white" ? "#cccccc" : "#1a1a1a"; ctx.fillRect(0, 0, W, H); }
+      const cmykImg = new window.Image();
+      cmykImg.onload = () => {
+        const dc = compositeRef.current;
+        if (dc && dc.width > 0) {
+          const da = dc.width / dc.height;
+          const maxW = W * 0.38 * shapeScale;
+          const maxH = H * 0.34 * shapeScale;
+          let rw = maxW, rh = rw / da;
+          if (rh > maxH) { rh = maxH; rw = rh * da; }
+          const dx = (W - rw) / 2 + designPos.x;
+          const dy = H * 0.26 + designPos.y;
+          ctx.globalCompositeOperation = tshirtColor === "white" ? "multiply" : "screen";
+          ctx.drawImage(cmykImg, dx, dy, rw, rh);
+          ctx.globalCompositeOperation = "source-over";
+        }
+        drawLabelOnCtx(ctx, W, H, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
+        resolve(off.toDataURL("image/png"));
+      };
+      cmykImg.onerror = () => reject(new Error("cmyk img load failed"));
+      cmykImg.src = cmykBlobUrl;
+    });
+  }, [tshirtColor, tshirtBaseImg, tshirtBlackImg, shapeScale, designPos, labelImg, labelVisible, labelLang, labelOffset]);
 
   const onUp = () => {
     if (draggingRef.current && !dragMovedRef.current) {
@@ -724,7 +775,7 @@ const Product: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white py-12">
-      <ImageModal isOpen={!!modalImg} src={modalImg ?? ''} transparentSrc={modalTransparentImg ?? undefined} onClose={() => { setModalImg(null); setModalTransparentImg(null); }} />
+      <ImageModal isOpen={!!modalImg} src={modalImg ?? ''} transparentSrc={modalTransparentImg ?? undefined} designSrc={modalDesignImg ?? undefined} compositeWithCmyk={compositeWithCmyk} onClose={() => { setModalImg(null); setModalTransparentImg(null); setModalDesignImg(null); }} />
 
       <div className="max-w-5xl mx-auto px-4">
         <h1 className="text-4xl font-bold mb-2 tracking-wider text-center">PRODUCTS</h1>
