@@ -1117,7 +1117,7 @@ const Product: React.FC = () => {
         {isReady && (
           <div className="mt-16 flex justify-center">
             <button
-              onClick={() => { setCachedTransparentPng(getTransparentPng()); setOrderOpen(true); }}
+              onClick={() => { setCachedTransparentPng(null); setOrderOpen(true); }}
               className="px-14 py-4 border border-black text-black bg-white text-sm tracking-[0.5em] font-light hover:bg-black hover:text-white transition-all duration-500"
             >
               注文する
