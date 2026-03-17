@@ -47,17 +47,14 @@ async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise
     // more vivid and prevents muddy/dull results on colorful artwork.
     // format: modulate brightness,saturation,hue (100 = unchanged)
     await execAsync(`"${MAGICK}" "${rgbTif}" -modulate 108,125,100 -clamp -compress lzw "${rgbTif}"`);
-    // Step 1.6: Targeted green channel micro-boost (×1.08) to reduce K assigned to
-    // mint/cyan-green hues by Japan Color. Black pixels (R≈G≈B≈0) are unaffected
-    // since G×1.08 of near-zero = near-zero. Non-green hues: negligible shift.
-    await execAsync(`"${MAGICK}" "${rgbTif}" -channel G -evaluate multiply 1.15 -clamp +channel -compress lzw "${rgbTif}"`);
     // Step 2: tificc: sRGB → Japan Color 2001 Coated CMYK
     // -t1 = Relative Colorimetric | -b = Black Point Compensation
-    // Relative Colorimetric clips out-of-gamut colors to the gamut boundary,
-    // preserving in-gamut colors accurately → better vibrancy than Perceptual (-t0)
     await execAsync(`"${TIFICC}" -i"*sRGB" -o"${ICC_JAPAN}" -t1 -b "${rgbTif}" "${outputTif}"`);
-    // Step 3: Embed ICC + reduce K (black ink) by 30% → brighter, more vivid result
-    await execAsync(`"${MAGICK}" "${outputTif}" -profile "${ICC_JAPAN}" -channel Black -evaluate multiply 0.70 +channel -compress lzw "${outputTif}"`);
+    // Step 3: Apply quadratic K curve (K' = K²) instead of linear K×0.70.
+    // Power-2 curve naturally spares high-K (black areas: 90%→81%) while
+    // aggressively cutting mid-K (mint greens at K≈55% drop to K≈30%).
+    // Linear K×0.70 treated both equally; this is image-content aware.
+    await execAsync(`"${MAGICK}" "${outputTif}" -profile "${ICC_JAPAN}" -channel Black -evaluate pow 2.0 +channel -compress lzw "${outputTif}"`);
   } finally {
     try { fs.unlinkSync(rgbTif); } catch {}
   }
