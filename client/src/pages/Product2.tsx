@@ -309,7 +309,7 @@ function drawLabelOnCtx(
   if (labelImg) {
     const lw = 368 * 0.6 * scale;
     const lh = lw * (labelImg.naturalHeight / labelImg.naturalWidth);
-    if (color === "black") ctx.filter = "invert(1)";
+    if (color === "white") ctx.filter = "invert(1)";
     ctx.drawImage(labelImg, lx - lw, ly - lh * 0.75, lw, lh);
     ctx.filter = "none";
   } else {
