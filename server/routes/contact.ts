@@ -34,7 +34,7 @@ router.post('/contact', async (req, res) => {
       to: [email],
       subject: `[ATELIER ISSEI] お問い合わせを受け付けました`,
       text: `${name} 様\n\nお問い合わせありがとうございます。\n以下の内容で受け付けました。\n\n---\n${message}\n---\n\n追って担当者よりご連絡させて頂きます。\n\nATELIER ISSEI`,
-      replyTo: 'isseiart2026@gmail.com'
+      replyTo: 'isseiart2018@gmail.com'
     });
 
     res.status(200).json({ message: 'お問い合わせを受け付けました' });
