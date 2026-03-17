@@ -627,7 +627,7 @@ export default function Product2() {
     const dy = sy + (sq - dh) / 2 + artOffset.y * PS;
     ctx.drawImage(artImg, dx, dy, dw, dh);
     ctx.restore();
-    drawLabelOnCtx(ctx, W, H, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
+    drawLabelOnCtx(ctx, W, H, labelImg, labelVisible, labelLang, { x: labelOffset.x * PS, y: labelOffset.y * PS }, tshirtColor);
     return injectDpi300(off.toDataURL("image/png"));
   }, [artImg, backPos, designScale, cropScale, artOffset, BACK_CW, BACK_CH, BACK_SQUARE_BASE, labelImg, labelVisible, labelLang, labelOffset, tshirtColor]);
 
