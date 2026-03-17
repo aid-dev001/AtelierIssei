@@ -40,18 +40,16 @@ async function simulateCmykOnCanvas(dataUrl: string): Promise<string> {
       for (let i = 0; i < d.length; i += 4) {
         if (d[i + 3] === 0) continue;
         const r = d[i] / 255, g = d[i + 1] / 255, b = d[i + 2] / 255;
-        const gray = (r + g + b) / 3;
-        const sat = 1.14;
-        let r2 = Math.max(0, Math.min(1, gray + (r - gray) * sat));
-        let g2 = Math.max(0, Math.min(1, gray + (g - gray) * sat));
-        let b2 = Math.max(0, Math.min(1, gray + (b - gray) * sat));
-        const sdg = (v: number) => {
-          const f = Math.max(0, 1 - v / 0.38);
-          return v * (1 - f * 0.13);
-        };
-        d[i]     = Math.round(sdg(r2) * 255);
-        d[i + 1] = Math.round(sdg(g2) * 255);
-        d[i + 2] = Math.round(sdg(b2) * 255);
+        const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+        const sat = 0.80;
+        let r2 = lum + (r - lum) * sat;
+        let g2 = lum + (g - lum) * sat;
+        let b2 = lum + (b - lum) * sat;
+        const dg = (v: number) => v < 0.5 ? v * (1 - (0.5 - v) * 0.40) : v;
+        const dk = 0.90;
+        d[i]     = Math.round(Math.max(0, Math.min(255, dg(r2) * dk * 255)));
+        d[i + 1] = Math.round(Math.max(0, Math.min(255, dg(g2) * dk * 255)));
+        d[i + 2] = Math.round(Math.max(0, Math.min(255, dg(b2) * dk * 255)));
       }
       ctx.putImageData(id, 0, 0);
       resolve(canvas.toDataURL("image/png"));
@@ -130,7 +128,7 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
           className="w-full rounded-2xl shadow-2xl"
         />
         <div className="absolute top-3 right-3 flex gap-2">
-          <button onClick={toggleCmykPreview} disabled={simulating} className={`rounded-full px-3 py-2 shadow transition-all flex items-center gap-1.5 disabled:opacity-50 text-xs border-2 border-black ${cmykPreview ? "bg-white text-black" : "bg-white/90 hover:bg-white text-black"}`} title="CMYKシミュレーション（印刷色の確認）">
+          <button onClick={toggleCmykPreview} disabled={simulating} style={{ border: "2.5px solid #000" }} className={`rounded-full px-3 py-2 shadow transition-all flex items-center gap-1.5 disabled:opacity-50 text-xs ${cmykPreview ? "bg-white text-black" : "bg-white/90 hover:bg-white text-black"}`} title="CMYKシミュレーション（印刷色の確認）">
             <span>{simulating ? "処理中…" : "印刷イメージ確認"}</span>
           </button>
           {transparentSrc && (
