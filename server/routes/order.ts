@@ -16,7 +16,9 @@ async function pngBase64ToCmykTiff(base64: string): Promise<Buffer> {
   const outputPath = path.join(os.tmpdir(), `issei-cmyk-${id}.tif`);
   try {
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    await execAsync(`magick "${inputPath}" -colorspace sRGB -modulate 100,160,100 -colorspace CMYK -compress lzw "${outputPath}"`);
+    // Shift blues toward cyan before CMYK (reduces purple cast from Magenta ink)
+    // color-matrix: G_out = G + 0.25*B, reducing Magenta component for blue hues
+    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0.25  0 0 1" -modulate 100,160,100 -colorspace CMYK -compress lzw "${outputPath}"`);
     return fs.readFileSync(outputPath);
   } finally {
     try { fs.unlinkSync(inputPath); } catch {}
@@ -164,7 +166,8 @@ router.post('/cmyk-preview', async (req, res) => {
   try {
     const base64 = imageData.split(',')[1] ?? imageData;
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    await execAsync(`magick "${inputPath}" -colorspace sRGB -colorspace CMYK -colorspace sRGB "${outputPath}"`);
+    // Apply same blue→cyan shift as download so preview matches corrected CMYK output
+    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0.25  0 0 1" -colorspace CMYK -colorspace sRGB "${outputPath}"`);
     const pngBuf = fs.readFileSync(outputPath);
     res.set('Content-Type', 'image/png');
     res.send(pngBuf);
@@ -187,7 +190,9 @@ router.post('/convert-cmyk', async (req, res) => {
   try {
     const base64 = imageData.split(',')[1] ?? imageData;
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    await execAsync(`magick "${inputPath}" -colorspace sRGB -modulate 100,160,100 -colorspace CMYK -compress lzw "${outputPath}"`);
+    // Shift blues toward cyan before CMYK (reduces purple cast from Magenta ink)
+    // color-matrix: G_out = G + 0.25*B, reducing Magenta component for blue hues
+    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0.25  0 0 1" -modulate 100,160,100 -colorspace CMYK -compress lzw "${outputPath}"`);
     const tifBuf = fs.readFileSync(outputPath);
     res.set('Content-Type', 'image/tiff');
     res.set('Content-Disposition', 'attachment; filename="issei-print-cmyk.tif"');
