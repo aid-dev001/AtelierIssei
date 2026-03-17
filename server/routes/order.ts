@@ -172,10 +172,10 @@ router.post('/cmyk-preview', async (req, res) => {
     fs.writeFileSync(inputPath, Buffer.from(imageData.split(',')[1] ?? imageData, 'base64'));
     // 1. Extract original alpha mask
     await execAsync(`magick "${inputPath}" -alpha extract "${alphaPath}"`);
-    // 2. Convert to CMYK (same as download), convert back using linear RGB (no gamma) to better match TIFF viewer appearance
-    // color-matrix: row3=0.20*R+B (pink fix: adds B to R-heavy pinks), row2=0.12*B+G (blue fix: shifts B-heavy pixels toward cyan to reduce purple shift in CMYK)
-    // saturation 150 (reduced from 200 to avoid over-saturation of blues while still helping pinks)
-    await execAsync(`magick "${inputPath}" -alpha off -colorspace sRGB -color-matrix "1 0 0  0 1 0.12  0.20 0 1" -modulate 100,150,100 -colorspace CMYK -colorspace RGB "${rgbPath}"`);
+    // 2. Convert to CMYK (same as download), then simulate macOS ColorSync rendering:
+    //    convert back to sRGB and apply -modulate 80,60,100 to approximate the desaturation+darkening
+    //    that macOS Preview applies when displaying CMYK TIFFs via ColorSync
+    await execAsync(`magick "${inputPath}" -alpha off -colorspace sRGB -color-matrix "1 0 0  0 1 0.12  0.20 0 1" -modulate 100,150,100 -colorspace CMYK -colorspace sRGB -modulate 80,60,100 "${rgbPath}"`);
     // 3. Re-apply original alpha so transparent areas stay transparent
     await execAsync(`magick "${rgbPath}" "${alphaPath}" -compose CopyOpacity -composite "${outputPath}"`);
 
