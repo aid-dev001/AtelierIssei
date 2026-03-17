@@ -5,12 +5,22 @@ import ScrollToTopLink from "@/components/ScrollToTopLink";
 import OrderModal from "@/components/OrderModal";
 import { injectDpi300 } from "@/lib/pngDpi";
 
-function ImageModal({ src, transparentSrc, onClose }: { src: string; transparentSrc?: string; onClose: () => void }) {
+function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; transparentSrc?: string; onClose: () => void; isOpen: boolean }) {
   const [cmykLoading, setCmykLoading] = useState(false);
   const [cmykPreview, setCmykPreview] = useState(false);
   const [cmykSrc, setCmykSrc] = useState<string | null>(null);
   const [cmykTiffBlob, setCmykTiffBlob] = useState<Blob | null>(null);
   const [simulating, setSimulating] = useState(false);
+  const prevSrcRef = useRef<string>('');
+  useEffect(() => {
+    if (src && src !== prevSrcRef.current) {
+      prevSrcRef.current = src;
+      setCmykPreview(false);
+      setCmykSrc(null);
+      setCmykTiffBlob(null);
+    }
+  }, [src]);
+  if (!isOpen) return null;
   const dl = (href: string, name: string) => {
     const a = document.createElement("a");
     a.href = href;
@@ -973,7 +983,7 @@ export default function Product2() {
           </>
         )}
       </div>
-      {modalImg && <ImageModal src={modalImg} transparentSrc={modalTransparentImg ?? undefined} onClose={() => { setModalImg(null); setModalTransparentImg(null); }} />}
+      <ImageModal isOpen={!!modalImg} src={modalImg ?? ''} transparentSrc={modalTransparentImg ?? undefined} onClose={() => { setModalImg(null); setModalTransparentImg(null); }} />
       {orderOpen && (
         <OrderModal
           imageDataUrl={frontRef.current?.toDataURL("image/png") ?? ""}
