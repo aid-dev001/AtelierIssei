@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import Stripe from 'stripe';
 import { exec, execSync } from 'child_process';
 import { promisify } from 'util';
