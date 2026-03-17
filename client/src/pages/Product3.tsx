@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Download, X, RefreshCw, Trash2, Eye, EyeOff } from "lucide-react";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 import OrderModal from "@/components/OrderModal";
+import { injectDpi300 } from "@/lib/pngDpi";
 
 function ImageModal({ src, transparentSrc, onClose }: { src: string; transparentSrc?: string; onClose: () => void }) {
   const dl = (href: string, name: string) => {
@@ -370,8 +371,18 @@ export default function Product3() {
     offCtx.globalCompositeOperation = "destination-in";
     offCtx.drawImage(mask, 0, 0);
     offCtx.globalCompositeOperation = "source-over";
-    drawLabelOnCtx(offCtx, CW, CH, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
-    return off.toDataURL("image/png");
+
+    // Upscale 3x for 300 DPI print quality
+    const PS = 3;
+    const print = document.createElement("canvas");
+    print.width = CW * PS;
+    print.height = CH * PS;
+    const printCtx = print.getContext("2d")!;
+    printCtx.imageSmoothingEnabled = true;
+    printCtx.imageSmoothingQuality = "high";
+    printCtx.drawImage(off, 0, 0, print.width, print.height);
+    drawLabelOnCtx(printCtx, print.width, print.height, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
+    return injectDpi300(print.toDataURL("image/png"));
   }, [artImg, shapes, shapeMode, artOffsetX, artOffsetY, artRotation, artScale, labelImg, labelVisible, labelLang, labelOffset, tshirtColor]);
 
   useEffect(() => {

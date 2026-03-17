@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { RefreshCw, Download, X } from "lucide-react";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 import OrderModal from "@/components/OrderModal";
+import { injectDpi300 } from "@/lib/pngDpi";
 
 type ProductShape = { id: number; title: string; imageUrl: string };
 type ArtworkItem = { id: number; title: string; imageUrl: string; description?: string };
@@ -466,20 +467,23 @@ const Product: React.FC = () => {
     const dc = compositeRef.current;
     if (!dc || dc.width === 0) return null;
     const aspect = tshirtColor === "black" ? tshirtBlackAspect : tshirtAspect;
-    const W = 1600;
+    const PRINT_SCALE = 3;
+    const W = 1600 * PRINT_SCALE;
     const H = Math.round(W / aspect);
     const off = document.createElement("canvas");
     off.width = W;
     off.height = H;
     const ctx = off.getContext("2d")!;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
     const da = dc.width / dc.height;
     const maxW = W * 0.38 * shapeScale;
     const maxH = H * 0.34 * shapeScale;
     let rw = maxW, rh = rw / da;
     if (rh > maxH) { rh = maxH; rw = rh * da; }
-    ctx.drawImage(dc, (W - rw) / 2 + designPos.x, H * 0.26 + designPos.y, rw, rh);
+    ctx.drawImage(dc, (W - rw) / 2 + designPos.x * PRINT_SCALE, H * 0.26 + designPos.y * PRINT_SCALE, rw, rh);
     drawLabelOnCtx(ctx, W, H, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
-    return off.toDataURL("image/png");
+    return injectDpi300(off.toDataURL("image/png"));
   }, [tshirtColor, tshirtAspect, tshirtBlackAspect, shapeScale, designPos, labelImg, labelVisible, labelLang, labelOffset]);
 
   const onUp = () => {

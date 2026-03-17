@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { RefreshCw, Download, X } from "lucide-react";
 import ScrollToTopLink from "@/components/ScrollToTopLink";
 import OrderModal from "@/components/OrderModal";
+import { injectDpi300 } from "@/lib/pngDpi";
 
 function ImageModal({ src, transparentSrc, onClose }: { src: string; transparentSrc?: string; onClose: () => void }) {
   const dl = (href: string, name: string) => {
@@ -357,48 +358,60 @@ export default function Product2() {
 
   const getFrontTransparentPng = useCallback((): string | null => {
     if (!artImg) return null;
+    const PS = 3;
+    const W = FRONT_CW * PS;
+    const H = FRONT_CH * PS;
     const off = document.createElement("canvas");
-    off.width = FRONT_CW;
-    off.height = FRONT_CH;
+    off.width = W;
+    off.height = H;
     const ctx = off.getContext("2d")!;
-    const cx = FRONT_CW / 2;
-    const ty = frontPos.y * FRONT_CH;
-    const lx = cx - lineWidth / 2;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    const cx = W / 2;
+    const lw = lineWidth * PS;
+    const lh = LINE_H * PS;
+    const ty = frontPos.y * H;
+    const lx = cx - lw / 2;
     ctx.save();
     ctx.beginPath();
-    ctx.rect(lx, ty, lineWidth, LINE_H);
+    ctx.rect(lx, ty, lw, lh);
     ctx.clip();
-    const scale = lineWidth / artImg.width;
+    const scale = lw / artImg.width;
     const dh = artImg.height * scale;
-    const dy = ty + (LINE_H - dh) * artVertOffset;
-    ctx.drawImage(artImg, lx, dy, lineWidth, dh);
+    const dy = ty + (lh - dh) * artVertOffset;
+    ctx.drawImage(artImg, lx, dy, lw, dh);
     ctx.restore();
     const text = customText;
     if (text) {
       ctx.save();
-      ctx.font = "400 15px 'Helvetica Neue', Arial, sans-serif";
+      ctx.font = `400 ${15 * PS}px 'Helvetica Neue', Arial, sans-serif`;
       ctx.fillStyle = "#2a2a2a";
       ctx.textAlign = "left";
-      const textX = cx - 170;
-      const maxW = 370;
+      const textX = cx - 170 * PS;
+      const maxW = 370 * PS;
       const lines = wrapText(ctx, text, maxW);
       lines.forEach((line, i) => {
-        ctx.fillText(line, textX, ty + LINE_H + 40 + i * 17);
+        ctx.fillText(line, textX, ty + lh + 40 * PS + i * 17 * PS);
       });
       ctx.restore();
     }
-    return off.toDataURL("image/png");
+    return injectDpi300(off.toDataURL("image/png"));
   }, [artImg, frontPos, lineWidth, artVertOffset, customText, FRONT_CW, FRONT_CH, LINE_H]);
 
   const getBackTransparentPng = useCallback((): string | null => {
     if (!artImg) return null;
+    const PS = 3;
+    const W = BACK_CW * PS;
+    const H = BACK_CH * PS;
     const off = document.createElement("canvas");
-    off.width = BACK_CW;
-    off.height = BACK_CH;
+    off.width = W;
+    off.height = H;
     const ctx = off.getContext("2d")!;
-    const sq = BACK_SQUARE_BASE * designScale;
-    const sx = backPos.x * BACK_CW - sq / 2;
-    const sy = backPos.y * BACK_CH - sq / 2;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    const sq = BACK_SQUARE_BASE * designScale * PS;
+    const sx = backPos.x * W - sq / 2;
+    const sy = backPos.y * H - sq / 2;
     ctx.save();
     ctx.beginPath();
     ctx.rect(sx, sy, sq, sq);
@@ -406,12 +419,12 @@ export default function Product2() {
     const scale = Math.max(sq / artImg.width, sq / artImg.height) * cropScale;
     const dw = artImg.width * scale;
     const dh = artImg.height * scale;
-    const dx = sx + (sq - dw) / 2 + artOffset.x;
-    const dy = sy + (sq - dh) / 2 + artOffset.y;
+    const dx = sx + (sq - dw) / 2 + artOffset.x * PS;
+    const dy = sy + (sq - dh) / 2 + artOffset.y * PS;
     ctx.drawImage(artImg, dx, dy, dw, dh);
     ctx.restore();
-    drawLabelOnCtx(ctx, BACK_CW, BACK_CH, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
-    return off.toDataURL("image/png");
+    drawLabelOnCtx(ctx, W, H, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
+    return injectDpi300(off.toDataURL("image/png"));
   }, [artImg, backPos, designScale, cropScale, artOffset, BACK_CW, BACK_CH, BACK_SQUARE_BASE, labelImg, labelVisible, labelLang, labelOffset, tshirtColor]);
 
   useEffect(() => { renderFront(); }, [renderFront]);
