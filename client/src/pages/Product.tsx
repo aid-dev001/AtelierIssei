@@ -203,9 +203,14 @@ function drawTshirt(
     if (rh > maxH) { rh = maxH; rw = rh * aspect; }
     const dx = (W - rw) / 2 + designPos.x;
     const dy = H * 0.26 + designPos.y;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect((W - maxW) / 2 - 120, H * 0.26 - 110, maxW + 240, maxH + 250);
+    ctx.clip();
     ctx.globalCompositeOperation = color === "white" ? "multiply" : "screen";
     ctx.drawImage(designCanvas, dx, dy, rw, rh);
     ctx.globalCompositeOperation = "source-over";
+    ctx.restore();
   }
 
   drawLabelOnCtx(ctx, W, H, labelImg, labelVisible, labelLang, labelOffset, color);
@@ -697,7 +702,12 @@ const Product: React.FC = () => {
     const maxH = H * 0.34 * shapeScale;
     let rw = maxW, rh = rw / da;
     if (rh > maxH) { rh = maxH; rw = rh * da; }
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect((W - maxW) / 2 - 120 * PRINT_SCALE, H * 0.26 - 110 * PRINT_SCALE, maxW + 240 * PRINT_SCALE, maxH + 250 * PRINT_SCALE);
+    ctx.clip();
     ctx.drawImage(dc, (W - rw) / 2 + designPos.x * PRINT_SCALE, H * 0.26 + designPos.y * PRINT_SCALE, rw, rh);
+    ctx.restore();
     drawLabelOnCtx(ctx, W, H, labelImg, labelVisible, labelLang, { x: labelOffset.x * PRINT_SCALE, y: labelOffset.y * PRINT_SCALE }, tshirtColor);
     return injectDpi300(off.toDataURL("image/png"));
   }, [tshirtColor, tshirtAspect, tshirtBlackAspect, shapeScale, designPos, labelImg, labelVisible, labelLang, labelOffset]);
@@ -730,11 +740,16 @@ const Product: React.FC = () => {
           if (rh > maxH) { rh = maxH; rw = rh * da; }
           const dx = (W - rw) / 2 + designPos.x;
           const dy = H * 0.26 + designPos.y;
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect((W - maxW) / 2 - 120, H * 0.26 - 110, maxW + 240, maxH + 250);
+          ctx.clip();
           ctx.filter = "brightness(1.1)";
           ctx.globalCompositeOperation = tshirtColor === "white" ? "multiply" : "screen";
           ctx.drawImage(cmykImg, dx, dy, rw, rh);
           ctx.globalCompositeOperation = "source-over";
           ctx.filter = "none";
+          ctx.restore();
         }
         drawLabelOnCtx(ctx, W, H, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
         resolve(off.toDataURL("image/png"));
