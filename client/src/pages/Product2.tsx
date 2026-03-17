@@ -109,10 +109,11 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
   };
   const toggleCmykPreview = async () => {
     if (cmykPreview) { setCmykPreview(false); return; }
+    if (!transparentSrc) return;
     if (cmykSrc) { setCmykPreview(true); return; }
     setSimulating(true);
     try {
-      const result = await simulateCmykOnCanvas(src);
+      const result = await simulateCmykOnCanvas(transparentSrc);
       setCmykSrc(result);
       setCmykPreview(true);
     } finally {
@@ -122,13 +123,14 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
   return (
     <div className="fixed inset-0 bg-black/85 z-[200] flex items-center justify-center p-4" onClick={onClose}>
       <div className="relative max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
-        <img
-          src={cmykPreview && cmykSrc ? cmykSrc : src}
-          alt={cmykPreview ? "印刷イメージ確認" : "拡大プレビュー"}
-          className="w-full rounded-2xl shadow-2xl"
-        />
+        <div className="relative w-full">
+          <img src={src} alt="拡大プレビュー" className="w-full rounded-2xl shadow-2xl" />
+          {cmykPreview && cmykSrc && (
+            <img src={cmykSrc} alt="印刷イメージ確認" className="absolute inset-0 w-full h-full rounded-2xl" style={{ objectFit: "cover" }} />
+          )}
+        </div>
         <div className="absolute top-3 right-3 flex gap-2">
-          <button onClick={toggleCmykPreview} disabled={simulating} style={{ border: "2.5px solid #000" }} className={`rounded-full px-3 py-2 shadow transition-all flex items-center gap-1.5 disabled:opacity-50 text-xs ${cmykPreview ? "bg-white text-black" : "bg-white/90 hover:bg-white text-black"}`} title="CMYKシミュレーション（印刷色の確認）">
+          <button onClick={toggleCmykPreview} disabled={simulating || !transparentSrc} style={{ border: "2.5px solid #000" }} className={`rounded-full px-3 py-2 shadow transition-all flex items-center gap-1.5 disabled:opacity-50 text-xs ${cmykPreview ? "bg-white text-black" : "bg-white/90 hover:bg-white text-black"}`} title="CMYKシミュレーション（印刷色の確認）">
             <span>{simulating ? "処理中…" : "印刷イメージ確認"}</span>
           </button>
           {transparentSrc && (
@@ -226,7 +228,7 @@ function drawLabelOnCtx(
   color: "white" | "black"
 ) {
   if (!labelVisible) return;
-  const defaultX = canvasW * 0.5;
+  const defaultX = canvasW * 0.60;
   const defaultY = canvasH * 0.57;
   const lx = defaultX + labelOffset.x;
   const ly = defaultY + labelOffset.y;
@@ -908,7 +910,7 @@ export default function Product2() {
                         <div className="flex flex-col gap-1">
                           <div className="flex items-center gap-2">
                             <span className="text-xs text-black w-5">←→</span>
-                            <input type="range" min={-150} max={150} value={labelOffset.x}
+                            <input type="range" min={-100} max={100} value={labelOffset.x}
                               onChange={(e) => setLabelOffset((p) => ({ ...p, x: Number(e.target.value) }))}
                               className="w-24 accent-black" />
                           </div>
