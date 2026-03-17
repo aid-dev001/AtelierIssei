@@ -186,7 +186,7 @@ function ImageModal({ src, transparentSrc, compositeWithCmyk, onClose, isOpen }:
             src={cmykPreview && cmykSrc ? cmykSrc : src}
             alt={cmykPreview ? "印刷イメージ確認" : "拡大プレビュー"}
             className="w-full rounded-2xl shadow-2xl"
-            style={cmykPreview && cmykSrc ? { filter: "brightness(1.15)" } : undefined}
+            style={cmykPreview && cmykSrc && !compositeWithCmyk ? { filter: "brightness(1.1)" } : undefined}
           />
           {cmykPreview && (
             <div className="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-2 py-1 rounded font-bold">CMYK印刷色</div>
@@ -588,7 +588,7 @@ export default function Product3() {
       const ctx = off.getContext("2d")!;
       if (shirtI) { ctx.drawImage(shirtI, 0, 0, W, H); coverShirtText(ctx, shirtI, W, H); }
       const img = new window.Image();
-      img.onload = () => { ctx.globalCompositeOperation = blend as GlobalCompositeOperation; ctx.drawImage(img, 0, 0, W, H); ctx.globalCompositeOperation = "source-over"; resolve(off.toDataURL("image/png")); };
+      img.onload = () => { ctx.filter = "brightness(1.1)"; ctx.globalCompositeOperation = blend as GlobalCompositeOperation; ctx.drawImage(img, 0, 0, W, H); ctx.globalCompositeOperation = "source-over"; ctx.filter = "none"; resolve(off.toDataURL("image/png")); };
       img.onerror = () => reject(new Error("load failed")); img.src = cmykBlobUrl;
     }));
   }, [getTransparentPng, tshirtColor, shirtImg, blackShirtImg]);

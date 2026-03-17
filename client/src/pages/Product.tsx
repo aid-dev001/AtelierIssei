@@ -399,7 +399,7 @@ function ImageModal({ src, transparentSrc, designSrc, compositeWithCmyk, onClose
             src={cmykPreview && cmykSrc ? cmykSrc : src}
             alt={cmykPreview ? "印刷イメージ確認" : "拡大プレビュー"}
             className="w-full rounded-2xl shadow-2xl"
-            style={cmykPreview && cmykSrc ? { filter: "brightness(1.15)" } : undefined}
+            style={cmykPreview && cmykSrc && !compositeWithCmyk ? { filter: "brightness(1.1)" } : undefined}
           />
           {cmykPreview && (
             <div className="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-2 py-1 rounded font-bold">CMYK印刷色</div>
@@ -721,9 +721,11 @@ const Product: React.FC = () => {
           if (rh > maxH) { rh = maxH; rw = rh * da; }
           const dx = (W - rw) / 2 + designPos.x;
           const dy = H * 0.26 + designPos.y;
+          ctx.filter = "brightness(1.1)";
           ctx.globalCompositeOperation = tshirtColor === "white" ? "multiply" : "screen";
           ctx.drawImage(cmykImg, dx, dy, rw, rh);
           ctx.globalCompositeOperation = "source-over";
+          ctx.filter = "none";
         }
         drawLabelOnCtx(ctx, W, H, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
         resolve(off.toDataURL("image/png"));
