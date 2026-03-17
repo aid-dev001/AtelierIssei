@@ -9,6 +9,7 @@ function ImageModal({ src, transparentSrc, onClose }: { src: string; transparent
   const [cmykLoading, setCmykLoading] = useState(false);
   const [cmykPreview, setCmykPreview] = useState(false);
   const [cmykSrc, setCmykSrc] = useState<string | null>(null);
+  const [cmykTiffBlob, setCmykTiffBlob] = useState<Blob | null>(null);
   const [simulating, setSimulating] = useState(false);
   const dl = (href: string, name: string) => {
     const a = document.createElement("a");
@@ -17,7 +18,14 @@ function ImageModal({ src, transparentSrc, onClose }: { src: string; transparent
     a.click();
   };
   const downloadCmyk = async () => {
-    if (!transparentSrc || cmykLoading) return;
+    if (cmykLoading) return;
+    if (cmykTiffBlob) {
+      const url = URL.createObjectURL(cmykTiffBlob);
+      dl(url, "issei-print-cmyk.tif");
+      URL.revokeObjectURL(url);
+      return;
+    }
+    if (!transparentSrc) return;
     setCmykLoading(true);
     try {
       const res = await fetch("/api/convert-cmyk", {
@@ -27,11 +35,9 @@ function ImageModal({ src, transparentSrc, onClose }: { src: string; transparent
       });
       if (!res.ok) throw new Error();
       const blob = await res.blob();
+      setCmykTiffBlob(blob);
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "issei-print-cmyk.tif";
-      a.click();
+      dl(url, "issei-print-cmyk.tif");
       URL.revokeObjectURL(url);
     } finally {
       setCmykLoading(false);
@@ -42,15 +48,22 @@ function ImageModal({ src, transparentSrc, onClose }: { src: string; transparent
     if (cmykSrc) { setCmykPreview(true); return; }
     setSimulating(true);
     try {
-      const res = await fetch("/api/cmyk-preview", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageData: src }),
-      });
-      if (!res.ok) throw new Error();
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      setCmykSrc(url);
+      const [previewRes, tiffRes] = await Promise.all([
+        fetch("/api/cmyk-preview", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ imageData: src }),
+        }),
+        transparentSrc ? fetch("/api/convert-cmyk", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ imageData: transparentSrc }),
+        }) : Promise.resolve(null),
+      ]);
+      if (!previewRes.ok) throw new Error();
+      const previewBlob = await previewRes.blob();
+      setCmykSrc(URL.createObjectURL(previewBlob));
+      if (tiffRes && tiffRes.ok) setCmykTiffBlob(await tiffRes.blob());
       setCmykPreview(true);
     } finally {
       setSimulating(false);
