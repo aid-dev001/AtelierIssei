@@ -288,7 +288,7 @@ function thumb(url: string, w = 200): string {
 }
 
 const LABEL_TEXT_EN = "ISSEI – Wearable Abstraction";
-const LABEL_TEXT_JA = "ISSEI – 着るアブストラクション";
+const LABEL_TEXT_FR = "ISSEI – L'Abstraction à Porter";
 
 function drawLabelOnCtx(
   ctx: CanvasRenderingContext2D,
@@ -296,7 +296,7 @@ function drawLabelOnCtx(
   canvasH: number,
   labelImg: HTMLImageElement | null,
   labelVisible: boolean,
-  labelLang: "en" | "ja",
+  labelLang: "en" | "fr",
   labelOffset: { x: number; y: number },
   color: "white" | "black"
 ) {
@@ -313,7 +313,7 @@ function drawLabelOnCtx(
     ctx.drawImage(labelImg, lx - lw, ly - lh * 0.75, lw, lh);
     ctx.filter = "none";
   } else {
-    const text = labelLang === "ja" ? LABEL_TEXT_JA : LABEL_TEXT_EN;
+    const text = labelLang === "fr" ? LABEL_TEXT_FR : LABEL_TEXT_EN;
     const fs = Math.round(canvasW * 0.011);
     ctx.save();
     ctx.fillStyle = color === "black" ? "#ffffff" : "#1a1a1a";
@@ -369,10 +369,10 @@ export default function Product2() {
   const [modalTransparentImg, setModalTransparentImg] = useState<string | null>(null);
   const [modalCompositeWithCmyk, setModalCompositeWithCmyk] = useState<((url: string) => Promise<string>) | undefined>(undefined);
   const [labelVisible, setLabelVisible] = useState(true);
-  const [labelLang, setLabelLang] = useState<"en" | "ja">("en");
+  const [labelLang, setLabelLang] = useState<"en" | "fr">("en");
   const [labelImgEn, setLabelImgEn] = useState<HTMLImageElement | null>(null);
-  const [labelImgJa, setLabelImgJa] = useState<HTMLImageElement | null>(null);
-  const labelImg = labelLang === "en" ? labelImgEn : labelImgJa;
+  const [labelImgFr, setLabelImgFr] = useState<HTMLImageElement | null>(null);
+  const labelImg = labelLang === "en" ? labelImgEn : labelImgFr;
   const [labelOffset, setLabelOffset] = useState({ x: 100, y: 50 });
 
   const [page, setPage] = useState(1);
@@ -407,7 +407,7 @@ export default function Product2() {
     loadImg("/product/tshirt2-black-front.jpg").then(setFrontBlackShirtImg);
     loadImg("/product/tshirt2-black-back.jpg").then(setBackBlackShirtImg);
     loadImg("/product/label-en-white.png").then(setLabelImgEn).catch(() => {});
-    loadImg("/product/label-ja-white.png").then(setLabelImgJa).catch(() => {});
+    loadImg("/product/label-fr-white.png").then(setLabelImgFr).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -998,7 +998,7 @@ export default function Product2() {
                     <>
                       <div className="flex rounded-full border border-gray-300 overflow-hidden text-xs">
                         <button onClick={() => setLabelLang("en")} className={`px-3 py-1 transition-colors ${labelLang === "en" ? "bg-black text-white" : "bg-white text-black hover:bg-gray-100"}`}>EN</button>
-                        <button onClick={() => setLabelLang("ja")} className={`px-3 py-1 transition-colors ${labelLang === "ja" ? "bg-black text-white" : "bg-white text-black hover:bg-gray-100"}`}>JP</button>
+                        <button onClick={() => setLabelLang("fr")} className={`px-3 py-1 transition-colors ${labelLang === "fr" ? "bg-black text-white" : "bg-white text-black hover:bg-gray-100"}`}>FR</button>
                       </div>
                       <div className="flex items-center gap-3 ml-1">
                         <div className="flex flex-col gap-1">
