@@ -10,15 +10,31 @@ import path from 'path';
 const execAsync = promisify(exec);
 const router = Router();
 
+const ICC_JAPAN = path.resolve('public/icc/JapanColor2001Coated.icc');
+const TIFICC = '/nix/store/bhkrx8pzqy12v6jmil17lkl8zgcyck0l-lcms2-2.16-bin/bin/tificc';
+
+async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise<void> {
+  const id = path.basename(inputPng, '.png');
+  const rgbTif = path.join(os.tmpdir(), `issei-rgb-${id}.tif`);
+  try {
+    // Step 1: PNG → 8-bit sRGB TIFF (strip alpha, force TrueColor)
+    await execAsync(`magick "${inputPng}" -alpha off -type TrueColor -depth 8 -compress lzw "${rgbTif}"`);
+    // Step 2: tificc: sRGB → Japan Color 2001 Coated CMYK (lcms2, built-in *sRGB source)
+    await execAsync(`"${TIFICC}" -i"*sRGB" -o"${ICC_JAPAN}" -t1 "${rgbTif}" "${outputTif}"`);
+    // Step 3: Embed Japan Color ICC profile explicitly (tificc may omit it)
+    await execAsync(`magick "${outputTif}" -profile "${ICC_JAPAN}" -compress lzw "${outputTif}"`);
+  } finally {
+    try { fs.unlinkSync(rgbTif); } catch {}
+  }
+}
+
 async function pngBase64ToCmykTiff(base64: string): Promise<Buffer> {
   const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   const inputPath = path.join(os.tmpdir(), `issei-in-${id}.png`);
   const outputPath = path.join(os.tmpdir(), `issei-cmyk-${id}.tif`);
   try {
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    // Pre-compensate CMYK pink→salmon shift: B += 0.20*R pushes pinks/reds toward magenta,
-    // reducing Yellow component in CMYK output and avoiding orange/salmon cast
-    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,200,100 -colorspace CMYK -compress lzw "${outputPath}"`);
+    await pngToJapanColorTiff(inputPath, outputPath);
     return fs.readFileSync(outputPath);
   } finally {
     try { fs.unlinkSync(inputPath); } catch {}
@@ -173,12 +189,10 @@ router.post('/cmyk-preview', async (req, res) => {
     fs.writeFileSync(inputPath, Buffer.from(imageData.split(',')[1] ?? imageData, 'base64'));
     // 1. Extract original alpha mask
     await execAsync(`magick "${inputPath}" -alpha extract "${alphaPath}"`);
-    // 2. Apply same corrections as download → save as CMYK TIFF (identical to download pipeline)
-    await execAsync(`magick "${inputPath}" -alpha off -colorspace sRGB -color-matrix "1 0 0  0 1 0.12  0.20 0 1" -modulate 100,150,100 -colorspace CMYK -compress lzw "${cmykTiffPath}"`);
-    // 3. Read the CMYK TIFF back and convert to sRGB, then apply desaturation/darkening
-    //    to approximate macOS Preview's ColorSync rendering of the CMYK TIFF.
-    //    ImageMagick's CMYK→sRGB keeps more saturation than ColorSync does.
-    await execAsync(`magick "${cmykTiffPath}" -colorspace sRGB -modulate 88,55,100 "${rgbPath}"`);
+    // 2. tificc: sRGB → Japan Color 2001 Coated CMYK (lcms2 ICC color management)
+    await pngToJapanColorTiff(inputPath, cmykTiffPath);
+    // 3. Round-trip CMYK → sRGB (approximates macOS ColorSync rendering of this CMYK TIFF)
+    await execAsync(`magick "${cmykTiffPath}" -colorspace sRGB "${rgbPath}"`);
     // 4. Re-apply original alpha so transparent areas stay transparent
     await execAsync(`magick "${rgbPath}" "${alphaPath}" -compose CopyOpacity -composite "${outputPath}"`);
 
@@ -202,9 +216,8 @@ router.post('/convert-cmyk', async (req, res) => {
   try {
     const base64 = imageData.split(',')[1] ?? imageData;
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    // color-matrix: row3=0.20*R+B (pink fix), row2=0.12*B+G (blue fix: cyan-shift for blues to reduce CMYK purple cast)
-    // saturation 150 (reduced from 200 to prevent over-saturation of blues)
-    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0.12  0.20 0 1" -modulate 100,150,100 -colorspace CMYK -compress lzw "${outputPath}"`);
+    // tificc: sRGB → Japan Color 2001 Coated CMYK (lcms2 ICC color management)
+    await pngToJapanColorTiff(inputPath, outputPath);
     const tifBuf = fs.readFileSync(outputPath);
     res.set('Content-Type', 'image/tiff');
     res.set('Content-Disposition', 'attachment; filename="issei-print-cmyk.tif"');
