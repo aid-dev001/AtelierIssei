@@ -124,22 +124,13 @@ function ImageModal({ src, transparentSrc, compositeWithCmyk, onClose, isOpen }:
     if (cmykSrc) { setCmykPreview(true); return; }
     setSimulating(true);
     try {
-      const res = await fetch("/api/cmyk-preview", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageData: transparentSrc }),
-      });
-      if (!res.ok) throw new Error("cmyk-preview failed");
-      const blob = await res.blob();
-      const cmykDesignBlobUrl = URL.createObjectURL(blob);
+      // TEST: shirt base only — no design
+      const blankPng = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQI12NgAAIABQAABjE+ibYAAAAASUVORK5CYII=";
       if (compositeWithCmyk) {
-        const compositeDataUrl = await compositeWithCmyk(cmykDesignBlobUrl);
-        URL.revokeObjectURL(cmykDesignBlobUrl);
+        const compositeDataUrl = await compositeWithCmyk(blankPng);
         setCmykSrc(compositeDataUrl);
       } else {
-        if (cmykBlobUrlRef.current) URL.revokeObjectURL(cmykBlobUrlRef.current);
-        cmykBlobUrlRef.current = cmykDesignBlobUrl;
-        setCmykSrc(cmykDesignBlobUrl);
+        setCmykSrc(blankPng);
       }
       setCmykPreview(true);
     } finally {
