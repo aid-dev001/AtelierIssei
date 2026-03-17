@@ -42,6 +42,11 @@ async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise
   try {
     // Step 1: PNG → 8-bit sRGB TIFF (flatten alpha onto white, force TrueColor)
     await execAsync(`"${MAGICK}" "${inputPng}" -background white -flatten -type TrueColor -depth 8 -compress lzw "${rgbTif}"`);
+    // Step 1.5 (additive): Pre-boost green channel by 15% before ICC conversion.
+    // Japan Color assigns heavy K (~58%) to mint/cyan-greens. Raising G makes tificc
+    // see a brighter/more-saturated green → less K in the CMYK result.
+    // Effect on non-green pixels (where G is not dominant) is negligible.
+    await execAsync(`"${MAGICK}" "${rgbTif}" -channel G -evaluate multiply 1.15 -clamp +channel -compress lzw "${rgbTif}"`);
     // Step 2: tificc: sRGB → Japan Color 2001 Coated CMYK
     // -t0 = Perceptual intent | -b = Black Point Compensation
     await execAsync(`"${TIFICC}" -i"*sRGB" -o"${ICC_JAPAN}" -t0 -b "${rgbTif}" "${outputTif}"`);
