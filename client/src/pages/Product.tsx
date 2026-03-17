@@ -1123,7 +1123,7 @@ const Product: React.FC = () => {
               注文する
             </button>
             <p className="text-xs text-black tracking-wider text-center">
-              デザインの生成・送信のため、数分〜5分程度かかります
+              デザインの生成・送信のため、注文処理に数分〜5分程度かかります
             </p>
           </div>
         )}
