@@ -257,8 +257,8 @@ type ShapeItem = {
   rotation: number;
 };
 
-const CW = 800;
-const CH = 900;
+const CW = 1600;
+const CH = 1800;
 const PAGE_SIZE = 12;
 const CLICK_THRESHOLD = 6;
 const SHIRT_L = 0.20;

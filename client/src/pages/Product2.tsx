@@ -393,10 +393,10 @@ export default function Product2() {
   const [page, setPage] = useState(1);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const FRONT_CW = 1043;
-  const FRONT_CH = 1024;
-  const BACK_CW = 976;
-  const BACK_CH = 1079;
+  const FRONT_CW = 1600;
+  const FRONT_CH = 1571;
+  const BACK_CW = 1600;
+  const BACK_CH = 1769;
   const BACK_SQUARE_BASE = 300;
   const LINE_H = 3;
 

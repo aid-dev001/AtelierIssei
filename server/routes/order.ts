@@ -46,7 +46,7 @@ async function pngToJapanColorTiff(inputPng: string, outputTif: string): Promise
     // Japan Color assigns heavy K (~58%) to mint/cyan-greens. Raising G makes tificc
     // see a brighter/more-saturated green → less K in the CMYK result.
     // Effect on non-green pixels (where G is not dominant) is negligible.
-    await execAsync(`"${MAGICK}" "${rgbTif}" -channel G -evaluate multiply 1.15 -clamp +channel -compress lzw "${rgbTif}"`);
+    await execAsync(`"${MAGICK}" "${rgbTif}" -channel G -evaluate multiply 1.25 -clamp +channel -compress lzw "${rgbTif}"`);
     // Step 2: tificc: sRGB → Japan Color 2001 Coated CMYK
     // -t0 = Perceptual intent | -b = Black Point Compensation
     await execAsync(`"${TIFICC}" -i"*sRGB" -o"${ICC_JAPAN}" -t0 -b "${rgbTif}" "${outputTif}"`);
