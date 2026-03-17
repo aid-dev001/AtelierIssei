@@ -1096,14 +1096,14 @@ export default function Product2() {
             </div>
 
           {selectedArtId != null && (
-            <div className="mt-16 flex flex-col items-center gap-3">
+            <div className="mt-16 flex flex-col items-center gap-6">
               <button
                 onClick={() => { setCachedFrontDataUrl(frontRef.current?.toDataURL("image/png") ?? ""); setCachedBackDataUrl(backRef.current?.toDataURL("image/png") ?? null); setOrderOpen(true); }}
                 className="px-14 py-4 border border-black text-black bg-white text-sm tracking-[0.5em] font-light hover:bg-black hover:text-white transition-all duration-500"
               >
                 注文する
               </button>
-              <p className="text-[10px] text-black tracking-wider text-center">
+              <p className="text-xs text-black tracking-wider text-center">
                 デザインの生成・送信のため、数分〜5分程度かかります
               </p>
             </div>
