@@ -213,14 +213,21 @@ router.post('/convert-cmyk', async (req, res) => {
   const { imageData } = req.body as { imageData?: string };
   if (!imageData) return res.status(400).json({ error: 'No image data' });
 
-  const inputPath = path.join(os.tmpdir(), `issei-in-${Date.now()}.png`);
-  const outputPath = path.join(os.tmpdir(), `issei-cmyk-${Date.now()}.tif`);
+  const ts = Date.now();
+  const inputPath  = path.join(os.tmpdir(), `issei-in-${ts}.png`);
+  const cmykPath   = path.join(os.tmpdir(), `issei-cmyk-${ts}.tif`);
+  const alphaPath  = path.join(os.tmpdir(), `issei-alpha-${ts}.png`);
+  const outputPath = path.join(os.tmpdir(), `issei-out-${ts}.tif`);
 
   try {
     const base64 = imageData.split(',')[1] ?? imageData;
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    // tificc: sRGB → Japan Color 2001 Coated CMYK (lcms2 ICC color management)
-    await pngToJapanColorTiff(inputPath, outputPath);
+    // 1. Extract original alpha mask
+    await execAsync(`magick "${inputPath}" -alpha extract "${alphaPath}"`);
+    // 2. tificc: sRGB → Japan Color 2001 Coated CMYK (flattens to white internally for tificc)
+    await pngToJapanColorTiff(inputPath, cmykPath);
+    // 3. Re-apply original alpha to CMYK TIFF (transparent areas = no ink)
+    await execAsync(`magick "${cmykPath}" -alpha on "${alphaPath}" -compose CopyOpacity -composite -compress lzw "${outputPath}"`);
     const tifBuf = fs.readFileSync(outputPath);
     res.set('Content-Type', 'image/tiff');
     res.set('Content-Disposition', 'attachment; filename="issei-print-cmyk.tif"');
@@ -229,8 +236,7 @@ router.post('/convert-cmyk', async (req, res) => {
     console.error('CMYK convert error:', err);
     res.status(500).json({ error: 'CMYK conversion failed' });
   } finally {
-    try { fs.unlinkSync(inputPath); } catch {}
-    try { fs.unlinkSync(outputPath); } catch {}
+    for (const p of [inputPath, cmykPath, alphaPath, outputPath]) try { fs.unlinkSync(p); } catch {}
   }
 });
 
