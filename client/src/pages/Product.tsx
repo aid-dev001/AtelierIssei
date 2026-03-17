@@ -205,7 +205,7 @@ function drawTshirt(
     const dy = H * 0.26 + designPos.y;
     ctx.save();
     ctx.beginPath();
-    ctx.rect((W - maxW) / 2 - 120, H * 0.26 - 110, maxW + 240, maxH + 250);
+    ctx.rect((W - maxW) / 2 - 120, H * 0.26 - 130, maxW + 210, maxH + 270);
     ctx.clip();
     ctx.globalCompositeOperation = color === "white" ? "multiply" : "screen";
     ctx.drawImage(designCanvas, dx, dy, rw, rh);
@@ -704,7 +704,7 @@ const Product: React.FC = () => {
     if (rh > maxH) { rh = maxH; rw = rh * da; }
     ctx.save();
     ctx.beginPath();
-    ctx.rect((W - maxW) / 2 - 120 * PRINT_SCALE, H * 0.26 - 110 * PRINT_SCALE, maxW + 240 * PRINT_SCALE, maxH + 250 * PRINT_SCALE);
+    ctx.rect((W - maxW) / 2 - 120 * PRINT_SCALE, H * 0.26 - 130 * PRINT_SCALE, maxW + 210 * PRINT_SCALE, maxH + 270 * PRINT_SCALE);
     ctx.clip();
     ctx.drawImage(dc, (W - rw) / 2 + designPos.x * PRINT_SCALE, H * 0.26 + designPos.y * PRINT_SCALE, rw, rh);
     ctx.restore();
@@ -742,7 +742,7 @@ const Product: React.FC = () => {
           const dy = H * 0.26 + designPos.y;
           ctx.save();
           ctx.beginPath();
-          ctx.rect((W - maxW) / 2 - 120, H * 0.26 - 110, maxW + 240, maxH + 250);
+          ctx.rect((W - maxW) / 2 - 120, H * 0.26 - 130, maxW + 210, maxH + 270);
           ctx.clip();
           ctx.filter = "brightness(1.1)";
           ctx.globalCompositeOperation = tshirtColor === "white" ? "multiply" : "screen";
@@ -804,8 +804,8 @@ const Product: React.FC = () => {
     const rect = tshirtRef.current.getBoundingClientRect();
     const scale = 1600 / rect.width;
     setDesignPos({
-      x: Math.max(-120, Math.min(120, tshirtDragStartOffsetRef.current.x + dx * scale)),
-      y: Math.max(-110, Math.min(140, tshirtDragStartOffsetRef.current.y + dy * scale)),
+      x: Math.max(-120, Math.min(90, tshirtDragStartOffsetRef.current.x + dx * scale)),
+      y: Math.max(-130, Math.min(140, tshirtDragStartOffsetRef.current.y + dy * scale)),
     });
   };
   const onTshirtUp = () => {
