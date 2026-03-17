@@ -48,6 +48,14 @@ async function simulateCmykOnCanvas(dataUrl: string): Promise<string> {
         let ro = (1 - c) * (1 - k);
         let go = (1 - m) * (1 - k);
         let bo = (1 - y) * (1 - k);
+        // Lift dark blue/green pixels (CMYK dot gain darkens cool colors in print)
+        const maxCh = Math.max(ro, go, bo);
+        if (maxCh < 0.45 && ro < maxCh) {
+          const lift = Math.min(1.4, 0.5 / Math.max(maxCh, 0.001));
+          ro = Math.min(1, ro * lift);
+          go = Math.min(1, go * lift);
+          bo = Math.min(1, bo * lift);
+        }
         [ro, go, bo] = boostSat(ro, go, bo, 2.0);
         d[i]     = Math.round(Math.max(0, Math.min(1, ro)) * 255);
         d[i + 1] = Math.round(Math.max(0, Math.min(1, go)) * 255);
