@@ -177,24 +177,25 @@ Tシャツ注文が届きました。
 デザイン画像を添付しています。
     `.trim();
 
-    await transporter.sendMail({
+    // バックグラウンドでメール送信（レスポンスをブロックしない）
+    res.status(200).json({ message: '注文を受け付けました' });
+
+    transporter.sendMail({
       from: 'isseiart2018@gmail.com',
       to: ['chatnoir710@gmail.com', 'isseiart2018@gmail.com'],
       subject: `[ATELIER ISSEI] Tシャツ注文: ${name}様`,
       text: body,
       replyTo: email,
       attachments
-    });
+    }).catch((e: unknown) => console.error('Order mail error (admin):', e));
 
-    await transporter.sendMail({
+    transporter.sendMail({
       from: 'isseiart2018@gmail.com',
       to: email,
       subject: `[ATELIER ISSEI] ご注文を受け付けました`,
       text: `${name} 様\n\nご注文ありがとうございます。\n以下の内容で受け付けました。\n\nプロダクト: ${product}\n使用した作品: ${artworkTitle || '未選択'}\nサイズ: ${size}\n住所: ${address || '未入力'}\nコメント: ${comment || 'なし'}\n\n追って担当者よりご連絡させて頂きます。\n\nATELIER ISSEI`,
       replyTo: 'isseiart2018@gmail.com'
-    });
-
-    res.status(200).json({ message: '注文を受け付けました' });
+    }).catch((e: unknown) => console.error('Order mail error (customer):', e));
   } catch (error) {
     console.error('Order error:', error);
     res.status(500).json({ error: 'Internal server error' });
