@@ -397,7 +397,7 @@ export default function Product2() {
   const FRONT_CH = 1571;
   const BACK_CW = 1600;
   const BACK_CH = 1769;
-  const BACK_SQUARE_BASE = 300;
+  const BACK_SQUARE_BASE = 490;
   const LINE_H = 3;
 
   const frontRef = useRef<HTMLCanvasElement>(null);
