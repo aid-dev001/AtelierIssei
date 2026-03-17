@@ -14,6 +14,9 @@ const router = Router();
 
 const ICC_JAPAN = path.resolve('public/icc/JapanColor2001Coated.icc');
 
+// CMYKをスキップしてメール配信テストする場合はtrueに設定
+const SKIP_CMYK = true;
+
 function findBin(name: string, fallbacks: string[]): string {
   try {
     const p = execSync(`which ${name} 2>/dev/null`, { encoding: 'utf8', timeout: 5000 }).trim();
@@ -130,22 +133,26 @@ router.post('/order', async (req, res) => {
     if (transparentData) {
       const b64 = transparentData.split(',')[1];
       attachments.push({ filename: 'tshirt-front-transparent.png', content: Buffer.from(b64, 'base64') });
-      try {
-        const cmykBuf = await pngBase64ToCmykTiff(b64);
-        attachments.push({ filename: 'tshirt-front-cmyk.tif', content: cmykBuf });
-      } catch (e) {
-        console.error('CMYK front convert error:', e);
+      if (!SKIP_CMYK) {
+        try {
+          const cmykBuf = await pngBase64ToCmykTiff(b64);
+          attachments.push({ filename: 'tshirt-front-cmyk.tif', content: cmykBuf });
+        } catch (e) {
+          console.error('CMYK front convert error:', e);
+        }
       }
     }
 
     if (transparentData2) {
       const b64 = transparentData2.split(',')[1];
       attachments.push({ filename: 'tshirt-back-transparent.png', content: Buffer.from(b64, 'base64') });
-      try {
-        const cmykBuf2 = await pngBase64ToCmykTiff(b64);
-        attachments.push({ filename: 'tshirt-back-cmyk.tif', content: cmykBuf2 });
-      } catch (e) {
-        console.error('CMYK back convert error:', e);
+      if (!SKIP_CMYK) {
+        try {
+          const cmykBuf2 = await pngBase64ToCmykTiff(b64);
+          attachments.push({ filename: 'tshirt-back-cmyk.tif', content: cmykBuf2 });
+        } catch (e) {
+          console.error('CMYK back convert error:', e);
+        }
       }
     }
 
