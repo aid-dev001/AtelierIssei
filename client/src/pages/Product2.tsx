@@ -65,15 +65,20 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
   const [cmykSrc, setCmykSrc] = useState<string | null>(null);
   const [cmykTiffBlob, setCmykTiffBlob] = useState<Blob | null>(null);
   const [simulating, setSimulating] = useState(false);
+  const cmykBlobUrlRef = useRef<string | null>(null);
   const prevSrcRef = useRef<string>('');
   useEffect(() => {
     if (src && src !== prevSrcRef.current) {
       prevSrcRef.current = src;
       setCmykPreview(false);
+      if (cmykBlobUrlRef.current) { URL.revokeObjectURL(cmykBlobUrlRef.current); cmykBlobUrlRef.current = null; }
       setCmykSrc(null);
       setCmykTiffBlob(null);
     }
   }, [src]);
+  useEffect(() => {
+    return () => { if (cmykBlobUrlRef.current) URL.revokeObjectURL(cmykBlobUrlRef.current); };
+  }, []);
   if (!isOpen) return null;
   const dl = (href: string, name: string) => {
     const a = document.createElement("a");
@@ -120,12 +125,10 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
       });
       if (!res.ok) throw new Error("cmyk-preview failed");
       const blob = await res.blob();
-      const dataUrl = await new Promise<string>((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.readAsDataURL(blob);
-      });
-      setCmykSrc(dataUrl);
+      if (cmykBlobUrlRef.current) URL.revokeObjectURL(cmykBlobUrlRef.current);
+      const blobUrl = URL.createObjectURL(blob);
+      cmykBlobUrlRef.current = blobUrl;
+      setCmykSrc(blobUrl);
       setCmykPreview(true);
     } finally {
       setSimulating(false);
