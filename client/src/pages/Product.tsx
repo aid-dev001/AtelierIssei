@@ -414,8 +414,7 @@ function ImageModal({ src, transparentSrc, designSrc, compositeWithCmyk, onClose
           <button
             onClick={toggleCmykPreview}
             disabled={simulating || !transparentSrc}
-            style={{ border: "2.5px solid #000" }}
-            className={`rounded-full px-3 py-2 shadow transition-all flex items-center gap-1.5 disabled:opacity-50 text-xs ${cmykPreview ? "bg-black text-white" : "bg-white hover:bg-gray-100 text-black"}`}
+            className={`rounded-full px-3 py-2 shadow transition-all flex items-center gap-1.5 disabled:opacity-50 text-xs ${cmykPreview ? "bg-black text-white" : "bg-white/90 hover:bg-white text-black"}`}
             title="CMYKシミュレーション（印刷色の確認）"
           >
             <span className="font-medium">{simulating ? "処理中…" : "印刷イメージ確認"}</span>
