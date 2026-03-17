@@ -115,21 +115,6 @@ router.post('/order', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Verify payment succeeded
-    if (paymentIntentId) {
-      try {
-        const stripe = getStripe();
-        const intent = await stripe.paymentIntents.retrieve(paymentIntentId);
-        if (intent.status !== 'succeeded') {
-          return res.status(402).json({ error: '支払いが完了していません' });
-        }
-      } catch {
-        return res.status(402).json({ error: '支払いの確認に失敗しました' });
-      }
-    } else {
-      return res.status(402).json({ error: '支払いが必要です' });
-    }
-
     const pass = (process.env.GMAIL_APP_PASSWORD ?? '').replace(/\s/g, '');
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
