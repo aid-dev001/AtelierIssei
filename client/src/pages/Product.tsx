@@ -109,6 +109,9 @@ function buildMask(img: HTMLImageElement, w: number, h: number): HTMLCanvasEleme
   return c;
 }
 
+const LABEL_TEXT_EN = "ISSEI – Wearable Abstraction";
+const LABEL_TEXT_JA = "ISSEI – 着るアブストラクション";
+
 function drawLabelOnCtx(
   ctx: CanvasRenderingContext2D,
   canvasW: number,
@@ -119,17 +122,29 @@ function drawLabelOnCtx(
   labelOffset: { x: number; y: number },
   color: "white" | "black"
 ) {
-  if (!labelVisible || !labelImg) return;
+  if (!labelVisible) return;
   const defaultX = canvasW * 0.73;
   const defaultY = canvasH * 0.57;
   const lx = defaultX + labelOffset.x;
   const ly = defaultY + labelOffset.y;
   const scale = canvasW / 1600;
-  const lw = 368 * 0.6 * scale;
-  const lh = lw * (labelImg.naturalHeight / labelImg.naturalWidth);
-  if (color === "black") ctx.filter = "invert(1)";
-  ctx.drawImage(labelImg, lx - lw, ly - lh * 0.75, lw, lh);
-  ctx.filter = "none";
+  if (labelImg) {
+    const lw = 368 * 0.6 * scale;
+    const lh = lw * (labelImg.naturalHeight / labelImg.naturalWidth);
+    if (color === "black") ctx.filter = "invert(1)";
+    ctx.drawImage(labelImg, lx - lw, ly - lh * 0.75, lw, lh);
+    ctx.filter = "none";
+  } else {
+    const text = labelLang === "ja" ? LABEL_TEXT_JA : LABEL_TEXT_EN;
+    const fs = Math.round(canvasW * 0.011);
+    ctx.save();
+    ctx.fillStyle = color === "black" ? "#ffffff" : "#1a1a1a";
+    ctx.font = `300 ${fs}px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+    ctx.textAlign = "right";
+    ctx.letterSpacing = `${Math.round(canvasW * 0.0008)}px`;
+    ctx.fillText(text, lx, ly);
+    ctx.restore();
+  }
 }
 
 function coverShirtText(ctx: CanvasRenderingContext2D, shirtImg: HTMLImageElement, W: number, H: number) {
@@ -234,15 +249,11 @@ async function simulateCmykOnCanvas(dataUrl: string): Promise<string> {
         let ro = (1 - c) * (1 - k);
         let go = (1 - m) * (1 - k);
         let bo = (1 - y) * (1 - k);
-        // Lift dark blue/green pixels (CMYK dot gain darkens cool colors in print)
-        const maxCh = Math.max(ro, go, bo);
-        if (maxCh < 0.45 && ro < maxCh) {
-          const lift = Math.min(6, 0.5 / Math.max(maxCh, 0.001));
-          ro = Math.min(1, ro * lift);
-          go = Math.min(1, go * lift);
-          bo = Math.min(1, bo * lift);
-        }
-        [ro, go, bo] = boostSat(ro, go, bo, 1.3);
+        // Simulate dot gain: midtones darken slightly in CMYK print
+        const gain = 0.12;
+        ro = ro - ro * (1 - ro) * gain;
+        go = go - go * (1 - go) * gain;
+        bo = bo - bo * (1 - bo) * gain;
         d[i]     = Math.round(Math.max(0, Math.min(1, ro)) * 255);
         d[i + 1] = Math.round(Math.max(0, Math.min(1, go)) * 255);
         d[i + 2] = Math.round(Math.max(0, Math.min(1, bo)) * 255);
@@ -324,7 +335,11 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
         className="relative max-w-2xl w-full"
         onClick={(e) => e.stopPropagation()}
       >
-        <img src={cmykPreview && cmykSrc ? cmykSrc : src} alt="拡大プレビュー" className="w-full rounded-2xl shadow-2xl" />
+        <img
+          src={cmykPreview && cmykSrc ? cmykSrc : src}
+          alt={cmykPreview ? "印刷イメージ確認" : "拡大プレビュー"}
+          className="w-full rounded-2xl shadow-2xl"
+        />
         {cmykPreview && (
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xs px-3 py-1 rounded-full">
             CMYKシミュレーション
