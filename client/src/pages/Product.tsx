@@ -705,12 +705,13 @@ const Product: React.FC = () => {
           ctx.drawImage(cmykImg, dx, dy, rw, rh);
           ctx.globalCompositeOperation = "source-over";
         }
+        drawLabelOnCtx(ctx, W, H, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
         resolve(off.toDataURL("image/png"));
       };
       cmykImg.onerror = () => reject(new Error("cmyk img load failed"));
       cmykImg.src = cmykBlobUrl;
     });
-  }, [tshirtColor, tshirtBaseImg, tshirtBlackImg, shapeScale, designPos]);
+  }, [tshirtColor, tshirtBaseImg, tshirtBlackImg, shapeScale, designPos, labelImg, labelVisible, labelLang, labelOffset]);
 
   const onUp = () => {
     if (draggingRef.current && !dragMovedRef.current) {
