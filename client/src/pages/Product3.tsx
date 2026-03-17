@@ -311,8 +311,23 @@ function drawLabelOnCtx(
   if (labelImg) {
     const lw = 368 * 0.6 * scale;
     const lh = lw * (labelImg.naturalHeight / labelImg.naturalWidth);
+    // Step-down resize for sharpness: halve progressively to avoid one-shot heavy downscale
+    let src: CanvasImageSource = labelImg;
+    let sw = labelImg.naturalWidth;
+    let sh = labelImg.naturalHeight;
+    while (sw > lw * 2) {
+      const nextW = Math.max(Math.round(lw), Math.round(sw / 2));
+      const nextH = Math.round(sh / 2);
+      const tmp = document.createElement("canvas");
+      tmp.width = nextW; tmp.height = nextH;
+      const tc = tmp.getContext("2d")!;
+      tc.imageSmoothingEnabled = true; tc.imageSmoothingQuality = "high";
+      tc.drawImage(src, 0, 0, nextW, nextH);
+      src = tmp; sw = nextW; sh = nextH;
+    }
     if (color === "white") ctx.filter = "invert(1)";
-    ctx.drawImage(labelImg, lx - lw, ly - lh * 0.75, lw, lh);
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(src, lx - lw, ly - lh * 0.75, lw, lh);
     ctx.filter = "none";
   } else {
     const text = labelLang === "fr" ? LABEL_TEXT_FR : LABEL_TEXT_EN;
