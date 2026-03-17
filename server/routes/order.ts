@@ -164,8 +164,7 @@ router.post('/cmyk-preview', async (req, res) => {
   try {
     const base64 = imageData.split(',')[1] ?? imageData;
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    // Simulate CMYK gamut by reducing chroma in LAB colorspace (~30% saturation loss matches CMYK printing)
-    await execAsync(`magick "${inputPath}" -colorspace Lab -channel ab -evaluate multiply 0.70 +channel -colorspace sRGB "${outputPath}"`);
+    await execAsync(`magick "${inputPath}" -colorspace sRGB -colorspace CMYK -colorspace sRGB "${outputPath}"`);
     const pngBuf = fs.readFileSync(outputPath);
     res.set('Content-Type', 'image/png');
     res.send(pngBuf);
