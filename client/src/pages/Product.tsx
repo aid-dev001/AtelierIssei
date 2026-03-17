@@ -329,13 +329,22 @@ function ImageModal({ src, transparentSrc, designSrc, compositeWithCmyk, onClose
     if (cmykSrc) { setCmykPreview(true); return; }
     setSimulating(true);
     try {
-      // TEST: shirt base only — no design
-      const blankPng = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQI12NgAAIABQAABjE+ibYAAAAASUVORK5CYII=";
+      const res = await fetch("/api/cmyk-preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageData: designSrc ?? transparentSrc }),
+      });
+      if (!res.ok) throw new Error("cmyk-preview failed");
+      const blob = await res.blob();
+      const cmykDesignBlobUrl = URL.createObjectURL(blob);
       if (compositeWithCmyk) {
-        const compositeDataUrl = await compositeWithCmyk(blankPng);
+        const compositeDataUrl = await compositeWithCmyk(cmykDesignBlobUrl);
+        URL.revokeObjectURL(cmykDesignBlobUrl);
         setCmykSrc(compositeDataUrl);
       } else {
-        setCmykSrc(blankPng);
+        if (cmykBlobUrlRef.current) URL.revokeObjectURL(cmykBlobUrlRef.current);
+        cmykBlobUrlRef.current = cmykDesignBlobUrl;
+        setCmykSrc(cmykDesignBlobUrl);
       }
       setCmykPreview(true);
     } finally {
@@ -682,13 +691,12 @@ const Product: React.FC = () => {
           ctx.drawImage(cmykImg, dx, dy, rw, rh);
           ctx.globalCompositeOperation = "source-over";
         }
-        drawLabelOnCtx(ctx, W, H, labelImg, labelVisible, labelLang, labelOffset, tshirtColor);
         resolve(off.toDataURL("image/png"));
       };
       cmykImg.onerror = () => reject(new Error("cmyk img load failed"));
       cmykImg.src = cmykBlobUrl;
     });
-  }, [tshirtColor, tshirtBaseImg, tshirtBlackImg, shapeScale, designPos, labelImg, labelVisible, labelLang, labelOffset]);
+  }, [tshirtColor, tshirtBaseImg, tshirtBlackImg, shapeScale, designPos]);
 
   const onUp = () => {
     if (draggingRef.current && !dragMovedRef.current) {
