@@ -165,6 +165,7 @@ router.post('/cmyk-preview', async (req, res) => {
   const ts = Date.now();
   const inputPath   = path.join(os.tmpdir(), `issei-prev-in-${ts}.png`);
   const alphaPath   = path.join(os.tmpdir(), `issei-prev-alpha-${ts}.png`);
+  const cmykTiffPath = path.join(os.tmpdir(), `issei-prev-cmyk-${ts}.tif`);
   const rgbPath     = path.join(os.tmpdir(), `issei-prev-rgb-${ts}.png`);
   const outputPath  = path.join(os.tmpdir(), `issei-prev-out-${ts}.png`);
 
@@ -172,11 +173,12 @@ router.post('/cmyk-preview', async (req, res) => {
     fs.writeFileSync(inputPath, Buffer.from(imageData.split(',')[1] ?? imageData, 'base64'));
     // 1. Extract original alpha mask
     await execAsync(`magick "${inputPath}" -alpha extract "${alphaPath}"`);
-    // 2. Convert to CMYK (same as download), then simulate macOS ColorSync rendering:
-    //    convert back to sRGB and apply -modulate 80,60,100 to approximate the desaturation+darkening
-    //    that macOS Preview applies when displaying CMYK TIFFs via ColorSync
-    await execAsync(`magick "${inputPath}" -alpha off -colorspace sRGB -color-matrix "1 0 0  0 1 0.12  0.20 0 1" -modulate 100,150,100 -colorspace CMYK -colorspace sRGB -modulate 70,38,100 "${rgbPath}"`);
-    // 3. Re-apply original alpha so transparent areas stay transparent
+    // 2. Apply same corrections as download → save as CMYK TIFF (identical to download pipeline)
+    await execAsync(`magick "${inputPath}" -alpha off -colorspace sRGB -color-matrix "1 0 0  0 1 0.12  0.20 0 1" -modulate 100,150,100 -colorspace CMYK -compress lzw "${cmykTiffPath}"`);
+    // 3. Read the CMYK TIFF back and convert to sRGB — this roundtrip through the TIFF format
+    //    gives the most accurate approximation of how the downloaded file renders
+    await execAsync(`magick "${cmykTiffPath}" -colorspace sRGB "${rgbPath}"`);
+    // 4. Re-apply original alpha so transparent areas stay transparent
     await execAsync(`magick "${rgbPath}" "${alphaPath}" -compose CopyOpacity -composite "${outputPath}"`);
 
     res.set('Content-Type', 'image/png');
@@ -185,7 +187,7 @@ router.post('/cmyk-preview', async (req, res) => {
     console.error('CMYK preview error:', err);
     res.status(500).json({ error: 'CMYK preview failed' });
   } finally {
-    for (const p of [inputPath, alphaPath, rgbPath, outputPath]) try { fs.unlinkSync(p); } catch {}
+    for (const p of [inputPath, alphaPath, cmykTiffPath, rgbPath, outputPath]) try { fs.unlinkSync(p); } catch {}
   }
 });
 
