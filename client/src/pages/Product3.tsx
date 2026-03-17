@@ -69,7 +69,7 @@ async function simulateCmykOnCanvas(dataUrl: string): Promise<string> {
   });
 }
 
-function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; transparentSrc?: string; onClose: () => void; isOpen: boolean }) {
+function ImageModal({ src, transparentSrc, backgroundSrc, onClose, isOpen }: { src: string; transparentSrc?: string; backgroundSrc?: string; onClose: () => void; isOpen: boolean }) {
   const [cmykLoading, setCmykLoading] = useState(false);
   const [cmykPreview, setCmykPreview] = useState(false);
   const [cmykSrc, setCmykSrc] = useState<string | null>(null);
@@ -146,6 +146,12 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
             <button onClick={() => dl(transparentSrc, "issei-print.png")} className="bg-white/90 hover:bg-white rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5" title="透過PNG（プリント部分のみ）">
               <Download className="w-4 h-4 text-black" />
               <span className="text-xs text-black font-medium">透過</span>
+            </button>
+          )}
+          {backgroundSrc && (
+            <button onClick={() => dl(backgroundSrc, "issei-background.png")} className="bg-white/90 hover:bg-white rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5" title="背景画像 300DPI">
+              <Download className="w-4 h-4 text-black" />
+              <span className="text-xs text-black font-medium">背景</span>
             </button>
           )}
           {transparentSrc && (
@@ -373,6 +379,7 @@ export default function Product3() {
   const [artScale, setArtScale] = useState(1);
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [modalTransparentImg, setModalTransparentImg] = useState<string | null>(null);
+  const [modalBackgroundImg, setModalBackgroundImg] = useState<string | null>(null);
   const [labelVisible, setLabelVisible] = useState(true);
   const [labelLang, setLabelLang] = useState<"en" | "fr">("en");
   const [labelImg, setLabelImg] = useState<HTMLImageElement | null>(null);
@@ -516,6 +523,26 @@ export default function Product3() {
     return injectDpi300(print.toDataURL("image/png"));
   }, [artImg, shapes, shapeMode, artOffsetX, artOffsetY, artRotation, artScale, labelImg, labelVisible, labelLang, labelOffset, tshirtColor]);
 
+  const getBackgroundPng = useCallback((): string | null => {
+    if (!artImg) return null;
+    const scale = Math.max(4800 / artImg.naturalWidth, 4800 / artImg.naturalHeight);
+    const W = Math.round(artImg.naturalWidth * scale);
+    const H = Math.round(artImg.naturalHeight * scale);
+    const off = document.createElement("canvas");
+    off.width = W; off.height = H;
+    const ctx = off.getContext("2d")!;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(artImg, 0, 0, W, H);
+    return injectDpi300(off.toDataURL("image/png"));
+  }, [artImg]);
+
+  const openModal = useCallback(() => {
+    setModalImg(canvasRef.current?.toDataURL("image/png") ?? null);
+    setModalTransparentImg(getTransparentPng());
+    setModalBackgroundImg(getBackgroundPng());
+  }, [getTransparentPng, getBackgroundPng]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.key === "Delete" || e.key === "Backspace") && selectedId) {
@@ -581,10 +608,7 @@ export default function Product3() {
   };
 
   const onUp = () => {
-    if (dragging.current && !didMove.current && lastHitId.current === null) {
-      setModalImg(canvasRef.current?.toDataURL("image/png") ?? null);
-      setModalTransparentImg(getTransparentPng());
-    }
+    if (dragging.current && !didMove.current && lastHitId.current === null) { openModal(); }
     dragging.current = false;
   };
 
@@ -969,7 +993,7 @@ export default function Product3() {
         )}
       </div>
 
-      <ImageModal isOpen={!!modalImg} src={modalImg ?? ''} transparentSrc={modalTransparentImg ?? undefined} onClose={() => { setModalImg(null); setModalTransparentImg(null); }} />
+      <ImageModal isOpen={!!modalImg} src={modalImg ?? ''} transparentSrc={modalTransparentImg ?? undefined} backgroundSrc={modalBackgroundImg ?? undefined} onClose={() => { setModalImg(null); setModalTransparentImg(null); setModalBackgroundImg(null); }} />
       {orderOpen && (
         <OrderModal
           imageDataUrl={canvasRef.current?.toDataURL("image/png") ?? ""}

@@ -69,7 +69,7 @@ async function simulateCmykOnCanvas(dataUrl: string): Promise<string> {
   });
 }
 
-function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; transparentSrc?: string; onClose: () => void; isOpen: boolean }) {
+function ImageModal({ src, transparentSrc, backgroundSrc, onClose, isOpen }: { src: string; transparentSrc?: string; backgroundSrc?: string; onClose: () => void; isOpen: boolean }) {
   const [cmykLoading, setCmykLoading] = useState(false);
   const [cmykPreview, setCmykPreview] = useState(false);
   const [cmykSrc, setCmykSrc] = useState<string | null>(null);
@@ -146,6 +146,12 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
             <button onClick={() => dl(transparentSrc, "issei-print.png")} className="bg-white/90 hover:bg-white rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5" title="透過PNG（プリント部分のみ）">
               <Download className="w-4 h-4 text-black" />
               <span className="text-xs text-black font-medium">透過</span>
+            </button>
+          )}
+          {backgroundSrc && (
+            <button onClick={() => dl(backgroundSrc, "issei-background.png")} className="bg-white/90 hover:bg-white rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5" title="背景画像 300DPI">
+              <Download className="w-4 h-4 text-black" />
+              <span className="text-xs text-black font-medium">背景</span>
             </button>
           )}
           {transparentSrc && (
@@ -302,6 +308,7 @@ export default function Product2() {
   const [backMode, setBackMode] = useState<"shirt" | "art">("shirt");
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [modalTransparentImg, setModalTransparentImg] = useState<string | null>(null);
+  const [modalBackgroundImg, setModalBackgroundImg] = useState<string | null>(null);
   const [labelVisible, setLabelVisible] = useState(true);
   const [labelLang, setLabelLang] = useState<"en" | "fr">("en");
   const [labelImg, setLabelImg] = useState<HTMLImageElement | null>(null);
@@ -558,6 +565,32 @@ export default function Product2() {
     return injectDpi300(off.toDataURL("image/png"));
   }, [artImg, backPos, designScale, cropScale, artOffset, BACK_CW, BACK_CH, BACK_SQUARE_BASE, labelImg, labelVisible, labelLang, labelOffset, tshirtColor]);
 
+  const getBackgroundPng = useCallback((): string | null => {
+    if (!artImg) return null;
+    const scale = Math.max(4800 / artImg.naturalWidth, 4800 / artImg.naturalHeight);
+    const W = Math.round(artImg.naturalWidth * scale);
+    const H = Math.round(artImg.naturalHeight * scale);
+    const off = document.createElement("canvas");
+    off.width = W; off.height = H;
+    const ctx = off.getContext("2d")!;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(artImg, 0, 0, W, H);
+    return injectDpi300(off.toDataURL("image/png"));
+  }, [artImg]);
+
+  const openFrontModal = useCallback(() => {
+    setModalImg(frontRef.current?.toDataURL("image/png") ?? null);
+    setModalTransparentImg(getFrontTransparentPng());
+    setModalBackgroundImg(getBackgroundPng());
+  }, [getFrontTransparentPng, getBackgroundPng]);
+
+  const openBackModal = useCallback(() => {
+    setModalImg(backRef.current?.toDataURL("image/png") ?? null);
+    setModalTransparentImg(getBackTransparentPng());
+    setModalBackgroundImg(getBackgroundPng());
+  }, [getBackTransparentPng, getBackgroundPng]);
+
   useEffect(() => { renderFront(); }, [renderFront]);
   useEffect(() => { renderBack(); }, [renderBack]);
 
@@ -616,10 +649,7 @@ export default function Product2() {
     });
   };
   const onFrontUp = () => {
-    if (frontDragging.current && !frontDidMove.current) {
-      setModalImg(frontRef.current?.toDataURL("image/png") ?? null);
-      setModalTransparentImg(getFrontTransparentPng());
-    }
+    if (frontDragging.current && !frontDidMove.current) { openFrontModal(); }
     frontDragging.current = false;
   };
 
@@ -657,10 +687,7 @@ export default function Product2() {
     }
   };
   const onBackUp = () => {
-    if (backDragging.current && !backDidMove.current) {
-      setModalImg(backRef.current?.toDataURL("image/png") ?? null);
-      setModalTransparentImg(getBackTransparentPng());
-    }
+    if (backDragging.current && !backDidMove.current) { openBackModal(); }
     backDragging.current = false;
   };
 
@@ -777,7 +804,7 @@ export default function Product2() {
                     />
                   </div>
                   <button
-                    onClick={() => { setModalImg(frontRef.current?.toDataURL("image/png") ?? null); setModalTransparentImg(getFrontTransparentPng()); }}
+                    onClick={openFrontModal}
                     className="absolute top-2 right-2 bg-white/90 hover:bg-white rounded-full p-2 shadow transition-colors"
                     title="拡大・ダウンロード"
                   >
@@ -882,7 +909,7 @@ export default function Product2() {
                     />
                   </div>
                   <button
-                    onClick={() => { setModalImg(backRef.current?.toDataURL("image/png") ?? null); setModalTransparentImg(getBackTransparentPng()); }}
+                    onClick={openBackModal}
                     className="absolute top-2 right-2 bg-white/90 hover:bg-white rounded-full p-2 shadow transition-colors"
                     title="拡大・ダウンロード"
                   >
@@ -1026,7 +1053,7 @@ export default function Product2() {
           </>
         )}
       </div>
-      <ImageModal isOpen={!!modalImg} src={modalImg ?? ''} transparentSrc={modalTransparentImg ?? undefined} onClose={() => { setModalImg(null); setModalTransparentImg(null); }} />
+      <ImageModal isOpen={!!modalImg} src={modalImg ?? ''} transparentSrc={modalTransparentImg ?? undefined} backgroundSrc={modalBackgroundImg ?? undefined} onClose={() => { setModalImg(null); setModalTransparentImg(null); setModalBackgroundImg(null); }} />
       {orderOpen && (
         <OrderModal
           imageDataUrl={frontRef.current?.toDataURL("image/png") ?? ""}

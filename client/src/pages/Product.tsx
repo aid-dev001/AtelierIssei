@@ -269,7 +269,7 @@ async function simulateCmykOnCanvas(dataUrl: string): Promise<string> {
   });
 }
 
-function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; transparentSrc?: string; onClose: () => void; isOpen: boolean }) {
+function ImageModal({ src, transparentSrc, backgroundSrc, onClose, isOpen }: { src: string; transparentSrc?: string; backgroundSrc?: string; onClose: () => void; isOpen: boolean }) {
   const [cmykLoading, setCmykLoading] = useState(false);
   const [cmykPreview, setCmykPreview] = useState(false);
   const [cmykSrc, setCmykSrc] = useState<string | null>(null);
@@ -363,6 +363,16 @@ function ImageModal({ src, transparentSrc, onClose, isOpen }: { src: string; tra
               <span className="text-xs text-black font-medium">透過</span>
             </button>
           )}
+          {backgroundSrc && (
+            <button
+              onClick={() => dl(backgroundSrc, "issei-background.png")}
+              className="bg-white/90 hover:bg-white rounded-full px-3 py-2 shadow transition-colors flex items-center gap-1.5"
+              title="背景画像 300DPI"
+            >
+              <Download className="w-4 h-4 text-black" />
+              <span className="text-xs text-black font-medium">背景</span>
+            </button>
+          )}
           {transparentSrc && (
             <button
               onClick={downloadCmyk}
@@ -415,6 +425,7 @@ const Product: React.FC = () => {
   const [canvasSize, setCanvasSize] = useState({ w: 480, h: 480 });
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [modalTransparentImg, setModalTransparentImg] = useState<string | null>(null);
+  const [modalBackgroundImg, setModalBackgroundImg] = useState<string | null>(null);
   const [labelVisible, setLabelVisible] = useState(true);
   const [labelLang, setLabelLang] = useState<"en" | "fr">("en");
   const [labelImg, setLabelImg] = useState<HTMLImageElement | null>(null);
@@ -627,10 +638,29 @@ const Product: React.FC = () => {
     return injectDpi300(off.toDataURL("image/png"));
   }, [tshirtColor, tshirtAspect, tshirtBlackAspect, shapeScale, designPos, labelImg, labelVisible, labelLang, labelOffset]);
 
+  const getBackgroundPng = useCallback((): string | null => {
+    if (!fillImg) return null;
+    const scale = Math.max(4800 / fillImg.naturalWidth, 4800 / fillImg.naturalHeight);
+    const W = Math.round(fillImg.naturalWidth * scale);
+    const H = Math.round(fillImg.naturalHeight * scale);
+    const off = document.createElement("canvas");
+    off.width = W; off.height = H;
+    const ctx = off.getContext("2d")!;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(fillImg, 0, 0, W, H);
+    return injectDpi300(off.toDataURL("image/png"));
+  }, [fillImg]);
+
+  const openModal = useCallback(() => {
+    setModalImg(tshirtRef.current?.toDataURL("image/png") ?? null);
+    setModalTransparentImg(getTransparentPng());
+    setModalBackgroundImg(getBackgroundPng());
+  }, [getTransparentPng, getBackgroundPng]);
+
   const onUp = () => {
     if (draggingRef.current && !dragMovedRef.current) {
-      setModalImg(tshirtRef.current?.toDataURL("image/png") ?? null);
-      setModalTransparentImg(getTransparentPng());
+      openModal();
     }
     draggingRef.current = false;
   };
@@ -649,10 +679,7 @@ const Product: React.FC = () => {
     setOffset({ x: p.x - dragStartRef.current.x, y: p.y - dragStartRef.current.y });
   };
   const onTouchEnd = () => {
-    if (draggingRef.current && !dragMovedRef.current) {
-      setModalImg(tshirtRef.current?.toDataURL("image/png") ?? null);
-      setModalTransparentImg(getTransparentPng());
-    }
+    if (draggingRef.current && !dragMovedRef.current) { openModal(); }
     draggingRef.current = false;
   };
 
@@ -681,10 +708,7 @@ const Product: React.FC = () => {
     });
   };
   const onTshirtUp = () => {
-    if (tshirtDraggingRef.current && !dragMovedRef.current) {
-      setModalImg(tshirtRef.current?.toDataURL("image/png") ?? null);
-      setModalTransparentImg(getTransparentPng());
-    }
+    if (tshirtDraggingRef.current && !dragMovedRef.current) { openModal(); }
     tshirtDraggingRef.current = false;
   };
 
@@ -708,7 +732,7 @@ const Product: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white py-12">
-      <ImageModal isOpen={!!modalImg} src={modalImg ?? ''} transparentSrc={modalTransparentImg ?? undefined} onClose={() => { setModalImg(null); setModalTransparentImg(null); }} />
+      <ImageModal isOpen={!!modalImg} src={modalImg ?? ''} transparentSrc={modalTransparentImg ?? undefined} backgroundSrc={modalBackgroundImg ?? undefined} onClose={() => { setModalImg(null); setModalTransparentImg(null); setModalBackgroundImg(null); }} />
 
       <div className="max-w-5xl mx-auto px-4">
         <h1 className="text-4xl font-bold mb-2 tracking-wider text-center">PRODUCTS</h1>
