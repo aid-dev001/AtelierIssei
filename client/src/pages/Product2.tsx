@@ -373,7 +373,7 @@ export default function Product2() {
   const [labelImgEn, setLabelImgEn] = useState<HTMLImageElement | null>(null);
   const [labelImgFr, setLabelImgFr] = useState<HTMLImageElement | null>(null);
   const labelImg = labelLang === "en" ? labelImgEn : labelImgFr;
-  const [labelOffset, setLabelOffset] = useState({ x: 100, y: 50 });
+  const [labelOffset, setLabelOffset] = useState({ x: 60, y: 50 });
 
   const [page, setPage] = useState(1);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -1004,7 +1004,7 @@ export default function Product2() {
                         <div className="flex flex-col gap-1">
                           <div className="flex items-center gap-2">
                             <span className="text-xs text-black w-5">←→</span>
-                            <input type="range" min={-100} max={100} value={labelOffset.x}
+                            <input type="range" min={-60} max={60} value={labelOffset.x}
                               onChange={(e) => setLabelOffset((p) => ({ ...p, x: Number(e.target.value) }))}
                               className="w-24 accent-black" />
                           </div>
