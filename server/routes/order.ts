@@ -257,36 +257,55 @@ router.get('/thumb', async (req, res) => {
   if (!src || (!/^\/artworks\//.test(src) && !/^\/api\/images\/\d+$/.test(src))) {
     return res.status(400).end();
   }
-  const cacheKey = Buffer.from(`${w}::${src}`).toString('base64').replace(/[^a-zA-Z0-9]/g, '_');
   const thumbDir = path.resolve('public/thumbs');
-  const thumbPath = path.join(thumbDir, `${cacheKey}.jpg`);
-  if (fs.existsSync(thumbPath)) {
+  const baseKey = Buffer.from(`${w}::${src}`).toString('base64').replace(/[^a-zA-Z0-9]/g, '_');
+  // Check for already-cached PNG or JPEG thumb
+  const cachedPng = path.join(thumbDir, `${baseKey}.png`);
+  const cachedJpg = path.join(thumbDir, `${baseKey}.jpg`);
+  if (fs.existsSync(cachedPng)) {
+    res.set('Content-Type', 'image/png');
+    res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    return res.sendFile(path.resolve(cachedPng));
+  }
+  if (fs.existsSync(cachedJpg)) {
     res.set('Content-Type', 'image/jpeg');
     res.set('Cache-Control', 'public, max-age=31536000, immutable');
-    return res.sendFile(path.resolve(thumbPath));
+    return res.sendFile(path.resolve(cachedJpg));
   }
   const tmpInput = path.join(os.tmpdir(), `thumb_in_${Date.now()}_${Math.random().toString(36).slice(2)}`);
+  let isPng = false;
   try {
     fs.mkdirSync(thumbDir, { recursive: true });
-    // Try direct file path for /artworks/ URLs
     let resolved = false;
     if (/^\/artworks\//.test(src)) {
       const candidate = path.resolve(`public${src}`);
       if (fs.existsSync(candidate)) {
-        await execAsync(`"${MAGICK}" "${candidate}" -resize ${w}x${w}\\> -quality 82 -strip "${thumbPath}"`);
+        isPng = /\.png$/i.test(candidate);
+        const outPath = isPng ? cachedPng : cachedJpg;
+        const cmd = isPng
+          ? `"${MAGICK}" "${candidate}" -resize ${w}x${w}\\> -strip "${outPath}"`
+          : `"${MAGICK}" "${candidate}" -resize ${w}x${w}\\> -quality 82 -strip "${outPath}"`;
+        await execAsync(cmd);
         resolved = true;
       }
     }
     if (!resolved) {
       const resp = await (globalThis as any).fetch(`http://localhost:5000${src}`);
       if (!resp.ok) return res.status(404).end();
+      const contentType = resp.headers.get('content-type') ?? '';
+      isPng = contentType.includes('png');
       const buf = Buffer.from(await resp.arrayBuffer());
       fs.writeFileSync(tmpInput, buf);
-      await execAsync(`"${MAGICK}" "${tmpInput}" -resize ${w}x${w}\\> -quality 82 -strip "${thumbPath}"`);
+      const outPath = isPng ? cachedPng : cachedJpg;
+      const cmd = isPng
+        ? `"${MAGICK}" "${tmpInput}" -resize ${w}x${w}\\> -strip "${outPath}"`
+        : `"${MAGICK}" "${tmpInput}" -resize ${w}x${w}\\> -quality 82 -strip "${outPath}"`;
+      await execAsync(cmd);
     }
-    res.set('Content-Type', 'image/jpeg');
+    const outPath = isPng ? cachedPng : cachedJpg;
+    res.set('Content-Type', isPng ? 'image/png' : 'image/jpeg');
     res.set('Cache-Control', 'public, max-age=31536000, immutable');
-    res.sendFile(path.resolve(thumbPath));
+    res.sendFile(path.resolve(outPath));
   } catch {
     res.redirect(src);
   } finally {
