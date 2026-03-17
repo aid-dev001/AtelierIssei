@@ -16,10 +16,9 @@ async function pngBase64ToCmykTiff(base64: string): Promise<Buffer> {
   const outputPath = path.join(os.tmpdir(), `issei-cmyk-${id}.tif`);
   try {
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    // Pre-compensate CMYK gamut shifts:
-    //   G += 0.25*B → blues toward cyan (avoids purple cast from Magenta ink)
-    //   B += 0.20*R → pinks/reds toward magenta (avoids salmon/orange cast from Yellow ink)
-    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0.25  0.20 0 1" -modulate 100,160,100 -colorspace CMYK -compress lzw "${outputPath}"`);
+    // Pre-compensate CMYK pink→salmon shift: B += 0.20*R pushes pinks/reds toward magenta,
+    // reducing Yellow component in CMYK output and avoiding orange/salmon cast
+    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,160,100 -colorspace CMYK -compress lzw "${outputPath}"`);
     return fs.readFileSync(outputPath);
   } finally {
     try { fs.unlinkSync(inputPath); } catch {}
@@ -192,8 +191,8 @@ router.post('/convert-cmyk', async (req, res) => {
   try {
     const base64 = imageData.split(',')[1] ?? imageData;
     fs.writeFileSync(inputPath, Buffer.from(base64, 'base64'));
-    // Pre-compensate CMYK gamut shifts (same as pngBase64ToCmykTiff helper above)
-    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0.25  0.20 0 1" -modulate 100,160,100 -colorspace CMYK -compress lzw "${outputPath}"`);
+    // Pre-compensate CMYK pink→salmon shift (same as pngBase64ToCmykTiff helper above)
+    await execAsync(`magick "${inputPath}" -colorspace sRGB -color-matrix "1 0 0  0 1 0  0.20 0 1" -modulate 100,160,100 -colorspace CMYK -compress lzw "${outputPath}"`);
     const tifBuf = fs.readFileSync(outputPath);
     res.set('Content-Type', 'image/tiff');
     res.set('Content-Disposition', 'attachment; filename="issei-print-cmyk.tif"');
