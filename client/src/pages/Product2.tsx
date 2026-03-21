@@ -391,7 +391,7 @@ export default function Product2() {
   const [labelImgEn, setLabelImgEn] = useState<HTMLImageElement | null>(null);
   const [labelImgFr, setLabelImgFr] = useState<HTMLImageElement | null>(null);
   const labelImg = labelLang === "en" ? labelImgEn : labelImgFr;
-  const [labelOffset, setLabelOffset] = useState({ x: 60, y: 50 });
+  const [labelOffset, setLabelOffset] = useState({ x: 100, y: 50 });
 
   const [page, setPage] = useState(1);
   const sentinelRef = useRef<HTMLDivElement>(null);
