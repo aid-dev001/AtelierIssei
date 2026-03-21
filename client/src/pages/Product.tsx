@@ -207,7 +207,7 @@ function drawTshirt(
     ctx.save();
     ctx.beginPath();
     const clipW0 = W * 0.38, clipH0 = H * 0.34;
-    ctx.rect((W - clipW0) / 2 - 120, H * 0.26 - 130, clipW0 + 210, clipH0 + 270);
+    ctx.rect((W - clipW0) / 2 - 90, H * 0.26 - 130, clipW0 + 150, clipH0 + 270);
     ctx.clip();
     ctx.globalCompositeOperation = color === "white" ? "multiply" : "screen";
     ctx.drawImage(designCanvas, dx, dy, rw, rh);
@@ -644,7 +644,7 @@ const Product: React.FC = () => {
       ctx.strokeStyle = "rgba(70, 130, 210, 0.65)";
       ctx.lineWidth = 4;
       ctx.setLineDash([18, 10]);
-      ctx.strokeRect((W - clipW0) / 2 - 120 + 2, H * 0.26 - 130 + 2, clipW0 + 210 - 4, clipH0 + 270 - 4);
+      ctx.strokeRect((W - clipW0) / 2 - 90 + 2, H * 0.26 - 130 + 2, clipW0 + 150 - 4, clipH0 + 270 - 4);
       ctx.restore();
     }
   }, [tshirtBaseImg, tshirtBlackImg, tshirtAspect, tshirtBlackAspect, tshirtColor, shapeScale, designPos, labelImg, labelVisible, labelLang, labelOffset, showGuide]);
@@ -718,7 +718,7 @@ const Product: React.FC = () => {
     ctx.save();
     ctx.beginPath();
     const clipW0 = W * 0.38, clipH0 = H * 0.34;
-    ctx.rect((W - clipW0) / 2 - 120 * PRINT_SCALE, H * 0.26 - 130 * PRINT_SCALE, clipW0 + 210 * PRINT_SCALE, clipH0 + 270 * PRINT_SCALE);
+    ctx.rect((W - clipW0) / 2 - 90 * PRINT_SCALE, H * 0.26 - 130 * PRINT_SCALE, clipW0 + 150 * PRINT_SCALE, clipH0 + 270 * PRINT_SCALE);
     ctx.clip();
     ctx.drawImage(dc, (W - rw) / 2 + designPos.x * PRINT_SCALE, H * 0.26 + designPos.y * PRINT_SCALE, rw, rh);
     ctx.restore();
@@ -757,7 +757,7 @@ const Product: React.FC = () => {
           ctx.save();
           ctx.beginPath();
           const clipW0 = W * 0.38, clipH0 = H * 0.34;
-          ctx.rect((W - clipW0) / 2 - 120, H * 0.26 - 130, clipW0 + 210, clipH0 + 270);
+          ctx.rect((W - clipW0) / 2 - 90, H * 0.26 - 130, clipW0 + 150, clipH0 + 270);
           ctx.clip();
           ctx.filter = "brightness(1.1)";
           ctx.globalCompositeOperation = tshirtColor === "white" ? "multiply" : "screen";
