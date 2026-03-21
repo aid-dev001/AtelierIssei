@@ -1155,16 +1155,6 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="price">価格</Label>
-        <Input
-          id="price"
-          name="price"
-          type="number"
-          defaultValue={selectedArtwork?.price?.toString()}
-          required
-        />
-      </div>
-      <div className="space-y-2">
         <Label htmlFor="size">サイズ</Label>
         <Input
           id="size"
@@ -1448,12 +1438,23 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[800px] max-h-[90vh] p-0">
-                  <div className="sticky top-0 bg-background z-10 px-6 pt-6">
+                  <div className="sticky top-0 bg-background z-10 px-6 pt-6 pb-4 border-b">
                     <DialogHeader>
                       <DialogTitle>
                         {selectedArtwork ? '作品を編集' : '新規作品を追加'}
                       </DialogTitle>
                     </DialogHeader>
+                    <div className="mt-3 space-y-1">
+                      <Label htmlFor="price">価格</Label>
+                      <Input
+                        id="price"
+                        name="price"
+                        type="number"
+                        form="artwork-form"
+                        defaultValue={selectedArtwork?.price?.toString()}
+                        required
+                      />
+                    </div>
                   </div>
                   <div className="px-6 pb-6 h-[calc(90vh-80px)] overflow-y-auto">
                     {artworkFormContent}
