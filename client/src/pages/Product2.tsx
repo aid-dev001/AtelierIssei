@@ -367,9 +367,12 @@ export default function Product2() {
   const [lang, setLang] = useState<"ja" | "en" | "fr">("en");
   const [phraseIdx, setPhraseIdx] = useState(0);
   const [customText, setCustomText] = useState("");
-  const [combinedPhrases, setCombinedPhrases] = useState<{ ja: string; en: string; fr: string }[]>(
+  const [translating, setTranslating] = useState(false);
+  const [combinedPhrases, setCombinedPhrases] = useState<{ ja: string; en: string | null; fr: string | null }[]>(
     () => [...PHRASES].sort(() => Math.random() - 0.5)
   );
+  const combinedPhrasesRef = useRef<{ ja: string; en: string | null; fr: string | null }[]>([]);
+  useEffect(() => { combinedPhrasesRef.current = combinedPhrases; }, [combinedPhrases]);
 
   const [frontPos, setFrontPos] = useState({ x: 0.5, y: 0.32 });
   const [lineWidth, setLineWidth] = useState(130);
@@ -420,7 +423,7 @@ export default function Product2() {
     loadImg("/product/tshirt2-front.jpg").then(setFrontShirtImg);
     loadImg("/product/tshirt2-back.jpg").then(setBackShirtImg);
     loadImg("/product/tshirt2-black-front.jpg").then(setFrontBlackShirtImg);
-    loadImg("/product/tshirt2-black-back.jpg").then(setBackBlackShirtImg);
+    loadImg("/product/tshirt2-black-back-v2.jpg").then(setBackBlackShirtImg);
     loadImg("/product/label-en-white.png").then(setLabelImgEn).catch(() => {});
     loadImg("/product/label-fr-white.png").then(setLabelImgFr).catch(() => {});
   }, []);
@@ -442,6 +445,7 @@ export default function Product2() {
     let cancelled = false;
     const buildPool = async () => {
       setCustomText("");
+      setTranslating(false);
       const selectedArt = artworks.find((a) => a.id === selectedArtId);
 
       // 1〜4: 絵の説明文からランダムに最大4文
@@ -458,44 +462,60 @@ export default function Product2() {
       // 5〜8: サイト全体からランダムに4句（既存の英仏訳をそのまま使用）
       const sitePhrases = [...PHRASES].sort(() => Math.random() - 0.5).slice(0, 4);
 
-      // 絵の説明文を翻訳（1〜4のみ）
-      let artPhrases: { ja: string; en: string; fr: string }[] = artJa.map((s) => ({ ja: s, en: s, fr: s }));
-      if (artJa.length > 0) {
-        try {
-          const translated = await Promise.all(
-            artJa.map(async (s) => {
-              const [enRes, frRes] = await Promise.all([
-                fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(s)}&langpair=ja|en`),
-                fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(s)}&langpair=ja|fr`),
-              ]);
-              const enData = await enRes.json();
-              const frData = await frRes.json();
-              return {
-                ja: s,
-                en: enData.responseData?.translatedText ?? s,
-                fr: frData.responseData?.translatedText ?? s,
-              };
-            })
-          );
-          artPhrases = translated;
-        } catch (_) {}
-      }
-
-      // 結合（順番を保持：絵1〜4 → サイト5〜8）
-      const pool = [...artPhrases, ...sitePhrases];
+      // 初期プール：絵フレーズはen/frをnullで保持（遅延翻訳）
+      const artPhrasesInit = artJa.map((s) => ({ ja: s, en: null as string | null, fr: null as string | null }));
+      const pool = [...artPhrasesInit, ...sitePhrases];
 
       if (cancelled) return;
       setCombinedPhrases(pool);
       setPhraseIdx(0);
-      setCustomText(pool[0]?.en ?? "");
+      setLang("en");
+
+      // フレーズ1のEN翻訳のみ実行
+      const first = pool[0];
+      if (first && first.en === null) {
+        setTranslating(true);
+        try {
+          const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(first.ja)}&langpair=ja|en`);
+          const data = await res.json();
+          const text = data.responseData?.translatedText ?? first.ja;
+          if (!cancelled) {
+            setCombinedPhrases((prev) => { const next = [...prev]; next[0] = { ...next[0], en: text }; return next; });
+            setCustomText(text);
+          }
+        } catch { if (!cancelled) setCustomText(first.ja); }
+        finally { if (!cancelled) setTranslating(false); }
+      } else if (first) {
+        setCustomText(first.en ?? first.ja);
+      }
     };
     buildPool();
     return () => { cancelled = true; };
   }, [selectedArtId, artworks]);
 
+  // フレーズ番号・言語変更時に遅延翻訳
   useEffect(() => {
-    setCustomText(combinedPhrases[phraseIdx]?.[lang] ?? "");
-  }, [phraseIdx, lang, combinedPhrases]);
+    const phrase = combinedPhrasesRef.current[phraseIdx];
+    if (!phrase) return;
+    if (lang === "ja") { setCustomText(phrase.ja); return; }
+    const cached = phrase[lang as "en" | "fr"];
+    if (cached !== null) { setCustomText(cached); return; }
+
+    // 未翻訳のため遅延フェッチ
+    let cancelled = false;
+    setTranslating(true);
+    fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(phrase.ja)}&langpair=ja|${lang}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return;
+        const text = data.responseData?.translatedText ?? phrase.ja;
+        setCombinedPhrases((prev) => { const next = [...prev]; next[phraseIdx] = { ...next[phraseIdx], [lang]: text }; return next; });
+        setCustomText(text);
+        setTranslating(false);
+      })
+      .catch(() => { if (!cancelled) { setCustomText(phrase.ja); setTranslating(false); } });
+    return () => { cancelled = true; setTranslating(false); };
+  }, [phraseIdx, lang]);
 
   const renderFront = useCallback(() => {
     const canvas = frontRef.current;
@@ -924,7 +944,7 @@ export default function Product2() {
                     <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold">2</span>
                     <span className="font-semibold text-sm tracking-wider">言葉を選ぶ・編集する</span>
                   </div>
-                  <div className="flex gap-2 mb-3">
+                  <div className="flex gap-2 mb-3 items-center">
                     {(["ja", "en", "fr"] as const).map((l) => (
                       <button
                         key={l}
@@ -936,6 +956,9 @@ export default function Product2() {
                         {l === "ja" ? "日本語" : l === "en" ? "EN" : "FR"}
                       </button>
                     ))}
+                    {translating && (
+                      <span className="text-[10px] text-gray-400 tracking-wider animate-pulse">翻訳中...</span>
+                    )}
                   </div>
                   <div className="flex gap-1.5 flex-wrap mb-3">
                     {combinedPhrases.map((_, i) => (
