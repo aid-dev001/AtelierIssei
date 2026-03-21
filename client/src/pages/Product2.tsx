@@ -622,7 +622,7 @@ export default function Product2() {
     if (text) {
       ctx.save();
       ctx.font = `400 ${15 * PS}px 'Helvetica Neue', Arial, sans-serif`;
-      ctx.fillStyle = "#2a2a2a";
+      ctx.fillStyle = tshirtColor === "black" ? "#ffffff" : "#2a2a2a";
       ctx.textAlign = "left";
       const textX = cx - 170 * PS;
       const maxW = 370 * PS;
@@ -633,7 +633,7 @@ export default function Product2() {
       ctx.restore();
     }
     return injectDpi300(off.toDataURL("image/png"));
-  }, [artImg, frontPos, lineWidth, artVertOffset, customText, FRONT_CW, FRONT_CH, LINE_H]);
+  }, [artImg, frontPos, lineWidth, artVertOffset, customText, tshirtColor, FRONT_CW, FRONT_CH, LINE_H]);
 
   const getBackTransparentPng = useCallback((): string | null => {
     if (!artImg) return null;
