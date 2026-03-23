@@ -399,17 +399,14 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         title: updateData.title,
         description: updateData.description,
         imageUrl: updateData.imageUrl,
-        // NOT NULL フィールド: null/undefined の場合は既存値を保持
-        price: (updateData.price != null && !isNaN(Number(updateData.price)))
-          ? String(updateData.price)
-          : artwork.price,
-        size: updateData.size ?? artwork.size,
-        status: updateData.status ?? artwork.status,
+        price: updateData.price,
+        size: updateData.size,
+        status: updateData.status,
         purchaser: updateData.purchaser || null,
-        createdLocation: updateData.createdLocation ?? artwork.createdLocation,
-        storedLocation: updateData.storedLocation ?? artwork.storedLocation,
+        createdLocation: updateData.createdLocation,
+        storedLocation: updateData.storedLocation,
         exhibitionLocation: updateData.exhibitionLocation || null,
-        isAvailable: updateData.isAvailable != null ? updateData.isAvailable : artwork.isAvailable,
+        isAvailable: updateData.isAvailable,
         collectionId: updateData.collectionId,
         creationYear: updateData.creationYear ? parseInt(updateData.creationYear) : null,
         interiorImageDescriptions: Array.isArray(updateData.interiorImageDescriptions) 

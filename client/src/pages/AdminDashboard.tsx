@@ -33,18 +33,6 @@ const AdminDashboard = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const adminPath = window.location.pathname.split('/dashboard')[0];
-
-  async function checkAdminResponse(response: Response) {
-    if (response.status === 401) {
-      const data = await response.json().catch(() => ({}));
-      throw new Error(data.error ?? 'セッションが切れています。再ログインしてください。');
-    }
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
-      throw new Error(data.error ?? '操作に失敗しました');
-    }
-    return response;
-  }
 const createExhibitionMutation = useMutation({
   mutationFn: async (formData: FormData) => {
     const response = await fetch(`${adminPath}/exhibitions`, {
@@ -257,7 +245,7 @@ const toggleExhibitionMutation = useMutation({
         },
         body: JSON.stringify({ ...data, updatePosition: true }),
       });
-      await checkAdminResponse(response);
+      if (!response.ok) throw new Error('Failed to update artwork');
       return response.json();
     },
     onSuccess: () => {
@@ -265,8 +253,8 @@ const toggleExhibitionMutation = useMutation({
       toast({ title: "作品を更新しました（最新位置に移動）" });
       setIsEditDialogOpen(false);
     },
-    onError: (error) => {
-      toast({ variant: "destructive", title: "作品の更新に失敗しました", description: error instanceof Error ? error.message : undefined });
+    onError: () => {
+      toast({ variant: "destructive", title: "作品の更新に失敗しました" });
     },
   });
 
@@ -279,7 +267,7 @@ const toggleExhibitionMutation = useMutation({
         },
         body: JSON.stringify({ ...data, updatePosition: false }),
       });
-      await checkAdminResponse(response);
+      if (!response.ok) throw new Error('Failed to update artwork');
       return response.json();
     },
     onSuccess: () => {
@@ -287,8 +275,8 @@ const toggleExhibitionMutation = useMutation({
       toast({ title: "作品を更新しました（同じ位置を保持）" });
       setIsEditDialogOpen(false);
     },
-    onError: (error) => {
-      toast({ variant: "destructive", title: "作品の更新に失敗しました", description: error instanceof Error ? error.message : undefined });
+    onError: () => {
+      toast({ variant: "destructive", title: "作品の更新に失敗しました" });
     },
   });
 
@@ -301,7 +289,7 @@ const toggleExhibitionMutation = useMutation({
         },
         body: JSON.stringify({ ...data, updatePosition: "last" }),
       });
-      await checkAdminResponse(response);
+      if (!response.ok) throw new Error('Failed to update artwork');
       return response.json();
     },
     onSuccess: () => {
@@ -309,8 +297,8 @@ const toggleExhibitionMutation = useMutation({
       toast({ title: "作品を更新しました（一番後ろの位置に移動）" });
       setIsEditDialogOpen(false);
     },
-    onError: (error) => {
-      toast({ variant: "destructive", title: "作品の更新に失敗しました", description: error instanceof Error ? error.message : undefined });
+    onError: () => {
+      toast({ variant: "destructive", title: "作品の更新に失敗しました" });
     },
   });
 

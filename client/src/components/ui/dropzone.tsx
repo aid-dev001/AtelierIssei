@@ -1,26 +1,19 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { UploadCloud, Loader2 } from "lucide-react";
+import { UploadCloud } from "lucide-react";
 
 export interface DropzoneProps extends React.HTMLAttributes<HTMLDivElement> {
-  onFileChange: (file: File) => Promise<void> | void;
+  onFileChange: (file: File) => void;
   existingImageUrl?: string;
   maxHeightClass?: string;
-  onUploadingChange?: (uploading: boolean) => void;
 }
 
 const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
-  ({ className, onFileChange, existingImageUrl, maxHeightClass = "max-h-[90%]", onUploadingChange, ...props }, ref) => {
+  ({ className, onFileChange, existingImageUrl, maxHeightClass = "max-h-[90%]", ...props }, ref) => {
     const { toast } = useToast();
     const [isDragging, setIsDragging] = React.useState(false);
     const [preview, setPreview] = React.useState<string | null>(existingImageUrl || null);
-    const [uploading, setUploading] = React.useState(false);
-
-    const setUploadingState = React.useCallback((v: boolean) => {
-      setUploading(v);
-      onUploadingChange?.(v);
-    }, [onUploadingChange]);
 
     React.useEffect(() => {
       if (existingImageUrl) {
@@ -49,37 +42,40 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
     }, []);
 
     const processFile = React.useCallback(
-      async (file: File) => {
+      (file: File) => {
         if (!file.type.startsWith("image/")) {
-          toast({ variant: "destructive", title: "画像ファイルのみアップロード可能です" });
-          return;
+          toast({
+            variant: "destructive",
+            title: "画像ファイルのみアップロード可能です",
+          });
+          return false;
         }
 
         if (!["image/jpeg", "image/png"].includes(file.type)) {
-          toast({ variant: "destructive", title: "JPEGまたはPNG形式の画像のみアップロード可能です" });
-          return;
+          toast({
+            variant: "destructive",
+            title: "JPEGまたはPNG形式の画像のみアップロード可能です",
+          });
+          return false;
         }
 
         if (file.size > 30 * 1024 * 1024) {
-          toast({ variant: "destructive", title: "ファイルサイズは30MB以下にしてください" });
-          return;
+          toast({
+            variant: "destructive",
+            title: "ファイルサイズは30MB以下にしてください",
+          });
+          return false;
         }
 
-        const localUrl = URL.createObjectURL(file);
-        setPreview(localUrl);
-        setUploading(true);
-
-        try {
-          await onFileChange(file);
-        } catch {
-          // アップロード失敗時はプレビューを元に戻す
-          URL.revokeObjectURL(localUrl);
-          setPreview(existingImageUrl || null);
-        } finally {
-          setUploading(false);
+        if (preview && !preview.startsWith('http')) {
+          URL.revokeObjectURL(preview);
         }
+
+        setPreview(URL.createObjectURL(file));
+        onFileChange(file);
+        return true;
       },
-      [onFileChange, toast, existingImageUrl]
+      [onFileChange, toast, preview]
     );
 
     const handleDrop = React.useCallback(
@@ -87,8 +83,10 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
         e.preventDefault();
         e.stopPropagation();
         setIsDragging(false);
+
         const files = Array.from(e.dataTransfer.files);
         if (files.length === 0) return;
+
         processFile(files[0]);
       },
       [processFile]
@@ -98,8 +96,8 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
       (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
+
         processFile(file);
-        e.target.value = "";
       },
       [processFile]
     );
@@ -124,14 +122,7 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
           className="absolute inset-0 cursor-pointer opacity-0"
           accept="image/jpeg,image/png"
           onChange={handleFileInput}
-          disabled={uploading}
         />
-        {uploading && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/80 rounded-lg gap-2">
-            <Loader2 className="w-6 h-6 animate-spin text-gray-500" />
-            <span className="text-xs text-gray-500">アップロード中...</span>
-          </div>
-        )}
         {preview ? (
           <div className="relative w-full h-full flex items-center justify-center p-2 rounded-lg">
             <img
@@ -139,11 +130,9 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
               alt="Preview"
               className={`max-w-full ${maxHeightClass} object-contain dropzone-preview rounded`}
             />
-            {!uploading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity hover:opacity-100 rounded-lg">
-                <p className="text-sm text-white">クリックまたはドラッグ＆ドロップで画像を変更</p>
-              </div>
-            )}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity hover:opacity-100 rounded-lg">
+              <p className="text-sm text-white">クリックまたはドラッグ＆ドロップで画像を変更</p>
+            </div>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center space-y-2 text-center">
