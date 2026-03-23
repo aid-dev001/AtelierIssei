@@ -7,14 +7,20 @@ export interface DropzoneProps extends React.HTMLAttributes<HTMLDivElement> {
   onFileChange: (file: File) => Promise<void> | void;
   existingImageUrl?: string;
   maxHeightClass?: string;
+  onUploadingChange?: (uploading: boolean) => void;
 }
 
 const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
-  ({ className, onFileChange, existingImageUrl, maxHeightClass = "max-h-[90%]", ...props }, ref) => {
+  ({ className, onFileChange, existingImageUrl, maxHeightClass = "max-h-[90%]", onUploadingChange, ...props }, ref) => {
     const { toast } = useToast();
     const [isDragging, setIsDragging] = React.useState(false);
     const [preview, setPreview] = React.useState<string | null>(existingImageUrl || null);
     const [uploading, setUploading] = React.useState(false);
+
+    const setUploadingState = React.useCallback((v: boolean) => {
+      setUploading(v);
+      onUploadingChange?.(v);
+    }, [onUploadingChange]);
 
     React.useEffect(() => {
       if (existingImageUrl) {
