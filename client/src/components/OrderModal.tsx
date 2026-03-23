@@ -12,6 +12,12 @@ type Props = {
 };
 
 const SIZES = ["S", "M", "L", "XL", "XXL"];
+const BASE_PRICE = 55000;
+const ADD_PRICE = 22000;
+
+function parseSizes(val: string): Record<string, number> {
+  try { return JSON.parse(val); } catch { return { M: 1 }; }
+}
 
 export default function OrderModal({
   imageDataUrl,
@@ -25,7 +31,9 @@ export default function OrderModal({
   const [name, setName] = useState(() => localStorage.getItem("order_name") ?? "");
   const [email, setEmail] = useState(() => localStorage.getItem("order_email") ?? "");
   const [address, setAddress] = useState(() => localStorage.getItem("order_address") ?? "");
-  const [size, setSize] = useState(() => localStorage.getItem("order_size") ?? "M");
+  const [sizes, setSizes] = useState<Record<string, number>>(() =>
+    parseSizes(localStorage.getItem("order_sizes") ?? '{"M":1}')
+  );
   const [comment, setComment] = useState(() => localStorage.getItem("order_comment") ?? "");
 
   const [step, setStep] = useState<"form" | "done">("form");
@@ -33,10 +41,24 @@ export default function OrderModal({
   const [progressMsg, setProgressMsg] = useState("");
   const [error, setError] = useState("");
 
+  const totalItems = Object.values(sizes).reduce((a, b) => a + b, 0);
+  const totalPrice = totalItems <= 1 ? BASE_PRICE : BASE_PRICE + (totalItems - 1) * ADD_PRICE;
+  const sizeStr = SIZES.filter((s) => sizes[s] > 0).map((s) => `${s}×${sizes[s]}`).join("、");
+
+  const changeQty = (s: string, delta: number) => {
+    setSizes((prev) => {
+      const next = { ...prev };
+      const cur = next[s] ?? 0;
+      const nv = Math.max(0, cur + delta);
+      if (nv === 0) delete next[s]; else next[s] = nv;
+      return next;
+    });
+  };
+
   useEffect(() => { localStorage.setItem("order_name", name); }, [name]);
   useEffect(() => { localStorage.setItem("order_email", email); }, [email]);
   useEffect(() => { localStorage.setItem("order_address", address); }, [address]);
-  useEffect(() => { localStorage.setItem("order_size", size); }, [size]);
+  useEffect(() => { localStorage.setItem("order_sizes", JSON.stringify(sizes)); }, [sizes]);
   useEffect(() => { localStorage.setItem("order_comment", comment); }, [comment]);
 
   useEffect(() => {
@@ -46,6 +68,7 @@ export default function OrderModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (totalItems === 0) { setError("サイズを1つ以上選択してください。"); return; }
     setLoading(true);
     setError("");
     setProgressMsg("デザインを準備中...");
@@ -60,7 +83,9 @@ export default function OrderModal({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name, email, address, size, comment,
+          name, email, address,
+          size: sizeStr || "未選択",
+          comment,
           product: productName,
           artworkTitle: artworkTitle ?? "",
           imageData: imageDataUrl,
@@ -101,7 +126,7 @@ export default function OrderModal({
 
       if (!isDone) throw new Error(errorMsg || "不明なエラー");
 
-      ["order_name", "order_email", "order_address", "order_size", "order_comment"].forEach(k => localStorage.removeItem(k));
+      ["order_name", "order_email", "order_address", "order_sizes", "order_comment"].forEach(k => localStorage.removeItem(k));
       setStep("done");
     } catch {
       setError("注文の送信に失敗しました。サポートにお問い合わせください。");
@@ -159,7 +184,14 @@ export default function OrderModal({
                 <p className="text-[10px] tracking-[0.2em] text-black text-center">使用した作品: {artworkTitle}</p>
               )}
 
-              <p className="text-center text-sm tracking-widest font-light">¥55,000 <span className="text-[10px] text-black">（税込み）</span></p>
+              <div className="text-center">
+                <p className="text-sm tracking-widest font-light">
+                  ¥{totalPrice.toLocaleString()} <span className="text-[10px] text-black">（税込み）</span>
+                  {totalItems > 1 && (
+                    <span className="ml-1 text-[10px] text-black">× {totalItems}枚</span>
+                  )}
+                </p>
+              </div>
 
               <div>
                 <label className="block text-xs tracking-wider text-black mb-1.5">お名前 <span className="text-red-400">*</span></label>
@@ -180,27 +212,38 @@ export default function OrderModal({
               </div>
 
               <div>
-                <label className="block text-xs tracking-wider text-black mb-1.5">サイズ</label>
-                <div className="flex gap-2 flex-wrap">
-                  {SIZES.map((s) => (
-                    <button key={s} type="button" onClick={() => setSize(s)}
-                      className={`px-4 py-1.5 text-xs rounded border transition-colors ${size === s ? "bg-black text-white border-black" : "border-gray-200 text-black hover:border-black"}`}>
-                      {s}
-                    </button>
-                  ))}
+                <label className="block text-xs tracking-wider text-black mb-2">サイズ・枚数</label>
+                <div className="flex flex-wrap gap-3">
+                  {SIZES.map((s) => {
+                    const qty = sizes[s] ?? 0;
+                    return (
+                      <div key={s} className={`flex items-center gap-1.5 border rounded-lg px-2 py-1.5 transition-colors ${qty > 0 ? "border-black" : "border-gray-200"}`}>
+                        <span className="text-xs font-medium w-7 text-center">{s}</span>
+                        <button type="button" onClick={() => changeQty(s, -1)}
+                          className="w-5 h-5 flex items-center justify-center text-sm leading-none text-gray-400 hover:text-black transition-colors disabled:opacity-30"
+                          disabled={qty === 0}>−</button>
+                        <span className="text-xs w-4 text-center">{qty}</span>
+                        <button type="button" onClick={() => changeQty(s, 1)}
+                          className="w-5 h-5 flex items-center justify-center text-sm leading-none hover:text-black transition-colors">＋</button>
+                      </div>
+                    );
+                  })}
                 </div>
+                <p className="text-[10px] text-black mt-2 leading-relaxed">
+                  ※ 2枚目以降は1枚追加するごとに ¥{ADD_PRICE.toLocaleString()} 加算されます。
+                </p>
               </div>
 
               <div>
                 <label className="block text-xs tracking-wider text-black mb-1.5">コメント・ご要望</label>
                 <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={3}
                   className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black transition-colors resize-none"
-                  placeholder="カラー、数量、その他ご要望など" />
+                  placeholder="その他ご要望など" />
               </div>
 
               {error && <p className="text-xs text-red-500">{error}</p>}
 
-              <button type="submit" disabled={loading}
+              <button type="submit" disabled={loading || totalItems === 0}
                 className="w-full py-3 bg-black text-white text-xs tracking-widest rounded hover:bg-gray-800 transition-colors disabled:opacity-50">
                 {loading ? "処理中..." : "注文する →"}
               </button>
