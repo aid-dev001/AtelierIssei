@@ -804,6 +804,14 @@ export default function Product2() {
 
   return (
     <div className="min-h-screen bg-white py-12">
+      {translating && (
+        <div className="fixed inset-0 z-[500] flex items-center justify-center" style={{ pointerEvents: "all", background: "rgba(255,255,255,0.72)", backdropFilter: "blur(4px)" }}>
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
+            <span className="text-sm tracking-[0.2em] text-black font-medium">翻訳中...</span>
+          </div>
+        </div>
+      )}
       <div className="max-w-5xl mx-auto px-4">
         <h1 className="text-4xl font-bold mb-2 tracking-wider text-center">PRODUCTS</h1>
         <p className="text-center text-xs tracking-[0.2em] uppercase text-black mb-8">Art you can wear</p>
@@ -956,9 +964,6 @@ export default function Product2() {
                         {l === "ja" ? "日本語" : l === "en" ? "EN" : "FR"}
                       </button>
                     ))}
-                    {translating && (
-                      <span className="text-[10px] text-gray-400 tracking-wider animate-pulse">翻訳中...</span>
-                    )}
                   </div>
                   <div className="flex gap-1.5 flex-wrap mb-3">
                     {combinedPhrases.map((_, i) => (
