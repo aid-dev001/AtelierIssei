@@ -805,10 +805,10 @@ export default function Product2() {
   return (
     <div className="min-h-screen bg-white py-12">
       {translating && (
-        <div className="fixed inset-0 z-[500] flex items-center justify-center" style={{ pointerEvents: "all", background: "rgba(255,255,255,0.72)", backdropFilter: "blur(4px)" }}>
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
-            <span className="text-sm tracking-[0.2em] text-black font-medium">翻訳中...</span>
+        <div className="fixed inset-0 z-[500] flex items-center justify-center bg-black/60" style={{ pointerEvents: "all" }}>
+          <div className="bg-black/85 text-white rounded-2xl px-10 py-8 flex flex-col items-center gap-4 shadow-2xl min-w-[260px]">
+            <div className="w-7 h-7 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className="text-sm font-semibold tracking-widest text-center">翻訳中...</div>
           </div>
         </div>
       )}
