@@ -401,12 +401,22 @@ const toggleExhibitionMutation = useMutation({
       // 必須フィールドの検証
       const title = formData.get('title') as string;
       const description = formData.get('description') as string;
+      const priceRaw = formData.get('price') as string;
       
       if (!title || !description) {
         toast({
           variant: "destructive",
           title: "必須項目を入力してください",
           description: "タイトルと説明は必須です",
+        });
+        return;
+      }
+
+      if (priceRaw === "" || priceRaw == null || isNaN(Number(priceRaw))) {
+        toast({
+          variant: "destructive",
+          title: "価格を入力してください",
+          description: "有効な価格（数値）を入力してください",
         });
         return;
       }
