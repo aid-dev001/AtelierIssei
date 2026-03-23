@@ -42,6 +42,6 @@ export function requireAdmin(req: any, res: any, next: any) {
   if (req.session?.isAdmin) {
     next();
   } else {
-    res.status(401).json({ error: 'Unauthorized' });
+    res.status(401).json({ error: 'セッションが切れています。再ログインしてください。' });
   }
 }
