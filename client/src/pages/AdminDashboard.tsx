@@ -114,6 +114,7 @@ const toggleExhibitionMutation = useMutation({
     generatedDescription: '',
     interiorImageUrls: [],
   });
+  const [isUploading, setIsUploading] = useState(false);
 
   // Collections data
   const { data: collections } = useQuery({
@@ -626,6 +627,8 @@ const toggleExhibitionMutation = useMutation({
         throw new Error('画像ファイルを選択してください');
       }
 
+      setIsUploading(true);
+
       // 現在のフォーム入力値を保持
       const titleInput = document.getElementById('title') as HTMLInputElement;
       const descriptionInput = document.getElementById('description') as HTMLTextAreaElement;
@@ -652,6 +655,11 @@ const toggleExhibitionMutation = useMutation({
       } catch (error) {
         console.error('Error parsing response:', error);
         throw new Error('サーバーからの応答を解析できませんでした');
+      }
+
+      if (response.status === 401) {
+        window.location.href = adminPath;
+        return;
       }
 
       if (!response.ok) {
@@ -694,6 +702,8 @@ const toggleExhibitionMutation = useMutation({
         title: "エラーが発生しました",
         description: error instanceof Error ? error.message : "予期せぬエラーが発生しました",
       });
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -1337,26 +1347,36 @@ const [subImageUrls, setSubImageUrls] = React.useState<string[]>([]);
           </Button>
         </div>
       ) : (
-        <div className="flex gap-2">
-          <Button 
-            type="button" 
-            onClick={() => handleCreateClick("latest")} 
-            className="flex-1"
-          >
-            最新の位置に作成
-          </Button>
-          <Button 
-            type="button" 
-            onClick={() => handleCreateClick("last")} 
-            className="flex-1"
-            variant="secondary"
-          >
-            一番後ろの位置で作成
-          </Button>
+        <div className="flex flex-col gap-2">
+          {isUploading && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted px-3 py-2 rounded-md">
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              画像をサーバーにアップロード中です。完了後に作成できます。
+            </div>
+          )}
+          <div className="flex gap-2">
+            <Button 
+              type="button" 
+              onClick={() => handleCreateClick("latest")} 
+              className="flex-1"
+              disabled={isUploading}
+            >
+              最新の位置に作成
+            </Button>
+            <Button 
+              type="button" 
+              onClick={() => handleCreateClick("last")} 
+              className="flex-1"
+              variant="secondary"
+              disabled={isUploading}
+            >
+              一番後ろの位置で作成
+            </Button>
+          </div>
         </div>
       )}
     </form>
-  ), [selectedArtwork, imageData, collections, currentStatus, handleSubmit, handleFileChange, handleCreateClick, handleUpdateClick, handleInteriorImageUpload]);
+  ), [selectedArtwork, imageData, isUploading, collections, currentStatus, handleSubmit, handleFileChange, handleCreateClick, handleUpdateClick, handleInteriorImageUpload]);
 
   if (isLoading) {
     return <div>Loading...</div>;

@@ -2,7 +2,8 @@ import { config } from "dotenv";
 config();
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
-import MemoryStore from "memorystore";
+import connectPgSimple from "connect-pg-simple";
+import pg from "pg";
 import setupRoutes from "./routes";
 import { setupVite, serveStatic } from "./vite";
 import { createServer } from "http";
@@ -53,19 +54,27 @@ app.use('/artworks', express.static('public/artworks', staticOptions));
 app.use('/artworks', express.static('.', staticOptions));
 
 
-const MemoryStoreSession = MemoryStore(session);
+const PgSession = connectPgSimple(session);
 const isProduction = process.env.NODE_ENV === 'production';
+
+const pgPool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'fallback-dev-secret-key',
   resave: false,
   saveUninitialized: false,
-  store: new MemoryStoreSession({
-    checkPeriod: 86400000 // 24時間でexpire
+  store: new PgSession({
+    pool: pgPool,
+    tableName: 'sessions',
+    createTableIfMissing: true,
   }),
   cookie: {
-    secure: isProduction, // 本番環境(HTTPS)ではtrue
+    secure: isProduction,
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000, // 24時間
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30日
     sameSite: isProduction ? 'none' : 'lax'
   }
 }));
