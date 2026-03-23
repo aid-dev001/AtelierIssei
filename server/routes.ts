@@ -342,7 +342,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
       const artworkData = {
         title: req.body.title,
         description: req.body.description,
-        price: req.body.price,
+        price: req.body.price !== "" && req.body.price != null ? String(req.body.price) : "0",
         size: req.body.size,
         status: req.body.status,
         purchaser: req.body.purchaser || null,
@@ -399,7 +399,7 @@ app.post(`/admin/${ADMIN_URL_PATH}/collections`, requireAdmin, async (req, res) 
         title: updateData.title,
         description: updateData.description,
         imageUrl: updateData.imageUrl,
-        price: updateData.price,
+        price: updateData.price !== "" && updateData.price != null ? String(updateData.price) : "0",
         size: updateData.size,
         status: updateData.status,
         purchaser: updateData.purchaser || null,
